@@ -1,7 +1,35 @@
-import { type NextRequest } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { updateSession } from "@/lib/supabase/middleware";
 
 export async function middleware(request: NextRequest) {
+  // Protection par mot de passe (désactiver en mettant SITE_PASSWORD="" dans .env)
+  const sitePassword = process.env.SITE_PASSWORD;
+
+  if (sitePassword) {
+    // Ne pas protéger les assets, les API, et le tracking
+    const path = request.nextUrl.pathname;
+    if (
+      path.startsWith("/api/track/") ||
+      path.startsWith("/_next/") ||
+      path.startsWith("/favicon") ||
+      path === "/site-password"
+    ) {
+      // Laisser passer
+    } else {
+      // Vérifier le cookie de mot de passe
+      const authCookie = request.cookies.get("site_auth")?.value;
+      if (authCookie !== sitePassword) {
+        // Rediriger vers la page mot de passe
+        if (path !== "/site-password") {
+          const url = request.nextUrl.clone();
+          url.pathname = "/site-password";
+          url.searchParams.set("redirect", path);
+          return NextResponse.redirect(url);
+        }
+      }
+    }
+  }
+
   return await updateSession(request);
 }
 
