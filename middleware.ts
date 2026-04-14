@@ -10,6 +10,7 @@ export async function middleware(request: NextRequest) {
     const path = request.nextUrl.pathname;
     if (
       path.startsWith("/api/track/") ||
+      path.startsWith("/api/site-auth") ||
       path.startsWith("/_next/") ||
       path.startsWith("/favicon") ||
       path === "/site-password"
