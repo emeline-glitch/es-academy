@@ -78,13 +78,13 @@ export default function Home() {
             <div className="relative hidden lg:block">
               <div className="absolute inset-0">
                 <Image
-                  src="/images/emeline-siron-800.png"
+                  src="/images/emeline-siron.png"
                   alt="Emeline Siron — Formatrice en investissement immobilier"
-                  width={800}
-                  height={1000}
+                  width={1024}
+                  height={1536}
                   className="w-full h-full object-cover object-top"
                   priority
-                  quality={85}
+                  quality={90}
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-es-green-dark via-transparent to-transparent w-1/3" />
               </div>
@@ -94,12 +94,12 @@ export default function Home() {
             <div className="lg:hidden px-6 pb-8 -mt-4">
               <div className="aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl max-w-sm mx-auto">
                 <Image
-                  src="/images/emeline-siron-800.png"
+                  src="/images/emeline-siron.png"
                   alt="Emeline Siron"
-                  width={400}
-                  height={533}
+                  width={1024}
+                  height={1536}
                   className="w-full h-full object-cover object-top"
-                  quality={80}
+                  quality={85}
                 />
               </div>
             </div>
