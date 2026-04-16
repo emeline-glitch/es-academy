@@ -120,24 +120,143 @@ export default function FamilyPage() {
         </div>
       </section>
 
-      {/* Ce qui est inclus */}
+      {/* L'app en détail */}
       <section className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-12">
-            <span className="text-xs text-es-terracotta uppercase tracking-widest font-medium">Inclus</span>
-            <h2 className="font-serif text-3xl font-bold text-es-text mt-3">Ce qui vous attend dans ES Family</h2>
+          <div className="text-center mb-14">
+            <span className="text-xs text-es-terracotta uppercase tracking-widest font-medium">L&apos;application</span>
+            <h2 className="font-serif text-3xl font-bold text-es-text mt-3">Tout ce qui vous attend dans ES Family</h2>
+            <p className="text-es-text-muted mt-2 max-w-xl mx-auto">Une app complète pour investir, apprendre et échanger au quotidien.</p>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {PRICING.family.features.map((feature, i) => (
-              <div key={i} className="bg-es-cream rounded-xl p-6 card-hover">
-                <div className="w-10 h-10 rounded-lg bg-es-terracotta/10 flex items-center justify-center mb-3">
-                  <svg className="w-5 h-5 text-es-terracotta" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
-                  </svg>
-                </div>
-                <p className="text-sm text-es-text font-medium">{feature}</p>
+
+          <div className="space-y-6">
+            {/* Actu */}
+            <div className="bg-es-cream rounded-2xl p-6 md:p-8">
+              <div className="flex items-center gap-3 mb-4">
+                <span className="text-2xl">📰</span>
+                <h3 className="font-serif text-xl font-bold text-es-text">Actu</h3>
               </div>
-            ))}
+              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {[
+                  { icon: "🔥", text: "Quiz quotidien (91 questions, 5 domaines) avec streak" },
+                  { icon: "📊", text: "Actualités filtrables : Immobilier, Taux, Fiscalité, Marché, Patrimoine, Travaux" },
+                  { icon: "🎙", text: "Compte à rebours du prochain live en bannière" },
+                  { icon: "💡", text: "Top 3 des sujets les plus chauds + bons plans" },
+                ].map((item, i) => (
+                  <div key={i} className="bg-white rounded-xl p-4 flex items-start gap-3">
+                    <span className="text-lg shrink-0">{item.icon}</span>
+                    <p className="text-sm text-es-text-muted">{item.text}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Discussions */}
+            <div className="bg-es-cream rounded-2xl p-6 md:p-8">
+              <div className="flex items-center gap-3 mb-4">
+                <span className="text-2xl">💬</span>
+                <h3 className="font-serif text-xl font-bold text-es-text">Discussions</h3>
+              </div>
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div className="bg-white rounded-xl p-5">
+                  <p className="font-medium text-es-text text-sm mb-2">2 piliers de discussion</p>
+                  <div className="flex flex-wrap gap-2">
+                    {["Immobilier", "Patrimoine"].map((g) => (
+                      <span key={g} className="px-3 py-1 bg-es-green/10 text-es-green rounded-full text-xs font-medium">{g}</span>
+                    ))}
+                  </div>
+                  <p className="text-xs text-es-text-muted mt-3">Sous-groupes thématiques : LMNP, Airbnb, SCPI, colocation, SCI, travaux, fiscalité...</p>
+                </div>
+                <div className="bg-white rounded-xl p-5">
+                  <p className="font-medium text-es-text text-sm mb-2">Interactions</p>
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {["👍", "❤️", "🔥", "💡", "👏", "🎉"].map((e) => (
+                      <span key={e} className="w-8 h-8 bg-es-cream rounded-full flex items-center justify-center text-sm">{e}</span>
+                    ))}
+                  </div>
+                  <p className="text-xs text-es-text-muted">Posts, commentaires, réactions, likes, sauvegarde</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid sm:grid-cols-2 gap-6">
+              {/* Ressources */}
+              <div className="bg-es-cream rounded-2xl p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="text-2xl">📦</span>
+                  <h3 className="font-serif text-lg font-bold text-es-text">Ressources</h3>
+                </div>
+                <ul className="space-y-2">
+                  {[
+                    "4 simulateurs intégrés (notaire, rendement, cashflow, emprunt)",
+                    "34 fichiers classés par module (M2 à M11)",
+                    "Podcast Out of the Box intégré",
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-start gap-2 text-sm text-es-text-muted">
+                      <span className="text-es-terracotta mt-0.5">✓</span>{item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Événements */}
+              <div className="bg-es-cream rounded-2xl p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="text-2xl">🎙</span>
+                  <h3 className="font-serif text-lg font-bold text-es-text">Événements</h3>
+                </div>
+                <ul className="space-y-2">
+                  {[
+                    "Lives mensuels avec Emeline + experts (bouton Rejoindre + Ajouter à l'agenda)",
+                    "Tous les replays disponibles avec badge REPLAY",
+                    "Challenges avec tâches à cocher et barre de progression",
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-start gap-2 text-sm text-es-text-muted">
+                      <span className="text-es-terracotta mt-0.5">✓</span>{item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Découvrir */}
+              <div className="bg-es-cream rounded-2xl p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="text-2xl">💎</span>
+                  <h3 className="font-serif text-lg font-bold text-es-text">Découvrir</h3>
+                </div>
+                <ul className="space-y-2">
+                  {[
+                    "6 partenaires avec avantages exclusifs et codes promo",
+                    "Bons plans matériaux (prix barrés, avis pro)",
+                    "Annuaire des membres + coaching (appel découverte gratuit)",
+                    "Parrainage : 1 mois offert par filleul",
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-start gap-2 text-sm text-es-text-muted">
+                      <span className="text-es-terracotta mt-0.5">✓</span>{item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Gamification */}
+              <div className="bg-es-cream rounded-2xl p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="text-2xl">🏆</span>
+                  <h3 className="font-serif text-lg font-bold text-es-text">Gamification</h3>
+                </div>
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {["✍️ Premier post", "❤️ 10 likes", "🔥 100 likes", "💎 500 likes", "🏆 20 posts"].map((b) => (
+                    <span key={b} className="px-2 py-1 bg-white rounded-full text-[11px] text-es-text-muted">{b}</span>
+                  ))}
+                </div>
+                <div className="flex gap-2">
+                  {["🥉 Bronze", "🥈 Silver", "🥇 Gold", "🏅 Top"].map((m) => (
+                    <span key={m} className="px-2 py-1 bg-es-gold/10 rounded-full text-[11px] text-es-gold-dark font-medium">{m}</span>
+                  ))}
+                </div>
+                <p className="text-xs text-es-text-muted mt-3">Classement, quiz quotidien avec streak, score = posts × 2 + likes</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
