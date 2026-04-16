@@ -131,22 +131,20 @@ export default function AcademyPage() {
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-12">
             <span className="text-xs text-es-terracotta uppercase tracking-widest font-medium">Pour qui ?</span>
-            <h2 className="font-serif text-3xl font-bold text-es-text mt-3 mb-3">Cette formation est faite pour vous si...</h2>
+            <h2 className="font-serif text-3xl font-bold text-es-text mt-3">Cette formation est faite pour toi si...</h2>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {[
-              "Vous voulez investir mais ne savez pas par où commencer",
-              "Vous avez peur de faire une mauvaise affaire",
-              "Vous pensez qu'il faut un gros apport pour démarrer",
-              "Vous voulez générer des revenus complémentaires",
-              "Vous cherchez une méthode éprouvée, pas des théories",
-              "Vous voulez être accompagné par quelqu'un qui l'a fait",
+              { icon: "🎯", text: "Tu veux investir mais tu ne sais pas par où commencer" },
+              { icon: "😰", text: "Tu as peur de faire une mauvaise affaire" },
+              { icon: "💸", text: "Tu penses qu'il faut un gros apport pour démarrer" },
+              { icon: "📈", text: "Tu veux générer des revenus complémentaires" },
+              { icon: "🔧", text: "Tu cherches une méthode éprouvée, pas des théories" },
+              { icon: "🤝", text: "Tu veux être accompagné(e) par quelqu'un qui l'a fait" },
             ].map((item, i) => (
-              <div key={i} className="flex items-start gap-3 p-4 bg-es-cream rounded-xl">
-                <svg className="w-5 h-5 text-es-green mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
-                </svg>
-                <span className="text-sm text-es-text">{item}</span>
+              <div key={i} className="group relative bg-es-cream rounded-2xl p-5 hover:bg-es-green hover:text-white transition-all duration-300 cursor-default">
+                <div className="text-2xl mb-3">{item.icon}</div>
+                <p className="text-sm text-es-text group-hover:text-white font-medium transition-colors">{item.text}</p>
               </div>
             ))}
           </div>
@@ -154,48 +152,59 @@ export default function AcademyPage() {
       </section>
 
       {/* 3. Avant / Après */}
-      <section className="py-20 bg-es-cream">
-        <div className="max-w-5xl mx-auto px-6 grid md:grid-cols-2 gap-8">
-          <div className="bg-white rounded-2xl p-8 border border-es-cream-dark">
-            <h3 className="font-serif text-xl font-bold text-es-text mb-6 flex items-center gap-2">
-              <span className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-red-500 text-sm">✗</span>
-              Ce que vous allez oublier
-            </h3>
-            <ul className="space-y-4">
-              {[
-                "Il n'existe aucune ville rentable",
-                "Les banques ne financent pas sans apport",
-                "Faire des travaux est trop risqué",
-                "Le cash-flow immobilier est un mythe",
-                "Investir seul c'est impossible",
-              ].map((item, i) => (
-                <li key={i} className="flex items-start gap-3 text-es-text-muted text-sm line-through decoration-red-300">
-                  {item}
-                </li>
-              ))}
-            </ul>
+      <section className="relative py-20 bg-es-green-dark overflow-hidden">
+        <div className="absolute inset-0 opacity-[0.03]" style={{
+          backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
+          backgroundSize: "40px 40px",
+        }} />
+        <div className="relative max-w-5xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <h2 className="font-serif text-3xl font-bold text-white">Ta transformation commence ici</h2>
           </div>
-          <div className="bg-es-green/5 rounded-2xl p-8 border border-es-green/15">
-            <h3 className="font-serif text-xl font-bold text-es-text mb-6 flex items-center gap-2">
-              <span className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-es-green text-sm">✓</span>
-              Ce que vous allez devenir
-            </h3>
-            <ul className="space-y-4">
-              {[
-                "Un investisseur qui maîtrise son marché",
-                "Le gestionnaire d'un patrimoine solide",
-                "Un expert qui enchaîne les opérations",
-                "Un investisseur qui vit de ses revenus locatifs",
-                "Un entrepreneur immobilier à succès",
-              ].map((item, i) => (
-                <li key={i} className="flex items-start gap-3 text-es-text font-medium text-sm">
-                  <svg className="w-4 h-4 text-es-green mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
-                  </svg>
-                  {item}
-                </li>
-              ))}
-            </ul>
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Avant */}
+            <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
+              <div className="flex items-center gap-3 mb-6">
+                <span className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center text-lg">😩</span>
+                <h3 className="font-serif text-xl font-bold text-white">Avant</h3>
+              </div>
+              <ul className="space-y-4">
+                {[
+                  "\"Il n'existe aucune ville rentable\"",
+                  "\"Les banques ne financent pas sans apport\"",
+                  "\"Faire des travaux, c'est trop risqué\"",
+                  "\"Le cash-flow immobilier, c'est un mythe\"",
+                  "\"Investir seul, c'est impossible\"",
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-3 text-white/50 text-sm line-through decoration-red-400/50">
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            {/* Après */}
+            <div className="bg-es-gold/10 backdrop-blur-sm rounded-2xl p-8 border border-es-gold/20">
+              <div className="flex items-center gap-3 mb-6">
+                <span className="w-10 h-10 rounded-full bg-es-gold/20 flex items-center justify-center text-lg">🚀</span>
+                <h3 className="font-serif text-xl font-bold text-white">Après la formation</h3>
+              </div>
+              <ul className="space-y-4">
+                {[
+                  "Tu maîtrises ton marché et tu sais repérer les bonnes affaires",
+                  "Tu gères un patrimoine solide qui travaille pour toi",
+                  "Tu enchaînes les opérations avec confiance",
+                  "Tu vis de tes revenus locatifs",
+                  "Tu es un investisseur autonome et rentable",
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-3 text-white font-medium text-sm">
+                    <svg className="w-5 h-5 text-es-gold mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
+                    </svg>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
       </section>
