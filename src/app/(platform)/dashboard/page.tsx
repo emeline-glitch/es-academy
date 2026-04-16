@@ -57,8 +57,65 @@ export default async function Dashboard() {
         </Card>
       </div>
 
-      {/* Coaching notes section */}
+      {/* ES Family CTA */}
       <div className="mt-12">
+        <div className="relative overflow-hidden rounded-2xl p-8" style={{ backgroundColor: "#2c6e55" }}>
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <div className="relative flex flex-col md:flex-row items-center gap-6">
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-2xl">👑</span>
+                <h2 className="font-serif text-xl font-bold text-white">Rejoins ES Family</h2>
+              </div>
+              <p className="text-white/70 text-sm mb-4 max-w-lg">
+                La communaute patrimoniale d'Emeline Siron. Echanges entre investisseurs,
+                lives mensuels, outils exclusifs, simulateurs avances et accompagnement continu.
+              </p>
+              <div className="flex gap-3">
+                <Button href="/family" variant="cta" size="sm">
+                  Decouvrir ES Family
+                </Button>
+              </div>
+            </div>
+            <div className="hidden md:flex items-center gap-3 text-white/40">
+              <div className="text-center">
+                <p className="text-3xl font-bold text-white">500+</p>
+                <p className="text-xs">Membres</p>
+              </div>
+              <div className="w-px h-12 bg-white/20" />
+              <div className="text-center">
+                <p className="text-3xl font-bold text-white">2x</p>
+                <p className="text-xs">Lives/mois</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Incitation avis Google/Trustpilot */}
+      <div className="mt-8">
+        <Card>
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            <div className="flex-1">
+              <h3 className="font-serif text-lg font-bold text-gray-900 mb-1">Tu aimes la formation ? Dis-le ! 💬</h3>
+              <p className="text-sm text-gray-500">
+                Ton avis aide d'autres investisseurs a nous decouvrir. 2 minutes suffisent et ca compte enormement.
+              </p>
+            </div>
+            <div className="flex gap-3 shrink-0">
+              <Button href="https://www.google.com/search?q=emeline+siron+avis" variant="secondary" size="sm" target="_blank" rel="noopener">
+                ⭐ Avis Google
+              </Button>
+              <Button href="https://fr.trustpilot.com/review/emelinesiron.com" variant="secondary" size="sm" target="_blank" rel="noopener">
+                ⭐ Trustpilot
+              </Button>
+            </div>
+          </div>
+        </Card>
+      </div>
+
+      {/* Coaching notes section */}
+      <div className="mt-8">
         <h2 className="font-serif text-xl font-bold text-gray-900 mb-4">
           Notes de coaching
         </h2>

@@ -6,8 +6,9 @@ const platformNav = [
   { label: "Dashboard", href: "/dashboard", icon: "🏠" },
   { label: "Ma formation", href: "/cours/methode-emeline-siron", icon: "🎓" },
   { label: "Ressources", href: "/ressources", icon: "📦" },
-  { label: "Évaluation", href: "/evaluation", icon: "📝" },
+  { label: "Examen final", href: "/evaluation", icon: "📝" },
   { label: "Coaching", href: "/coaching", icon: "💬" },
+  { label: "ES Family", href: "/family", icon: "👑" },
 ];
 
 export default async function PlatformLayout({
