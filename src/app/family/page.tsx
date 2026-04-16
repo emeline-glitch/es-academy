@@ -40,10 +40,10 @@ export default function FamilyPage() {
             Communauté d&apos;investisseurs
           </span>
           <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-es-text leading-tight mb-4">
-            Ne restez plus seul(e) face à vos investissements
+            Ne reste plus seul(e) face à tes investissements
           </h1>
           <p className="text-xl text-es-text-muted max-w-2xl mx-auto mb-4 leading-relaxed">
-            Rejoignez 500+ investisseurs qui s&apos;entraident au quotidien, partagent leurs deals et accèdent à des partenaires vérifiés.
+            Rejoins 500+ investisseurs qui s&apos;entraident au quotidien, partagent leurs deals et accèdent à des partenaires vérifiés.
           </p>
           <p className="text-lg font-bold text-es-terracotta mb-8">
             Pour le prix d&apos;un forfait téléphonique.
@@ -80,11 +80,11 @@ export default function FamilyPage() {
       <section className="py-16 bg-white">
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-10">
-            <h2 className="font-serif text-2xl font-bold text-es-text">Vous vous reconnaissez ?</h2>
+            <h2 className="font-serif text-2xl font-bold text-es-text">Tu te reconnais ?</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
             {[
-              { before: "Seul(e) face à vos questions, personne à qui demander conseil", after: "Une communauté qui répond en 24h — vous n'êtes plus jamais seul(e)" },
+              { before: "Seul(e) face à tes questions, personne à qui demander conseil", after: "Une communauté qui te répond en 24h — tu n'es plus jamais seul(e)" },
               { before: "Noyé(e) dans les infos contradictoires sur Internet", after: "Des analyses pro triées chaque semaine par Emeline et son équipe" },
               { before: "Pas de réseau, pas de partenaires de confiance", after: "6 partenaires vérifiés + un annuaire de membres investisseurs" },
             ].map((item, i) => (
@@ -191,19 +191,14 @@ export default function FamilyPage() {
                 <div className="bg-white rounded-xl p-5">
                   <p className="font-medium text-es-text text-sm mb-2">Groupes thématiques</p>
                   <div className="flex flex-wrap gap-2">
-                    {["LMNP", "Colocation", "SCI", "Travaux", "Fiscalité", "Airbnb", "SCPI"].map((g) => (
+                    {["Immobilier", "Patrimoine", "Fiscalité", "Travaux", "Colocation", "SCPI", "Infos admins"].map((g) => (
                       <span key={g} className="px-3 py-1 bg-es-green/10 text-es-green rounded-full text-xs font-medium">{g}</span>
                     ))}
                   </div>
                 </div>
                 <div className="bg-white rounded-xl p-5">
-                  <p className="font-medium text-es-text text-sm mb-2">Une communauté vivante</p>
-                  <p className="text-xs text-es-text-muted">Réagis, sauvegarde les meilleurs posts, construis ton réseau d&apos;investisseurs</p>
-                  <div className="flex flex-wrap gap-2 mt-3">
-                    {["👍", "❤️", "🔥", "💡", "👏", "🎉"].map((e) => (
-                      <span key={e} className="w-8 h-8 bg-es-cream rounded-full flex items-center justify-center text-sm">{e}</span>
-                    ))}
-                  </div>
+                  <p className="font-medium text-es-text text-sm mb-2">Échange librement</p>
+                  <p className="text-xs text-es-text-muted">Poste, commente, réagis et sauvegarde les meilleurs contenus</p>
                 </div>
               </div>
             </div>
@@ -256,8 +251,8 @@ export default function FamilyPage() {
                 <ul className="space-y-2 mt-3">
                   {[
                     "6 partenaires vérifiés avec codes promo réservés aux membres",
-                    "Bons plans matériaux et travaux négociés",
-                    "Coaching accessible (appel découverte gratuit)",
+                    "Bons plans matériaux et mobilier négociés",
+                    "Coaching accessible avec Emeline",
                     "Parrainage : offre 1 mois gratuit à un ami",
                   ].map((item, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm text-es-text-muted">
