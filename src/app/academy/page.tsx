@@ -13,15 +13,15 @@ import { STATS, PRICING, MODULES_PROGRAMME } from "@/lib/utils/constants";
 
 export const metadata: Metadata = {
   title: "ES Academy — La Méthode Emeline Siron",
-  description: "Apprenez la meilleure stratégie pour vous lancer dans l'immobilier locatif, générer des revenus et bâtir votre patrimoine.",
+  description: "Apprends la meilleure stratégie pour te lancer dans l'immobilier locatif, générer des revenus et bâtir ton patrimoine.",
 };
 
 const faqItems = [
-  { question: "Que se passe-t-il après l'inscription ?", answer: "Vous recevez immédiatement vos identifiants par email. Vous accédez à l'intégralité de la formation, des outils et de la communauté ES Family pendant 3 mois." },
-  { question: "Combien de temps ai-je accès au contenu ?", answer: "Si vous terminez la formation en 3 mois, vous gardez un accès illimité. Les mises à jour et replays sont inclus à vie." },
-  { question: "Comment fonctionne le coaching sur mesure ?", answer: "Le coaching est un accompagnement individualisé adapté à votre profil et vos objectifs. Contactez-nous pour un devis personnalisé." },
-  { question: "Les sessions collectives sont-elles enregistrées ?", answer: "Oui, toutes les sessions de mentorat collectives sont enregistrées et disponibles en replay dans votre espace." },
-  { question: "Quelle est la politique de remboursement ?", answer: "Vous disposez de 14 jours pour tester la formation. Si elle ne vous convient pas, envoyez un email et vous êtes remboursé intégralement." },
+  { question: "Que se passe-t-il après l'inscription ?", answer: "Tu reçois immédiatement tes identifiants par email. Tu accèdes à l'intégralité de la formation, des outils et de la communauté ES Family pendant 3 mois." },
+  { question: "Combien de temps ai-je accès au contenu ?", answer: "Si tu termines la formation en 3 mois, tu gardes un accès illimité. Les mises à jour et replays sont inclus à vie." },
+  { question: "Comment fonctionne le coaching sur mesure ?", answer: "Le coaching est un accompagnement individualisé adapté à ton profil et tes objectifs. Contacte-nous pour un devis personnalisé." },
+  { question: "Les sessions collectives sont-elles enregistrées ?", answer: "Oui, toutes les sessions de mentorat collectives sont enregistrées et disponibles en replay dans ton espace." },
+  { question: "Quelle est la politique de remboursement ?", answer: "Tu disposes de 14 jours pour tester la formation. Si elle ne te convient pas, envoie un email et tu es remboursé(e) intégralement." },
 ];
 
 const videoTestimonials = [
@@ -52,7 +52,7 @@ export default function AcademyPage() {
             La Méthode <span className="text-es-gold">Emeline Siron</span>
           </h1>
           <p className="text-xl text-white/70 max-w-2xl mx-auto mb-10 leading-relaxed">
-            Apprenez la meilleure stratégie pour vous lancer dans l&apos;immobilier locatif, générer des revenus et bâtir votre patrimoine
+            Apprends la meilleure stratégie pour te lancer dans l&apos;immobilier locatif, générer des revenus et bâtir ton patrimoine
           </p>
           <Button variant="cta" size="lg" className="btn-gold-shimmer font-semibold" href="#offre">
             Rejoindre le programme — {PRICING.academy.priceDisplay}€
@@ -108,8 +108,8 @@ export default function AcademyPage() {
           <div className="grid md:grid-cols-3 gap-8">
             {[
               { step: "01", title: "Inscrivez-vous", desc: "Paiement sécurisé et accès immédiat à la plateforme, aux 14 modules et aux 60 outils.", icon: "🔑" },
-              { step: "02", title: "Suivez la méthode", desc: "Avancez à votre rythme. Chaque module se termine par un quiz pour valider vos acquis.", icon: "🎯" },
-              { step: "03", title: "Passez à l'action", desc: "Utilisez les outils et le coaching pour réaliser votre premier investissement.", icon: "🚀" },
+              { step: "02", title: "Suis la méthode", desc: "Avance à ton rythme. Chaque module se termine par un quiz pour valider tes acquis.", icon: "🎯" },
+              { step: "03", title: "Passe à l'action", desc: "Utilise les outils et le coaching pour réaliser ton premier investissement.", icon: "🚀" },
             ].map((item, i) => (
               <ScrollReveal key={i} delay={i * 150}>
                 <div className="text-center">
@@ -240,7 +240,7 @@ export default function AcademyPage() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-12">
             <span className="text-xs text-es-terracotta uppercase tracking-widest font-medium">Inclus</span>
-            <h2 className="font-serif text-3xl font-bold text-es-text mt-3">Tout ce dont vous avez besoin</h2>
+            <h2 className="font-serif text-3xl font-bold text-es-text mt-3">Tout ce dont tu as besoin</h2>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {PRICING.academy.features.map((feature, i) => (
@@ -403,7 +403,7 @@ export default function AcademyPage() {
       {/* CTA final */}
       <section className="py-16 bg-es-green-dark text-center">
         <div className="max-w-3xl mx-auto px-6">
-          <h2 className="font-serif text-2xl font-bold text-white mb-4">Prêt à transformer votre avenir ?</h2>
+          <h2 className="font-serif text-2xl font-bold text-white mb-4">Prêt(e) à transformer ton avenir ?</h2>
           <Button variant="cta" size="lg" className="btn-gold-shimmer" href="#offre">
             Rejoindre la formation — {PRICING.academy.priceDisplay}€
           </Button>
