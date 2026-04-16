@@ -135,16 +135,20 @@ export default function AcademyPage() {
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {[
-              { icon: "🎯", text: "Tu veux investir mais tu ne sais pas par où commencer" },
-              { icon: "😰", text: "Tu as peur de faire une mauvaise affaire" },
-              { icon: "💸", text: "Tu penses qu'il faut un gros apport pour démarrer" },
-              { icon: "📈", text: "Tu veux générer des revenus complémentaires" },
-              { icon: "🔧", text: "Tu cherches une méthode éprouvée, pas des théories" },
-              { icon: "🤝", text: "Tu veux être accompagné(e) par quelqu'un qui l'a fait" },
+              "Tu veux investir mais tu ne sais pas par où commencer",
+              "Tu as peur de faire une mauvaise affaire",
+              "Tu penses qu'il faut un gros apport pour démarrer",
+              "Tu veux générer des revenus complémentaires",
+              "Tu cherches une méthode éprouvée, pas des théories",
+              "Tu veux être accompagné(e) par quelqu'un qui l'a fait",
             ].map((item, i) => (
-              <div key={i} className="group relative bg-es-cream rounded-2xl p-5 hover:bg-es-green hover:text-white transition-all duration-300 cursor-default">
-                <div className="text-2xl mb-3">{item.icon}</div>
-                <p className="text-sm text-es-text group-hover:text-white font-medium transition-colors">{item.text}</p>
+              <div key={i} className="group bg-es-cream rounded-2xl p-6 hover:bg-es-green transition-all duration-300 cursor-default border border-transparent hover:border-es-green-dark">
+                <div className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-es-green group-hover:text-es-gold mt-0.5 shrink-0 transition-colors" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
+                  </svg>
+                  <p className="text-sm text-es-text group-hover:text-white font-medium transition-colors">{item}</p>
+                </div>
               </div>
             ))}
           </div>
@@ -164,9 +168,9 @@ export default function AcademyPage() {
           <div className="grid md:grid-cols-2 gap-6">
             {/* Avant */}
             <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
-              <div className="flex items-center gap-3 mb-6">
-                <span className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center text-lg">😩</span>
-                <h3 className="font-serif text-xl font-bold text-white">Avant</h3>
+              <div className="mb-6">
+                <span className="text-xs uppercase tracking-widest text-white/40 font-medium">Avant</span>
+                <h3 className="font-serif text-xl font-bold text-white mt-2">Les fausses croyances</h3>
               </div>
               <ul className="space-y-4">
                 {[
@@ -184,9 +188,9 @@ export default function AcademyPage() {
             </div>
             {/* Après */}
             <div className="bg-es-gold/10 backdrop-blur-sm rounded-2xl p-8 border border-es-gold/20">
-              <div className="flex items-center gap-3 mb-6">
-                <span className="w-10 h-10 rounded-full bg-es-gold/20 flex items-center justify-center text-lg">🚀</span>
-                <h3 className="font-serif text-xl font-bold text-white">Après la formation</h3>
+              <div className="mb-6">
+                <span className="text-xs uppercase tracking-widest text-es-gold font-medium">Après la formation</span>
+                <h3 className="font-serif text-xl font-bold text-white mt-2">Ta nouvelle réalité</h3>
               </div>
               <ul className="space-y-4">
                 {[
