@@ -23,14 +23,10 @@ const faqItems = [
   { question: "Quelle est la politique de remboursement ?", answer: "Vous disposez de 14 jours pour tester la formation. Si elle ne vous convient pas, envoyez un email et vous êtes remboursé intégralement." },
 ];
 
-const partners = [
-  { name: "Recherche de biens", icon: "🏠" },
-  { name: "Avocat", icon: "⚖️" },
-  { name: "Banque", icon: "🏦" },
-  { name: "Décoration", icon: "🎨" },
-  { name: "Expertise comptable", icon: "🧮" },
-  { name: "Notaire", icon: "📝" },
-  { name: "Patrimoine", icon: "🛡️" },
+const videoTestimonials = [
+  { name: "Stéphanie V.", quote: "De salariée à 12 lots en 18 mois", color: "from-es-green-dark to-es-green" },
+  { name: "Nicolas B.", quote: "Mon premier immeuble grâce à la méthode", color: "from-es-terracotta/80 to-es-terracotta" },
+  { name: "Audrey M.", quote: "J'ai quitté mon CDI grâce aux revenus locatifs", color: "from-es-green to-es-green-light" },
 ];
 
 export default function AcademyPage() {
@@ -58,7 +54,7 @@ export default function AcademyPage() {
             Apprenez la meilleure stratégie pour vous lancer dans l&apos;immobilier locatif, générer des revenus et bâtir votre patrimoine
           </p>
           <Button variant="cta" size="lg" className="btn-gold-shimmer font-semibold" href="#offre">
-            Découvrir la méthode — {PRICING.academy.priceDisplay}€
+            Rejoindre le programme — {PRICING.academy.priceDisplay}€
           </Button>
           {/* Stats */}
           <div className="mt-14 grid grid-cols-2 md:grid-cols-4 gap-6 border-t border-white/10 pt-8">
@@ -112,7 +108,7 @@ export default function AcademyPage() {
             {[
               { step: "01", title: "Inscrivez-vous", desc: "Paiement sécurisé et accès immédiat à la plateforme, aux 14 modules et aux 60 outils.", icon: "🔑" },
               { step: "02", title: "Suivez la méthode", desc: "Avancez à votre rythme. Chaque module se termine par un quiz pour valider vos acquis.", icon: "🎯" },
-              { step: "03", title: "Passez à l'action", desc: "Utilisez les outils, le réseau de partenaires et le coaching pour réaliser votre premier investissement.", icon: "🚀" },
+              { step: "03", title: "Passez à l'action", desc: "Utilisez les outils et le coaching pour réaliser votre premier investissement.", icon: "🚀" },
             ].map((item, i) => (
               <ScrollReveal key={i} delay={i * 150}>
                 <div className="text-center">
@@ -232,7 +228,7 @@ export default function AcademyPage() {
             <span className="text-xs text-es-terracotta uppercase tracking-widest font-medium">Inclus</span>
             <h2 className="font-serif text-3xl font-bold text-es-text mt-3">Tout ce dont vous avez besoin</h2>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {PRICING.academy.features.map((feature, i) => (
               <div key={i} className="bg-white rounded-xl p-5 border border-es-cream-dark card-hover">
                 <div className="w-10 h-10 rounded-lg bg-es-green/10 flex items-center justify-center mb-3">
@@ -243,12 +239,6 @@ export default function AcademyPage() {
                 <p className="text-sm text-es-text font-medium">{feature}</p>
               </div>
             ))}
-          </div>
-          <div className="bg-es-green rounded-2xl p-8 text-white text-center relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
-            <h3 className="font-serif text-2xl font-bold mb-2 relative">{PRICING.coaching.name}</h3>
-            <p className="text-white/70 mb-6 relative">{PRICING.coaching.description}</p>
-            <Button variant="cta" className="btn-gold-shimmer relative">Demander un devis →</Button>
           </div>
         </div>
       </section>
@@ -296,8 +286,53 @@ export default function AcademyPage() {
         </div>
       </section>
 
-      {/* 7. Avis */}
+      {/* Coaching sur-mesure (après l'offre) */}
+      <section className="py-20 bg-es-cream">
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="bg-es-green rounded-2xl p-8 text-white text-center relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
+            <h3 className="font-serif text-2xl font-bold mb-2 relative">{PRICING.coaching.name}</h3>
+            <p className="text-white/70 mb-6 relative">{PRICING.coaching.description}</p>
+            <Button variant="cta" className="btn-gold-shimmer relative">Demander un devis →</Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Avis vidéo */}
       <section className="py-20 bg-white">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <span className="text-xs text-es-terracotta uppercase tracking-widest font-medium">Témoignages</span>
+            <h2 className="font-serif text-3xl font-bold text-es-text mt-3">Ils témoignent en vidéo</h2>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {videoTestimonials.map((t, i) => (
+              <ScrollReveal key={i} delay={i * 150}>
+                <div className="group cursor-pointer">
+                  <div className={`aspect-video rounded-2xl overflow-hidden relative bg-gradient-to-br ${t.color} flex items-center justify-center`}>
+                    <div className="absolute inset-0 opacity-[0.05]" style={{
+                      backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
+                      backgroundSize: "24px 24px",
+                    }} />
+                    <div className="relative w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center group-hover:bg-white/30 group-hover:scale-110 transition-all duration-300">
+                      <svg className="w-7 h-7 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z"/>
+                      </svg>
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <p className="font-medium text-es-text text-sm">{t.name}</p>
+                    <p className="text-es-text-muted text-sm mt-1">&laquo; {t.quote} &raquo;</p>
+                  </div>
+                </div>
+              </ScrollReveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Avis texte */}
+      <section className="py-20 bg-es-cream">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-12">
             <span className="text-xs text-es-terracotta uppercase tracking-widest font-medium">Avis vérifiés</span>
@@ -316,7 +351,7 @@ export default function AcademyPage() {
               { name: "Camille B.", text: "La partie fiscalité est incroyablement bien expliquée. Optimisation dès la première année.", src: "Trustpilot" },
               { name: "Alexandre P.", text: "De 0 à 8 lots en 2 ans. La méthode fonctionne si on suit les étapes.", src: "Google" },
             ].map((t, i) => (
-              <div key={i} className="bg-es-cream rounded-xl p-6 card-hover">
+              <div key={i} className="bg-white rounded-xl p-6 card-hover">
                 <div className="flex gap-0.5 mb-3">
                   {[...Array(5)].map((_, j) => (
                     <svg key={j} className="w-4 h-4 text-es-terracotta" fill="currentColor" viewBox="0 0 20 20">
@@ -340,30 +375,7 @@ export default function AcademyPage() {
         </div>
       </section>
 
-      {/* 8. Partenaires */}
-      <section id="partenaires" className="py-20 bg-es-cream">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-12">
-            <span className="text-xs text-es-terracotta uppercase tracking-widest font-medium">Réseau</span>
-            <h2 className="font-serif text-3xl font-bold text-es-text mt-3 mb-2">Notre réseau de partenaires</h2>
-            <p className="text-es-text-muted">Des professionnels sélectionnés pour vous accompagner</p>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-            {partners.map((p, i) => (
-              <div key={i} className="relative bg-white rounded-xl p-6 text-center cursor-not-allowed group">
-                <div className="text-3xl mb-3 grayscale group-hover:grayscale-[40%] transition-all">{p.icon}</div>
-                <div className="font-medium text-es-text text-sm opacity-50 group-hover:opacity-70 transition-all">{p.name}</div>
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-es-cream/50 rounded-xl opacity-100 group-hover:opacity-70 transition-all">
-                  <span className="text-lg">🔒</span>
-                  <span className="text-[10px] text-es-text-muted mt-1 px-2 text-center">Accessible aux élèves ES Academy</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 9. FAQ */}
+      {/* FAQ */}
       <section className="py-20 bg-white">
         <div className="max-w-3xl mx-auto px-6">
           <div className="text-center mb-12">
