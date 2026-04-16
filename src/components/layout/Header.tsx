@@ -98,7 +98,7 @@ export function Header({ activePage = "home" }: HeaderProps) {
             Blog
           </Link>
           <Link href="/a-propos" className="px-3 py-1.5 text-sm text-gray-500 hover:text-es-green transition-colors">
-            À propos
+            Qui est Emeline ?
           </Link>
         </nav>
 
@@ -156,7 +156,7 @@ export function Header({ activePage = "home" }: HeaderProps) {
               Blog
             </Link>
             <Link href="/a-propos" className="text-sm text-gray-600 py-2.5 px-3 rounded-lg hover:bg-gray-50" onClick={() => setMobileOpen(false)}>
-              À propos
+              Qui est Emeline ?
             </Link>
             <hr className="border-gray-100 my-1" />
             <SocialIcons className="px-3 py-2" />
