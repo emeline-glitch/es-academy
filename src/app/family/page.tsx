@@ -33,17 +33,20 @@ export default function FamilyPage() {
       <Header activePage="family" />
       <JsonLd data={faqSchema(faqItems)} />
 
-      {/* Hero */}
+      {/* Hero — Accroche émotionnelle */}
       <section className="py-20 lg:py-28 bg-es-cream">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <span className="inline-flex items-center gap-2 rounded-full bg-es-terracotta/10 px-5 py-2 text-sm font-medium text-es-terracotta mb-8">
-            Communauté patrimoniale
+            Communauté d&apos;investisseurs
           </span>
           <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-es-text leading-tight mb-4">
-            ES Family
+            Ne restez plus seul(e) face à vos investissements
           </h1>
-          <p className="text-xl text-es-text-muted max-w-2xl mx-auto mb-8 leading-relaxed">
-            Rejoignez 500+ investisseurs actifs dans des groupes de discussion thématiques. Analyses flash, lives exclusifs, opportunités rares et entraide au quotidien.
+          <p className="text-xl text-es-text-muted max-w-2xl mx-auto mb-4 leading-relaxed">
+            Rejoignez 500+ investisseurs qui s&apos;entraident au quotidien, partagent leurs deals et accèdent à des partenaires vérifiés.
+          </p>
+          <p className="text-lg font-bold text-es-terracotta mb-8">
+            Pour le prix d&apos;un forfait téléphonique.
           </p>
 
           {/* Stats badges */}
@@ -58,7 +61,7 @@ export default function FamilyPage() {
             </span>
             <span className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-medium text-es-text shadow-sm border border-es-green/10">
               <span className="w-2 h-2 rounded-full bg-es-gold" />
-              2 lives/mois
+              Lives chaque semaine
             </span>
           </div>
 
@@ -68,23 +71,51 @@ export default function FamilyPage() {
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center font-semibold rounded-lg px-8 py-4 text-lg bg-es-terracotta text-white hover:bg-es-terracotta-dark transition-all"
           >
-            Rejoindre ES Family
+            Rejoindre ES Family — 19€/mois
           </a>
         </div>
       </section>
 
-      {/* Video placeholder */}
+      {/* Douleurs → Transformation */}
       <section className="py-16 bg-white">
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="text-center mb-10">
+            <h2 className="font-serif text-2xl font-bold text-es-text">Vous vous reconnaissez ?</h2>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              { before: "Seul(e) face à vos questions, personne à qui demander conseil", after: "Une communauté qui répond en 24h — vous n'êtes plus jamais seul(e)" },
+              { before: "Noyé(e) dans les infos contradictoires sur Internet", after: "Des analyses pro triées chaque semaine par Emeline et son équipe" },
+              { before: "Pas de réseau, pas de partenaires de confiance", after: "6 partenaires vérifiés + un annuaire de membres investisseurs" },
+            ].map((item, i) => (
+              <div key={i} className="text-center">
+                <div className="bg-red-50 rounded-xl p-5 mb-3">
+                  <span className="text-2xl block mb-2">😩</span>
+                  <p className="text-sm text-red-700">{item.before}</p>
+                </div>
+                <div className="text-es-terracotta text-xl mb-3">↓</div>
+                <div className="bg-green-50 rounded-xl p-5">
+                  <span className="text-2xl block mb-2">😊</span>
+                  <p className="text-sm text-green-700 font-medium">{item.after}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Video placeholder */}
+      <section className="py-12 bg-es-cream">
         <div className="max-w-3xl mx-auto px-6">
           {/* TODO: Replace with Loom embed */}
-          <div className="relative w-full aspect-video rounded-2xl overflow-hidden bg-gradient-to-br from-es-green via-es-green-dark to-es-green-light shadow-lg cursor-pointer group">
+          <div className="relative w-full aspect-video rounded-2xl overflow-hidden bg-gradient-to-br from-es-terracotta via-es-terracotta-dark to-es-terracotta shadow-lg cursor-pointer group">
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
               <div className="w-20 h-20 rounded-full bg-white/90 flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
-                <svg className="w-8 h-8 text-es-green ml-1" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-8 h-8 text-es-terracotta ml-1" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
                 </svg>
               </div>
-              <p className="text-white font-medium text-lg">Découvrez ES Family en vidéo — 2 min</p>
+              <p className="text-white font-medium text-lg">Découvrez l&apos;app ES Family en 2 min</p>
             </div>
           </div>
         </div>
@@ -120,77 +151,94 @@ export default function FamilyPage() {
         </div>
       </section>
 
-      {/* L'app en détail */}
+      {/* Ce que tu retrouves dans l'app — en bénéfices */}
       <section className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-14">
             <span className="text-xs text-es-terracotta uppercase tracking-widest font-medium">L&apos;application</span>
-            <h2 className="font-serif text-3xl font-bold text-es-text mt-3">Tout ce qui vous attend dans ES Family</h2>
-            <p className="text-es-text-muted mt-2 max-w-xl mx-auto">Une app complète pour investir, apprendre et échanger au quotidien.</p>
+            <h2 className="font-serif text-3xl font-bold text-es-text mt-3">Tout ce dont tu as besoin, au même endroit</h2>
           </div>
 
           <div className="space-y-6">
-            {/* Actu */}
+            {/* Reste informé */}
             <div className="bg-es-cream rounded-2xl p-6 md:p-8">
-              <div className="flex items-center gap-3 mb-4">
+              <div className="flex items-center gap-3 mb-2">
                 <span className="text-2xl">📰</span>
-                <h3 className="font-serif text-xl font-bold text-es-text">Actu</h3>
+                <h3 className="font-serif text-xl font-bold text-es-text">Reste informé(e) sans effort</h3>
               </div>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <p className="text-sm text-es-text-muted mb-4 ml-10">Plus besoin de scroller 10 sites différents. Tout arrive chez toi, trié et analysé.</p>
+              <div className="grid sm:grid-cols-3 gap-4 ml-10">
                 {[
-                  { icon: "🔥", text: "Quiz quotidien (91 questions, 5 domaines) avec streak" },
-                  { icon: "📊", text: "Actualités filtrables : Immobilier, Taux, Fiscalité, Marché, Patrimoine, Travaux" },
-                  { icon: "🎙", text: "Compte à rebours du prochain live en bannière" },
-                  { icon: "💡", text: "Top 3 des sujets les plus chauds + bons plans" },
+                  "Des actus immo, fiscalité et marché triées pour toi chaque semaine",
+                  "Les sujets les plus importants remontent automatiquement",
+                  "Challenge-toi chaque jour avec le quiz et gagne des points",
                 ].map((item, i) => (
-                  <div key={i} className="bg-white rounded-xl p-4 flex items-start gap-3">
-                    <span className="text-lg shrink-0">{item.icon}</span>
-                    <p className="text-sm text-es-text-muted">{item.text}</p>
+                  <div key={i} className="bg-white rounded-xl p-4">
+                    <p className="text-sm text-es-text-muted">{item}</p>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Discussions */}
+            {/* Pose tes questions */}
             <div className="bg-es-cream rounded-2xl p-6 md:p-8">
-              <div className="flex items-center gap-3 mb-4">
+              <div className="flex items-center gap-3 mb-2">
                 <span className="text-2xl">💬</span>
-                <h3 className="font-serif text-xl font-bold text-es-text">Discussions</h3>
+                <h3 className="font-serif text-xl font-bold text-es-text">Pose tes questions, obtiens des réponses</h3>
               </div>
-              <div className="grid sm:grid-cols-2 gap-4">
+              <p className="text-sm text-es-text-muted mb-4 ml-10">Fini de chercher seul(e). Pose ta question et des investisseurs expérimentés te répondent.</p>
+              <div className="grid sm:grid-cols-2 gap-4 ml-10">
                 <div className="bg-white rounded-xl p-5">
-                  <p className="font-medium text-es-text text-sm mb-2">2 piliers de discussion</p>
+                  <p className="font-medium text-es-text text-sm mb-2">Groupes thématiques</p>
                   <div className="flex flex-wrap gap-2">
-                    {["Immobilier", "Patrimoine"].map((g) => (
+                    {["LMNP", "Colocation", "SCI", "Travaux", "Fiscalité", "Airbnb", "SCPI"].map((g) => (
                       <span key={g} className="px-3 py-1 bg-es-green/10 text-es-green rounded-full text-xs font-medium">{g}</span>
                     ))}
                   </div>
-                  <p className="text-xs text-es-text-muted mt-3">Sous-groupes thématiques : LMNP, Airbnb, SCPI, colocation, SCI, travaux, fiscalité...</p>
                 </div>
                 <div className="bg-white rounded-xl p-5">
-                  <p className="font-medium text-es-text text-sm mb-2">Interactions</p>
-                  <div className="flex flex-wrap gap-2 mb-3">
+                  <p className="font-medium text-es-text text-sm mb-2">Une communauté vivante</p>
+                  <p className="text-xs text-es-text-muted">Réagis, sauvegarde les meilleurs posts, construis ton réseau d&apos;investisseurs</p>
+                  <div className="flex flex-wrap gap-2 mt-3">
                     {["👍", "❤️", "🔥", "💡", "👏", "🎉"].map((e) => (
                       <span key={e} className="w-8 h-8 bg-es-cream rounded-full flex items-center justify-center text-sm">{e}</span>
                     ))}
                   </div>
-                  <p className="text-xs text-es-text-muted">Posts, commentaires, réactions, likes, sauvegarde</p>
                 </div>
               </div>
             </div>
 
             <div className="grid sm:grid-cols-2 gap-6">
-              {/* Ressources */}
+              {/* Apprends des meilleurs */}
               <div className="bg-es-cream rounded-2xl p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="text-2xl">📦</span>
-                  <h3 className="font-serif text-lg font-bold text-es-text">Ressources</h3>
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="text-2xl">🎙</span>
+                  <h3 className="font-serif text-lg font-bold text-es-text">Apprends des meilleurs chaque semaine</h3>
                 </div>
-                <ul className="space-y-2">
+                <ul className="space-y-2 mt-3">
+                  {[
+                    "Lives hebdo avec Emeline et ses partenaires (fiscaliste, expert-comptable, décoratrice, artisan)",
+                    "Tous les replays accessibles à vie",
+                    "Challenges concrets pour avancer pas à pas",
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-start gap-2 text-sm text-es-text-muted">
+                      <span className="text-es-terracotta mt-0.5">✓</span>{item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Outils pro */}
+              <div className="bg-es-cream rounded-2xl p-6">
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="text-2xl">📦</span>
+                  <h3 className="font-serif text-lg font-bold text-es-text">Des outils pro à portée de main</h3>
+                </div>
+                <ul className="space-y-2 mt-3">
                   {[
                     "4 simulateurs intégrés (notaire, rendement, cashflow, emprunt)",
-                    "34 fichiers classés par module (M2 à M11)",
-                    "Podcast Out of the Box intégré",
+                    "34 fichiers pratiques classés par thème",
+                    "Le podcast Out of the Box en accès direct",
                   ].map((item, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm text-es-text-muted">
                       <span className="text-es-terracotta mt-0.5">✓</span>{item}
@@ -199,37 +247,18 @@ export default function FamilyPage() {
                 </ul>
               </div>
 
-              {/* Événements */}
+              {/* Partenaires & bons plans */}
               <div className="bg-es-cream rounded-2xl p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="text-2xl">🎙</span>
-                  <h3 className="font-serif text-lg font-bold text-es-text">Événements</h3>
-                </div>
-                <ul className="space-y-2">
-                  {[
-                    "Lives mensuels avec Emeline + experts (bouton Rejoindre + Ajouter à l'agenda)",
-                    "Tous les replays disponibles avec badge REPLAY",
-                    "Challenges avec tâches à cocher et barre de progression",
-                  ].map((item, i) => (
-                    <li key={i} className="flex items-start gap-2 text-sm text-es-text-muted">
-                      <span className="text-es-terracotta mt-0.5">✓</span>{item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Découvrir */}
-              <div className="bg-es-cream rounded-2xl p-6">
-                <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center gap-3 mb-2">
                   <span className="text-2xl">💎</span>
-                  <h3 className="font-serif text-lg font-bold text-es-text">Découvrir</h3>
+                  <h3 className="font-serif text-lg font-bold text-es-text">Des partenaires et bons plans exclusifs</h3>
                 </div>
-                <ul className="space-y-2">
+                <ul className="space-y-2 mt-3">
                   {[
-                    "6 partenaires avec avantages exclusifs et codes promo",
-                    "Bons plans matériaux (prix barrés, avis pro)",
-                    "Annuaire des membres + coaching (appel découverte gratuit)",
-                    "Parrainage : 1 mois offert par filleul",
+                    "6 partenaires vérifiés avec codes promo réservés aux membres",
+                    "Bons plans matériaux et travaux négociés",
+                    "Coaching accessible (appel découverte gratuit)",
+                    "Parrainage : offre 1 mois gratuit à un ami",
                   ].map((item, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm text-es-text-muted">
                       <span className="text-es-terracotta mt-0.5">✓</span>{item}
@@ -238,23 +267,23 @@ export default function FamilyPage() {
                 </ul>
               </div>
 
-              {/* Gamification */}
+              {/* Progresse */}
               <div className="bg-es-cream rounded-2xl p-6">
-                <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center gap-3 mb-2">
                   <span className="text-2xl">🏆</span>
-                  <h3 className="font-serif text-lg font-bold text-es-text">Gamification</h3>
+                  <h3 className="font-serif text-lg font-bold text-es-text">Progresse et fais-toi remarquer</h3>
                 </div>
+                <p className="text-sm text-es-text-muted mt-2 mb-3">Gagne des badges à chaque action et monte dans le classement de la communauté.</p>
                 <div className="flex flex-wrap gap-2 mb-3">
-                  {["✍️ Premier post", "❤️ 10 likes", "🔥 100 likes", "💎 500 likes", "🏆 20 posts"].map((b) => (
+                  {["✍️ Premier post", "❤️ 10 likes", "🔥 100 likes", "💎 500 likes"].map((b) => (
                     <span key={b} className="px-2 py-1 bg-white rounded-full text-[11px] text-es-text-muted">{b}</span>
                   ))}
                 </div>
                 <div className="flex gap-2">
-                  {["🥉 Bronze", "🥈 Silver", "🥇 Gold", "🏅 Top"].map((m) => (
+                  {["🥉 Bronze", "🥈 Silver", "🥇 Gold", "🏅 Top Membre"].map((m) => (
                     <span key={m} className="px-2 py-1 bg-es-gold/10 rounded-full text-[11px] text-es-gold-dark font-medium">{m}</span>
                   ))}
                 </div>
-                <p className="text-xs text-es-text-muted mt-3">Classement, quiz quotidien avec streak, score = posts × 2 + likes</p>
               </div>
             </div>
           </div>
