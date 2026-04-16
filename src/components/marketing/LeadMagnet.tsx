@@ -4,11 +4,12 @@ import { useState } from "react";
 
 export function LeadMagnet() {
   const [email, setEmail] = useState("");
+  const [consent, setConsent] = useState(false);
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!email) return;
+    if (!email || !consent) return;
     setStatus("loading");
 
     try {
@@ -75,16 +76,24 @@ export function LeadMagnet() {
               required
               className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-es-gold/50 focus:border-es-gold transition-all"
             />
+            <label className="flex items-start gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={consent}
+                onChange={(e) => setConsent(e.target.checked)}
+                className="mt-0.5 rounded border-white/30 accent-es-gold"
+              />
+              <span className="text-[11px] text-white/50 leading-relaxed">
+                J&apos;accepte de recevoir des emails de la part d&apos;Emeline Siron
+              </span>
+            </label>
             <button
               type="submit"
-              disabled={status === "loading"}
-              className="w-full px-4 py-3.5 rounded-xl bg-es-gold text-white font-semibold hover:bg-es-gold-dark transition-all cursor-pointer disabled:opacity-50"
+              disabled={status === "loading" || !consent}
+              className="w-full px-4 py-3.5 rounded-xl bg-es-gold text-white font-semibold hover:bg-es-gold-dark transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
             >
               {status === "loading" ? "Envoi..." : "Recevoir mes outils gratuits →"}
             </button>
-            <p className="text-[10px] text-white/30 text-center">
-              Pas de spam. Désabonnement en 1 clic.
-            </p>
           </form>
         </div>
       </div>

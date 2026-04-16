@@ -6,13 +6,14 @@ import { Button } from "@/components/ui/Button";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { LazyIframe } from "@/components/ui/LazyIframe";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { BottomBanner } from "@/components/marketing/BottomBanner";
 import { breadcrumbSchema } from "@/lib/seo/schemas";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { SITE_URL } from "@/lib/utils/constants";
 
 export const metadata: Metadata = buildMetadata({
   title: "À propos — Emeline Siron",
-  description: "De l'atelier de mécanique familial à 55 locataires. Découvrez le parcours d'Emeline Siron, formatrice en investissement immobilier.",
+  description: "D'un parcours atypique à 55 locataires. Découvrez le parcours d'Emeline Siron, formatrice en investissement immobilier.",
   path: "/a-propos",
 });
 
@@ -44,7 +45,7 @@ export default function APropos() {
         <div className="relative max-w-4xl mx-auto px-6 text-center">
           <span className="text-xs text-es-gold uppercase tracking-widest font-medium">À propos</span>
           <h1 className="font-serif text-4xl sm:text-5xl font-bold text-white mt-4 mb-6">
-            De l&apos;atelier de mécanique à 55 locataires
+            D&apos;un parcours atypique à 55 locataires
           </h1>
           <p className="text-xl text-white/70 max-w-2xl mx-auto leading-relaxed">
             Pas d&apos;héritage. Pas de réseau. Pas d&apos;excuse.
@@ -73,7 +74,7 @@ export default function APropos() {
             <ScrollReveal direction="right">
               <div>
                 <h2 className="font-serif text-3xl font-bold text-es-text mb-6">
-                  J&apos;ai grandi dans un garage automobile.
+                  Rien ne me destinait à l&apos;investissement immobilier.
                 </h2>
                 <div className="space-y-4 text-es-text-muted leading-relaxed">
                   <p>
@@ -101,14 +102,17 @@ export default function APropos() {
         </div>
       </section>
 
-      {/* Chiffres clés */}
+      {/* TODO: Ajouter photos immobilier, biens, terrain — à revoir avec Emeline */}
+
+      {/* Chiffres clés — Patrimoine immobilier */}
       <section className="py-16 bg-es-green">
-        <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center text-white">
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-5 gap-8 text-center text-white">
           {[
-            { value: "55", label: "locataires gérés" },
-            { value: "9", label: "ans d'expérience" },
-            { value: "1 900+", label: "élèves formés" },
-            { value: "4.9/5", label: "sur Trustpilot" },
+            { value: "35", label: "chambres de colocation" },
+            { value: "15", label: "appartements" },
+            { value: "1", label: "garage" },
+            { value: "1", label: "local commercial" },
+            { value: "+1 900", label: "élèves formés" },
           ].map((stat, i) => (
             <ScrollReveal key={i} delay={i * 100}>
               <div>
@@ -195,6 +199,7 @@ export default function APropos() {
         </div>
       </section>
 
+      <BottomBanner />
       <Footer />
     </div>
   );

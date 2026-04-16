@@ -8,6 +8,7 @@ import { MobileCta } from "@/components/ui/MobileCta";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { faqSchema } from "@/lib/seo/schemas";
 import { PRICING } from "@/lib/utils/constants";
+import { BottomBanner } from "@/components/marketing/BottomBanner";
 
 export const metadata: Metadata = {
   title: "ES Family — Communauté patrimoniale",
@@ -42,8 +43,25 @@ export default function FamilyPage() {
             ES Family
           </h1>
           <p className="text-xl text-es-text-muted max-w-2xl mx-auto mb-8 leading-relaxed">
-            Analyses flash, lives exclusifs, opportunités rares et entraide entre investisseurs ambitieux
+            Rejoignez 500+ investisseurs actifs dans des groupes de discussion thématiques. Analyses flash, lives exclusifs, opportunités rares et entraide au quotidien.
           </p>
+
+          {/* Stats badges */}
+          <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
+            <span className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-medium text-es-text shadow-sm border border-es-green/10">
+              <span className="w-2 h-2 rounded-full bg-es-green animate-pulse" />
+              500+ membres actifs
+            </span>
+            <span className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-medium text-es-text shadow-sm border border-es-green/10">
+              <span className="w-2 h-2 rounded-full bg-es-terracotta" />
+              7 groupes thématiques
+            </span>
+            <span className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-medium text-es-text shadow-sm border border-es-green/10">
+              <span className="w-2 h-2 rounded-full bg-es-gold" />
+              2 lives/mois
+            </span>
+          </div>
+
           <a
             href={SKOOL_URL}
             target="_blank"
@@ -52,6 +70,23 @@ export default function FamilyPage() {
           >
             Rejoindre ES Family
           </a>
+        </div>
+      </section>
+
+      {/* Video placeholder */}
+      <section className="py-16 bg-white">
+        <div className="max-w-3xl mx-auto px-6">
+          {/* TODO: Replace with Loom embed */}
+          <div className="relative w-full aspect-video rounded-2xl overflow-hidden bg-gradient-to-br from-es-green via-es-green-dark to-es-green-light shadow-lg cursor-pointer group">
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
+              <div className="w-20 h-20 rounded-full bg-white/90 flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
+                <svg className="w-8 h-8 text-es-green ml-1" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                </svg>
+              </div>
+              <p className="text-white font-medium text-lg">Découvrez ES Family en vidéo — 2 min</p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -171,15 +206,15 @@ export default function FamilyPage() {
       <section className="py-16 bg-es-green/5 border-y border-es-green/10">
         <div className="max-w-3xl mx-auto px-6 text-center">
           <h2 className="font-serif text-2xl font-bold text-es-text mb-3">
-            Vous voulez apprendre la méthode complète ?
+            Vous voulez apprendre à faire un investissement immobilier rentable ?
           </h2>
           <p className="text-es-text-muted mb-6">
-            ES Academy vous donne 30h de formation + 60 outils pour maîtriser l&apos;immobilier locatif de A à Z.
+            Rejoignez ES Academy pour maîtriser l&apos;immobilier locatif de A à Z : 30h de formation + 60 outils pour passer à l&apos;action.
           </p>
           <Button variant="primary" size="lg" href="/academy">
             Découvrir ES Academy →
           </Button>
-          <p className="text-xs text-es-text-muted mt-3">ES Family offert 3 mois avec chaque achat de formation</p>
+          <p className="text-sm font-bold text-es-terracotta mt-3">ES Family offert 3 mois avec chaque achat de formation</p>
         </div>
       </section>
 
@@ -228,6 +263,7 @@ export default function FamilyPage() {
         </div>
       </section>
 
+      <BottomBanner />
       <Footer />
       <MobileCta text="Rejoindre ES Family" href="https://www.skool.com/es-family" variant="terracotta" />
     </div>

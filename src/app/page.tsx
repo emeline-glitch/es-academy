@@ -7,7 +7,7 @@ import { MobileCta } from "@/components/ui/MobileCta";
 import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
 import { LeadMagnet } from "@/components/marketing/LeadMagnet";
 import { LazyIframe } from "@/components/ui/LazyIframe";
-import { NewsletterForm } from "@/components/marketing/NewsletterForm";
+import { BottomBanner } from "@/components/marketing/BottomBanner";
 import { STATS } from "@/lib/utils/constants";
 
 export default function Home() {
@@ -341,21 +341,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Newsletter */}
-      <section className="py-16 bg-es-cream">
-        <div className="max-w-xl mx-auto px-6 text-center">
-          <span className="text-xs text-es-terracotta uppercase tracking-widest font-medium">Newsletter</span>
-          <h2 className="font-serif text-2xl font-bold text-es-text mt-3 mb-2">
-            Recevez mes conseils immobiliers chaque semaine
-          </h2>
-          <p className="text-sm text-es-text-muted mb-6">
-            Rejoignez 1 900+ investisseurs qui reçoivent mes analyses, astuces et opportunités directement dans leur boîte mail.
-          </p>
-          <NewsletterForm />
-          <p className="text-[10px] text-gray-400 mt-3">Pas de spam. Désinscription en 1 clic.</p>
-        </div>
-      </section>
-
       {/* CTA final */}
       <section id="contact" className="relative py-20 lg:py-28 bg-es-green overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-es-green-dark/30 via-transparent to-es-green-light/10" />
@@ -374,6 +359,7 @@ export default function Home() {
         </div>
       </section>
 
+      <BottomBanner />
       <Footer />
       <MobileCta />
     </div>

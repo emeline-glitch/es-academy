@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { BottomBanner } from "@/components/marketing/BottomBanner";
 import { Button } from "@/components/ui/Button";
 import { Accordion } from "@/components/ui/Accordion";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
@@ -396,6 +397,7 @@ export default function AcademyPage() {
         </div>
       </section>
 
+      <BottomBanner />
       <Footer />
       <MobileCta text="Rejoindre — 998€" href="#offre" />
     </div>
