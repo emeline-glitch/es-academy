@@ -57,35 +57,52 @@ export default async function Dashboard() {
         </Card>
       </div>
 
-      {/* ES Family CTA */}
+      {/* ES Family CTA — terracotta */}
       <div className="mt-12">
-        <div className="relative overflow-hidden rounded-2xl p-8" style={{ backgroundColor: "#2c6e55" }}>
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
-          <div className="relative flex flex-col md:flex-row items-center gap-6">
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-2xl">👑</span>
-                <h2 className="font-serif text-xl font-bold text-white">Rejoins ES Family</h2>
-              </div>
-              <p className="text-white/70 text-sm mb-4 max-w-lg">
-                La communaute patrimoniale d'Emeline Siron. Echanges entre investisseurs,
-                lives mensuels, outils exclusifs, simulateurs avances et accompagnement continu.
-              </p>
-              <div className="flex gap-3">
-                <Button href="/family" variant="cta" size="sm">
-                  Decouvrir ES Family
-                </Button>
-              </div>
+        <div className="relative overflow-hidden rounded-2xl" style={{ backgroundColor: "#c4663a" }}>
+          <div className="absolute top-0 right-0 w-80 h-80 bg-white/5 rounded-full -translate-y-1/3 translate-x-1/3" />
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-black/5 rounded-full translate-y-1/2 -translate-x-1/4" />
+          <div className="relative p-8 md:p-10">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-2xl">👑</span>
+              <span className="text-xs font-bold text-white/50 uppercase tracking-widest">Communaute patrimoniale</span>
             </div>
-            <div className="hidden md:flex items-center gap-3 text-white/40">
-              <div className="text-center">
-                <p className="text-3xl font-bold text-white">500+</p>
-                <p className="text-xs">Membres</p>
-              </div>
-              <div className="w-px h-12 bg-white/20" />
-              <div className="text-center">
-                <p className="text-3xl font-bold text-white">2x</p>
-                <p className="text-xs">Lives/mois</p>
+            <h2 className="font-serif text-2xl md:text-3xl font-bold text-white mb-3">Rejoins ES Family</h2>
+            <p className="text-white/80 text-sm mb-5 max-w-xl leading-relaxed">
+              Ne reste pas seul(e) dans tes investissements. Rejoins une communaute d'investisseurs ambitieux
+              pour echanger, apprendre et saisir des opportunites que tu ne trouveras nulle part ailleurs.
+            </p>
+
+            {/* Features grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+              {[
+                { icon: "📊", text: "Analyses flash video" },
+                { icon: "🎙", text: "Lives mensuels + replays" },
+                { icon: "📖", text: "Ebooks mensuels" },
+                { icon: "💎", text: "Opportunites exclusives" },
+                { icon: "👥", text: "Networking investisseurs" },
+                { icon: "🏆", text: "Challenges gamifies" },
+                { icon: "🏠", text: "Sous-groupes thematiques" },
+                { icon: "📁", text: "Annuaire membres" },
+              ].map((f, i) => (
+                <div key={i} className="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-2">
+                  <span className="text-sm">{f.icon}</span>
+                  <span className="text-xs text-white/90">{f.text}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+              <a
+                href="/family"
+                className="inline-flex items-center justify-center font-semibold rounded-lg px-6 py-3 bg-white text-es-terracotta hover:bg-es-cream transition-all text-sm"
+              >
+                Decouvrir ES Family — 19€/mois fondateurs →
+              </a>
+              <div className="flex items-center gap-4 text-white/50 text-xs">
+                <span>Sans engagement</span>
+                <span>·</span>
+                <span>Prix garanti a vie</span>
               </div>
             </div>
           </div>
@@ -111,18 +128,6 @@ export default async function Dashboard() {
               </Button>
             </div>
           </div>
-        </Card>
-      </div>
-
-      {/* Coaching notes section */}
-      <div className="mt-8">
-        <h2 className="font-serif text-xl font-bold text-gray-900 mb-4">
-          Notes de coaching
-        </h2>
-        <Card>
-          <p className="text-gray-500 text-sm">
-            Tes notes de coaching apparaitront ici une fois que ta formatrice aura laisse un retour.
-          </p>
         </Card>
       </div>
     </div>

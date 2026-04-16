@@ -152,7 +152,13 @@ export default function ExamenFinalPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <div
+      className="max-w-3xl mx-auto"
+      onContextMenu={(e) => e.preventDefault()}
+      onCopy={(e) => e.preventDefault()}
+      onCut={(e) => e.preventDefault()}
+      style={{ userSelect: "none", WebkitUserSelect: "none" }}
+    >
       <div className="mb-8">
         <h1 className="font-serif text-3xl font-bold text-gray-900">Examen final</h1>
         <p className="text-gray-500 mt-1">
