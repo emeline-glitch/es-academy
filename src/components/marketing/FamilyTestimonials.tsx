@@ -49,18 +49,20 @@ export function FamilyTestimonials() {
       {items.map((t, i) => {
         if (t.type === "video-placeholder") {
           return (
-            <div key={i} className="bg-es-cream rounded-2xl overflow-hidden border border-es-cream-dark">
-              <div className="relative aspect-video bg-gradient-to-br from-es-terracotta via-es-terracotta-dark to-es-terracotta/70 cursor-pointer group">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-16 h-16 rounded-full bg-white/95 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+            <div key={i} className="bg-es-cream rounded-2xl overflow-hidden border border-es-cream-dark flex flex-col">
+              {/* Ratio 3:4 pour matcher les deux autres cards */}
+              <div className="relative aspect-[3/4] bg-gradient-to-br from-es-terracotta via-es-terracotta-dark to-es-terracotta/70 cursor-pointer group flex items-center justify-center">
+                <div className="text-center px-4">
+                  <div className="w-16 h-16 rounded-full bg-white/95 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform mx-auto mb-4">
                     <svg className="w-6 h-6 text-es-terracotta ml-1" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
                     </svg>
                   </div>
+                  <p className="text-white/80 text-xs italic">Vidéo témoignage à venir</p>
                 </div>
               </div>
-              <div className="p-5">
-                <p className="font-serif font-bold text-es-text mb-2">{t.label}</p>
+              <div className="p-5 border-t border-es-cream-dark">
+                <p className="font-serif font-bold text-es-text">{t.label}</p>
               </div>
             </div>
           );
@@ -72,21 +74,27 @@ export function FamilyTestimonials() {
             key={i}
             type="button"
             onClick={() => setLightboxIndex(lightboxPos)}
-            className="bg-es-cream rounded-2xl overflow-hidden border border-es-cream-dark text-left cursor-pointer group shadow-md hover:shadow-lg transition-shadow"
+            className="bg-es-cream rounded-2xl overflow-hidden border border-es-cream-dark text-left cursor-pointer group shadow-md hover:shadow-lg transition-shadow flex flex-col"
             aria-label={`Voir le témoignage ${t.label} en plein écran`}
           >
-            <div className="relative w-full">
+            {/* Ratio fixe 3:4 pour harmoniser les 3 cards */}
+            <div className="relative w-full aspect-[3/4] overflow-hidden bg-es-cream-dark">
               <Image
                 src={t.src}
                 alt={t.alt}
                 width={900}
                 height={1200}
-                className="w-full h-auto object-cover group-hover:scale-[1.01] transition-transform"
+                className="w-full h-full object-cover object-top group-hover:scale-[1.02] transition-transform duration-500"
                 quality={85}
               />
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+                <span className="opacity-0 group-hover:opacity-100 bg-white/95 rounded-full px-3 py-1.5 text-xs font-medium text-es-text shadow-lg transition-opacity">
+                  Voir en grand
+                </span>
+              </div>
             </div>
             <div className="p-5 border-t border-es-cream-dark">
-              <p className="font-serif font-bold text-es-text mb-2">{t.label}</p>
+              <p className="font-serif font-bold text-es-text">{t.label}</p>
             </div>
           </button>
         );

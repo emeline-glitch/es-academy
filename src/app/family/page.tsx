@@ -76,18 +76,18 @@ export default function FamilyPage() {
               </p>
             </div>
 
-            {/* Hero image — coeur vert avec overlay terracotta */}
-            {/* TODO: voir avec Emeline si elle préfère garder le vert original ou garder l'overlay terracotta */}
+            {/* Hero image — coeur peint, symbole de l'amour de la communauté */}
             <div className="relative rounded-2xl overflow-hidden shadow-2xl aspect-[4/5] max-w-md mx-auto lg:max-w-none w-full">
               <Image
                 src="/images/site/01-chantier-action/chantier-09-coeur-vert-peint.jpeg"
                 alt="Emeline peignant un cœur sur un mur, symbole de la communauté ES Family"
-                width={1200}
-                height={1500}
-                className="absolute inset-0 w-full h-full object-cover"
+                width={1600}
+                height={1200}
+                className="absolute inset-0 w-full h-full object-cover object-center"
                 quality={85}
               />
-              <div className="absolute inset-0 bg-es-terracotta mix-blend-multiply opacity-50" />
+              {/* Léger gradient pour accrocher la photo à la section sans la flinguer */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
             </div>
           </div>
         </div>
@@ -383,39 +383,46 @@ export default function FamilyPage() {
         </div>
       </section>
 
-      {/* Bridge Academy — Tu veux les deux ? */}
+      {/* Bridge Academy — Tu veux les deux ? (split image/texte) */}
       <section className="py-20 relative overflow-hidden" style={{ backgroundColor: "#2D6A4F" }}>
-        <Image
-          src="/images/site/01-chantier-action/chantier-02-masse-parpaings.jpeg"
-          alt="Emeline cassant un mur au marteau, l'action concrète enseignée dans ES Academy"
-          width={1600}
-          height={1200}
-          className="absolute inset-0 w-full h-full object-cover opacity-15"
-          quality={85}
-        />
-        <div className="absolute inset-0 bg-es-green/70" />
         <div className="absolute inset-0 opacity-[0.03]" style={{
           backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
           backgroundSize: "40px 40px",
         }} />
-        <div className="relative max-w-3xl mx-auto px-6 text-center text-white">
-          <span className="text-xs text-es-gold uppercase tracking-widest font-medium">ES Academy</span>
-          <h2 className="font-serif text-3xl sm:text-4xl font-bold mt-3 mb-5">
-            Tu veux les deux ?
-          </h2>
-          <p className="text-white/80 text-lg mb-8 leading-relaxed">
-            Avec ES Academy, tu reçois <strong>3 mois d&apos;ES Family offerts</strong>. Tu apprends les fondamentaux sur 30h de formation et 60 outils, puis tu rejoins la communauté pour la suite.
-            C&apos;est le duo le plus efficace pour passer de 0 à plusieurs biens.
-          </p>
-          <a
-            href="/academy"
-            className="inline-flex items-center justify-center font-semibold rounded-lg px-8 py-4 text-base bg-white text-es-green hover:bg-es-cream transition-all shadow-md"
-          >
-            Découvrir ES Academy
-          </a>
-          <p className="text-xs text-white/50 mt-4">
-            Économie équivalente à 3 mois d&apos;ES Family fondateur inclus dans ton achat.
-          </p>
+        <div className="relative max-w-6xl mx-auto px-6">
+          <div className="grid md:grid-cols-2 gap-10 items-center">
+            {/* Image */}
+            <div className="relative rounded-2xl overflow-hidden shadow-2xl aspect-[4/5] max-w-md mx-auto md:max-w-none w-full">
+              <Image
+                src="/images/site/01-chantier-action/chantier-02-masse-parpaings.jpeg"
+                alt="Emeline en action sur un chantier, l'approche concrète d'ES Academy"
+                width={1600}
+                height={1200}
+                className="w-full h-full object-cover object-center"
+                quality={85}
+              />
+            </div>
+            {/* Texte */}
+            <div className="text-center md:text-left text-white">
+              <span className="text-xs text-es-gold uppercase tracking-widest font-medium">ES Academy</span>
+              <h2 className="font-serif text-3xl sm:text-4xl font-bold mt-3 mb-5">
+                Tu veux les deux ?
+              </h2>
+              <p className="text-white/80 text-lg mb-8 leading-relaxed">
+                Avec ES Academy, tu reçois <strong>3 mois d&apos;ES Family offerts</strong>. Tu apprends les fondamentaux sur 30h de formation et 60 outils, puis tu rejoins la communauté pour la suite.
+                C&apos;est le duo le plus efficace pour passer de 0 à plusieurs biens.
+              </p>
+              <a
+                href="/academy"
+                className="inline-flex items-center justify-center font-semibold rounded-lg px-8 py-4 text-base bg-white text-es-green hover:bg-es-cream transition-all shadow-md"
+              >
+                Découvrir ES Academy
+              </a>
+              <p className="text-xs text-white/50 mt-4">
+                Économie équivalente à 3 mois d&apos;ES Family fondateur inclus dans ton achat.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 

@@ -24,18 +24,25 @@ export function TestimonialsGrid({ items }: TestimonialsGridProps) {
           key={i}
           type="button"
           onClick={() => setLightboxIndex(i)}
-          className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow text-left cursor-pointer group"
+          className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow text-left cursor-pointer group flex flex-col"
           aria-label={`Voir le témoignage de ${t.label} en plein écran`}
         >
-          <div className="relative w-full bg-es-cream">
+          {/* Ratio fixe 3:4, object-cover object-top pour montrer le début du message */}
+          <div className="relative w-full aspect-[3/4] overflow-hidden bg-es-cream">
             <Image
               src={t.src}
               alt={t.alt}
               width={900}
-              height={1600}
-              className="w-full h-auto object-contain group-hover:scale-[1.01] transition-transform"
+              height={1200}
+              className="w-full h-full object-cover object-top group-hover:scale-[1.02] transition-transform duration-500"
               quality={85}
             />
+            {/* Icône zoom au hover pour indiquer que c'est cliquable */}
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+              <span className="opacity-0 group-hover:opacity-100 bg-white/95 rounded-full px-3 py-1.5 text-xs font-medium text-es-text shadow-lg transition-opacity">
+                Voir le message entier
+              </span>
+            </div>
           </div>
           <div className="p-4 border-t border-es-cream-dark">
             <p className="text-sm font-medium text-es-text">{t.label}</p>

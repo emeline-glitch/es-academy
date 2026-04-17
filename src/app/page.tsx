@@ -264,55 +264,61 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            {/* ES Academy */}
-            <a href="/academy" className="bg-es-green rounded-2xl p-8 lg:p-10 text-white hover:shadow-2xl transition-all hover:-translate-y-1 group relative overflow-hidden">
-              <Image
-                src="/images/site/01-chantier-action/chantier-03-marteau-lunettes-mur.jpeg"
-                alt="Emeline sur un chantier avec marteau et lunettes de protection"
-                width={1200}
-                height={1200}
-                className="absolute inset-0 w-full h-full object-cover opacity-20"
-                quality={85}
-              />
-              <div className="absolute inset-0 bg-es-green/60" />
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
-              <div className="relative">
-                <span className="text-xs uppercase tracking-widest text-white/50 font-medium">Formation</span>
-                <h3 className="font-serif text-2xl font-bold mt-2 mb-2">ES Academy</h3>
-                <p className="text-white/60 text-sm font-medium mb-4">Forme-toi &amp; passe à l&apos;action</p>
-                <p className="text-white/80 mb-6 leading-relaxed">
+          <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+            {/* ES Academy — split image/text */}
+            <a href="/academy" className="bg-es-green rounded-2xl overflow-hidden text-white hover:shadow-2xl transition-all hover:-translate-y-1 group flex flex-col">
+              {/* Image en haut, ratio fixe 4/3 */}
+              <div className="relative aspect-[4/3] overflow-hidden">
+                <Image
+                  src="/images/site/01-chantier-action/chantier-03-marteau-lunettes-mur.jpeg"
+                  alt="Emeline sur un chantier avec marteau et lunettes de protection"
+                  width={1200}
+                  height={900}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  quality={85}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-es-green/70 via-es-green/10 to-transparent" />
+                <span className="absolute top-4 left-4 text-xs uppercase tracking-widest text-white bg-es-green-dark/80 px-3 py-1 rounded-full font-medium">
+                  Formation
+                </span>
+              </div>
+              {/* Texte en bas */}
+              <div className="p-8 flex-1 flex flex-col">
+                <h3 className="font-serif text-2xl font-bold mb-2">ES Academy</h3>
+                <p className="text-white/70 text-sm font-medium mb-3">Forme-toi &amp; passe à l&apos;action</p>
+                <p className="text-white/90 mb-6 leading-relaxed flex-1">
                   {STATS.videoHours}h de formation · {STATS.tools} outils · La méthode complète pour investir en immobilier locatif
                 </p>
-                <span className="inline-flex items-center gap-2 bg-es-cream text-es-green px-5 py-2.5 rounded-lg font-medium text-sm group-hover:bg-white transition-colors">
+                <span className="inline-flex items-center gap-2 bg-es-cream text-es-green px-5 py-2.5 rounded-lg font-medium text-sm group-hover:bg-white transition-colors self-start">
                   Accéder
                   <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/></svg>
                 </span>
               </div>
             </a>
 
-            {/* ES Family */}
-            {/* TODO: voir avec Emeline si elle préfère garder le vert original ou garder l'overlay terracotta */}
-            <a href="/family" className="bg-es-terracotta rounded-2xl p-8 lg:p-10 text-white hover:shadow-2xl transition-all hover:-translate-y-1 group relative overflow-hidden">
-              <Image
-                src="/images/site/01-chantier-action/chantier-09-coeur-vert-peint.jpeg"
-                alt="Emeline peignant un cœur vert sur un mur"
-                width={1200}
-                height={1200}
-                className="absolute inset-0 w-full h-full object-cover"
-                quality={85}
-              />
-              <div className="absolute inset-0 bg-es-terracotta mix-blend-multiply opacity-50" />
-              <div className="absolute inset-0 bg-es-terracotta/40" />
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
-              <div className="relative">
-                <span className="text-xs uppercase tracking-widest text-white/70 font-medium">Communauté</span>
-                <h3 className="font-serif text-2xl font-bold mt-2 mb-2">ES Family</h3>
-                <p className="text-white/80 text-sm font-medium mb-4">Rejoins une communauté inspirante</p>
-                <p className="text-white/90 mb-6 leading-relaxed">
+            {/* ES Family — split image/text, photo coeur vert en clair */}
+            <a href="/family" className="bg-es-terracotta rounded-2xl overflow-hidden text-white hover:shadow-2xl transition-all hover:-translate-y-1 group flex flex-col">
+              <div className="relative aspect-[4/3] overflow-hidden">
+                <Image
+                  src="/images/site/01-chantier-action/chantier-09-coeur-vert-peint.jpeg"
+                  alt="Emeline peignant un cœur sur un mur, symbole de la communauté"
+                  width={1600}
+                  height={1200}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  quality={85}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-es-terracotta/70 via-es-terracotta/10 to-transparent" />
+                <span className="absolute top-4 left-4 text-xs uppercase tracking-widest text-white bg-es-terracotta-dark/80 px-3 py-1 rounded-full font-medium">
+                  Communauté
+                </span>
+              </div>
+              <div className="p-8 flex-1 flex flex-col">
+                <h3 className="font-serif text-2xl font-bold mb-2">ES Family</h3>
+                <p className="text-white/70 text-sm font-medium mb-3">Rejoins une communauté inspirante</p>
+                <p className="text-white/90 mb-6 leading-relaxed flex-1">
                   Analyses flash, lives exclusifs, opportunités rares · 19€/mois fondateurs
                 </p>
-                <span className="inline-flex items-center gap-2 bg-es-cream text-es-terracotta px-5 py-2.5 rounded-lg font-medium text-sm group-hover:bg-white transition-colors">
+                <span className="inline-flex items-center gap-2 bg-es-cream text-es-terracotta px-5 py-2.5 rounded-lg font-medium text-sm group-hover:bg-white transition-colors self-start">
                   Rejoindre
                   <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/></svg>
                 </span>
