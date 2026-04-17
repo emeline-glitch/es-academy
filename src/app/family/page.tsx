@@ -270,57 +270,17 @@ export default function FamilyPage() {
         </div>
       </section>
 
-      {/* Offre fondateur */}
-      <section className="relative py-20 overflow-hidden" style={{ backgroundColor: "#C4724A" }}>
-        <div className="absolute inset-0 bg-gradient-to-br from-es-terracotta-dark/20 via-transparent to-black/10" />
-        <div className="absolute inset-0 opacity-[0.04]" style={{
-          backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
-          backgroundSize: "40px 40px",
-        }} />
-        <div className="relative max-w-xl mx-auto px-6 text-center text-white">
-          <span className="inline-flex items-center bg-white/15 backdrop-blur text-white text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full mb-6">
-            Tarif fondateur
-          </span>
-          <h2 className="font-serif text-2xl sm:text-3xl font-bold mb-6">
-            Réservé aux 500 premiers membres
-          </h2>
-
-          <div className="bg-white/10 backdrop-blur rounded-2xl p-8 mb-6">
-            <div className="flex items-baseline justify-center gap-2 mb-3">
-              <span className="font-serif text-6xl sm:text-7xl font-bold">19€</span>
-              <span className="text-xl font-normal text-white/80">/mois</span>
-            </div>
-            <p className="text-white/80 text-sm">
-              Tarif bloqué tant que ton abonnement reste actif
-            </p>
-          </div>
-
-          <p className="text-white/80 text-sm mb-8">
-            Après les 500 fondateurs, tarif standard à <strong>29€/mois</strong>
-          </p>
-
-          <a
-            href={SKOOL_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center font-semibold rounded-lg px-10 py-4 text-lg bg-white text-es-terracotta hover:bg-es-cream transition-all shadow-lg"
-          >
-            Rejoindre à 19€/mois →
-          </a>
-          <p className="text-xs text-white/70 mt-4">
-            Sans engagement · Annulable à tout moment
-          </p>
-          <p className="text-[10px] text-white/50 mt-6 max-w-md mx-auto italic">
-            En cas de désabonnement, tu repasses au tarif standard à 29€/mois si tu reviens plus tard.
-          </p>
-        </div>
-      </section>
-
-      {/* 2 cartes tarifaires */}
+      {/* Cartes tarifaires — Fondateur + Standard */}
       <section className="py-20 bg-es-cream">
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-12">
-            <h2 className="font-serif text-3xl font-bold text-es-text">Choisis ta formule</h2>
+            <span className="text-xs text-es-terracotta uppercase tracking-widest font-medium">Tarif fondateur</span>
+            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-es-text mt-3 mb-3">
+              Réservé aux 500 premiers membres
+            </h2>
+            <p className="text-es-text-muted max-w-xl mx-auto">
+              Choisis ta formule. Le tarif fondateur reste bloqué tant que ton abonnement est actif.
+            </p>
           </div>
           <div className="grid md:grid-cols-5 gap-6">
             {/* Carte Fondateur — 60% */}
