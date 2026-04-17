@@ -16,7 +16,6 @@ import chantierMasse from "../../../public/images/site/01-chantier-action/chanti
 import chantierMarteau from "../../../public/images/site/01-chantier-action/chantier-03-marteau-lunettes-mur.jpeg";
 import chantierMasque from "../../../public/images/site/01-chantier-action/chantier-06-masque-poussiere-portrait.jpeg";
 import pivotDemission from "../../../public/images/site/03-pivot-moments-cles/pivot-01-demission-story-fev-2022.jpg";
-import pivotDernierVendredi from "../../../public/images/site/03-pivot-moments-cles/pivot-02-compilation-dernier-vendredi.jpg";
 import bebeMicroPodcast from "../../../public/images/site/05-incarnation-actuelle/incarnation-01-bebe-micro-podcast.jpeg";
 import deuxTrousseauxCles from "../../../public/images/site/02-patrimoine-cles/patrimoine-01-deux-trousseaux-cles.jpg";
 
@@ -36,6 +35,11 @@ type ChapterImageFull = {
   src: import("next/image").StaticImageData;
   alt: string;
 };
+type ChapterImageSinglePortrait = {
+  type: "single-portrait";
+  src: import("next/image").StaticImageData;
+  alt: string;
+};
 type ChapterImageMosaic = {
   type: "mosaic";
   items: { src: import("next/image").StaticImageData; alt: string }[];
@@ -44,7 +48,7 @@ type ChapterPlaceholder = {
   type: "placeholder";
   label: string;
 };
-type ChapterMedia = ChapterImageFull | ChapterImageMosaic | ChapterPlaceholder;
+type ChapterMedia = ChapterImageFull | ChapterImageSinglePortrait | ChapterImageMosaic | ChapterPlaceholder;
 
 interface Chapter {
   id: string;
@@ -78,10 +82,6 @@ const chapters: Chapter[] = [
       "BTS, licence, master en gestion de patrimoine immobilier. Puis 2 ans en alternance dans une boîte de centres commerciaux : deux burnouts avant 25 ans. L'ambiance était pourrie, 19 personnes sont parties en 6 mois.",
       "Intérim, Swiss Life, Lifento — 3 ans à gérer 250 millions d'euros d'immobilier de santé en Europe (EHPAD, dialyse, psychiatrie). Je passais ma vie sur les chantiers. J'adorais ça.",
     ],
-    media: {
-      type: "placeholder",
-      label: "Photo à ajouter : Emeline en tenue pro à l'époque Lifento, 2017-2020 [TODO_PHOTO_LIFENTO]",
-    },
   },
   {
     id: "declic",
@@ -124,11 +124,9 @@ const chapters: Chapter[] = [
       "Fin d'un cycle. Début d'autre chose.",
     ],
     media: {
-      type: "mosaic",
-      items: [
-        { src: pivotDemission, alt: "Story Instagram du 28 février 2022 : plus salariée" },
-        { src: pivotDernierVendredi, alt: "Compilation des stories de démission, février 2022" },
-      ],
+      type: "single-portrait",
+      src: pivotDemission,
+      alt: "Story Instagram du 28 février 2022 : annonce de la démission d'Emeline Siron",
     },
   },
   {
@@ -139,10 +137,6 @@ const chapters: Chapter[] = [
       "8 mai 2022, je cofonde Evermind Formation. Lancement : 80 ventes en 3 jours. En 6 mois, l'équipe passe de 2 à 8 personnes. 1 900 élèves formés en 3 ans.",
       "Une aventure structurante qui m'a préparée à construire ce que je lance en 2026.",
     ],
-    media: {
-      type: "placeholder",
-      label: "Photo à ajouter : Emeline avec son équipe actuelle (Tiffany, Charline, Fita, Antony) [TODO_PHOTO_EQUIPE_ACTUELLE]",
-    },
   },
 ];
 
@@ -230,12 +224,23 @@ export default function QuiEstEmeline() {
                     {chapter.media && (
                       <div className="mt-6">
                         {chapter.media.type === "full" && (
-                          <div className="rounded-2xl overflow-hidden shadow-md">
+                          <div className="rounded-2xl overflow-hidden shadow-md max-w-sm mx-auto">
                             <Image
                               src={chapter.media.src}
                               alt={chapter.media.alt}
                               quality={85}
-                              className="w-full h-auto object-cover"
+                              className="w-full h-auto object-contain"
+                              placeholder="blur"
+                            />
+                          </div>
+                        )}
+                        {chapter.media.type === "single-portrait" && (
+                          <div className="rounded-2xl overflow-hidden shadow-md max-w-xs mx-auto bg-gray-100">
+                            <Image
+                              src={chapter.media.src}
+                              alt={chapter.media.alt}
+                              quality={90}
+                              className="w-full h-auto object-contain"
                               placeholder="blur"
                             />
                           </div>
