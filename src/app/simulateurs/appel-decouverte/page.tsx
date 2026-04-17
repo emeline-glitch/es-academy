@@ -1,17 +1,36 @@
-import type { Metadata } from "next";
+"use client";
+
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import Image from "next/image";
 
-export const metadata: Metadata = {
-  title: "Appel découverte gratuit (30 min) | Emeline Siron",
-  description: "Réserve 30 minutes avec Emeline pour discuter de ton projet immobilier. Gratuit, sans engagement. 5 créneaux par semaine.",
-};
-
 // TODO: Remplacer par le vrai username Calendly/Cal.com d'Emeline
 // Pour Calendly : https://calendly.com/emelinesiron/appel-decouverte
 // Pour Cal.com : https://cal.com/emelinesiron/30min
-const CALENDLY_URL = "https://calendly.com/emelinesiron/appel-decouverte";
+const CALENDLY_BASE_URL = "https://calendly.com/emelinesiron/appel-decouverte";
+
+function CalendlyEmbed() {
+  const searchParams = useSearchParams();
+  const source = searchParams.get("source") || "simulateur";
+
+  // Construire l'URL avec UTMs pour tracking CRM
+  // Calendly intègre ces UTMs dans les événements webhook et questions custom
+  const urlWithUtms = `${CALENDLY_BASE_URL}?utm_source=emeline-siron.fr&utm_medium=website&utm_campaign=appel_decouverte_${source}`;
+
+  return (
+    <div className="bg-white rounded-2xl border border-es-cream-dark overflow-hidden shadow-sm">
+      <iframe
+        src={urlWithUtms}
+        width="100%"
+        height="800"
+        title="Réserver un appel découverte avec Emeline Siron"
+        className="w-full"
+      />
+    </div>
+  );
+}
 
 export default function AppelDecouverte() {
   return (
@@ -49,18 +68,15 @@ export default function AppelDecouverte() {
       {/* Calendly embed */}
       <section className="py-12">
         <div className="max-w-4xl mx-auto px-6">
-          <div className="bg-white rounded-2xl border border-es-cream-dark overflow-hidden shadow-sm">
-            <iframe
-              src={CALENDLY_URL}
-              width="100%"
-              height="800"
-              frameBorder="0"
-              title="Réserver un appel découverte avec Emeline Siron"
-              className="w-full"
-            />
-          </div>
+          <Suspense fallback={
+            <div className="bg-white rounded-2xl border border-es-cream-dark p-12 text-center">
+              <p className="text-gray-400">Chargement du calendrier…</p>
+            </div>
+          }>
+            <CalendlyEmbed />
+          </Suspense>
           <p className="text-xs text-es-text-muted text-center mt-4 italic">
-            Si le calendrier ne s&apos;affiche pas, <a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="text-es-terracotta underline">clique ici</a>.
+            Si le calendrier ne s&apos;affiche pas, <a href={CALENDLY_BASE_URL} target="_blank" rel="noopener noreferrer" className="text-es-terracotta underline">clique ici</a>.
           </p>
         </div>
       </section>
