@@ -4,9 +4,9 @@ import { useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Card } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import { SimulateurDisclaimer } from "@/components/simulateurs/Disclaimer";
+import { SimulatorCapture } from "@/components/simulateurs/SimulatorCapture";
 
 export default function CapaciteEmprunt() {
   const [revenus, setRevenus] = useState(3500);
@@ -14,12 +14,18 @@ export default function CapaciteEmprunt() {
   const [duree, setDuree] = useState(20);
   const [taux, setTaux] = useState(3.5);
   const [apport, setApport] = useState(0);
+  const [hasCalculated, setHasCalculated] = useState(false);
+
+  function markCalculated() {
+    if (!hasCalculated) setHasCalculated(true);
+  }
 
   const capaciteMensuelle = (revenus - charges) * 0.35;
   const tauxM = taux / 100 / 12;
   const nbMois = duree * 12;
   const capaciteEmprunt = capaciteMensuelle * (1 - Math.pow(1 + tauxM, -nbMois)) / tauxM;
   const budgetTotal = capaciteEmprunt + apport;
+  const montantMax = budgetTotal;
 
   return (
     <div className="min-h-screen bg-es-cream">
@@ -28,24 +34,24 @@ export default function CapaciteEmprunt() {
         <div className="max-w-5xl mx-auto px-6">
           <Link href="/simulateurs" className="text-sm text-gray-400 hover:text-es-green mb-4 inline-block">← Tous les simulateurs</Link>
           <h1 className="font-serif text-3xl font-bold text-es-text mb-2">Simulateur de capacité d&apos;emprunt</h1>
-          <p className="text-es-text-muted mb-8">Combien pouvez-vous emprunter pour votre projet immobilier ?</p>
+          <p className="text-es-text-muted mb-8">Combien peux-tu emprunter pour ton projet immobilier ?</p>
 
           <div className="grid lg:grid-cols-2 gap-8">
             <div className="space-y-5">
               <Card>
-                <h3 className="font-medium text-gray-900 mb-4">Vos revenus</h3>
+                <h3 className="font-medium text-gray-900 mb-4">Tes revenus</h3>
                 <div className="space-y-4">
                   <div>
                     <label className="text-sm text-gray-600 mb-1 block">Revenus nets mensuels : <strong>{revenus.toLocaleString("fr-FR")}€</strong></label>
-                    <input type="range" min={1000} max={15000} step={100} value={revenus} onChange={(e) => setRevenus(Number(e.target.value))} className="w-full accent-es-green" />
+                    <input type="range" min={1000} max={15000} step={100} value={revenus} onChange={(e) => { setRevenus(Number(e.target.value)); markCalculated(); }} className="w-full accent-es-green" />
                   </div>
                   <div>
                     <label className="text-sm text-gray-600 mb-1 block">Charges mensuelles (crédits en cours) : <strong>{charges}€</strong></label>
-                    <input type="range" min={0} max={3000} step={50} value={charges} onChange={(e) => setCharges(Number(e.target.value))} className="w-full accent-es-green" />
+                    <input type="range" min={0} max={3000} step={50} value={charges} onChange={(e) => { setCharges(Number(e.target.value)); markCalculated(); }} className="w-full accent-es-green" />
                   </div>
                   <div>
                     <label className="text-sm text-gray-600 mb-1 block">Apport personnel : <strong>{apport.toLocaleString("fr-FR")}€</strong></label>
-                    <input type="range" min={0} max={200000} step={5000} value={apport} onChange={(e) => setApport(Number(e.target.value))} className="w-full accent-es-green" />
+                    <input type="range" min={0} max={200000} step={5000} value={apport} onChange={(e) => { setApport(Number(e.target.value)); markCalculated(); }} className="w-full accent-es-green" />
                   </div>
                 </div>
               </Card>
@@ -54,11 +60,11 @@ export default function CapaciteEmprunt() {
                 <div className="space-y-4">
                   <div>
                     <label className="text-sm text-gray-600 mb-1 block">Durée : <strong>{duree} ans</strong></label>
-                    <input type="range" min={10} max={25} step={1} value={duree} onChange={(e) => setDuree(Number(e.target.value))} className="w-full accent-es-green" />
+                    <input type="range" min={10} max={25} step={1} value={duree} onChange={(e) => { setDuree(Number(e.target.value)); markCalculated(); }} className="w-full accent-es-green" />
                   </div>
                   <div>
                     <label className="text-sm text-gray-600 mb-1 block">Taux : <strong>{taux}%</strong></label>
-                    <input type="range" min={1} max={6} step={0.1} value={taux} onChange={(e) => setTaux(Number(e.target.value))} className="w-full accent-es-green" />
+                    <input type="range" min={1} max={6} step={0.1} value={taux} onChange={(e) => { setTaux(Number(e.target.value)); markCalculated(); }} className="w-full accent-es-green" />
                   </div>
                 </div>
               </Card>
@@ -67,7 +73,7 @@ export default function CapaciteEmprunt() {
 
             <div className="space-y-5">
               <Card className="bg-es-green text-white border-0">
-                <h3 className="text-white/60 text-sm mb-4">Votre capacité</h3>
+                <h3 className="text-white/60 text-sm mb-4">Ta capacité</h3>
                 <div className="space-y-4">
                   <div className="bg-white/10 rounded-xl p-5 text-center">
                     <div className="text-4xl font-bold text-es-gold">{Math.round(budgetTotal).toLocaleString("fr-FR")}€</div>
@@ -98,15 +104,17 @@ export default function CapaciteEmprunt() {
                   <div className="flex justify-between"><span className="text-gray-500">Taux d&apos;intérêt</span><span>{taux}%</span></div>
                 </div>
               </Card>
-
-              <div className="bg-es-green/5 rounded-xl p-6 border border-es-green/10 text-center">
-                <p className="text-sm text-es-text-muted mb-4">
-                  Apprenez à obtenir un financement à 110% (sans apport) avec la méthode Emeline Siron.
-                </p>
-                <Button variant="primary" href="/academy">Découvrir la méthode →</Button>
-              </div>
             </div>
           </div>
+
+          <SimulatorCapture
+            simulatorType="capacite-emprunt"
+            hasCalculated={hasCalculated}
+            formInputs={{ revenus, charges, duree, taux, apport }}
+            formOutputs={{ capaciteMensuelle, capaciteEmprunt, budgetTotal }}
+            nextStepTitle={`Tu peux emprunter ${Math.round(montantMax).toLocaleString("fr-FR")}€ ? Voici les stratégies pour décupler ton budget avec du locatif intelligent.`}
+            nextStepBody="On analyse ensemble ton profil d'emprunteur et les leviers pour augmenter ta capacité (investissements décotés, structures juridiques, stratégies d'empilement)."
+          />
         </div>
       </section>
       <Footer />

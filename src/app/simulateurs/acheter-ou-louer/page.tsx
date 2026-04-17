@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import { SimulateurDisclaimer } from "@/components/simulateurs/Disclaimer";
+import { SimulatorCapture } from "@/components/simulateurs/SimulatorCapture";
 
 export default function AcheterOuLouer() {
   const [prixBien, setPrixBien] = useState(250000);
@@ -14,6 +15,7 @@ export default function AcheterOuLouer() {
   const [tauxCredit, setTauxCredit] = useState(3.5);
   const [apport, setApport] = useState(25000);
   const [valorisation, setValorisation] = useState(2);
+  const [hasCalculated, setHasCalculated] = useState(false);
 
   const fraisNotaire = prixBien * 0.08;
   const coutAchat = prixBien + fraisNotaire;
@@ -43,6 +45,12 @@ export default function AcheterOuLouer() {
 
   const patrimoine20ans = prixBien * Math.pow(1 + valorisation / 100, 20);
   const loyerPerdu20ans = Array.from({ length: 20 }, (_, i) => loyerMensuelAvecAugmentation(i + 1) * 12).reduce((a, b) => a + b, 0);
+  const anneesRentableLabel = anneeRentable > 0 ? `${anneeRentable}` : "30+";
+
+  useEffect(() => {
+    if (!hasCalculated) setHasCalculated(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [prixBien, loyerActuel, tauxCredit, apport, valorisation]);
 
   return (
     <div className="min-h-screen bg-es-cream">
@@ -110,11 +118,26 @@ export default function AcheterOuLouer() {
               </Card>
 
               <div className="bg-es-green/5 rounded-xl p-6 border border-es-green/10 text-center">
-                <p className="text-sm text-es-text-muted mb-4">Et si votre locataire payait votre crédit à votre place ? C&apos;est le principe de l&apos;investissement locatif.</p>
+                <p className="text-sm text-es-text-muted mb-4">Et si ton locataire payait ton crédit à ta place ? C&apos;est le principe de l&apos;investissement locatif.</p>
                 <Button variant="primary" href="/academy">Découvrir la méthode →</Button>
               </div>
             </div>
           </div>
+
+          <SimulatorCapture
+            simulatorType="acheter-ou-louer"
+            hasCalculated={hasCalculated}
+            formInputs={{ prixBien, loyerActuel, tauxCredit, apport, valorisation }}
+            formOutputs={{
+              anneeRentable,
+              mensualite,
+              coutMensuelProprio,
+              patrimoine20ans,
+              loyerPerdu20ans,
+            }}
+            nextStepTitle={`Dans ton cas, acheter devient rentable à partir de ${anneesRentableLabel} ans.`}
+            nextStepBody="Mais tu peux changer la donne en louant ton bien à d'autres : colocation, courte durée, division. On voit ensemble ce qui s'adapte à ton projet."
+          />
         </div>
       </section>
       <Footer />

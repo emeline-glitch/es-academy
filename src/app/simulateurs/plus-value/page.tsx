@@ -1,18 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import { SimulateurDisclaimer } from "@/components/simulateurs/Disclaimer";
+import { SimulatorCapture } from "@/components/simulateurs/SimulatorCapture";
 
 export default function PlusValue() {
   const [prixAchat, setPrixAchat] = useState(150000);
   const [prixVente, setPrixVente] = useState(200000);
   const [dureeDetention, setDureeDetention] = useState(5);
   const [travaux, setTravaux] = useState(10000);
+  const [hasCalculated, setHasCalculated] = useState(false);
 
   const plusValueBrute = prixVente - prixAchat - travaux - (prixAchat * 0.075); // 7.5% frais forfaitaires
   const abattementIR = dureeDetention >= 22 ? 100 : dureeDetention >= 6 ? (dureeDetention - 5) * 6 : 0;
@@ -24,6 +26,13 @@ export default function PlusValue() {
   const taxeSupp = pvImposableIR > 50000 ? pvImposableIR * 0.06 : 0;
   const totalImpot = Math.max(0, impotIR + prelevementsSociaux + taxeSupp);
   const netVendeur = prixVente - totalImpot;
+  const plusValueNette = Math.max(0, plusValueBrute) - totalImpot;
+
+  useEffect(() => {
+    if (!hasCalculated) setHasCalculated(true);
+    // On déclenche au premier changement d'input ou montage
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [prixAchat, prixVente, dureeDetention, travaux]);
 
   return (
     <div className="min-h-screen bg-es-cream">
@@ -32,7 +41,7 @@ export default function PlusValue() {
         <div className="max-w-5xl mx-auto px-6">
           <Link href="/simulateurs" className="text-sm text-gray-400 hover:text-es-green mb-4 inline-block">← Tous les simulateurs</Link>
           <h1 className="font-serif text-3xl font-bold text-es-text mb-2">Simulateur plus-value immobilière</h1>
-          <p className="text-es-text-muted mb-8">Estimez l&apos;impôt sur la plus-value lors de la revente</p>
+          <p className="text-es-text-muted mb-8">Estime l&apos;impôt sur la plus-value lors de la revente</p>
 
           <div className="grid lg:grid-cols-2 gap-8">
             <Card>
@@ -86,11 +95,27 @@ export default function PlusValue() {
                 </div>
               </Card>
               <div className="bg-es-green/5 rounded-xl p-6 border border-es-green/10 text-center">
-                <p className="text-sm text-es-text-muted mb-4">Apprenez à optimiser la fiscalité de vos reventes immobilières.</p>
+                <p className="text-sm text-es-text-muted mb-4">Apprends à optimiser la fiscalité de tes reventes immobilières.</p>
                 <Button variant="primary" href="/academy">Voir la méthode →</Button>
               </div>
             </div>
           </div>
+
+          <SimulatorCapture
+            simulatorType="plus-value"
+            hasCalculated={hasCalculated}
+            formInputs={{ prixAchat, prixVente, dureeDetention, travaux }}
+            formOutputs={{
+              plusValueBrute: Math.max(0, plusValueBrute),
+              totalImpot,
+              netVendeur,
+              plusValueNette,
+              abattementIR,
+              abattementPS,
+            }}
+            nextStepTitle={`Ta plus-value nette sera de ${Math.round(plusValueNette).toLocaleString("fr-FR")}€ ?`}
+            nextStepBody="Voici les stratégies pour l'optimiser : démembrement, SCI à l'IS, timing de revente, travaux déductibles. On en parle ensemble."
+          />
         </div>
       </section>
       <Footer />

@@ -4,7 +4,7 @@ import { createServiceClient } from "@/lib/supabase/server";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { email, first_name, last_name, source, tags } = body;
+    const { email, first_name, last_name, source, tags, metadata } = body;
 
     if (!email) {
       return NextResponse.json({ error: "Email requis" }, { status: 400 });
@@ -27,6 +27,15 @@ export async function POST(request: Request) {
     if (error) {
       console.error("Contact insert error:", error);
       return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    // Log metadata (simulator inputs/outputs) — à brancher sur table simulator_captures plus tard
+    if (metadata) {
+      console.log("[Simulator Capture]", {
+        email,
+        source,
+        metadata,
+      });
     }
 
     return NextResponse.json({ success: true });

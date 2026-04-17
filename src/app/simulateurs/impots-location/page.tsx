@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import { SimulateurDisclaimer } from "@/components/simulateurs/Disclaimer";
+import { SimulatorCapture } from "@/components/simulateurs/SimulatorCapture";
 
 export default function ImpotsLocation() {
   const [loyerAnnuel, setLoyerAnnuel] = useState(9600);
@@ -15,6 +16,9 @@ export default function ImpotsLocation() {
   const [chargesDeductibles, setChargesDeductibles] = useState(3000);
   const [amortissement, setAmortissement] = useState(5000);
   const [tmi, setTmi] = useState(30);
+  const [hasCalculated, setHasCalculated] = useState(false);
+
+  const touch = () => { if (!hasCalculated) setHasCalculated(true); };
 
   const abattementMicro = typeLocation === "meublee" ? 50 : 30;
   let revenuImposable: number;
@@ -33,6 +37,7 @@ export default function ImpotsLocation() {
   }
 
   const totalImpot = impotRevenu + prelevementsSociaux;
+  const impots = totalImpot;
   const tauxImposition = loyerAnnuel > 0 ? (totalImpot / loyerAnnuel) * 100 : 0;
   const revenuNet = loyerAnnuel - totalImpot;
 
@@ -43,35 +48,35 @@ export default function ImpotsLocation() {
         <div className="max-w-5xl mx-auto px-6">
           <Link href="/simulateurs" className="text-sm text-gray-400 hover:text-es-green mb-4 inline-block">← Tous les simulateurs</Link>
           <h1 className="font-serif text-3xl font-bold text-es-text mb-2">Simulateur impôts sur les loyers</h1>
-          <p className="text-es-text-muted mb-8">Estimez vos impôts selon le régime fiscal choisi</p>
+          <p className="text-es-text-muted mb-8">Estime tes impôts selon le régime fiscal choisi</p>
 
           <div className="grid lg:grid-cols-2 gap-8">
             <div className="space-y-5">
               <Card>
                 <h3 className="font-medium text-gray-900 mb-4">Type de location</h3>
                 <div className="flex gap-2 mb-4">
-                  <button onClick={() => setTypeLocation("meublee")} className={`flex-1 py-2.5 rounded-lg text-sm font-medium cursor-pointer transition-all ${typeLocation === "meublee" ? "bg-es-green text-white" : "bg-gray-100 text-gray-600"}`}>Meublée (LMNP)</button>
-                  <button onClick={() => setTypeLocation("nue")} className={`flex-1 py-2.5 rounded-lg text-sm font-medium cursor-pointer transition-all ${typeLocation === "nue" ? "bg-es-green text-white" : "bg-gray-100 text-gray-600"}`}>Location nue</button>
+                  <button onClick={() => { setTypeLocation("meublee"); touch(); }} className={`flex-1 py-2.5 rounded-lg text-sm font-medium cursor-pointer transition-all ${typeLocation === "meublee" ? "bg-es-green text-white" : "bg-gray-100 text-gray-600"}`}>Meublée (LMNP)</button>
+                  <button onClick={() => { setTypeLocation("nue"); touch(); }} className={`flex-1 py-2.5 rounded-lg text-sm font-medium cursor-pointer transition-all ${typeLocation === "nue" ? "bg-es-green text-white" : "bg-gray-100 text-gray-600"}`}>Location nue</button>
                 </div>
                 <h3 className="font-medium text-gray-900 mb-4">Régime fiscal</h3>
                 <div className="flex gap-2">
-                  <button onClick={() => setRegime("micro")} className={`flex-1 py-2.5 rounded-lg text-sm font-medium cursor-pointer transition-all ${regime === "micro" ? "bg-es-green text-white" : "bg-gray-100 text-gray-600"}`}>
+                  <button onClick={() => { setRegime("micro"); touch(); }} className={`flex-1 py-2.5 rounded-lg text-sm font-medium cursor-pointer transition-all ${regime === "micro" ? "bg-es-green text-white" : "bg-gray-100 text-gray-600"}`}>
                     Micro ({abattementMicro}% abattement)
                   </button>
-                  <button onClick={() => setRegime("reel")} className={`flex-1 py-2.5 rounded-lg text-sm font-medium cursor-pointer transition-all ${regime === "reel" ? "bg-es-green text-white" : "bg-gray-100 text-gray-600"}`}>Réel</button>
+                  <button onClick={() => { setRegime("reel"); touch(); }} className={`flex-1 py-2.5 rounded-lg text-sm font-medium cursor-pointer transition-all ${regime === "reel" ? "bg-es-green text-white" : "bg-gray-100 text-gray-600"}`}>Réel</button>
                 </div>
               </Card>
               <Card>
                 <div className="space-y-4">
                   <div>
                     <label className="text-sm text-gray-600 mb-1 block">Loyers annuels : <strong>{loyerAnnuel.toLocaleString("fr-FR")}€</strong></label>
-                    <input type="range" min={2000} max={50000} step={200} value={loyerAnnuel} onChange={(e) => setLoyerAnnuel(Number(e.target.value))} className="w-full accent-es-green" />
+                    <input type="range" min={2000} max={50000} step={200} value={loyerAnnuel} onChange={(e) => { setLoyerAnnuel(Number(e.target.value)); touch(); }} className="w-full accent-es-green" />
                   </div>
                   <div>
                     <label className="text-sm text-gray-600 mb-1 block">Tranche marginale (TMI) : <strong>{tmi}%</strong></label>
                     <div className="flex gap-2">
                       {[0, 11, 30, 41, 45].map((t) => (
-                        <button key={t} onClick={() => setTmi(t)} className={`flex-1 py-2 rounded text-xs font-medium cursor-pointer ${tmi === t ? "bg-es-green text-white" : "bg-gray-100 text-gray-600"}`}>{t}%</button>
+                        <button key={t} onClick={() => { setTmi(t); touch(); }} className={`flex-1 py-2 rounded text-xs font-medium cursor-pointer ${tmi === t ? "bg-es-green text-white" : "bg-gray-100 text-gray-600"}`}>{t}%</button>
                       ))}
                     </div>
                   </div>
@@ -79,12 +84,12 @@ export default function ImpotsLocation() {
                     <>
                       <div>
                         <label className="text-sm text-gray-600 mb-1 block">Charges déductibles : <strong>{chargesDeductibles.toLocaleString("fr-FR")}€</strong></label>
-                        <input type="range" min={0} max={20000} step={500} value={chargesDeductibles} onChange={(e) => setChargesDeductibles(Number(e.target.value))} className="w-full accent-es-green" />
+                        <input type="range" min={0} max={20000} step={500} value={chargesDeductibles} onChange={(e) => { setChargesDeductibles(Number(e.target.value)); touch(); }} className="w-full accent-es-green" />
                       </div>
                       {typeLocation === "meublee" && (
                         <div>
                           <label className="text-sm text-gray-600 mb-1 block">Amortissement annuel : <strong>{amortissement.toLocaleString("fr-FR")}€</strong></label>
-                          <input type="range" min={0} max={15000} step={500} value={amortissement} onChange={(e) => setAmortissement(Number(e.target.value))} className="w-full accent-es-green" />
+                          <input type="range" min={0} max={15000} step={500} value={amortissement} onChange={(e) => { setAmortissement(Number(e.target.value)); touch(); }} className="w-full accent-es-green" />
                         </div>
                       )}
                     </>
@@ -121,15 +126,24 @@ export default function ImpotsLocation() {
               </Card>
               {regime === "micro" && (
                 <div className="bg-amber-50 rounded-xl p-4 border border-amber-200 text-sm text-amber-800">
-                  💡 En passant au régime réel, vous pourriez réduire significativement vos impôts grâce aux charges déductibles et à l&apos;amortissement.
+                  💡 En passant au régime réel, tu pourrais réduire significativement tes impôts grâce aux charges déductibles et à l&apos;amortissement.
                 </div>
               )}
               <div className="bg-es-green/5 rounded-xl p-6 border border-es-green/10 text-center">
-                <p className="text-sm text-es-text-muted mb-4">Le Module 9 de la formation vous apprend à ne pas payer d&apos;impôts sur vos loyers.</p>
+                <p className="text-sm text-es-text-muted mb-4">Le Module 9 de la formation t&apos;apprend à ne pas payer d&apos;impôts sur tes loyers.</p>
                 <Button variant="primary" href="/academy">Voir la méthode →</Button>
               </div>
             </div>
           </div>
+
+          <SimulatorCapture
+            simulatorType="impots-location"
+            hasCalculated={hasCalculated}
+            formInputs={{ loyerAnnuel, regime, typeLocation, chargesDeductibles, amortissement, tmi }}
+            formOutputs={{ totalImpot, revenuNet, tauxImposition, revenuImposable }}
+            nextStepTitle={`Tu paies ${Math.round(impots).toLocaleString("fr-FR")}€ d'impôts sur tes loyers ?`}
+            nextStepBody="En LMNP au réel avec amortissement, ce chiffre peut tomber à zéro pendant 10 ans. On analyse ta situation ensemble."
+          />
         </div>
       </section>
       <Footer />
