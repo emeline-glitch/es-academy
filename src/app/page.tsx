@@ -47,48 +47,50 @@ export default function Home() {
                   L&apos;immobilier l&apos;a fait pour moi. Il peut le faire pour toi.
                 </span>
               </h1>
-              <p className="text-lg text-white/60 mb-10 max-w-lg leading-relaxed">
+              <p className="text-lg text-white mb-10 max-w-lg leading-relaxed">
                 1 541€ nets par mois. C&apos;est la retraite moyenne en France pour une vie entière de travail. J&apos;ai grandi en regardant mes parents travailler jour et nuit. Je me suis promis : plus jamais ça. Depuis 2022, je forme 1 900 personnes à bâtir leur patrimoine par l&apos;immobilier. Méthode, outils, communauté.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-3 mb-12">
+              <div className="flex flex-col sm:flex-row gap-4 mb-12">
                 <a
                   href="/academy"
-                  className="inline-flex items-center justify-center font-semibold rounded-lg px-6 py-4 text-base bg-es-green text-white hover:bg-es-green-light transition-all"
+                  className="group inline-flex flex-col items-center sm:items-start justify-center rounded-lg px-6 py-3.5 bg-es-green text-white hover:bg-es-green-light transition-all shadow-lg"
                 >
-                  Découvrir ES Academy
+                  <span className="font-semibold text-base">Découvrir ES Academy</span>
+                  <span className="text-xs text-white/70 mt-0.5">30h de formation</span>
                 </a>
                 <a
                   href="/family"
-                  className="inline-flex items-center justify-center font-semibold rounded-lg px-6 py-4 text-base bg-es-terracotta text-white hover:bg-es-terracotta-light transition-all"
+                  className="group inline-flex flex-col items-center sm:items-start justify-center rounded-lg px-6 py-3.5 bg-es-terracotta text-white hover:bg-es-terracotta-light transition-all shadow-lg"
                 >
-                  Rejoindre ES Family
+                  <span className="font-semibold text-base">Rejoindre ES Family</span>
+                  <span className="text-xs text-white/70 mt-0.5">Plateforme communautaire</span>
                 </a>
               </div>
 
               {/* Mini stats */}
-              <div className="flex flex-wrap items-center gap-6 sm:gap-10 border-t border-white/10 pt-6">
+              <div className="flex flex-wrap items-center gap-8 sm:gap-12 border-t border-white/10 pt-6">
                 <div>
-                  <div className="text-2xl font-serif font-bold text-es-gold">
+                  <div className="text-3xl sm:text-4xl font-serif font-bold text-es-gold">
                     <AnimatedCounter target={STATS.participants} />
                   </div>
-                  <div className="text-xs text-white/40 mt-0.5">participants</div>
+                  <div className="text-sm text-white/60 mt-1">participants</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-serif font-bold text-es-gold">
+                  <div className="text-3xl sm:text-4xl font-serif font-bold text-es-gold">
                     <AnimatedCounter target={STATS.satisfaction} suffix="%" />
                   </div>
-                  <div className="text-xs text-white/40 mt-0.5">satisfaction</div>
+                  <div className="text-sm text-white/60 mt-1">satisfaction</div>
                 </div>
-                <div className="flex items-center gap-1">
+                <div className="flex flex-col gap-1">
                   <div className="flex text-es-gold">
                     {[...Array(5)].map((_, i) => (
-                      <svg key={i} className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <svg key={i} className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                       </svg>
                     ))}
                   </div>
-                  <span className="text-sm text-white/50 ml-1">4.9/5</span>
+                  <span className="text-sm text-white/60">4.9/5</span>
                 </div>
               </div>
             </div>
@@ -126,21 +128,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Visuel de rupture — Emeline en chantier */}
-      <section className="bg-es-cream py-12 lg:py-16">
-        <div className="max-w-4xl mx-auto px-6">
-          <div className="rounded-2xl overflow-hidden shadow-xl">
-            <Image
-              src="/images/site/01-chantier-action/chantier-07-enceinte-carrelage-signature.jpeg"
-              alt="Emeline Siron en train de poser du carrelage, enceinte, dans l'un de ses biens"
-              width={1600}
-              height={2000}
-              className="w-full h-auto object-cover"
-              quality={85}
-            />
-          </div>
-        </div>
-      </section>
 
       {/* Tu te reconnais ? */}
       <section className="py-20 bg-gray-50">
@@ -207,23 +194,11 @@ export default function Home() {
                 Diplômée en immobilier et ancienne Real Estate Asset Manager dans un fonds d&apos;investissements européen, j&apos;ai quitté le salariat pour investir à mon compte.
               </p>
               <p className="text-es-text-muted leading-relaxed mb-4">
-                Aujourd&apos;hui, je gère <strong className="text-es-text">55 locataires</strong> et j&apos;accompagne des centaines d&apos;investisseurs à bâtir leur patrimoine immobilier — même en partant de zéro.
+                Aujourd&apos;hui, je gère <strong className="text-es-text">55 locataires</strong>, et j&apos;accompagne des centaines d&apos;investisseurs à bâtir leur patrimoine immobilier, même en partant de zéro.
               </p>
               <p className="text-es-text-muted leading-relaxed mb-6">
                 J&apos;ai grandi dans un garage automobile. Pas de patrimoine familial, pas de réseau, pas de capital de départ. <strong className="text-es-text">Si j&apos;ai pu le faire, toi aussi.</strong>
               </p>
-              <div className="flex flex-wrap gap-4 mb-6">
-                {[
-                  { value: "9+ ans", label: "d'expérience" },
-                  { value: "55", label: "locataires" },
-                  { value: "4.9/5", label: "sur Trustpilot" },
-                ].map((stat, i) => (
-                  <div key={i} className="bg-white rounded-lg px-4 py-2 border border-es-cream-dark">
-                    <p className="font-serif font-bold text-es-green text-lg">{stat.value}</p>
-                    <p className="text-[10px] text-gray-500">{stat.label}</p>
-                  </div>
-                ))}
-              </div>
               <div className="flex items-center gap-3">
                 <a href="https://www.instagram.com/emelinesiron/" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-es-green/10 flex items-center justify-center hover:bg-es-green/20 transition-colors">
                   <svg className="w-4 h-4 text-es-green" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
@@ -264,65 +239,35 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
-            {/* ES Academy — split image/text */}
-            <a href="/academy" className="bg-es-green rounded-2xl overflow-hidden text-white hover:shadow-2xl transition-all hover:-translate-y-1 group flex flex-col">
-              {/* Image en haut, ratio fixe 4/3 */}
-              <div className="relative aspect-[4/3] overflow-hidden">
-                <Image
-                  src="/images/site/01-chantier-action/chantier-03-marteau-lunettes-mur.jpeg"
-                  alt="Emeline sur un chantier avec marteau et lunettes de protection"
-                  width={1200}
-                  height={900}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  quality={85}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-es-green/70 via-es-green/10 to-transparent" />
-                <span className="absolute top-4 left-4 text-xs uppercase tracking-widest text-white bg-es-green-dark/80 px-3 py-1 rounded-full font-medium">
-                  Formation
-                </span>
-              </div>
-              {/* Texte en bas */}
-              <div className="p-8 flex-1 flex flex-col">
-                <h3 className="font-serif text-2xl font-bold mb-2">ES Academy</h3>
-                <p className="text-white/70 text-sm font-medium mb-3">Forme-toi &amp; passe à l&apos;action</p>
-                <p className="text-white/90 mb-6 leading-relaxed flex-1">
-                  {STATS.videoHours}h de formation · {STATS.tools} outils · La méthode complète pour investir en immobilier locatif
-                </p>
-                <span className="inline-flex items-center gap-2 bg-es-cream text-es-green px-5 py-2.5 rounded-lg font-medium text-sm group-hover:bg-white transition-colors self-start">
-                  Accéder
-                  <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/></svg>
-                </span>
-              </div>
+          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            {/* ES Academy */}
+            <a href="/academy" className="bg-es-green rounded-2xl p-8 lg:p-10 text-white hover:shadow-2xl transition-all hover:-translate-y-1 group relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
+              <span className="text-xs uppercase tracking-widest text-white/50 font-medium">Formation</span>
+              <h3 className="font-serif text-2xl font-bold mt-2 mb-2">ES Academy</h3>
+              <p className="text-white/60 text-sm font-medium mb-4">Forme-toi &amp; passe à l&apos;action</p>
+              <p className="text-white/80 mb-6 leading-relaxed">
+                {STATS.videoHours}h de formation · {STATS.tools} outils · La méthode complète pour investir en immobilier locatif
+              </p>
+              <span className="inline-flex items-center gap-2 bg-es-cream text-es-green px-5 py-2.5 rounded-lg font-medium text-sm group-hover:bg-white transition-colors">
+                Accéder
+                <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/></svg>
+              </span>
             </a>
 
-            {/* ES Family — split image/text, photo coeur vert en clair */}
-            <a href="/family" className="bg-es-terracotta rounded-2xl overflow-hidden text-white hover:shadow-2xl transition-all hover:-translate-y-1 group flex flex-col">
-              <div className="relative aspect-[4/3] overflow-hidden">
-                <Image
-                  src="/images/site/01-chantier-action/chantier-09-coeur-vert-peint.jpeg"
-                  alt="Emeline peignant un cœur sur un mur, symbole de la communauté"
-                  width={1600}
-                  height={1200}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  quality={85}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-es-terracotta/70 via-es-terracotta/10 to-transparent" />
-                <span className="absolute top-4 left-4 text-xs uppercase tracking-widest text-white bg-es-terracotta-dark/80 px-3 py-1 rounded-full font-medium">
-                  Communauté
-                </span>
-              </div>
-              <div className="p-8 flex-1 flex flex-col">
-                <h3 className="font-serif text-2xl font-bold mb-2">ES Family</h3>
-                <p className="text-white/70 text-sm font-medium mb-3">Rejoins une communauté inspirante</p>
-                <p className="text-white/90 mb-6 leading-relaxed flex-1">
-                  Analyses flash, lives exclusifs, opportunités rares · 19€/mois fondateurs
-                </p>
-                <span className="inline-flex items-center gap-2 bg-es-cream text-es-terracotta px-5 py-2.5 rounded-lg font-medium text-sm group-hover:bg-white transition-colors self-start">
-                  Rejoindre
-                  <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/></svg>
-                </span>
-              </div>
+            {/* ES Family */}
+            <a href="/family" className="bg-es-terracotta rounded-2xl p-8 lg:p-10 text-white hover:shadow-2xl transition-all hover:-translate-y-1 group relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
+              <span className="text-xs uppercase tracking-widest text-white/50 font-medium">Communauté</span>
+              <h3 className="font-serif text-2xl font-bold mt-2 mb-2">ES Family</h3>
+              <p className="text-white/60 text-sm font-medium mb-4">Rejoins une communauté inspirante</p>
+              <p className="text-white/80 mb-6 leading-relaxed">
+                Analyses flash, lives exclusifs, opportunités rares · 19€/mois fondateurs
+              </p>
+              <span className="inline-flex items-center gap-2 bg-es-cream text-es-terracotta px-5 py-2.5 rounded-lg font-medium text-sm group-hover:bg-white transition-colors">
+                Rejoindre
+                <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/></svg>
+              </span>
             </a>
           </div>
         </div>
@@ -378,9 +323,9 @@ export default function Home() {
                 label: "Élève Evermind, immeuble acquis centre de Nantes",
               },
               {
-                src: "/images/site/04-avis-clients/avis-04-maeva-premier-achat-sans-cdi.jpg",
-                alt: "Témoignage de Maeva, premier achat immobilier sans CDI",
-                label: "Maeva, premier achat immobilier sans CDI",
+                src: "/images/site/04-avis-clients/avis-01-milos-offre-de-pret.png",
+                alt: "Message de Milos annonçant l'obtention de son offre de prêt",
+                label: "Milos, offre de prêt obtenue",
               },
             ]}
           />
