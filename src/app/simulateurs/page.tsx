@@ -4,6 +4,10 @@ import { useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import Link from "next/link";
+import Image from "next/image";
+import heroChantierImg from "../../../public/images/site/01-chantier-action/chantier-07-enceinte-carrelage-signature.jpeg";
+import clesImg from "../../../public/images/site/02-patrimoine-cles/patrimoine-01-deux-trousseaux-cles.jpg";
+import bebeMicroImg from "../../../public/images/site/05-incarnation-actuelle/incarnation-01-bebe-micro-podcast.jpeg";
 
 type SimulatorCategory = "premier-achat" | "locatif" | "revente";
 
@@ -121,28 +125,56 @@ export default function SimulateursPage() {
 
       {/* Hero sobre */}
       <section className="py-16 sm:py-20 bg-white border-b border-es-cream-dark">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <p className="font-serif italic text-es-terracotta text-sm sm:text-base mb-4 tracking-wide">
-            Les outils que j&apos;utilise moi-même pour mes 12 immeubles
-          </p>
-          <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-es-text mb-6 leading-tight">
-            Les 8 simulateurs que j&apos;aurais aimé avoir avant mon premier achat.
-          </h1>
-          <p className="text-lg text-es-text-muted max-w-2xl mx-auto leading-relaxed">
-            Rentabilité, frais de notaire, capacité d&apos;emprunt, fiscalité : les calculs que tu dois maîtriser avant de signer.
-            Développés par une investisseuse qui gère <strong className="text-es-green">55 locataires</strong>, pas par un algorithme de banque en ligne.
-            <span className="block mt-2 text-sm text-es-text-muted/80">Gratuit, sans inscription.</span>
-          </p>
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+            <div className="text-center lg:text-left">
+              <p className="font-serif italic text-es-terracotta text-sm sm:text-base mb-4 tracking-wide">
+                Les outils que j&apos;utilise moi-même pour mes 12 immeubles
+              </p>
+              <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-es-text mb-6 leading-tight">
+                Les 8 simulateurs que j&apos;aurais aimé avoir avant mon premier achat.
+              </h1>
+              <p className="text-lg text-es-text-muted leading-relaxed">
+                Rentabilité, frais de notaire, capacité d&apos;emprunt, fiscalité : les calculs que tu dois maîtriser avant de signer.
+                Développés par une investisseuse qui gère <strong className="text-es-green">55 locataires</strong>, pas par un algorithme de banque en ligne.
+                <span className="block mt-2 text-sm text-es-text-muted/80">Gratuit, sans inscription.</span>
+              </p>
+            </div>
+            <div className="rounded-2xl overflow-hidden shadow-md">
+              <Image
+                src={heroChantierImg}
+                alt="Emeline en train de poser du carrelage, développeuse des simulateurs sur sa propre méthode"
+                width={1200}
+                height={900}
+                quality={85}
+                className="w-full h-auto object-cover"
+                placeholder="blur"
+              />
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Preuve sociale */}
       <section className="py-8 bg-es-cream border-b border-es-cream-dark">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <p className="text-sm text-es-text-muted italic">
-            Conçus avec la méthode appliquée sur <strong className="text-es-text">55 locataires réels</strong>.
-            {/* TODO: rebrancher le compteur "Simulateurs utilisés par X investisseurs cette semaine" [COMPTEUR_CALCULS_SEMAINE] */}
-          </p>
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="flex items-center justify-center gap-4 flex-wrap">
+            <div className="rounded-xl overflow-hidden shadow-sm shrink-0" style={{ width: 110, height: 110 }}>
+              <Image
+                src={clesImg}
+                alt="Les clés des 12 biens d'Emeline, sur lesquels sa méthode est appliquée"
+                width={220}
+                height={220}
+                quality={85}
+                className="w-full h-full object-cover"
+                placeholder="blur"
+              />
+            </div>
+            <p className="text-sm text-es-text-muted italic max-w-md">
+              Conçus avec la méthode appliquée sur <strong className="text-es-text">55 locataires réels</strong>.
+              {/* TODO: rebrancher le compteur "Simulateurs utilisés par X investisseurs cette semaine" [COMPTEUR_CALCULS_SEMAINE] */}
+            </p>
+          </div>
         </div>
       </section>
 
@@ -250,21 +282,36 @@ export default function SimulateursPage() {
       {/* CTA final — appel découverte */}
       <section className="py-20 relative overflow-hidden" style={{ backgroundColor: "#C4724A" }}>
         <div className="absolute inset-0 bg-gradient-to-br from-es-terracotta-dark/20 via-transparent to-black/10" />
-        <div className="relative max-w-3xl mx-auto px-6 text-center text-white">
-          <h2 className="font-serif text-3xl sm:text-4xl font-bold mb-5">
-            Tu veux aller plus loin que les calculs ?
-          </h2>
-          <p className="text-white/90 text-lg leading-relaxed mb-8 max-w-2xl mx-auto">
-            Les simulateurs te donnent une photo à un instant T. Mais construire un patrimoine, c&apos;est une stratégie.
-            On en discute 30 minutes au téléphone, ensemble, pour voir où tu en es et ce qui te correspond vraiment.
-            <strong className="block mt-2">Gratuit, sans engagement.</strong>
-          </p>
-          <Link
-            href="/simulateurs/appel-decouverte"
-            className="inline-flex items-center justify-center font-semibold rounded-lg px-8 py-4 text-base bg-white text-es-terracotta hover:bg-es-cream transition-all shadow-lg"
-          >
-            Réserver mon appel découverte (30 min, gratuit)
-          </Link>
+        <div className="relative max-w-6xl mx-auto px-6">
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center text-white">
+            <div className="rounded-2xl overflow-hidden shadow-lg">
+              <Image
+                src={bebeMicroImg}
+                alt="Emeline accueillante, prête pour un appel découverte"
+                width={1200}
+                height={900}
+                quality={85}
+                className="w-full h-auto object-cover"
+                placeholder="blur"
+              />
+            </div>
+            <div className="text-center lg:text-left">
+              <h2 className="font-serif text-3xl sm:text-4xl font-bold mb-5">
+                Tu veux aller plus loin que les calculs ?
+              </h2>
+              <p className="text-white/90 text-lg leading-relaxed mb-8">
+                Les simulateurs te donnent une photo à un instant T. Mais construire un patrimoine, c&apos;est une stratégie.
+                On en discute 30 minutes au téléphone, ensemble, pour voir où tu en es et ce qui te correspond vraiment.
+                <strong className="block mt-2">Gratuit, sans engagement.</strong>
+              </p>
+              <Link
+                href="/simulateurs/appel-decouverte"
+                className="inline-flex items-center justify-center font-semibold rounded-lg px-8 py-4 text-base bg-white text-es-terracotta hover:bg-es-cream transition-all shadow-lg"
+              >
+                Réserver mon appel découverte (30 min, gratuit)
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 

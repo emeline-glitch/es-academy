@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Accordion } from "@/components/ui/Accordion";
@@ -7,6 +8,7 @@ import { MobileCta } from "@/components/ui/MobileCta";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { faqSchema } from "@/lib/seo/schemas";
 import { BottomBanner } from "@/components/marketing/BottomBanner";
+import { FamilyTestimonials } from "@/components/marketing/FamilyTestimonials";
 
 export const metadata: Metadata = {
   title: "ES Family | La communauté patrimoniale d'Emeline Siron",
@@ -39,37 +41,55 @@ export default function FamilyPage() {
           backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
           backgroundSize: "40px 40px",
         }} />
-        <div className="relative max-w-4xl mx-auto px-6 text-center">
-          <p className="font-serif italic text-white/70 text-sm sm:text-base mb-6 tracking-wide max-w-2xl mx-auto">
-            Patrimoine, fiscalité, investissement : tout ce qu&apos;on ne t&apos;a jamais appris à l&apos;école
-          </p>
-          <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-[1.1] mb-6">
-            L&apos;école t&apos;a appris à travailler.{" "}
-            <span className="block mt-2 text-white" style={{ textShadow: "2px 2px 0 rgba(0,0,0,0.15)" }}>
-              Pas à t&apos;enrichir.
-            </span>
-          </h1>
-          <p className="text-lg text-white/85 max-w-2xl mx-auto mb-4 leading-relaxed">
-            Immobilier, bourse, fiscalité, transmission, actifs alternatifs : les règles du patrimoine, personne ne te les explique vraiment.
-          </p>
-          <p className="text-lg text-white/85 max-w-2xl mx-auto mb-4 leading-relaxed">
-            ES Family, c&apos;est la communauté qui prend le relais. <strong>1 900 investisseurs dans l&apos;écosystème. Encore 500 places pour le tarif fondateur.</strong>
-          </p>
-          <p className="text-sm text-white/60 max-w-2xl mx-auto mb-10 leading-relaxed italic">
-            Plateforme conçue et développée en interne par Emeline.
-          </p>
+        <div className="relative max-w-6xl mx-auto px-6">
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
+            <div className="text-center lg:text-left">
+              <p className="font-serif italic text-white/70 text-sm sm:text-base mb-6 tracking-wide">
+                Patrimoine, fiscalité, investissement : tout ce qu&apos;on ne t&apos;a jamais appris à l&apos;école
+              </p>
+              <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-[1.1] mb-6">
+                L&apos;école t&apos;a appris à travailler.{" "}
+                <span className="block mt-2 text-white" style={{ textShadow: "2px 2px 0 rgba(0,0,0,0.15)" }}>
+                  Pas à t&apos;enrichir.
+                </span>
+              </h1>
+              <p className="text-lg text-white/85 mb-4 leading-relaxed">
+                Immobilier, bourse, fiscalité, transmission, actifs alternatifs : les règles du patrimoine, personne ne te les explique vraiment.
+              </p>
+              <p className="text-lg text-white/85 mb-4 leading-relaxed">
+                ES Family, c&apos;est la communauté qui prend le relais. <strong>1 900 investisseurs dans l&apos;écosystème. Encore 500 places pour le tarif fondateur.</strong>
+              </p>
+              <p className="text-sm text-white/60 mb-10 leading-relaxed italic">
+                Plateforme conçue et développée en interne par Emeline.
+              </p>
 
-          <a
-            href={SKOOL_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center font-semibold rounded-lg px-10 py-5 text-lg bg-white text-es-terracotta hover:bg-es-cream transition-all shadow-lg hover:shadow-xl"
-          >
-            Rejoindre ES Family à 19€/mois
-          </a>
-          <p className="text-xs text-white/50 mt-4">
-            Pour le prix d&apos;un forfait téléphonique · Sans engagement
-          </p>
+              <a
+                href={SKOOL_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center font-semibold rounded-lg px-10 py-5 text-lg bg-white text-es-terracotta hover:bg-es-cream transition-all shadow-lg hover:shadow-xl"
+              >
+                Rejoindre ES Family à 19€/mois
+              </a>
+              <p className="text-xs text-white/50 mt-4">
+                Pour le prix d&apos;un forfait téléphonique · Sans engagement
+              </p>
+            </div>
+
+            {/* Hero image — coeur vert avec overlay terracotta */}
+            {/* TODO: voir avec Emeline si elle préfère garder le vert original ou garder l'overlay terracotta */}
+            <div className="relative rounded-2xl overflow-hidden shadow-2xl aspect-[4/5] max-w-md mx-auto lg:max-w-none w-full">
+              <Image
+                src="/images/site/01-chantier-action/chantier-09-coeur-vert-peint.jpeg"
+                alt="Emeline peignant un cœur sur un mur, symbole de la communauté ES Family"
+                width={1200}
+                height={1500}
+                className="absolute inset-0 w-full h-full object-cover"
+                quality={85}
+              />
+              <div className="absolute inset-0 bg-es-terracotta mix-blend-multiply opacity-50" />
+            </div>
+          </div>
         </div>
       </section>
 
@@ -365,6 +385,15 @@ export default function FamilyPage() {
 
       {/* Bridge Academy — Tu veux les deux ? */}
       <section className="py-20 relative overflow-hidden" style={{ backgroundColor: "#2D6A4F" }}>
+        <Image
+          src="/images/site/01-chantier-action/chantier-02-masse-parpaings.jpeg"
+          alt="Emeline cassant un mur au marteau, l'action concrète enseignée dans ES Academy"
+          width={1600}
+          height={1200}
+          className="absolute inset-0 w-full h-full object-cover opacity-15"
+          quality={85}
+        />
+        <div className="absolute inset-0 bg-es-green/70" />
         <div className="absolute inset-0 opacity-[0.03]" style={{
           backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
           backgroundSize: "40px 40px",
@@ -397,54 +426,7 @@ export default function FamilyPage() {
             <span className="text-xs text-es-terracotta uppercase tracking-widest font-medium">Témoignages</span>
             <h2 className="font-serif text-3xl font-bold text-es-text mt-3">La communauté en parle</h2>
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {/* TODO: remplacer les placeholders par les vrais témoignages vidéo */}
-            {[
-              {
-                name: "[PRÉNOM I., VILLE ou PROFESSION]",
-                resume: "[RÉSUMÉ_RÉSULTAT_1]",
-                thumbUrl: null as string | null,
-                videoUrl: null as string | null,
-                socialUrl: null as string | null,
-              },
-              {
-                name: "[PRÉNOM I., VILLE ou PROFESSION]",
-                resume: "[RÉSUMÉ_RÉSULTAT_2]",
-                thumbUrl: null as string | null,
-                videoUrl: null as string | null,
-                socialUrl: null as string | null,
-              },
-              {
-                name: "[PRÉNOM I., VILLE ou PROFESSION]",
-                resume: "[RÉSUMÉ_RÉSULTAT_3]",
-                thumbUrl: null as string | null,
-                videoUrl: null as string | null,
-                socialUrl: null as string | null,
-              },
-            ].map((t, i) => (
-              <div key={i} className="bg-es-cream rounded-2xl overflow-hidden border border-es-cream-dark">
-                {/* Thumbnail vidéo 16:9 cliquable */}
-                <div className="relative aspect-video bg-gradient-to-br from-es-terracotta via-es-terracotta-dark to-es-terracotta/70 cursor-pointer group">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-16 h-16 rounded-full bg-white/95 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                      <svg className="w-6 h-6 text-es-terracotta ml-1" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-                <div className="p-5">
-                  <p className="font-serif font-bold text-es-text mb-2">{t.name}</p>
-                  <p className="text-sm text-es-text-muted">{t.resume}</p>
-                  {t.socialUrl && (
-                    <a href={t.socialUrl} target="_blank" rel="noopener noreferrer" className="mt-3 inline-block text-xs text-es-terracotta hover:text-es-terracotta-dark font-medium">
-                      Voir le post →
-                    </a>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
+          <FamilyTestimonials />
         </div>
       </section>
 

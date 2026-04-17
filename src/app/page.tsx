@@ -9,6 +9,8 @@ import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
 import { LeadMagnet } from "@/components/marketing/LeadMagnet";
 import { LazyIframe } from "@/components/ui/LazyIframe";
 import { BottomBanner } from "@/components/marketing/BottomBanner";
+import { PressGrid } from "@/components/marketing/PressGrid";
+import { TestimonialsGrid } from "@/components/marketing/TestimonialsGrid";
 import { STATS } from "@/lib/utils/constants";
 
 export const metadata: Metadata = {
@@ -124,6 +126,22 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Visuel de rupture — Emeline en chantier */}
+      <section className="bg-es-cream py-12 lg:py-16">
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="rounded-2xl overflow-hidden shadow-xl">
+            <Image
+              src="/images/site/01-chantier-action/chantier-07-enceinte-carrelage-signature.jpeg"
+              alt="Emeline Siron en train de poser du carrelage, enceinte, dans l'un de ses biens"
+              width={1600}
+              height={2000}
+              className="w-full h-auto object-cover"
+              quality={85}
+            />
+          </div>
+        </div>
+      </section>
+
       {/* Tu te reconnais ? */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-6xl mx-auto px-6">
@@ -170,13 +188,9 @@ export default function Home() {
 
       {/* Presse */}
       <section className="py-16 bg-white">
-        <div className="max-w-5xl mx-auto px-6 text-center">
-          <p className="text-xs text-es-text-muted uppercase tracking-widest mb-8">Elles m&apos;ont fait confiance</p>
-          <div className="flex flex-wrap justify-center items-center gap-10 opacity-30 grayscale">
-            {["BFM Business", "Les Échos", "Capital", "Marie Claire"].map((name) => (
-              <span key={name} className="text-xl font-serif font-bold text-es-text">{name}</span>
-            ))}
-          </div>
+        <div className="max-w-5xl mx-auto px-6">
+          <p className="text-xs text-es-text-muted uppercase tracking-widest mb-8 text-center">Elles m&apos;ont fait confiance</p>
+          <PressGrid />
         </div>
       </section>
 
@@ -225,11 +239,11 @@ export default function Home() {
             <div className="relative">
               <div className="bg-es-green/5 rounded-2xl p-4">
                 <Image
-                  src="/images/emeline-siron.png"
-                  alt="Emeline Siron — Investisseuse immobilière et formatrice"
-                  width={600}
-                  height={800}
-                  className="rounded-xl object-cover object-top w-full"
+                  src="/images/site/02-patrimoine-cles/patrimoine-01-deux-trousseaux-cles.jpg"
+                  alt="Emeline Siron tenant les trousseaux de clés de ses 12 biens immobiliers"
+                  width={1200}
+                  height={1500}
+                  className="rounded-2xl object-cover w-full"
                   quality={85}
                 />
               </div>
@@ -253,32 +267,56 @@ export default function Home() {
           <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
             {/* ES Academy */}
             <a href="/academy" className="bg-es-green rounded-2xl p-8 lg:p-10 text-white hover:shadow-2xl transition-all hover:-translate-y-1 group relative overflow-hidden">
+              <Image
+                src="/images/site/01-chantier-action/chantier-03-marteau-lunettes-mur.jpeg"
+                alt="Emeline sur un chantier avec marteau et lunettes de protection"
+                width={1200}
+                height={1200}
+                className="absolute inset-0 w-full h-full object-cover opacity-20"
+                quality={85}
+              />
+              <div className="absolute inset-0 bg-es-green/60" />
               <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
-              <span className="text-xs uppercase tracking-widest text-white/50 font-medium">Formation</span>
-              <h3 className="font-serif text-2xl font-bold mt-2 mb-2">ES Academy</h3>
-              <p className="text-white/60 text-sm font-medium mb-4">Forme-toi &amp; passe à l&apos;action</p>
-              <p className="text-white/80 mb-6 leading-relaxed">
-                {STATS.videoHours}h de formation · {STATS.tools} outils · La méthode complète pour investir en immobilier locatif
-              </p>
-              <span className="inline-flex items-center gap-2 bg-es-cream text-es-green px-5 py-2.5 rounded-lg font-medium text-sm group-hover:bg-white transition-colors">
-                Accéder
-                <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/></svg>
-              </span>
+              <div className="relative">
+                <span className="text-xs uppercase tracking-widest text-white/50 font-medium">Formation</span>
+                <h3 className="font-serif text-2xl font-bold mt-2 mb-2">ES Academy</h3>
+                <p className="text-white/60 text-sm font-medium mb-4">Forme-toi &amp; passe à l&apos;action</p>
+                <p className="text-white/80 mb-6 leading-relaxed">
+                  {STATS.videoHours}h de formation · {STATS.tools} outils · La méthode complète pour investir en immobilier locatif
+                </p>
+                <span className="inline-flex items-center gap-2 bg-es-cream text-es-green px-5 py-2.5 rounded-lg font-medium text-sm group-hover:bg-white transition-colors">
+                  Accéder
+                  <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/></svg>
+                </span>
+              </div>
             </a>
 
             {/* ES Family */}
+            {/* TODO: voir avec Emeline si elle préfère garder le vert original ou garder l'overlay terracotta */}
             <a href="/family" className="bg-es-terracotta rounded-2xl p-8 lg:p-10 text-white hover:shadow-2xl transition-all hover:-translate-y-1 group relative overflow-hidden">
+              <Image
+                src="/images/site/01-chantier-action/chantier-09-coeur-vert-peint.jpeg"
+                alt="Emeline peignant un cœur vert sur un mur"
+                width={1200}
+                height={1200}
+                className="absolute inset-0 w-full h-full object-cover"
+                quality={85}
+              />
+              <div className="absolute inset-0 bg-es-terracotta mix-blend-multiply opacity-50" />
+              <div className="absolute inset-0 bg-es-terracotta/40" />
               <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
-              <span className="text-xs uppercase tracking-widest text-white/50 font-medium">Communauté</span>
-              <h3 className="font-serif text-2xl font-bold mt-2 mb-2">ES Family</h3>
-              <p className="text-white/60 text-sm font-medium mb-4">Rejoins une communauté inspirante</p>
-              <p className="text-white/80 mb-6 leading-relaxed">
-                Analyses flash, lives exclusifs, opportunités rares · 19€/mois fondateurs
-              </p>
-              <span className="inline-flex items-center gap-2 bg-es-cream text-es-terracotta px-5 py-2.5 rounded-lg font-medium text-sm group-hover:bg-white transition-colors">
-                Rejoindre
-                <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/></svg>
-              </span>
+              <div className="relative">
+                <span className="text-xs uppercase tracking-widest text-white/70 font-medium">Communauté</span>
+                <h3 className="font-serif text-2xl font-bold mt-2 mb-2">ES Family</h3>
+                <p className="text-white/80 text-sm font-medium mb-4">Rejoins une communauté inspirante</p>
+                <p className="text-white/90 mb-6 leading-relaxed">
+                  Analyses flash, lives exclusifs, opportunités rares · 19€/mois fondateurs
+                </p>
+                <span className="inline-flex items-center gap-2 bg-es-cream text-es-terracotta px-5 py-2.5 rounded-lg font-medium text-sm group-hover:bg-white transition-colors">
+                  Rejoindre
+                  <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/></svg>
+                </span>
+              </div>
             </a>
           </div>
         </div>
@@ -321,63 +359,25 @@ export default function Home() {
             <span className="text-xs text-es-terracotta uppercase tracking-widest font-medium">Témoignages</span>
             <h2 className="font-serif text-3xl font-bold text-es-text mt-3">Ce qu&apos;ils en disent</h2>
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
+          <TestimonialsGrid
+            items={[
               {
-                name: "Sophie L., Lyon",
-                initial: "S",
-                citation: "La méthode m'a permis d'acheter mon premier appartement en 4 mois. Je recommande à 100%.",
-                chiffres: "Lyon · T2 meublé · +180€ cashflow/mois",
-                url: null as string | null,
+                src: "/images/site/04-avis-clients/avis-02-natacha-proprietaire.png",
+                alt: "Témoignage WhatsApp de Natacha, devenue propriétaire en 2024",
+                label: "Natacha, devenue propriétaire en 2024",
               },
               {
-                name: "Thomas R., Rennes",
-                initial: "T",
-                citation: "Les outils fournis sont incroyables. J'ai enchaîné 3 biens en 18 mois grâce à cette formation.",
-                chiffres: "Rennes · 3 biens en SCI · 8,2% de rentabilité",
-                url: null as string | null,
+                src: "/images/site/04-avis-clients/avis-03-homme-immeuble-nantes.jpg",
+                alt: "Témoignage d'un élève Evermind ayant acquis un immeuble dans le centre de Nantes",
+                label: "Élève Evermind, immeuble acquis centre de Nantes",
               },
               {
-                name: "Marie D., Nantes",
-                initial: "M",
-                citation: "Emeline explique tout simplement. Même sans connaissance, on comprend et on passe à l'action.",
-                chiffres: "Nantes · Colocation 4 chambres · 12% de rentabilité",
-                url: null as string | null,
+                src: "/images/site/04-avis-clients/avis-04-maeva-premier-achat-sans-cdi.jpg",
+                alt: "Témoignage de Maeva, premier achat immobilier sans CDI",
+                label: "Maeva, premier achat immobilier sans CDI",
               },
-            ].map((t, i) => (
-              <div key={i} className="bg-white rounded-xl p-6 border border-es-cream-dark border-t-[3px] border-t-es-terracotta card-hover flex flex-col">
-                {/* Avatar */}
-                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-es-green to-es-terracotta flex items-center justify-center mb-4">
-                  <span className="font-serif text-2xl font-bold text-white">{t.initial}</span>
-                </div>
-
-                {/* Étoiles */}
-                <div className="flex gap-0.5 mb-3">
-                  {[...Array(5)].map((_, j) => (
-                    <svg key={j} className="w-4 h-4 text-es-terracotta" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                    </svg>
-                  ))}
-                </div>
-
-                {/* Citation */}
-                <p className="font-serif text-lg text-es-text leading-relaxed mb-4 flex-1">&laquo; {t.citation} &raquo;</p>
-
-                {/* Nom */}
-                <p className="text-sm font-medium text-es-text mb-2">{t.name}</p>
-
-                {/* Chiffres clés */}
-                <p className="text-xs text-es-text-muted">{t.chiffres}</p>
-
-                {/* Lien social optionnel */}
-                {t.url && (
-                  <a href={t.url} target="_blank" rel="noopener noreferrer" className="mt-3 text-xs text-es-terracotta hover:text-es-terracotta-dark font-medium">
-                    Voir le témoignage →
-                  </a>
-                )}
-              </div>
-            ))}
-          </div>
+            ]}
+          />
         </div>
       </section>
 
@@ -417,16 +417,29 @@ export default function Home() {
       <section className="py-20 bg-white">
         <div className="max-w-5xl mx-auto px-6">
           <ScrollReveal>
-            <div className="text-center mb-8">
-              <img
-                src="/images/logo-otb.png"
-                alt="Out of the Box — Podcast Emeline Siron"
-                className="h-16 sm:h-20 mx-auto mb-4"
-              />
-              <p className="text-es-text-muted max-w-xl mx-auto">
-                Chaque mardi, un épisode de 30 minutes pour repenser ton rapport à l&apos;argent,
-                l&apos;investissement et l&apos;entrepreneuriat.
-              </p>
+            <div className="flex flex-col md:flex-row items-center justify-center gap-8 mb-8">
+              <div className="shrink-0 w-40 h-40 sm:w-48 sm:h-48 rounded-2xl overflow-hidden shadow-md">
+                <Image
+                  src="/images/site/05-incarnation-actuelle/incarnation-01-bebe-micro-podcast.jpeg"
+                  alt="Emeline et son bébé pendant l'enregistrement du podcast Out of the Box"
+                  width={600}
+                  height={600}
+                  className="w-full h-full object-cover"
+                  quality={85}
+                />
+              </div>
+              <div className="text-center md:text-left max-w-xl">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/images/logo-otb.png"
+                  alt="Out of the Box — Podcast Emeline Siron"
+                  className="h-16 sm:h-20 mx-auto md:mx-0 mb-4"
+                />
+                <p className="text-es-text-muted">
+                  Chaque mardi, un épisode de 30 minutes pour repenser ton rapport à l&apos;argent,
+                  l&apos;investissement et l&apos;entrepreneuriat.
+                </p>
+              </div>
             </div>
             <div className="rounded-2xl overflow-hidden border border-es-cream-dark bg-white">
               <LazyIframe
