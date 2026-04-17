@@ -8,7 +8,6 @@ import { MobileCta } from "@/components/ui/MobileCta";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { faqSchema } from "@/lib/seo/schemas";
 import { BottomBanner } from "@/components/marketing/BottomBanner";
-import { FamilyTestimonials } from "@/components/marketing/FamilyTestimonials";
 
 export const metadata: Metadata = {
   title: "ES Family | La communauté patrimoniale d'Emeline Siron",
@@ -76,18 +75,15 @@ export default function FamilyPage() {
               </p>
             </div>
 
-            {/* Hero image — coeur peint, symbole de l'amour de la communauté */}
-            <div className="relative rounded-2xl overflow-hidden shadow-2xl aspect-[4/5] max-w-md mx-auto lg:max-w-none w-full">
-              <Image
-                src="/images/site/01-chantier-action/chantier-09-coeur-vert-peint.jpeg"
-                alt="Emeline peignant un cœur sur un mur, symbole de la communauté ES Family"
-                width={1600}
-                height={1200}
-                className="absolute inset-0 w-full h-full object-cover object-center"
-                quality={85}
-              />
-              {/* Léger gradient pour accrocher la photo à la section sans la flinguer */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+            {/* Placeholder visuel app ES Family — à remplacer par screenshot ou mockup app */}
+            <div className="relative rounded-2xl overflow-hidden shadow-2xl aspect-[4/5] max-w-md mx-auto lg:max-w-none w-full bg-white/10 border-2 border-dashed border-white/30 flex items-center justify-center p-8">
+              <div className="text-center">
+                <svg className="w-16 h-16 mx-auto text-white/40 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                </svg>
+                <p className="text-white/70 text-sm font-medium">Visuel de l&apos;app</p>
+                <p className="text-white/50 text-xs italic mt-2">[TODO_SCREENSHOT_APP_FAMILY]</p>
+              </div>
             </div>
           </div>
         </div>
@@ -275,31 +271,47 @@ export default function FamilyPage() {
       </section>
 
       {/* Offre fondateur */}
-      <section className="relative py-16 overflow-hidden" style={{ backgroundColor: "#2c6e55" }}>
-        <div className="absolute inset-0 bg-gradient-to-r from-es-green-dark/30 via-transparent to-es-green-light/10" />
-        <div className="relative max-w-2xl mx-auto px-6 text-center text-white">
-          <span className="inline-flex items-center bg-es-gold text-white text-xs font-bold px-3 py-1 rounded-full mb-5">
-            500 PLACES, JAMAIS PLUS
+      <section className="relative py-20 overflow-hidden" style={{ backgroundColor: "#C4724A" }}>
+        <div className="absolute inset-0 bg-gradient-to-br from-es-terracotta-dark/20 via-transparent to-black/10" />
+        <div className="absolute inset-0 opacity-[0.04]" style={{
+          backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
+          backgroundSize: "40px 40px",
+        }} />
+        <div className="relative max-w-xl mx-auto px-6 text-center text-white">
+          <span className="inline-flex items-center bg-white/15 backdrop-blur text-white text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full mb-6">
+            Tarif fondateur
           </span>
-          <h2 className="font-serif text-2xl sm:text-3xl font-bold mb-3">Offre fondateur : 500 places, jamais plus</h2>
-          <div className="text-5xl sm:text-6xl font-bold my-5">
-            19€<span className="text-xl font-normal text-white/60">/mois</span>
+          <h2 className="font-serif text-2xl sm:text-3xl font-bold mb-6">
+            Réservé aux 500 premiers membres
+          </h2>
+
+          <div className="bg-white/10 backdrop-blur rounded-2xl p-8 mb-6">
+            <div className="flex items-baseline justify-center gap-2 mb-3">
+              <span className="font-serif text-6xl sm:text-7xl font-bold">19€</span>
+              <span className="text-xl font-normal text-white/80">/mois</span>
+            </div>
+            <p className="text-white/80 text-sm">
+              Tarif bloqué tant que ton abonnement reste actif
+            </p>
           </div>
-          <p className="text-white/80 text-base font-medium mb-2">À vie. Sans surprise.</p>
-          <p className="text-white/50 text-sm mb-8">
-            Après les 500 fondateurs, tarif Standard à 29€/mois.
+
+          <p className="text-white/80 text-sm mb-8">
+            Après les 500 fondateurs, tarif standard à <strong>29€/mois</strong>
           </p>
-          <p className="text-white/60 text-sm mb-8 font-medium">Encore 500 places disponibles</p>
+
           <a
             href={SKOOL_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center font-semibold rounded-lg px-10 py-4 text-lg bg-es-cream text-es-green hover:bg-white transition-all shadow-lg"
+            className="inline-flex items-center justify-center font-semibold rounded-lg px-10 py-4 text-lg bg-white text-es-terracotta hover:bg-es-cream transition-all shadow-lg"
           >
             Rejoindre à 19€/mois →
           </a>
-          <p className="text-[10px] text-white/40 mt-5 max-w-lg mx-auto">
-            * Tarif conservé tant que ton abonnement reste actif. En cas de désabonnement, tarif Standard 29€/mois à la reprise.
+          <p className="text-xs text-white/70 mt-4">
+            Sans engagement · Annulable à tout moment
+          </p>
+          <p className="text-[10px] text-white/50 mt-6 max-w-md mx-auto italic">
+            En cas de désabonnement, tu repasses au tarif standard à 29€/mois si tu reviens plus tard.
           </p>
         </div>
       </section>
@@ -323,7 +335,7 @@ export default function FamilyPage() {
               <div className="text-5xl font-bold my-5 relative">
                 19€<span className="text-lg font-normal text-white/60">/mois TTC</span>
               </div>
-              <p className="text-white/70 text-sm mb-6 relative">à vie*</p>
+              <p className="text-white/70 text-sm mb-6 relative">Tarif bloqué tant que l&apos;abonnement reste actif*</p>
               <a
                 href={SKOOL_URL}
                 target="_blank"
@@ -338,7 +350,7 @@ export default function FamilyPage() {
                   "Accès à tous les groupes thématiques",
                   "Badge « Membre fondateur » visible dans l'annuaire",
                   "Accès immédiat à la plateforme",
-                  "Prix bloqué à vie*",
+                  "Tarif conservé tant que ton abonnement reste actif",
                 ].map((item, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm text-white/90">
                     <svg className="w-5 h-5 text-es-gold mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
@@ -423,17 +435,6 @@ export default function FamilyPage() {
               </p>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Témoignages */}
-      <section className="py-20 bg-white">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-12">
-            <span className="text-xs text-es-terracotta uppercase tracking-widest font-medium">Témoignages</span>
-            <h2 className="font-serif text-3xl font-bold text-es-text mt-3">La communauté en parle</h2>
-          </div>
-          <FamilyTestimonials />
         </div>
       </section>
 

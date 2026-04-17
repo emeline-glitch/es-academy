@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { BottomBanner } from "@/components/marketing/BottomBanner";
+import { TestimonialsGrid } from "@/components/marketing/TestimonialsGrid";
 import { Button } from "@/components/ui/Button";
 import { Accordion } from "@/components/ui/Accordion";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
@@ -312,11 +313,43 @@ export default function AcademyPage() {
         </div>
       </section>
 
-      {/* Avis vidéo */}
+      {/* Messages WhatsApp d'élèves */}
       <section className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-12">
-            <span className="text-xs text-es-terracotta uppercase tracking-widest font-medium">Témoignages</span>
+            <span className="text-xs text-es-terracotta uppercase tracking-widest font-medium">Ils ont signé</span>
+            <h2 className="font-serif text-3xl font-bold text-es-text mt-3">Les messages qu&apos;on reçoit</h2>
+            <p className="text-es-text-muted mt-2 text-sm max-w-xl mx-auto">
+              Clique pour lire le message entier.
+            </p>
+          </div>
+          <TestimonialsGrid
+            items={[
+              {
+                src: "/images/site/04-avis-clients/avis-02-natacha-proprietaire.png",
+                alt: "Message WhatsApp de Natacha, devenue propriétaire en 2024",
+                label: "Natacha, devenue propriétaire en 2024",
+              },
+              {
+                src: "/images/site/04-avis-clients/avis-03-homme-immeuble-nantes.jpg",
+                alt: "Élève Evermind devenu propriétaire d'un immeuble en centre de Nantes",
+                label: "Élève Evermind, immeuble acquis centre de Nantes",
+              },
+              {
+                src: "/images/site/04-avis-clients/avis-01-milos-offre-de-pret.png",
+                alt: "Message de Milos annonçant l'obtention de son offre de prêt",
+                label: "Milos, offre de prêt obtenue",
+              },
+            ]}
+          />
+        </div>
+      </section>
+
+      {/* Avis vidéo */}
+      <section className="py-20 bg-es-cream">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <span className="text-xs text-es-terracotta uppercase tracking-widest font-medium">Témoignages vidéo</span>
             <h2 className="font-serif text-3xl font-bold text-es-text mt-3">Ils témoignent en vidéo</h2>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -346,7 +379,7 @@ export default function AcademyPage() {
       </section>
 
       {/* Avis texte */}
-      <section className="py-20 bg-es-cream">
+      <section className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-12">
             <span className="text-xs text-es-terracotta uppercase tracking-widest font-medium">Avis vérifiés</span>
