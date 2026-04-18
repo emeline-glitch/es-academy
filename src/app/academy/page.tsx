@@ -280,7 +280,7 @@ export default function AcademyPage() {
                   {[
                     { strong: "30h de formation vidéo structurée", rest: ", du zéro aux stratégies avancées (LMNP, colocation, immeuble de rapport, SCI, fiscalité)" },
                     { strong: "60+ outils prêts à l'emploi", rest: " : calculateurs, modèles de négociation, checklists visites, trames de baux, grilles d'analyse" },
-                    { strong: "Examen final certifiant", rest: " : repars avec ta certification Méthode ES" },
+                    { strong: "Quiz final de validation", rest: " : mesure tes acquis à la fin du parcours et identifie les points à renforcer" },
                     { strong: "Accès à vie + mises à jour incluses", rest: " : le marché bouge, ta formation aussi" },
                     { strong: "Option Coaching sur mesure", rest: " : un expert dédié t'accompagne à chaque étape, calibré selon ton profil et ton projet (sur devis, activable à tout moment)" },
                   ].map((item, i) => (
