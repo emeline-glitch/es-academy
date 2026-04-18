@@ -243,7 +243,7 @@ export default function AcademyPage() {
           <div className="grid md:grid-cols-2 gap-6 md:gap-6 lg:gap-12 mb-12 lg:mb-16">
             {/* Colonne gauche — La formation */}
             <ScrollReveal delay={100}>
-              <div className="h-full bg-white/5 backdrop-blur-sm rounded-2xl p-6 sm:p-8 border border-white/10">
+              <div className="h-full bg-es-cream/[0.08] backdrop-blur-sm rounded-2xl p-6 sm:p-8 border border-es-cream/25 shadow-2xl shadow-es-green-dark/50">
                 <div className="flex items-center gap-3 mb-6 pb-5 border-b border-white/10">
                   <span className="text-3xl" aria-hidden>🎓</span>
                   <h3 className="text-sm uppercase tracking-[0.2em] font-semibold text-es-cream">La formation</h3>
@@ -272,7 +272,7 @@ export default function AcademyPage() {
 
             {/* Colonne droite — ES Family (offert 3 mois) */}
             <ScrollReveal delay={200}>
-              <div className="h-full bg-es-terracotta/5 backdrop-blur-sm rounded-2xl p-6 sm:p-8 border border-es-terracotta/40 relative">
+              <div className="h-full bg-gradient-to-br from-es-terracotta/20 to-es-terracotta/10 backdrop-blur-sm rounded-2xl p-6 sm:p-8 border-2 border-es-terracotta/60 shadow-2xl shadow-es-green-dark/50 ring-1 ring-es-gold/20 relative">
                 <div className="flex items-center gap-3 mb-4 pb-5 border-b border-es-terracotta/20">
                   <span className="text-3xl shrink-0" aria-hidden>🔑</span>
                   <h3 className="text-sm uppercase tracking-[0.2em] font-semibold text-es-cream">+ 3 mois ES Family offerts</h3>
