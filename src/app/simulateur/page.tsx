@@ -158,7 +158,7 @@ export default function SimulateurPage() {
 
               <div className="bg-es-green/5 rounded-xl p-6 border border-es-green/10 text-center">
                 <p className="text-sm text-es-text-muted mb-4">
-                  Vous voulez apprendre à trouver des biens avec un cash-flow positif ?
+                  Tu veux apprendre à trouver des biens rentables et autofinancés ?
                 </p>
                 <Button variant="primary" href="/academy">
                   Découvrir la méthode complète →
@@ -168,7 +168,7 @@ export default function SimulateurPage() {
               {/* Disclaimer */}
               <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
                 <p className="text-[10px] text-gray-400 leading-relaxed">
-                  ⚠️ Ce simulateur fournit une estimation indicative. Les résultats ne constituent ni un conseil en investissement, ni un engagement contractuel. Consultez un professionnel pour un calcul adapté à votre situation. Dernière mise à jour : avril 2026.
+                  ⚠️ Ce simulateur fournit une estimation indicative. Les résultats ne constituent ni un conseil en investissement, ni un engagement contractuel. Consulte un professionnel pour un calcul adapté à ta situation. Dernière mise à jour : avril 2026.
                 </p>
               </div>
             </div>

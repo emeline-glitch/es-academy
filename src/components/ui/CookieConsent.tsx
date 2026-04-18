@@ -30,7 +30,7 @@ export function CookieConsent() {
     <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-6 md:max-w-sm z-50 bg-white rounded-xl shadow-2xl border border-es-cream-dark p-5 animate-[fadeInUp_0.4s_ease-out]">
       <p className="text-sm text-es-text mb-1 font-medium">Cookies</p>
       <p className="text-xs text-es-text-muted mb-4 leading-relaxed">
-        Ce site utilise des cookies essentiels au fonctionnement. Les cookies analytiques ne sont déposés qu&apos;avec votre accord.{" "}
+        Ce site utilise des cookies essentiels au fonctionnement. Les cookies analytiques ne sont déposés qu&apos;avec ton accord.{" "}
         <a href="/politique-confidentialite" className="text-es-green underline">En savoir plus</a>
       </p>
       <div className="flex gap-2">

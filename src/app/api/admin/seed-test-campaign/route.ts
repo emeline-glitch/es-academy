@@ -41,10 +41,10 @@ export async function POST() {
   const { data: campaign, error: campError } = await supabase
     .from("email_campaigns")
     .insert({
-      subject: "5 erreurs qui ruinent votre rentabilité locative",
+      subject: "5 erreurs qui ruinent ta rentabilité locative",
       html_content: `
 <h2>Bonjour {{prenom}},</h2>
-<p>Vous investissez dans l'immobilier locatif ? Voici les <strong>5 erreurs les plus courantes</strong> que je vois chez mes élèves :</p>
+<p>Tu investis dans l'immobilier locatif ? Voici les <strong>5 erreurs les plus courantes</strong> que je vois chez mes élèves :</p>
 <ol>
 <li>Ne pas calculer le <em>vrai</em> rendement net</li>
 <li>Sous-estimer les charges et travaux</li>
@@ -54,9 +54,9 @@ export async function POST() {
 </ol>
 <p>J'ai préparé un <strong>guide complet</strong> pour éviter ces pièges :</p>
 <p><a href="https://emeline-siron.fr/academy">Découvrir la formation ES Academy →</a></p>
-<p>Et si vous voulez aller plus loin, testez nos simulateurs gratuits :</p>
-<p><a href="https://emeline-siron.fr/simulateurs/rentabilite-locative">Calculer votre rentabilité →</a></p>
-<p><a href="https://emeline-siron.fr/simulateurs/capacite-emprunt">Estimer votre capacité d'emprunt →</a></p>
+<p>Et si tu veux aller plus loin, teste nos simulateurs gratuits :</p>
+<p><a href="https://emeline-siron.fr/simulateurs/rentabilite-locative">Calculer ta rentabilité →</a></p>
+<p><a href="https://emeline-siron.fr/simulateurs/capacite-emprunt">Estimer ta capacité d'emprunt →</a></p>
 <p>À très vite,<br><strong>Emeline Siron</strong></p>
       `.trim(),
       status: "sent",

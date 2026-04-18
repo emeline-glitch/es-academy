@@ -6,7 +6,7 @@ import { buildMetadata } from "@/lib/seo/metadata";
 
 export const metadata: Metadata = buildMetadata({
   title: "Podcast Out of the Box — Emeline Siron",
-  description: "Chaque mardi, un épisode de 30 minutes pour repenser votre rapport à l'argent, l'investissement et l'entrepreneuriat.",
+  description: "Chaque mardi, un épisode de 30 minutes pour repenser ton rapport à l'argent, l'investissement et l'entrepreneuriat.",
   path: "/podcast",
 });
 
@@ -29,7 +29,7 @@ export default function PodcastPage() {
             className="h-20 sm:h-28 mx-auto mb-6"
           />
           <p className="text-xl text-white/70 max-w-2xl mx-auto mb-8 leading-relaxed">
-            Chaque mardi, un épisode de 30 minutes pour repenser votre rapport à l&apos;argent,
+            Chaque mardi, un épisode de 30 minutes pour repenser ton rapport à l&apos;argent,
             l&apos;investissement et l&apos;entrepreneuriat. Interviews, analyses, retours d&apos;expérience.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
@@ -70,7 +70,7 @@ export default function PodcastPage() {
             Envie d&apos;aller plus loin que le podcast ?
           </h2>
           <p className="text-es-text-muted mb-8">
-            La Méthode Emeline Siron vous donne tout : 14 modules, 30h de vidéo, 60 outils.
+            La Méthode Emeline Siron te donne tout : 14 modules, 30h de vidéo, 60 outils.
           </p>
           <Button variant="primary" size="lg" href="/academy">
             Découvrir ES Academy →

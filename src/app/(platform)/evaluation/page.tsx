@@ -17,7 +17,7 @@ const evaluationQuestions = [
   { question: "Quel document est indispensable pour une demande de crédit immobilier ?", choices: ["Le bail du locataire", "Le business plan de l'opération", "Le certificat de naissance", "Le permis de construire"], correct: 1 },
   { question: "Qu'est-ce qu'un différé bancaire ?", choices: ["Un délai avant de commencer à rembourser le crédit", "Un taux d'intérêt variable", "Une assurance emprunteur", "Un frais de dossier"], correct: 0 },
   { question: "Quel est le taux d'endettement maximum généralement accepté par les banques ?", choices: ["25%", "33%", "35%", "50%"], correct: 2 },
-  { question: "Pourquoi un apport personnel peut-il aider à obtenir un meilleur taux ?", choices: ["Il prouve au banquier votre capacité d'épargne", "Il est obligatoire", "Il remplace l'assurance emprunteur", "Il n'a aucun impact"], correct: 0 },
+  { question: "Pourquoi un apport personnel peut-il aider à obtenir un meilleur taux ?", choices: ["Il prouve au banquier ta capacité d'épargne", "Il est obligatoire", "Il remplace l'assurance emprunteur", "Il n'a aucun impact"], correct: 0 },
   // Module 4 — Recherche de biens
   { question: "Quel est le premier réflexe avant de visiter un bien ?", choices: ["Appeler le notaire", "Calculer la rentabilité prévisionnelle", "Signer un mandat", "Demander un crédit"], correct: 1 },
   { question: "Qu'est-ce qu'une étude de marché locatif ?", choices: ["Un document du notaire", "L'analyse de l'offre et la demande locative dans un secteur", "Un diagnostic immobilier", "Un rapport de l'agent immobilier"], correct: 1 },
@@ -109,7 +109,7 @@ export default function ExamenFinalPage() {
                 <div className="my-3">
                   <input
                     type="text"
-                    placeholder="Votre nom complet"
+                    placeholder="Ton nom complet"
                     value={userName}
                     onChange={(e) => setUserName(e.target.value)}
                     className="font-serif text-2xl font-bold text-es-text text-center border-b-2 border-es-gold/30 focus:border-es-gold outline-none pb-1 w-full max-w-xs"
@@ -162,7 +162,7 @@ export default function ExamenFinalPage() {
       <div className="mb-8">
         <h1 className="font-serif text-3xl font-bold text-gray-900">Examen final</h1>
         <p className="text-gray-500 mt-1">
-          30 questions pour valider vos acquis sur l'ensemble de la formation. Score minimum : 70%.
+          30 questions pour valider tes acquis sur l'ensemble de la formation. Score minimum : 70%.
         </p>
       </div>
 
@@ -178,8 +178,8 @@ export default function ExamenFinalPage() {
           </h2>
           <p className="text-gray-500 mb-6">
             {passed
-              ? `Vous avez réussi l'examen final avec ${score}% de bonnes réponses.`
-              : `Il faut 70% pour valider. Vous avez obtenu ${score}%. Révisez et réessayez !`}
+              ? `Tu as réussi l'examen final avec ${score}% de bonnes réponses.`
+              : `Il faut 70% pour valider. Tu as obtenu ${score}%. Révise et réessaie !`}
           </p>
           {passed ? (
             <Button variant="primary" size="lg" onClick={() => setShowDiploma(true)}>

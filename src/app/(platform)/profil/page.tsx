@@ -55,7 +55,7 @@ export default function ProfilPage() {
     <div>
       <div className="mb-8">
         <h1 className="font-serif text-3xl font-bold text-gray-900">Mon profil</h1>
-        <p className="text-gray-500 mt-1">Gérez vos informations personnelles.</p>
+        <p className="text-gray-500 mt-1">Gère tes informations personnelles.</p>
       </div>
 
       <div className="max-w-xl">
@@ -66,7 +66,7 @@ export default function ProfilPage() {
               type="text"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              placeholder="Votre nom"
+              placeholder="Ton nom"
             />
             <div>
               <label className="text-sm font-medium text-es-text mb-1.5 block">Email</label>
@@ -95,7 +95,7 @@ export default function ProfilPage() {
         <Card className="mt-6 border-red-200">
           <h3 className="font-medium text-gray-900 mb-2">Zone de danger</h3>
           <p className="text-sm text-gray-500 mb-4">
-            Pour supprimer votre compte et vos données, contactez-nous à contact@emelinesiron.com
+            Pour supprimer ton compte et tes données, contacte-nous à contact@emelinesiron.com
           </p>
         </Card>
       </div>

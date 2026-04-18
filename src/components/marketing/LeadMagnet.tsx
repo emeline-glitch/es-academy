@@ -48,7 +48,7 @@ export function LeadMagnet() {
         <div className="text-white">
           <span className="text-xs text-es-gold uppercase tracking-widest font-medium">Gratuit</span>
           <h3 className="font-serif text-2xl sm:text-3xl font-bold mt-2 mb-4">
-            3 outils offerts pour votre premier investissement
+            3 outils offerts pour ton premier investissement
           </h3>
           <ul className="space-y-3 text-white/70 text-sm">
             <li className="flex items-center gap-2">
@@ -72,7 +72,7 @@ export function LeadMagnet() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Votre email"
+              placeholder="Ton email"
               required
               className="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/20 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-es-gold/50 focus:border-es-gold transition-all"
             />

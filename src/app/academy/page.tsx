@@ -108,7 +108,7 @@ export default function AcademyPage() {
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { step: "01", title: "Inscrivez-vous", desc: "Paiement sécurisé et accès immédiat à la plateforme, aux 14 modules et aux 60 outils.", icon: "🔑" },
+              { step: "01", title: "Inscris-toi", desc: "Paiement sécurisé et accès immédiat à la plateforme, aux 14 modules et aux 60 outils.", icon: "🔑" },
               { step: "02", title: "Suis la méthode", desc: "Avance à ton rythme. Chaque module se termine par un quiz pour valider tes acquis.", icon: "🎯" },
               { step: "03", title: "Passe à l'action", desc: "Utilise les outils et le coaching pour réaliser ton premier investissement.", icon: "🚀" },
             ].map((item, i) => (

@@ -23,11 +23,11 @@ export default function AuthLayout({
 
         <div className="relative">
           <h1 className="font-serif text-4xl font-bold text-white leading-tight mb-4">
-            Votre espace<br />
+            Ton espace<br />
             <span className="text-es-gold">de formation</span>
           </h1>
           <p className="text-white/60 leading-relaxed max-w-md">
-            Accédez à vos modules, suivez votre progression, téléchargez vos outils et échangez avec la communauté.
+            Accède à tes modules, suis ta progression, télécharge tes outils et échange avec la communauté.
           </p>
         </div>
 

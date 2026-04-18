@@ -1,6 +1,6 @@
 export const SITE_NAME = "Emeline Siron";
 export const SITE_DESCRIPTION =
-  "Construisons votre réussite financière et humaine. ES Academy : formation immobilier locatif. ES Family : communauté patrimoniale.";
+  "Construisons ta réussite financière et humaine. ES Academy : formation immobilier locatif. ES Family : communauté patrimoniale.";
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://emeline-siron.fr";
 
 // Taux de crédit moyen — à mettre à jour chaque mois
@@ -34,7 +34,7 @@ export const PRICING = {
   },
   coaching: {
     name: "Coaching sur mesure",
-    description: "Accompagnement individualisé selon votre profil et vos objectifs",
+    description: "Accompagnement individualisé selon ton profil et tes objectifs",
   },
   family: {
     name: "ES Family",

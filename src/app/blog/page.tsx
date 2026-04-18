@@ -45,7 +45,7 @@ export default async function BlogPage() {
               Investissement immobilier &amp; patrimoine
             </h1>
             <p className="mt-4 text-lg text-white/70 leading-relaxed">
-              Guides, analyses et conseils pour bâtir et piloter votre patrimoine immobilier.
+              Guides, analyses et conseils pour bâtir et piloter ton patrimoine immobilier.
             </p>
           </div>
         </div>

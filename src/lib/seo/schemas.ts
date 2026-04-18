@@ -7,7 +7,7 @@ export function organizationSchema() {
     name: "ES Academy — Emeline Siron",
     url: SITE_URL,
     logo: `${SITE_URL}/images/logo.svg`,
-    description: "Formation en investissement immobilier locatif. La méthode complète pour bâtir votre patrimoine.",
+    description: "Formation en investissement immobilier locatif. La méthode complète pour bâtir ton patrimoine.",
     founder: {
       "@type": "Person",
       name: "Emeline Siron",

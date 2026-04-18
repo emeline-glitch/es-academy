@@ -35,8 +35,8 @@ export default function PolitiqueConfidentialite() {
 
         <h2>Finalites du traitement</h2>
         <ul>
-          <li>Gestion de votre compte et acces a la formation</li>
-          <li>Suivi de votre progression pedagogique</li>
+          <li>Gestion de ton compte et acces a la formation</li>
+          <li>Suivi de ta progression pedagogique</li>
           <li>Envoi de newsletters et communications marketing (avec consentement)</li>
           <li>Amelioration de nos services</li>
           <li>Facturation et gestion comptable</li>
@@ -55,9 +55,9 @@ export default function PolitiqueConfidentialite() {
           <li>Donnees newsletter : jusqu&apos;au desabonnement</li>
         </ul>
 
-        <h2>Vos droits</h2>
+        <h2>Tes droits</h2>
         <p>
-          Conformement au RGPD, vous disposez des droits suivants : acces, rectification,
+          Conformement au RGPD, tu disposes des droits suivants : acces, rectification,
           effacement, portabilite, limitation et opposition au traitement. Pour exercer
           ces droits : contact@emelinesiron.com
         </p>
@@ -65,7 +65,7 @@ export default function PolitiqueConfidentialite() {
         <h2>Cookies</h2>
         <p>
           Ce site utilise des cookies strictement necessaires au fonctionnement. Les cookies
-          analytiques ne sont deposes qu&apos;avec votre consentement.
+          analytiques ne sont deposes qu&apos;avec ton consentement.
         </p>
 
         <h2>Sous-traitants</h2>

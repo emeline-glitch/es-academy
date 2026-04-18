@@ -65,10 +65,10 @@ export default function OutilsGratuits() {
             <div>
               <span className="text-xs text-es-terracotta uppercase tracking-widest font-medium">Gratuit</span>
               <h1 className="font-serif text-3xl sm:text-4xl font-bold text-es-text mt-3 mb-4 leading-tight">
-                3 outils indispensables pour votre premier investissement
+                3 outils indispensables pour ton premier investissement
               </h1>
               <p className="text-es-text-muted mb-8 leading-relaxed">
-                Recevez gratuitement les outils que j&apos;utilise moi-même pour analyser, visiter et financer mes biens immobiliers.
+                Reçois gratuitement les outils que j&apos;utilise moi-même pour analyser, visiter et financer mes biens immobiliers.
               </p>
 
               <div className="space-y-5">
@@ -89,10 +89,10 @@ export default function OutilsGratuits() {
             {/* Right — form */}
             <div className="bg-white rounded-2xl p-8 shadow-lg border border-es-cream-dark">
               <h2 className="font-serif text-xl font-bold text-es-text mb-2">
-                Recevez vos outils gratuits
+                Reçois tes outils gratuits
               </h2>
               <p className="text-sm text-es-text-muted mb-6">
-                Remplissez le formulaire et recevez tout dans votre boîte mail en 2 minutes.
+                Remplis le formulaire et reçois tout dans ta boîte mail en 2 minutes.
               </p>
 
               {status === "error" && (
@@ -108,7 +108,7 @@ export default function OutilsGratuits() {
                     type="text"
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
-                    placeholder="Votre prénom"
+                    placeholder="Ton prénom"
                     className="w-full px-4 py-3 rounded-xl border border-es-cream-dark bg-es-cream-light text-es-text placeholder:text-es-text-muted/40 focus:outline-none focus:ring-2 focus:ring-es-green/30 focus:border-es-green transition-all"
                   />
                 </div>
@@ -118,7 +118,7 @@ export default function OutilsGratuits() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="votre@email.com"
+                    placeholder="ton@email.com"
                     required
                     className="w-full px-4 py-3 rounded-xl border border-es-cream-dark bg-es-cream-light text-es-text placeholder:text-es-text-muted/40 focus:outline-none focus:ring-2 focus:ring-es-green/30 focus:border-es-green transition-all"
                   />
@@ -131,7 +131,7 @@ export default function OutilsGratuits() {
                   {status === "loading" ? "Envoi..." : "Recevoir mes outils gratuits →"}
                 </button>
                 <p className="text-[10px] text-es-text-muted/50 text-center">
-                  Pas de spam. Désabonnement en 1 clic. Vos données sont protégées.
+                  Pas de spam. Désabonnement en 1 clic. Tes données sont protégées.
                 </p>
               </form>
 

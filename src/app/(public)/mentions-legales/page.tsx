@@ -43,8 +43,8 @@ export default function MentionsLegales() {
 
         <h2>Donnees personnelles</h2>
         <p>
-          Conformement au RGPD, vous disposez d&apos;un droit d&apos;acces, de rectification et de
-          suppression de vos donnees personnelles. Pour exercer ces droits, contactez-nous a :
+          Conformement au RGPD, tu disposes d&apos;un droit d&apos;acces, de rectification et de
+          suppression de tes donnees personnelles. Pour exercer ces droits, contacte-nous a :
           contact@emelinesiron.com
         </p>
 

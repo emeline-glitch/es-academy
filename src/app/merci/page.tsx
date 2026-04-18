@@ -19,17 +19,17 @@ export default function Merci() {
             Bienvenue dans ES Academy !
           </h1>
           <p className="text-lg text-es-text-muted mb-8 leading-relaxed">
-            Votre paiement a été confirmé. Vous allez recevoir vos identifiants de connexion par email dans les prochaines minutes.
+            Ton paiement a été confirmé. Tu vas recevoir tes identifiants de connexion par email dans les prochaines minutes.
           </p>
 
           <div className="bg-white rounded-2xl p-8 border border-es-cream-dark text-left mb-8">
-            <h2 className="font-serif text-lg font-bold text-es-text mb-4">Vos prochaines étapes :</h2>
+            <h2 className="font-serif text-lg font-bold text-es-text mb-4">Tes prochaines étapes :</h2>
             <div className="space-y-4">
               {[
-                { step: "1", title: "Vérifiez votre email", desc: "Vos identifiants de connexion arrivent dans quelques minutes." },
-                { step: "2", title: "Connectez-vous", desc: "Accédez à votre espace de formation avec vos identifiants." },
-                { step: "3", title: "Commencez le Module 1", desc: "Démarrez avec \"Être un investisseur intelligent et rentable\"." },
-                { step: "4", title: "Rejoignez ES Family", desc: "Votre accès 3 mois gratuit à la communauté est activé." },
+                { step: "1", title: "Vérifie ton email", desc: "Tes identifiants de connexion arrivent dans quelques minutes." },
+                { step: "2", title: "Connecte-toi", desc: "Accède à ton espace de formation avec tes identifiants." },
+                { step: "3", title: "Commence le Module 1", desc: "Démarre avec \"Être un investisseur intelligent et rentable\"." },
+                { step: "4", title: "Rejoins ES Family", desc: "Ton accès 3 mois gratuit à la communauté est activé." },
               ].map((item, i) => (
                 <div key={i} className="flex gap-4">
                   <div className="w-8 h-8 rounded-full bg-es-green flex items-center justify-center shrink-0">
@@ -49,7 +49,7 @@ export default function Merci() {
           </Button>
 
           <p className="text-xs text-es-text-muted mt-4">
-            Un problème ? Contactez-nous à contact@emelinesiron.com
+            Un problème ? Contacte-nous à contact@emelinesiron.com
           </p>
         </div>
       </section>

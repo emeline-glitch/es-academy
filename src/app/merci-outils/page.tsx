@@ -17,10 +17,10 @@ export default function MerciOutils() {
             </svg>
           </div>
           <h1 className="font-serif text-3xl sm:text-4xl font-bold text-es-text mb-3">
-            Vos outils sont en route !
+            Tes outils sont en route !
           </h1>
           <p className="text-es-text-muted mb-8">
-            Vérifiez votre boîte mail (et les spams). Vous recevrez tout dans les prochaines minutes.
+            Vérifie ta boîte mail (et les spams). Tu recevras tout dans les prochaines minutes.
           </p>
 
           {/* Upsell Academy */}
@@ -29,10 +29,10 @@ export default function MerciOutils() {
             <div className="relative">
               <span className="text-xs text-es-gold uppercase tracking-widest font-medium">Offre spéciale</span>
               <h2 className="font-serif text-2xl sm:text-3xl font-bold mt-3 mb-4">
-                Vous voulez aller plus loin ?
+                Tu veux aller plus loin ?
               </h2>
               <p className="text-white/70 mb-6 leading-relaxed">
-                Les outils gratuits vous donnent un aperçu. La Méthode Emeline Siron vous donne
+                Les outils gratuits te donnent un aperçu. La Méthode Emeline Siron te donne
                 <strong className="text-white"> tout</strong> : 14 modules, 30h de vidéo, 60 outils, coaching et communauté.
               </p>
 

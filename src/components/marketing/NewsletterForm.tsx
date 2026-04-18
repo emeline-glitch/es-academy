@@ -26,7 +26,7 @@ export function NewsletterForm() {
     return (
       <div className="bg-es-green/10 rounded-lg p-4 text-center">
         <p className="text-es-green font-medium text-sm">Bienvenue dans la communauté ! 🎉</p>
-        <p className="text-xs text-gray-500 mt-1">Vérifiez votre boîte mail.</p>
+        <p className="text-xs text-gray-500 mt-1">Vérifie ta boîte mail.</p>
       </div>
     );
   }
@@ -38,7 +38,7 @@ export function NewsletterForm() {
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="Votre adresse email"
+          placeholder="Ton adresse email"
           required
           className="flex-1 px-4 py-3 rounded-lg border border-es-cream-dark bg-white text-sm focus:outline-none focus:ring-2 focus:ring-es-green/30"
         />
