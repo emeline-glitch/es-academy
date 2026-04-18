@@ -168,10 +168,10 @@ export default function AcademyPage() {
           </div>
           <div className="grid md:grid-cols-2 gap-6">
             {/* Avant */}
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
+            <div className="bg-es-cream rounded-2xl p-8 border border-es-cream-dark">
               <div className="mb-6">
-                <span className="text-xs uppercase tracking-widest text-white/70 font-medium">Avant</span>
-                <h3 className="font-serif text-xl font-bold text-white mt-2">Les fausses croyances</h3>
+                <span className="text-xs uppercase tracking-widest text-es-green-dark/60 font-medium">Avant</span>
+                <h3 className="font-serif text-xl font-bold text-es-green-dark mt-2">Les fausses croyances</h3>
               </div>
               <ul className="space-y-4">
                 {[
@@ -181,17 +181,17 @@ export default function AcademyPage() {
                   "\"Le cash-flow immobilier, c'est un mythe\"",
                   "\"Investir seul, c'est impossible\"",
                 ].map((item, i) => (
-                  <li key={i} className="flex items-start gap-3 text-white/90 text-base line-through decoration-red-400 decoration-2">
+                  <li key={i} className="flex items-start gap-3 text-es-green-dark text-base line-through decoration-red-500 decoration-2">
                     {item}
                   </li>
                 ))}
               </ul>
             </div>
             {/* Après */}
-            <div className="bg-es-gold/10 backdrop-blur-sm rounded-2xl p-8 border border-es-gold/20">
+            <div className="bg-es-cream rounded-2xl p-8 border border-es-cream-dark">
               <div className="mb-6">
-                <span className="text-xs uppercase tracking-widest text-es-gold font-medium">Après la formation</span>
-                <h3 className="font-serif text-xl font-bold text-white mt-2">Ta nouvelle réalité</h3>
+                <span className="text-xs uppercase tracking-widest text-es-gold-dark font-medium">Après la formation</span>
+                <h3 className="font-serif text-xl font-bold text-es-green-dark mt-2">Ta nouvelle réalité</h3>
               </div>
               <ul className="space-y-4">
                 {[
@@ -201,8 +201,8 @@ export default function AcademyPage() {
                   "Tu vis de tes revenus locatifs",
                   "Tu es un investisseur autonome et rentable",
                 ].map((item, i) => (
-                  <li key={i} className="flex items-start gap-3 text-white font-medium text-sm">
-                    <svg className="w-5 h-5 text-es-gold mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <li key={i} className="flex items-start gap-3 text-es-green-dark font-medium text-base">
+                    <svg className="w-5 h-5 text-es-green mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
                     </svg>
                     {item}
