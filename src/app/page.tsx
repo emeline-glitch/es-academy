@@ -9,7 +9,7 @@ import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
 import { LeadMagnet } from "@/components/marketing/LeadMagnet";
 import { LazyIframe } from "@/components/ui/LazyIframe";
 import { BottomBanner } from "@/components/marketing/BottomBanner";
-import { PressGrid } from "@/components/marketing/PressGrid";
+import { SocialStats } from "@/components/marketing/SocialStats";
 import { TestimonialsGrid } from "@/components/marketing/TestimonialsGrid";
 import { STATS } from "@/lib/utils/constants";
 
@@ -43,12 +43,18 @@ export default function Home() {
                 <span className="block text-4xl sm:text-5xl lg:text-6xl">
                   De fille de garagiste à libre à 30 ans.
                 </span>
-                <span className="block text-2xl sm:text-3xl lg:text-4xl text-white/80 mt-4 font-normal">
+                <span className="block text-2xl sm:text-3xl lg:text-4xl text-white mt-4 font-normal">
                   L&apos;immobilier l&apos;a fait pour moi. Il peut le faire pour toi.
                 </span>
               </h1>
               <p className="text-lg text-white mb-10 max-w-lg leading-relaxed">
-                1 541€ nets par mois. C&apos;est la retraite moyenne en France pour une vie entière de travail. J&apos;ai grandi en regardant mes parents travailler jour et nuit. Je me suis promis : plus jamais ça. Depuis 2022, je forme 1 900 personnes à bâtir leur patrimoine par l&apos;immobilier. Méthode, outils, communauté.
+                1 541€ nets par mois. C&apos;est la retraite moyenne en France pour une vie entière de travail. J&apos;ai grandi en regardant mes parents travailler jour et nuit.
+                <br /><br />
+                Je me suis promis : plus jamais ça.
+                <br /><br />
+                Depuis 2022, j&apos;ai formé 1 900 personnes à bâtir leur patrimoine par l&apos;immobilier.
+                <br /><br />
+                Méthode, outils, communauté.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 mb-12">
@@ -156,28 +162,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Réassurance */}
-      <section className="py-8 bg-white border-b border-gray-100">
-        <div className="max-w-5xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-          {[
-            { value: "1 900+", label: "participants formés" },
-            { value: "98%", label: "de satisfaction" },
-            { value: "100%", label: "digital" },
-            { value: "+30h", label: "de formation" },
-          ].map((item, i) => (
-            <div key={i}>
-              <p className="font-serif text-2xl font-bold text-es-green">{item.value}</p>
-              <p className="text-xs text-gray-500 mt-0.5">{item.label}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Presse */}
-      <section className="py-16 bg-white">
-        <div className="max-w-5xl mx-auto px-6">
-          <p className="text-xs text-es-text-muted uppercase tracking-widest mb-8 text-center">Elles m&apos;ont fait confiance</p>
-          <PressGrid />
+      {/* Réseaux sociaux — preuve sociale */}
+      <section className="py-16 bg-es-cream/40">
+        <div className="max-w-6xl mx-auto px-6">
+          <p className="text-xs text-es-text-muted uppercase tracking-widest mb-10 text-center">Ils me suivent déjà</p>
+          <SocialStats />
         </div>
       </section>
 
@@ -313,19 +302,19 @@ export default function Home() {
           <TestimonialsGrid
             items={[
               {
-                src: "/images/site/04-avis-clients/avis-02-natacha-proprietaire.png",
-                alt: "Témoignage WhatsApp de Natacha, devenue propriétaire en 2024",
-                label: "Natacha, devenue propriétaire en 2024",
+                src: "/images/site/04-avis-clients/avis-06-natacha-notaires-cropped.png",
+                alt: "Témoignage WhatsApp de Natacha, devenue propriétaire après la formation",
+                label: "Natacha, propriétaire après la formation",
               },
               {
-                src: "/images/site/04-avis-clients/avis-03-homme-immeuble-nantes.jpg",
-                alt: "Témoignage d'un élève Evermind ayant acquis un immeuble dans le centre de Nantes",
+                src: "/images/site/04-avis-clients/avis-07-nantes-emoji-etoiles.jpg",
+                alt: "Témoignage d'un élève devenu propriétaire d'un immeuble à Nantes",
                 label: "Élève Evermind, immeuble acquis centre de Nantes",
               },
               {
-                src: "/images/site/04-avis-clients/avis-01-milos-offre-de-pret.png",
-                alt: "Message de Milos annonçant l'obtention de son offre de prêt",
-                label: "Milos, offre de prêt obtenue",
+                src: "/images/site/04-avis-clients/avis-05-mosaique-clients-clefs.jpg",
+                alt: "Mosaïque de témoignages WhatsApp d'élèves ayant obtenu les clés de leur bien",
+                label: "Plusieurs élèves, acquisitions signées",
               },
             ]}
           />

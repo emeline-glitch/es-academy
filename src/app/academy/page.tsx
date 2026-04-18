@@ -168,9 +168,9 @@ export default function AcademyPage() {
           </div>
           <div className="grid md:grid-cols-2 gap-6">
             {/* Avant */}
-            <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
               <div className="mb-6">
-                <span className="text-xs uppercase tracking-widest text-white/40 font-medium">Avant</span>
+                <span className="text-xs uppercase tracking-widest text-white/70 font-medium">Avant</span>
                 <h3 className="font-serif text-xl font-bold text-white mt-2">Les fausses croyances</h3>
               </div>
               <ul className="space-y-4">
@@ -181,7 +181,7 @@ export default function AcademyPage() {
                   "\"Le cash-flow immobilier, c'est un mythe\"",
                   "\"Investir seul, c'est impossible\"",
                 ].map((item, i) => (
-                  <li key={i} className="flex items-start gap-3 text-white/50 text-sm line-through decoration-red-400/50">
+                  <li key={i} className="flex items-start gap-3 text-white/90 text-base line-through decoration-red-400 decoration-2">
                     {item}
                   </li>
                 ))}
@@ -236,28 +236,6 @@ export default function AcademyPage() {
         </div>
       </section>
 
-      {/* 5. Ce qui est inclus */}
-      <section className="py-20 bg-es-cream">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-12">
-            <span className="text-xs text-es-terracotta uppercase tracking-widest font-medium">Inclus</span>
-            <h2 className="font-serif text-3xl font-bold text-es-text mt-3">Tout ce dont tu as besoin</h2>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {PRICING.academy.features.map((feature, i) => (
-              <div key={i} className="bg-white rounded-xl p-5 border border-es-cream-dark card-hover">
-                <div className="w-10 h-10 rounded-lg bg-es-green/10 flex items-center justify-center mb-3">
-                  <svg className="w-5 h-5 text-es-green" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
-                  </svg>
-                </div>
-                <p className="text-sm text-es-text font-medium">{feature}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* 6. Offre et prix + Garantie */}
       <section id="offre" className="relative py-20 lg:py-28 bg-es-green overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-es-green-dark/30 via-transparent to-es-green-light/10" />
@@ -269,13 +247,13 @@ export default function AcademyPage() {
           <span className="text-xs uppercase tracking-widest text-es-gold font-medium">Offre</span>
           <h2 className="font-serif text-3xl font-bold mt-3 mb-2">{PRICING.academy.name}</h2>
           <div className="text-6xl font-bold my-6">{PRICING.academy.priceDisplay}€<span className="text-lg font-normal text-white/50 ml-2">TTC</span></div>
-          <ul className="text-left space-y-3 mb-8">
+          <ul className="text-left space-y-4 mb-8">
             {PRICING.academy.features.map((f, i) => (
               <li key={i} className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-es-gold mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-6 h-6 text-es-gold mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
                 </svg>
-                <span className="text-white/80 text-sm">{f}</span>
+                <span className="text-white/90 text-base font-medium">{f}</span>
               </li>
             ))}
           </ul>
@@ -318,28 +296,20 @@ export default function AcademyPage() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-12">
             <span className="text-xs text-es-terracotta uppercase tracking-widest font-medium">Ils ont signé</span>
-            <h2 className="font-serif text-3xl font-bold text-es-text mt-3">Les messages qu&apos;on reçoit</h2>
-            <p className="text-es-text-muted mt-2 text-sm max-w-xl mx-auto">
-              Clique pour lire le message entier.
-            </p>
+            <h2 className="font-serif text-3xl font-bold text-es-text mt-3">Les messages que je reçois</h2>
           </div>
           <TestimonialsGrid
+            variant="masonry"
             items={[
-              {
-                src: "/images/site/04-avis-clients/avis-02-natacha-proprietaire.png",
-                alt: "Message WhatsApp de Natacha, devenue propriétaire en 2024",
-                label: "Natacha, devenue propriétaire en 2024",
-              },
-              {
-                src: "/images/site/04-avis-clients/avis-03-homme-immeuble-nantes.jpg",
-                alt: "Élève Evermind devenu propriétaire d'un immeuble en centre de Nantes",
-                label: "Élève Evermind, immeuble acquis centre de Nantes",
-              },
-              {
-                src: "/images/site/04-avis-clients/avis-01-milos-offre-de-pret.png",
-                alt: "Message de Milos annonçant l'obtention de son offre de prêt",
-                label: "Milos, offre de prêt obtenue",
-              },
+              { src: "/images/site/04-avis-clients/IMG_5768.jpg", alt: "Message d'élève Evermind", width: 1008, height: 819 },
+              { src: "/images/site/04-avis-clients/IMG_5767.jpg", alt: "Message d'élève Evermind", width: 958, height: 1689 },
+              { src: "/images/site/04-avis-clients/IMG_5766.jpg", alt: "Message d'élève Evermind", width: 1030, height: 1744 },
+              { src: "/images/site/04-avis-clients/IMG_5765.jpg", alt: "Message d'élève Evermind", width: 996, height: 1381 },
+              { src: "/images/site/04-avis-clients/IMG_5764.jpg", alt: "Message d'élève Evermind", width: 1014, height: 573 },
+              { src: "/images/site/04-avis-clients/IMG_5763.jpg", alt: "Message d'élève Evermind", width: 1179, height: 454 },
+              { src: "/images/site/04-avis-clients/IMG_5762.jpg", alt: "Message d'élève Evermind", width: 1178, height: 1415 },
+              { src: "/images/site/04-avis-clients/IMG_5761.jpg", alt: "Message d'élève Evermind", width: 1024, height: 1010 },
+              { src: "/images/site/04-avis-clients/IMG_5759.jpg", alt: "Message d'élève Evermind", width: 1179, height: 711 },
             ]}
           />
         </div>

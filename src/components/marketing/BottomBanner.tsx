@@ -2,7 +2,7 @@ import { NewsletterForm } from "./NewsletterForm";
 
 export function BottomBanner() {
   return (
-    <section className="py-16 bg-es-cream border-t border-es-cream-dark">
+    <section id="newsletter" className="py-16 bg-es-cream border-t border-es-cream-dark">
       <div className="max-w-3xl mx-auto px-6 text-center">
         {/* Réseaux sociaux */}
         <span className="text-xs text-es-terracotta uppercase tracking-widest font-medium">Restons connectés</span>
