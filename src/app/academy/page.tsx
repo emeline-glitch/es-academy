@@ -236,46 +236,123 @@ export default function AcademyPage() {
         </div>
       </section>
 
-      {/* 6. Offre et prix + Garantie */}
-      <section id="offre" className="relative py-20 lg:py-28 bg-es-green overflow-hidden">
+      {/* 6. Offre et prix */}
+      <section id="offre" className="relative py-12 sm:py-20 lg:py-28 bg-es-green overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-es-green-dark/30 via-transparent to-es-green-light/10" />
         <div className="absolute inset-0 opacity-[0.03]" style={{
           backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
           backgroundSize: "40px 40px",
         }} />
-        <div className="relative max-w-lg mx-auto px-6 text-center text-white">
-          <span className="text-xs uppercase tracking-widest text-es-gold font-medium">Offre</span>
-          <h2 className="font-serif text-3xl font-bold mt-3 mb-2">{PRICING.academy.name}</h2>
-          <div className="text-6xl font-bold my-6">{PRICING.academy.priceDisplay}€<span className="text-lg font-normal text-white/50 ml-2">TTC</span></div>
-          <ul className="text-left space-y-4 mb-8">
-            {PRICING.academy.features.map((f, i) => (
-              <li key={i} className="flex items-start gap-3">
-                <svg className="w-6 h-6 text-es-gold mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
-                </svg>
-                <span className="text-white/90 text-base font-medium">{f}</span>
-              </li>
-            ))}
-          </ul>
-          <Button variant="cta" size="lg" className="w-full btn-gold-shimmer font-semibold text-base">
-            Je rejoins la formation →
-          </Button>
-          <p className="text-xs text-white/40 mt-4">Paiement sécurisé · Accès immédiat</p>
 
-          {/* Garantie */}
-          <div className="mt-8 bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/10">
-            <div className="flex items-center justify-center gap-3 mb-3">
-              <div className="w-12 h-12 rounded-full bg-es-gold/20 flex items-center justify-center">
-                <svg className="w-6 h-6 text-es-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
-              </div>
-              <div className="text-left">
-                <div className="font-bold text-white">Garantie 14 jours</div>
-                <div className="text-white/60 text-sm">Satisfait ou remboursé, sans condition</div>
-              </div>
+        <div className="relative max-w-[1200px] mx-auto px-6 text-es-cream">
+          <ScrollReveal>
+            {/* 1. Header centré */}
+            <div className="text-center mb-10 lg:mb-14">
+              <span className="text-xs uppercase tracking-[0.25em] text-es-terracotta-light font-medium">Offre complète</span>
+              <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold mt-4 text-es-cream">La Méthode Emeline Siron</h2>
+              <p className="font-serif text-xl sm:text-2xl text-es-gold mt-3">+ 3 mois ES Family offerts</p>
             </div>
+
+            {/* 2. Bloc prix */}
+            <div className="text-center mb-12 lg:mb-16">
+              <p className="text-sm text-es-cream/40 mb-2">
+                Valeur totale <span className="line-through">1 085€</span>
+              </p>
+              <div className="flex items-baseline justify-center gap-2">
+                <span className="text-6xl sm:text-7xl lg:text-8xl font-bold text-es-cream">998€</span>
+                <span className="text-lg font-normal text-es-cream/50">TTC</span>
+              </div>
+              <p className="text-base text-es-cream/70 mt-3">Paiement en 1x, 3x ou 10x sans frais</p>
+              <p className="text-sm text-es-terracotta-light mt-4 font-medium">Déjà plus de 1 800 investisseurs formés</p>
+            </div>
+          </ScrollReveal>
+
+          {/* 3. Grille 2 colonnes */}
+          <div className="grid md:grid-cols-2 gap-6 md:gap-6 lg:gap-12 mb-12 lg:mb-16">
+            {/* Colonne gauche — La formation */}
+            <ScrollReveal delay={100}>
+              <div className="h-full bg-white/5 backdrop-blur-sm rounded-2xl p-6 sm:p-8 border border-white/10">
+                <div className="flex items-center gap-3 mb-6 pb-5 border-b border-white/10">
+                  <span className="text-3xl" aria-hidden>🎓</span>
+                  <h3 className="text-sm uppercase tracking-[0.2em] font-semibold text-es-cream">La formation</h3>
+                </div>
+                <ul className="space-y-5">
+                  {[
+                    { strong: "30h de formation vidéo structurée", rest: ", du zéro aux stratégies avancées (LMNP, colocation, immeuble de rapport, SCI, fiscalité)" },
+                    { strong: "60+ outils prêts à l'emploi", rest: " : calculateurs, modèles de négociation, checklists visites, trames de baux, grilles d'analyse" },
+                    { strong: "Examen final certifiant", rest: " : repars avec ta certification Méthode ES" },
+                    { strong: "Accès à vie + mises à jour incluses", rest: " : le marché bouge, ta formation aussi" },
+                    { strong: "Option Coaching sur mesure", rest: " : un expert dédié t'accompagne à chaque étape, calibré selon ton profil et ton projet (sur devis, activable à tout moment)" },
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <svg className="w-5 h-5 text-es-green-light mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span className="text-es-cream/90 text-[15px] leading-relaxed">
+                        <strong className="text-es-cream font-semibold">{item.strong}</strong>
+                        {item.rest}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </ScrollReveal>
+
+            {/* Colonne droite — ES Family (offert 3 mois) */}
+            <ScrollReveal delay={200}>
+              <div className="h-full bg-es-terracotta/5 backdrop-blur-sm rounded-2xl p-6 sm:p-8 border border-es-terracotta/40 relative">
+                <div className="flex items-center justify-between gap-3 mb-4 pb-5 border-b border-es-terracotta/20">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <span className="text-3xl shrink-0" aria-hidden>🔑</span>
+                    <h3 className="text-sm uppercase tracking-[0.2em] font-semibold text-es-cream truncate">+ 3 mois ES Family offerts</h3>
+                  </div>
+                  <span className="shrink-0 text-[11px] font-semibold bg-es-terracotta text-es-cream px-2.5 py-1 rounded-full">valeur 87€</span>
+                </div>
+
+                <p className="italic text-es-cream/80 text-[15px] leading-relaxed mb-6">
+                  ES Family, c'est la communauté privée qui fait passer la théorie à l'action.
+                </p>
+
+                <ul className="space-y-5">
+                  {[
+                    { strong: "Lives mensuels avec Emeline et ses partenaires", rest: " + replays illimités (décryptage d'opportunités, Q&A, études de cas réels)" },
+                    { strong: "4 simulateurs professionnels intégrés", rest: " : frais de notaire, rendement locatif, cashflow mensuel, capacité d'emprunt" },
+                    { strong: "34 fichiers, classement de villes et simulateurs", rest: " pour appliquer immédiatement" },
+                    { strong: "Les bons plans de Sorel", rest: " : promos exclusives sur matériaux et travaux, négociées pour la communauté" },
+                    { strong: "Partenaires privilégiés", rest: " : codes promo et avantages exclusifs auprès de 6 partenaires immobiliers triés sur le volet" },
+                    { strong: "Annuaire des membres et networking", rest: "" },
+                    { strong: "Quiz quotidien", rest: " : 91 questions sur 5 domaines pour ancrer tes connaissances" },
+                    { strong: "Discussions thématiques", rest: " : 2 piliers (Immobilier et Patrimoine) avec sous-groupes actifs" },
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <svg className="w-5 h-5 text-es-terracotta-light mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span className="text-es-cream/90 text-[15px] leading-relaxed">
+                        <strong className="text-es-cream font-semibold">{item.strong}</strong>
+                        {item.rest}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </ScrollReveal>
           </div>
+
+          {/* 4. CTA final centré */}
+          <ScrollReveal delay={300}>
+            <div className="max-w-2xl mx-auto text-center">
+              <Button variant="cta" size="lg" className="w-full sm:w-auto sm:px-12 font-semibold text-base">
+                Je rejoins la formation →
+              </Button>
+              <p className="text-sm text-es-cream/70 mt-4">
+                Paiement sécurisé · Accès immédiat · Satisfait ou remboursé 14 jours
+              </p>
+              <p className="text-[11px] text-es-cream/40 mt-6 max-w-xl mx-auto leading-relaxed">
+                À l'issue des 3 mois, l'accès ES Family se poursuit automatiquement à 29€/mois, sans engagement, annulable en 1 clic.
+              </p>
+            </div>
+          </ScrollReveal>
         </div>
       </section>
 
