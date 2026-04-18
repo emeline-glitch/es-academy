@@ -99,34 +99,6 @@ export default function AcademyPage() {
         </div>
       </section>
 
-      {/* Comment ça marche — 3 étapes */}
-      <section className="py-20 bg-es-cream">
-        <div className="max-w-5xl mx-auto px-6">
-          <div className="text-center mb-12">
-            <span className="text-xs text-es-terracotta uppercase tracking-widest font-medium">Processus</span>
-            <h2 className="font-serif text-3xl font-bold text-es-text mt-3">Comment ça marche ?</h2>
-          </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              { step: "01", title: "Inscris-toi", desc: "Paiement sécurisé et accès immédiat à la plateforme, aux 14 modules et aux 60 outils.", icon: "🔑" },
-              { step: "02", title: "Suis la méthode", desc: "Avance à ton rythme. Chaque module se termine par un quiz pour valider tes acquis.", icon: "🎯" },
-              { step: "03", title: "Passe à l'action", desc: "Utilise les outils et le coaching pour réaliser ton premier investissement.", icon: "🚀" },
-            ].map((item, i) => (
-              <ScrollReveal key={i} delay={i * 150}>
-                <div className="text-center">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-es-green/10 flex items-center justify-center text-3xl">
-                    {item.icon}
-                  </div>
-                  <span className="text-xs text-es-terracotta font-bold">{item.step}</span>
-                  <h3 className="font-serif text-lg font-bold text-es-text mt-1 mb-2">{item.title}</h3>
-                  <p className="text-sm text-es-text-muted leading-relaxed">{item.desc}</p>
-                </div>
-              </ScrollReveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* 2. Pour qui */}
       <section className="py-20 bg-white">
         <div className="max-w-5xl mx-auto px-6">
