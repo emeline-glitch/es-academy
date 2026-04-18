@@ -66,6 +66,7 @@ const chapters: Chapter[] = [
     title: "Fille de garagiste, Val-d'Oise",
     content: [
       "Parents commerçants, enfance sans bowling ni sorties au parc. J'ai grandi dans un garage auto, à bricoler avec mon père. J'ai toujours aimé les activités manuelles.",
+      "Mes week-ends, je les passais sur le chantier de la maison que mes parents avaient achetée. 24 ans de travaux. C'est là que j'ai appris à ne jamais avoir peur d'un chantier.",
       "J'étais cette bonne élève qui se reposait sur ses acquis. J'ai loupé mon bac à 3 points près. Premier vrai échec de ma vie. Leçon retenue : le talent seul ne suffit pas.",
     ],
     media: {
@@ -88,8 +89,9 @@ const chapters: Chapter[] = [
     year: "2020",
     title: "Le déclic",
     content: [
-      "Deux relations toxiques avant de comprendre ma valeur. La boxe comme défouloir (5 ans). Puis un jour, une amie me propose de visiter un bien avec elle. Déclic total.",
-      "En 2 semaines j'ai signé 2 compromis pour 15 appartements. J'ai appliqué ce que je savais faire pour les fonds : business plans, tableaux, négociation. Mon premier immeuble de 8 appartements a généré +1 300€ de cash-flow mensuel dès le premier mois.",
+      "Je vis une relation toxique avec un pervers narcissique. Je sombre. Il me géolocalise au quotidien. Je n'ai plus confiance en moi. Je vis un enfer. Je passe mon temps à pleurer, un mal-être en continu.",
+      "Puis un jour, une amie me propose de visiter un bien avec elle. Déclic total.",
+      "En 2 semaines, j'ai signé 2 compromis pour 15 studios. J'ai appliqué ce que je savais faire pour les fonds : business plans, tableaux, négociation. Mon premier immeuble de 8 appartements a généré +1 300€ de cash-flow mensuel dès le premier mois.",
     ],
     media: {
       type: "full",
@@ -103,7 +105,8 @@ const chapters: Chapter[] = [
     title: "L'enchaînement",
     content: [
       "En 18 mois : 2 colocations, une maison divisée en 4 studios, un coliving de 8 chambres. J'ai même aidé mon artisan à monter sa boîte avec une équipe de 8 personnes.",
-      "Parallèlement, mon Instagram explose. Clause d'exclusivité dans mon contrat — je dois choisir.",
+      "Parallèlement, mon Instagram explose. Je montre ce que je fais au quotidien, sur chantier et dans ma vie professionnelle.",
+      "Je me retrouve à devoir prendre une décision. Je n'arrive plus à gérer mes 2 vies, pro et perso : elles prennent trop d'ampleur.",
     ],
     media: {
       type: "mosaic",
