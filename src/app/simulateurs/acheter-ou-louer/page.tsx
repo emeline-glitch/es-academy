@@ -91,10 +91,27 @@ export default function AcheterOuLouer() {
             <div className="space-y-5">
               <Card className="bg-es-green text-white border-0">
                 <div className="text-center">
-                  <div className="text-5xl font-bold text-es-gold mb-2">
-                    {anneeRentable > 0 ? `${anneeRentable} ans` : "30+ ans"}
-                  </div>
-                  <div className="text-white/60">pour que l&apos;achat soit rentable vs la location</div>
+                  {anneeRentable > 0 ? (
+                    <>
+                      <div className="text-5xl font-bold text-es-gold mb-2">
+                        {anneeRentable} ans
+                      </div>
+                      <div className="text-white/60">pour que l&apos;achat devienne plus rentable que la location</div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="flex items-center justify-center gap-2 mb-3">
+                        <span className="text-3xl" aria-hidden>⚠️</span>
+                        <div className="text-2xl sm:text-3xl font-bold text-es-gold leading-tight">
+                          Louer reste plus avantageux
+                        </div>
+                      </div>
+                      <div className="text-white/70 text-sm leading-relaxed">
+                        Dans cette configuration, acheter ne devient pas plus rentable que louer sur 30 ans.
+                        Ajuste la valorisation annuelle, le prix du bien ou ton apport pour voir le seuil évoluer.
+                      </div>
+                    </>
+                  )}
                 </div>
               </Card>
 

@@ -98,7 +98,7 @@ export default function SimulateursPage() {
       <section className="py-16 sm:py-20 bg-white border-b border-es-cream-dark">
         <div className="max-w-3xl mx-auto px-6 text-center">
           <p className="font-serif italic text-es-terracotta text-sm sm:text-base mb-4 tracking-wide">
-            Les outils que j&apos;utilise moi-même pour mes 12 immeubles
+            Les outils que j&apos;utilise moi-même pour mes biens immobiliers
           </p>
           <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-es-text mb-6 leading-tight">
             Les 8 simulateurs que j&apos;aurais aimé avoir avant mon premier achat.
@@ -174,14 +174,14 @@ export default function SimulateursPage() {
                   </span>
                 )}
 
-                {/* Question directe en grand */}
-                <p className="font-serif text-xl font-bold text-es-text leading-snug mb-2 group-hover:text-es-green transition-colors">
-                  {sim.question}
-                </p>
-
-                {/* Mini tag catégorie */}
-                <p className="text-xs text-es-text-muted/70 uppercase tracking-wider font-medium mb-4">
+                {/* Titre simulateur */}
+                <h3 className="font-serif text-xl font-bold text-es-text leading-snug mb-2 group-hover:text-es-green transition-colors">
                   {sim.title}
+                </h3>
+
+                {/* Question sous-titre */}
+                <p className="text-sm text-es-text-muted mb-4 leading-snug">
+                  {sim.question}
                 </p>
 
                 {/* CTA gros et visible */}

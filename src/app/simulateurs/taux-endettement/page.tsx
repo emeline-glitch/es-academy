@@ -56,13 +56,16 @@ export default function TauxEndettement() {
             <SimulateurDisclaimer />
 
             <div className="space-y-5">
-              <Card className={`${ok ? "bg-es-green" : "bg-red-600"} text-white border-0`}>
-                <h3 className="text-white/60 text-sm mb-3">Ton taux d&apos;endettement</h3>
-                <div className="bg-white/10 rounded-xl p-6 text-center mb-4">
-                  <div className="text-5xl font-bold text-white mb-1">{tauxApres.toFixed(1)}%</div>
-                  <div className="text-white/60 text-sm">après ton nouveau projet</div>
+              <Card className={`${ok ? "bg-emerald-600" : "bg-red-600"} text-white border-0 shadow-xl`}>
+                <h3 className="text-white/70 text-sm mb-3 font-medium">Ton taux d&apos;endettement</h3>
+                <div className="bg-white/15 rounded-xl p-6 text-center mb-4">
+                  <div className="flex items-center justify-center gap-3 mb-1">
+                    <span className="text-3xl" aria-hidden>{ok ? "✅" : "⚠️"}</span>
+                    <div className="text-5xl sm:text-6xl font-bold text-white leading-none">{tauxApres.toFixed(1)}%</div>
+                  </div>
+                  <div className="text-white/70 text-sm mt-2">après ton nouveau projet</div>
                 </div>
-                <div className={`text-center px-4 py-3 rounded-xl text-sm font-medium ${ok ? "bg-white/20 text-white" : "bg-white/20 text-white"}`}>
+                <div className="text-center px-4 py-3 rounded-xl text-sm font-semibold bg-white/20 text-white">
                   {ok ? "Tu es dans les clous (max 35%)" : "Au-dessus de 35% — refus probable"}
                 </div>
               </Card>
