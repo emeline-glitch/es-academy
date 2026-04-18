@@ -256,14 +256,14 @@ export default function AcademyPage() {
             {/* 2. Bloc prix */}
             <div className="text-center mb-12 lg:mb-16">
               <p className="text-sm text-es-cream/40 mb-2">
-                Valeur totale <span className="line-through">1 085€</span>
+                Valeur totale <span className="line-through">3 450€</span>
               </p>
               <div className="flex items-baseline justify-center gap-2">
                 <span className="text-6xl sm:text-7xl lg:text-8xl font-bold text-es-cream">998€</span>
                 <span className="text-lg font-normal text-es-cream/50">TTC</span>
               </div>
               <p className="text-base text-es-cream/70 mt-3">Paiement en 1x, 3x ou 10x sans frais</p>
-              <p className="text-sm text-es-terracotta-light mt-4 font-medium">Déjà plus de 1 800 investisseurs formés</p>
+              <p className="text-sm text-es-terracotta-light mt-4 font-medium">Déjà plus de 1 900 investisseurs formés</p>
             </div>
           </ScrollReveal>
 
@@ -285,10 +285,10 @@ export default function AcademyPage() {
                     { strong: "Option Coaching sur mesure", rest: " : un expert dédié t'accompagne à chaque étape, calibré selon ton profil et ton projet (sur devis, activable à tout moment)" },
                   ].map((item, i) => (
                     <li key={i} className="flex items-start gap-3">
-                      <svg className="w-5 h-5 text-es-green-light mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <svg className="w-6 h-6 text-es-green-light mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                       </svg>
-                      <span className="text-es-cream/90 text-[15px] leading-relaxed">
+                      <span className="text-es-cream/90 text-lg leading-relaxed">
                         <strong className="text-es-cream font-semibold">{item.strong}</strong>
                         {item.rest}
                       </span>
@@ -301,12 +301,9 @@ export default function AcademyPage() {
             {/* Colonne droite — ES Family (offert 3 mois) */}
             <ScrollReveal delay={200}>
               <div className="h-full bg-es-terracotta/5 backdrop-blur-sm rounded-2xl p-6 sm:p-8 border border-es-terracotta/40 relative">
-                <div className="flex items-center justify-between gap-3 mb-4 pb-5 border-b border-es-terracotta/20">
-                  <div className="flex items-center gap-3 min-w-0">
-                    <span className="text-3xl shrink-0" aria-hidden>🔑</span>
-                    <h3 className="text-sm uppercase tracking-[0.2em] font-semibold text-es-cream truncate">+ 3 mois ES Family offerts</h3>
-                  </div>
-                  <span className="shrink-0 text-[11px] font-semibold bg-es-terracotta text-es-cream px-2.5 py-1 rounded-full">valeur 87€</span>
+                <div className="flex items-center gap-3 mb-4 pb-5 border-b border-es-terracotta/20">
+                  <span className="text-3xl shrink-0" aria-hidden>🔑</span>
+                  <h3 className="text-sm uppercase tracking-[0.2em] font-semibold text-es-cream">+ 3 mois ES Family offerts</h3>
                 </div>
 
                 <p className="italic text-es-cream/80 text-[15px] leading-relaxed mb-6">
