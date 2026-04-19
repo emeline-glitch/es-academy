@@ -201,7 +201,7 @@ export default function Home() {
               </div>
             </div>
             <div className="relative">
-              <div className="bg-es-green/5 rounded-2xl p-4">
+              <div className="bg-es-green/5 rounded-2xl p-3 max-w-xs sm:max-w-sm mx-auto">
                 <Image
                   src="/images/site/02-patrimoine-cles/patrimoine-01-deux-trousseaux-cles.jpg"
                   alt="Emeline Siron tenant les trousseaux de clés de ses 12 biens immobiliers"
