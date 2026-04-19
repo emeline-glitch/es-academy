@@ -84,16 +84,31 @@ export async function POST(
       ])
     );
 
-    // 3. Upsert contact
+    // 3. Lookup avant upsert : on veut préserver les tags existants (ex: un contact 'client'
+    //    qui se réinscrit à une newsletter garde son tag 'client')
+    const emailLower = email.toLowerCase().trim();
+    const { data: existing } = await supabase
+      .from("contacts")
+      .select("id, tags")
+      .ilike("email", emailLower)
+      .maybeSingle();
+
+    const mergedTags = Array.from(
+      new Set([...(existing?.tags || []), ...tags])
+    );
+
     const upsertData: Record<string, unknown> = {
-      email: email.toLowerCase().trim(),
+      email: emailLower,
       first_name: (first_name || "").trim(),
       last_name: (last_name || "").trim(),
       phone: phone?.trim() || null,
-      source: `form:${slug}`,
-      tags,
+      source: existing ? existing.id ? undefined : `form:${slug}` : `form:${slug}`,
+      tags: mergedTags,
       status: "active",
     };
+    // Ne pas overrider la source d'un contact qui existe déjà via un autre canal
+    if (existing) delete upsertData.source;
+
     const { error: upsertErr } = await supabase
       .from("contacts")
       .upsert(upsertData, { onConflict: "email" });
@@ -101,17 +116,6 @@ export async function POST(
     if (upsertErr) {
       console.error("[form submit] upsert error:", upsertErr);
       return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
-    }
-
-    // 4. Fusionner les tags si le contact existait déjà (pour ne pas écraser)
-    const { data: existing } = await supabase
-      .from("contacts")
-      .select("id, tags")
-      .ilike("email", email.toLowerCase().trim())
-      .maybeSingle();
-    if (existing) {
-      const mergedTags = Array.from(new Set([...(existing.tags || []), ...tags]));
-      await supabase.from("contacts").update({ tags: mergedTags }).eq("id", existing.id);
     }
 
     // 5. Incrément du compteur
