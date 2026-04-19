@@ -1,11 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { EmailEditor } from "@/components/admin/EmailEditor";
+import { AudienceTargeter } from "@/components/admin/AudienceTargeter";
+import { MergeTagsToolbar } from "@/components/admin/MergeTagsToolbar";
+import { useToast } from "@/components/ui/Toast";
+import { formatRelative } from "@/lib/utils/format";
 
 interface Step {
   id: string;
@@ -39,6 +43,7 @@ const TRIGGER_TYPES = [
 ];
 
 export default function AdminSequences() {
+  const toast = useToast();
   const [sequences, setSequences] = useState<Sequence[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
@@ -47,7 +52,6 @@ export default function AdminSequences() {
   const [newTriggerValue, setNewTriggerValue] = useState("");
   const [creating, setCreating] = useState(false);
 
-  // Edit state
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingStepId, setEditingStepId] = useState<string | null>(null);
   const [editStepSubject, setEditStepSubject] = useState("");
@@ -55,25 +59,29 @@ export default function AdminSequences() {
   const [editStepDelayDays, setEditStepDelayDays] = useState(0);
   const [editStepDelayHours, setEditStepDelayHours] = useState(0);
   const [saving, setSaving] = useState(false);
+  const [testEmail, setTestEmail] = useState("");
+  const [testingStepId, setTestingStepId] = useState<string | null>(null);
 
-  // Enroll state
   const [enrollingId, setEnrollingId] = useState<string | null>(null);
-  const [enrollTag, setEnrollTag] = useState("");
-  const [enrollResult, setEnrollResult] = useState("");
+  const [enrollTags, setEnrollTags] = useState<string[]>([]);
+
+  const fetchSequences = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/sequences");
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+      setSequences(data);
+    } catch {
+      toast.error("Impossible de charger les séquences");
+    } finally {
+      setLoading(false);
+    }
+  }, [toast]);
 
   useEffect(() => {
     fetchSequences();
-  }, []);
-
-  async function fetchSequences() {
-    setLoading(true);
-    const res = await fetch("/api/sequences");
-    if (res.ok) {
-      const data = await res.json();
-      setSequences(data);
-    }
-    setLoading(false);
-  }
+  }, [fetchSequences]);
 
   async function handleCreate() {
     if (!newName.trim()) return;
@@ -87,29 +95,52 @@ export default function AdminSequences() {
         trigger_value: newTriggerValue || null,
       }),
     });
+    setCreating(false);
     if (res.ok) {
       setNewName("");
       setNewTriggerValue("");
       setShowCreate(false);
       fetchSequences();
+      toast.success(`Séquence "${newName}" créée`);
+    } else {
+      toast.error("Impossible de créer la séquence");
     }
-    setCreating(false);
   }
 
   async function handleToggleStatus(seq: Sequence) {
     const newStatus = seq.status === "active" ? "draft" : "active";
-    await fetch(`/api/sequences/${seq.id}`, {
+    const res = await fetch(`/api/sequences/${seq.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status: newStatus }),
     });
-    fetchSequences();
+    if (res.ok) {
+      fetchSequences();
+      toast.success(newStatus === "active" ? "Séquence activée" : "Séquence mise en pause");
+    } else {
+      toast.error("Impossible de changer le statut");
+    }
   }
 
   async function handleDelete(id: string) {
     if (!confirm("Supprimer cette séquence et toutes ses étapes ?")) return;
-    await fetch(`/api/sequences/${id}`, { method: "DELETE" });
-    fetchSequences();
+    const res = await fetch(`/api/sequences/${id}`, { method: "DELETE" });
+    if (res.ok) {
+      fetchSequences();
+      toast.success("Séquence supprimée");
+    } else {
+      toast.error("Suppression impossible");
+    }
+  }
+
+  async function handleDuplicate(seq: Sequence) {
+    const res = await fetch(`/api/sequences/${seq.id}/duplicate`, { method: "POST" });
+    if (res.ok) {
+      fetchSequences();
+      toast.success(`"${seq.name}" dupliquée (${seq.steps.length} étapes copiées)`);
+    } else {
+      toast.error("Duplication impossible");
+    }
   }
 
   async function handleAddStep(sequenceId: string) {
@@ -120,10 +151,11 @@ export default function AdminSequences() {
         delay_days: 2,
         delay_hours: 0,
         subject: "Nouvel email",
-        html_content: "<p>Contenu de l'email...</p>",
+        html_content: "<p>Bonjour {{prenom}},</p><p>Contenu de l&apos;email…</p>",
       }),
     });
     fetchSequences();
+    toast.success("Étape ajoutée");
   }
 
   function startEditStep(step: Step) {
@@ -137,7 +169,7 @@ export default function AdminSequences() {
   async function handleSaveStep(sequenceId: string) {
     if (!editingStepId) return;
     setSaving(true);
-    await fetch(`/api/sequences/${sequenceId}/steps/${editingStepId}`, {
+    const res = await fetch(`/api/sequences/${sequenceId}/steps/${editingStepId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -147,51 +179,97 @@ export default function AdminSequences() {
         delay_hours: editStepDelayHours,
       }),
     });
-    setEditingStepId(null);
     setSaving(false);
-    fetchSequences();
+    setEditingStepId(null);
+    if (res.ok) {
+      fetchSequences();
+      toast.success("Étape mise à jour");
+    } else {
+      toast.error("Impossible d'enregistrer l'étape");
+    }
   }
 
   async function handleDeleteStep(sequenceId: string, stepId: string) {
     if (!confirm("Supprimer cette étape ?")) return;
-    await fetch(`/api/sequences/${sequenceId}/steps/${stepId}`, { method: "DELETE" });
-    fetchSequences();
-  }
-
-  async function handleEnroll(sequenceId: string) {
-    if (!enrollTag) return;
-    setEnrollResult("");
-    const res = await fetch(`/api/sequences/${sequenceId}/enroll`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ tag: enrollTag }),
-    });
+    const res = await fetch(`/api/sequences/${sequenceId}/steps/${stepId}`, { method: "DELETE" });
     if (res.ok) {
-      const data = await res.json();
-      setEnrollResult(`${data.enrolled} contacts inscrits (${data.skipped} déjà inscrits)`);
       fetchSequences();
+      toast.success("Étape supprimée");
+    } else {
+      toast.error("Suppression impossible");
     }
   }
 
+  async function handleTestStep(step: Step) {
+    if (!testEmail) {
+      toast.error("Saisis une adresse email de test");
+      return;
+    }
+    setTestingStepId(step.id);
+    const res = await fetch("/api/emails/send-test", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        to: testEmail,
+        subject: step.subject,
+        html_content: step.html_content,
+      }),
+    });
+    setTestingStepId(null);
+    if (res.ok) toast.success(`Test envoyé à ${testEmail}`);
+    else toast.error("Échec de l'envoi test");
+  }
+
+  async function handleEnroll(sequenceId: string) {
+    const tag = enrollTags[0];
+    if (!tag) {
+      toast.error("Choisis une liste");
+      return;
+    }
+    const res = await fetch(`/api/sequences/${sequenceId}/enroll`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ tag }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      toast.success(`${data.enrolled} inscrits · ${data.skipped} déjà dans la séquence`);
+      fetchSequences();
+    } else {
+      toast.error("Inscription impossible");
+    }
+  }
+
+  function insertIntoStepContent(tag: string) {
+    setEditStepContent((c) => c + tag);
+  }
+
+  function insertIntoStepSubject(tag: string) {
+    setEditStepSubject((s) => s + tag);
+  }
+
   if (loading) {
-    return <div className="flex items-center justify-center h-64 text-gray-400">Chargement...</div>;
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="w-8 h-8 rounded-full border-4 border-es-green/20 border-t-es-green animate-spin" />
+      </div>
+    );
   }
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-8 flex-wrap gap-3">
         <div>
           <h1 className="font-serif text-2xl font-bold text-gray-900">Séquences automatiques</h1>
           <p className="text-sm text-gray-500 mt-1">
-            Crée des tunnels d'emails automatiques — comme sur Brevo, mais chez toi
+            Crée des tunnels d&apos;emails automatiques — comme sur Brevo, mais chez toi.
           </p>
         </div>
         <Button variant="primary" size="sm" onClick={() => setShowCreate(!showCreate)}>
-          {showCreate ? "Annuler" : "Nouvelle séquence"}
+          {showCreate ? "Annuler" : "+ Nouvelle séquence"}
         </Button>
       </div>
 
-      {/* Create new */}
       {showCreate && (
         <Card className="mb-6">
           <h3 className="font-medium text-gray-900 mb-4">Créer une séquence</h3>
@@ -200,7 +278,7 @@ export default function AdminSequences() {
               label="Nom de la séquence"
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
-              placeholder="Ex: [MAGNET] Planneur immobilier"
+              placeholder="Ex : Onboarding Academy"
             />
             <div>
               <label className="text-sm font-medium text-gray-900 mb-1.5 block">Déclencheur</label>
@@ -219,17 +297,16 @@ export default function AdminSequences() {
                 label="Tag / valeur du déclencheur"
                 value={newTriggerValue}
                 onChange={(e) => setNewTriggerValue(e.target.value)}
-                placeholder="Ex: ebook_planneur"
+                placeholder="Ex : ebook_planneur"
               />
             )}
           </div>
           <Button variant="primary" size="sm" onClick={handleCreate} disabled={creating || !newName.trim()}>
-            {creating ? "Création..." : "Créer la séquence"}
+            {creating ? "Création…" : "Créer la séquence"}
           </Button>
         </Card>
       )}
 
-      {/* Sequences list */}
       {sequences.length === 0 ? (
         <Card>
           <p className="text-sm text-gray-400 text-center py-8">
@@ -240,10 +317,9 @@ export default function AdminSequences() {
         <div className="space-y-6">
           {sequences.map((seq) => (
             <Card key={seq.id}>
-              {/* Header */}
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
+              <div className="flex items-start justify-between mb-4 flex-wrap gap-3">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2 mb-1 flex-wrap">
                     <h2 className="font-serif text-lg font-bold text-gray-900">{seq.name}</h2>
                     <Badge variant={seq.status === "active" ? "success" : seq.status === "draft" ? "default" : "warning"}>
                       {seq.status === "active" ? "Active" : seq.status === "draft" ? "Brouillon" : "En pause"}
@@ -253,13 +329,14 @@ export default function AdminSequences() {
                     Déclencheur : {TRIGGER_TYPES.find((t) => t.value === seq.trigger_type)?.label || seq.trigger_type}
                     {seq.trigger_value && <span className="ml-1 text-es-green font-medium">({seq.trigger_value})</span>}
                   </p>
-                  <div className="flex gap-4 mt-1 text-xs text-gray-400">
-                    <span>{seq.steps.length} étape(s)</span>
+                  <div className="flex gap-4 mt-1 text-xs text-gray-400 flex-wrap">
+                    <span>{seq.steps.length} étape{seq.steps.length > 1 ? "s" : ""}</span>
                     <span>{seq.enrolled_count || 0} inscrits au total</span>
-                    <span>{seq.active_count || 0} en cours</span>
+                    <span className="text-es-green font-medium">{seq.active_count || 0} en cours</span>
+                    <span>créée {formatRelative(seq.created_at)}</span>
                   </div>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-wrap">
                   <Button
                     variant={seq.status === "active" ? "secondary" : "primary"}
                     size="sm"
@@ -272,6 +349,12 @@ export default function AdminSequences() {
                     className="text-sm text-es-green hover:underline cursor-pointer px-2"
                   >
                     {editingId === seq.id ? "Fermer" : "Modifier"}
+                  </button>
+                  <button
+                    onClick={() => handleDuplicate(seq)}
+                    className="text-sm text-gray-500 hover:text-gray-700 cursor-pointer px-2"
+                  >
+                    Dupliquer
                   </button>
                   <button
                     onClick={() => handleDelete(seq.id)}
@@ -293,7 +376,6 @@ export default function AdminSequences() {
                       </div>
                       <div className="flex-1">
                         {editingStepId === step.id ? (
-                          /* Step editor */
                           <div className="bg-gray-50 rounded-lg p-4 space-y-3">
                             <div className="grid grid-cols-2 gap-3">
                               <div>
@@ -318,18 +400,53 @@ export default function AdminSequences() {
                                 />
                               </div>
                             </div>
-                            <Input
-                              label="Objet de l'email"
-                              value={editStepSubject}
-                              onChange={(e) => setEditStepSubject(e.target.value)}
-                            />
                             <div>
-                              <label className="text-xs font-medium text-gray-600 mb-1 block">Contenu</label>
+                              <div className="flex items-center justify-between mb-1.5">
+                                <label className="text-sm font-medium text-gray-900">Objet de l&apos;email</label>
+                                <MergeTagsToolbar onInsert={insertIntoStepSubject} />
+                              </div>
+                              <input
+                                value={editStepSubject}
+                                onChange={(e) => setEditStepSubject(e.target.value)}
+                                className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white text-sm"
+                              />
+                            </div>
+                            <div>
+                              <div className="flex items-center justify-between mb-1.5">
+                                <label className="text-xs font-medium text-gray-600">Contenu</label>
+                                <MergeTagsToolbar onInsert={insertIntoStepContent} />
+                              </div>
                               <EmailEditor value={editStepContent} onChange={setEditStepContent} />
                             </div>
-                            <div className="flex gap-2">
+
+                            {/* Test send inline */}
+                            <div className="pt-3 border-t border-gray-200 flex items-center gap-2 flex-wrap">
+                              <input
+                                type="email"
+                                value={testEmail}
+                                onChange={(e) => setTestEmail(e.target.value)}
+                                placeholder="ton@email.com pour tester"
+                                className="flex-1 min-w-[200px] px-3 py-2 rounded border border-gray-200 text-sm"
+                              />
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() =>
+                                  handleTestStep({
+                                    ...step,
+                                    subject: editStepSubject,
+                                    html_content: editStepContent,
+                                  })
+                                }
+                                disabled={testingStepId === step.id || !testEmail}
+                              >
+                                {testingStepId === step.id ? "Envoi…" : "Test"}
+                              </Button>
+                            </div>
+
+                            <div className="flex gap-2 pt-2 border-t border-gray-200">
                               <Button variant="primary" size="sm" onClick={() => handleSaveStep(seq.id)} disabled={saving}>
-                                {saving ? "..." : "Sauvegarder"}
+                                {saving ? "…" : "Sauvegarder"}
                               </Button>
                               <Button variant="ghost" size="sm" onClick={() => setEditingStepId(null)}>
                                 Annuler
@@ -340,7 +457,6 @@ export default function AdminSequences() {
                             </div>
                           </div>
                         ) : (
-                          /* Step display */
                           <div
                             className={`pb-2 ${editingId === seq.id ? "cursor-pointer hover:bg-gray-50 rounded-lg p-2 -m-2" : ""}`}
                             onClick={() => editingId === seq.id && startEditStep(step)}
@@ -366,7 +482,6 @@ export default function AdminSequences() {
                 </div>
               </div>
 
-              {/* Actions */}
               {editingId === seq.id && (
                 <div className="mt-4 pt-4 border-t border-gray-100 flex flex-wrap gap-2">
                   <Button variant="ghost" size="sm" onClick={() => handleAddStep(seq.id)}>
@@ -375,40 +490,34 @@ export default function AdminSequences() {
                   <Button
                     variant="secondary"
                     size="sm"
-                    onClick={() => setEnrollingId(enrollingId === seq.id ? null : seq.id)}
+                    onClick={() => {
+                      setEnrollingId(enrollingId === seq.id ? null : seq.id);
+                      setEnrollTags([]);
+                    }}
                   >
                     Inscrire des contacts
                   </Button>
                 </div>
               )}
 
-              {/* Enroll modal */}
               {enrollingId === seq.id && (
-                <div className="mt-3 p-4 bg-blue-50 rounded-lg">
-                  <h4 className="text-sm font-medium text-gray-900 mb-2">Inscrire des contacts dans cette séquence</h4>
-                  <div className="flex gap-2 items-end">
-                    <div className="flex-1">
-                      <label className="text-xs text-gray-500 mb-1 block">Tag des contacts à inscrire</label>
-                      <select
-                        value={enrollTag}
-                        onChange={(e) => setEnrollTag(e.target.value)}
-                        className="w-full px-3 py-2 rounded border border-gray-200 bg-white text-sm"
-                      >
-                        <option value="">Choisir un tag...</option>
-                        <option value="client">client</option>
-                        <option value="prospect">prospect</option>
-                        <option value="newsletter">newsletter</option>
-                        <option value="ebook">ebook</option>
-                        <option value="lead_magnet">lead_magnet</option>
-                        <option value="formation_gratuite">formation_gratuite</option>
-                        <option value="import">import</option>
-                      </select>
-                    </div>
-                    <Button variant="primary" size="sm" onClick={() => handleEnroll(seq.id)} disabled={!enrollTag}>
+                <div className="mt-3 p-4 bg-blue-50 rounded-lg space-y-3">
+                  <h4 className="text-sm font-medium text-gray-900">Inscrire tous les contacts d&apos;une liste</h4>
+                  <AudienceTargeter
+                    value={enrollTags}
+                    onChange={setEnrollTags}
+                    label=""
+                    singleSelect
+                    helpText="Sélectionne une seule liste — les contacts y appartenant seront inscrits"
+                  />
+                  <div className="flex gap-2">
+                    <Button variant="primary" size="sm" onClick={() => handleEnroll(seq.id)} disabled={enrollTags.length === 0}>
                       Inscrire
                     </Button>
+                    <Button variant="ghost" size="sm" onClick={() => setEnrollingId(null)}>
+                      Fermer
+                    </Button>
                   </div>
-                  {enrollResult && <p className="text-sm text-es-green mt-2">{enrollResult}</p>}
                 </div>
               )}
             </Card>
