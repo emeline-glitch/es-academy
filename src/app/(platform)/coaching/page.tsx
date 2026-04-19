@@ -11,6 +11,17 @@ export default async function CoachingPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/connexion");
 
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("coaching_credits_total, coaching_credits_used")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  const total = profile?.coaching_credits_total ?? 0;
+  const used = profile?.coaching_credits_used ?? 0;
+  const remaining = Math.max(total - used, 0);
+  const hasIncluded = remaining > 0;
+
   return (
     <div>
       <div className="mb-8">
@@ -20,41 +31,63 @@ export default async function CoachingPage() {
 
       <div className="grid md:grid-cols-2 gap-6">
         {/* 1. Coaching inclus dans l'offre */}
-        <Card className="flex flex-col h-full border-2 border-es-green/20">
+        <Card className={`flex flex-col h-full ${hasIncluded ? "border-2 border-es-green/30 bg-es-green/[0.02]" : "opacity-60"}`}>
           <div className="flex items-center gap-3 mb-4">
             <div className="w-12 h-12 rounded-xl bg-es-green/10 flex items-center justify-center">
               <span className="text-2xl">🎟</span>
             </div>
-            <div>
-              <p className="text-xs text-es-green font-semibold uppercase tracking-widest">Inclus</p>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs text-es-green font-semibold uppercase tracking-widest">
+                {hasIncluded ? "Inclus" : "Inclus — épuisé"}
+              </p>
               <h2 className="font-serif text-lg font-bold text-gray-900">Coaching dans ton offre</h2>
             </div>
           </div>
 
-          <p className="text-sm text-gray-600 leading-relaxed mb-5">
-            Tu as souscrit à un pack avec coaching inclus. Réserve directement tes sessions ci-dessous,
-            sans paiement supplémentaire.
-          </p>
-
-          <div className="mt-auto">
-            {CALENDLY_INCLUDED_URL ? (
-              <a
-                href={CALENDLY_INCLUDED_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center w-full bg-es-green text-white font-semibold py-3.5 rounded-xl hover:bg-es-green-light transition-colors"
-              >
-                Réserver ma session →
-              </a>
-            ) : (
-              <div className="w-full bg-gray-100 text-gray-500 font-medium py-3.5 rounded-xl text-center text-sm">
-                Bientôt disponible
+          {hasIncluded ? (
+            <>
+              <div className="inline-flex items-center gap-2 bg-es-green/10 text-es-green font-semibold text-sm px-3 py-1.5 rounded-full mb-4 self-start">
+                <span className="w-2 h-2 rounded-full bg-es-green animate-pulse" />
+                {remaining} session{remaining > 1 ? "s" : ""} restante{remaining > 1 ? "s" : ""}
+                {total > 0 && <span className="text-es-green/60 font-normal">/ {total} au total</span>}
               </div>
-            )}
-            <p className="text-[11px] text-gray-400 mt-3 text-center">
-              Pas de paiement · Créneau confirmé par email
-            </p>
-          </div>
+              <p className="text-sm text-gray-600 leading-relaxed mb-5">
+                Tu as du coaching inclus dans ton offre. Réserve directement ta prochaine session ci-dessous, sans paiement.
+              </p>
+
+              <div className="mt-auto">
+                {CALENDLY_INCLUDED_URL ? (
+                  <a
+                    href={CALENDLY_INCLUDED_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center w-full bg-es-green text-white font-semibold py-3.5 rounded-xl hover:bg-es-green-light transition-colors"
+                  >
+                    Réserver ma session →
+                  </a>
+                ) : (
+                  <div className="w-full bg-gray-100 text-gray-500 font-medium py-3.5 rounded-xl text-center text-sm">
+                    Bientôt disponible
+                  </div>
+                )}
+                <p className="text-[11px] text-gray-400 mt-3 text-center">
+                  Pas de paiement · Créneau confirmé par email
+                </p>
+              </div>
+            </>
+          ) : (
+            <>
+              <p className="text-sm text-gray-600 leading-relaxed mb-2">
+                Tu n&apos;as pas de session de coaching dans ton offre actuelle.
+              </p>
+              <p className="text-sm text-gray-500 leading-relaxed mb-5">
+                Tu peux prendre un package ou réserver une session à l&apos;unité juste à côté →
+              </p>
+              <div className="mt-auto bg-gray-50 text-gray-500 text-xs italic p-3 rounded-lg text-center">
+                0 session restante
+              </div>
+            </>
+          )}
         </Card>
 
         {/* 2. Coaching payant à l'unité */}
@@ -70,8 +103,9 @@ export default async function CoachingPage() {
           </div>
 
           <p className="text-sm text-gray-600 leading-relaxed mb-4">
-            Tu n&apos;as pas de coaching inclus dans ton offre ou tu veux une session en plus ?
-            Une visio 1h avec Emeline, sur ton projet.
+            {hasIncluded
+              ? "Tu veux une session en plus de ton pack ? Une visio 1h avec Emeline, sur ton projet."
+              : "Tu n'as pas de coaching inclus dans ton offre ? Réserve une session à l'unité. Visio 1h avec Emeline, sur ton projet."}
           </p>
 
           <div className="bg-es-cream rounded-xl p-4 mb-5 flex items-baseline gap-2">
