@@ -136,8 +136,6 @@ export default async function Dashboard() {
               </a>
               <div className="flex items-center gap-4 text-white/60 text-xs">
                 <span>Sans engagement</span>
-                <span>·</span>
-                <span>Prix bloqué à vie</span>
               </div>
             </div>
           </div>

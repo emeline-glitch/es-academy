@@ -71,7 +71,7 @@ export default function FamilyPage() {
                 Rejoindre ES Family à 19€/mois
               </a>
               <p className="text-xs text-white/50 mt-4">
-                Pour le prix d&apos;un forfait téléphonique · Sans engagement · Prix bloqué à vie
+                Pour le prix d&apos;un forfait téléphonique · Sans engagement
               </p>
             </div>
 
