@@ -40,6 +40,8 @@ export function EmailEditor({ value, onChange }: EmailEditorProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [activeFontSize, setActiveFontSize] = useState("16px");
   const [activeFontFamily, setActiveFontFamily] = useState(FONT_FAMILIES[0].value);
+  const [selectedImg, setSelectedImg] = useState<HTMLImageElement | null>(null);
+  const [imgMenuPos, setImgMenuPos] = useState<{ top: number; left: number } | null>(null);
 
   // Initialize DOM content on mount (and only re-sync when value changes externally,
   // i.e. not as a result of our own onChange cycle). This is the fix for the
@@ -78,6 +80,71 @@ export function EmailEditor({ value, onChange }: EmailEditorProps) {
     exec("insertImage", imageUrl);
     setShowImageInput(false);
     setImageUrl("");
+  }
+
+  // Image resize — gestion du click sur une image et du menu flottant
+  function handleEditorClick(e: React.MouseEvent<HTMLDivElement>) {
+    const target = e.target as HTMLElement;
+    if (target.tagName === "IMG" && editorRef.current) {
+      const img = target as HTMLImageElement;
+      const editorRect = editorRef.current.getBoundingClientRect();
+      const imgRect = img.getBoundingClientRect();
+      setSelectedImg(img);
+      setImgMenuPos({
+        top: imgRect.bottom - editorRect.top + 4,
+        left: imgRect.left - editorRect.left,
+      });
+    } else {
+      setSelectedImg(null);
+      setImgMenuPos(null);
+    }
+  }
+
+  function resizeSelectedImg(size: "small" | "medium" | "large" | "full" | "original") {
+    if (!selectedImg || !editorRef.current) return;
+    // width en % → inline attribute (plus compatible email) + style backup
+    if (size === "original") {
+      selectedImg.removeAttribute("width");
+      selectedImg.style.width = "";
+      selectedImg.style.maxWidth = "";
+    } else {
+      const pct = { small: 30, medium: 50, large: 75, full: 100 }[size];
+      selectedImg.setAttribute("width", `${pct}%`);
+      selectedImg.style.width = `${pct}%`;
+      selectedImg.style.height = "auto";
+    }
+    // Repositionne le menu flottant après resize
+    const editorRect = editorRef.current.getBoundingClientRect();
+    const imgRect = selectedImg.getBoundingClientRect();
+    setImgMenuPos({
+      top: imgRect.bottom - editorRect.top + 4,
+      left: imgRect.left - editorRect.left,
+    });
+    syncContent();
+  }
+
+  function alignSelectedImg(align: "left" | "center" | "right") {
+    if (!selectedImg) return;
+    if (align === "center") {
+      selectedImg.style.display = "block";
+      selectedImg.style.marginLeft = "auto";
+      selectedImg.style.marginRight = "auto";
+      selectedImg.style.float = "";
+    } else {
+      selectedImg.style.display = "";
+      selectedImg.style.marginLeft = "";
+      selectedImg.style.marginRight = "";
+      selectedImg.style.float = align;
+    }
+    syncContent();
+  }
+
+  function deleteSelectedImg() {
+    if (!selectedImg) return;
+    selectedImg.remove();
+    setSelectedImg(null);
+    setImgMenuPos(null);
+    syncContent();
   }
 
   async function handleFileUpload(file: File) {
@@ -372,21 +439,58 @@ export function EmailEditor({ value, onChange }: EmailEditorProps) {
 
       {/* Editable area — NO dangerouslySetInnerHTML (set via effect instead to
           avoid re-applying innerHTML on every onChange, which would reset the cursor). */}
-      <div
-        ref={editorRef}
-        contentEditable
-        suppressContentEditableWarning
-        onInput={syncContent}
-        onBlur={syncContent}
-        onPaste={(e) => {
-          // Coller en texte brut (évite d'importer les styles Word, fond blanc, classes random)
-          e.preventDefault();
-          const text = e.clipboardData.getData("text/plain");
-          document.execCommand("insertText", false, text);
-        }}
-        className="min-h-[400px] p-6 text-sm text-gray-800 leading-relaxed focus:outline-none [&_a]:text-es-green [&_a]:underline [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mb-3 [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:mb-2 [&_img]:max-w-full [&_img]:rounded-lg [&_img]:my-3 [&_hr]:my-4 [&_hr]:border-gray-200 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6 [&_li]:mb-1"
-        style={{ fontFamily: "Arial, Helvetica, sans-serif" }}
-      />
+      <div className="relative">
+        <div
+          ref={editorRef}
+          contentEditable
+          suppressContentEditableWarning
+          onInput={syncContent}
+          onBlur={syncContent}
+          onClick={handleEditorClick}
+          onPaste={(e) => {
+            e.preventDefault();
+            const text = e.clipboardData.getData("text/plain");
+            document.execCommand("insertText", false, text);
+          }}
+          className="min-h-[400px] p-6 text-sm text-gray-800 leading-relaxed focus:outline-none [&_a]:text-es-green [&_a]:underline [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mb-3 [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:mb-2 [&_img]:max-w-full [&_img]:rounded-lg [&_img]:my-3 [&_img]:cursor-pointer [&_img.selected]:ring-2 [&_img.selected]:ring-es-green [&_hr]:my-4 [&_hr]:border-gray-200 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6 [&_li]:mb-1"
+          style={{ fontFamily: "Arial, Helvetica, sans-serif" }}
+        />
+
+        {/* Menu flottant de resize quand une image est sélectionnée */}
+        {selectedImg && imgMenuPos && (
+          <div
+            className="absolute z-20 bg-white border border-gray-300 rounded-lg shadow-lg p-1.5 flex items-center gap-1 flex-wrap"
+            style={{ top: imgMenuPos.top, left: imgMenuPos.left }}
+            onMouseDown={(e) => e.preventDefault()}
+          >
+            <span className="text-[10px] text-gray-400 px-1 uppercase tracking-wider">Taille</span>
+            {[
+              { k: "small", label: "S", tip: "30 %" },
+              { k: "medium", label: "M", tip: "50 %" },
+              { k: "large", label: "L", tip: "75 %" },
+              { k: "full", label: "XL", tip: "100 %" },
+              { k: "original", label: "Auto", tip: "Taille d'origine" },
+            ].map((s) => (
+              <button
+                key={s.k}
+                type="button"
+                title={s.tip}
+                onClick={() => resizeSelectedImg(s.k as "small" | "medium" | "large" | "full" | "original")}
+                className="px-2 py-1 text-xs rounded hover:bg-es-green/10 hover:text-es-green text-gray-600 cursor-pointer"
+              >
+                {s.label}
+              </button>
+            ))}
+            <div className="w-px h-5 bg-gray-200 mx-1" />
+            <span className="text-[10px] text-gray-400 px-1 uppercase tracking-wider">Align</span>
+            <button type="button" title="Aligner à gauche" onClick={() => alignSelectedImg("left")} className="px-2 py-1 text-xs rounded hover:bg-es-green/10 text-gray-600 cursor-pointer">←</button>
+            <button type="button" title="Centrer" onClick={() => alignSelectedImg("center")} className="px-2 py-1 text-xs rounded hover:bg-es-green/10 text-gray-600 cursor-pointer">↔</button>
+            <button type="button" title="Aligner à droite" onClick={() => alignSelectedImg("right")} className="px-2 py-1 text-xs rounded hover:bg-es-green/10 text-gray-600 cursor-pointer">→</button>
+            <div className="w-px h-5 bg-gray-200 mx-1" />
+            <button type="button" title="Supprimer l'image" onClick={deleteSelectedImg} className="px-2 py-1 text-xs rounded hover:bg-red-50 text-red-500 cursor-pointer">🗑</button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

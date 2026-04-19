@@ -78,6 +78,8 @@ export default function AdminContacts() {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [showTagModal, setShowTagModal] = useState(false);
   const [newTag, setNewTag] = useState("");
+  const [bulkListTagKeys, setBulkListTagKeys] = useState<string[]>([]);
+  const [bulkApplying, setBulkApplying] = useState(false);
   const [showAddContact, setShowAddContact] = useState(false);
   const [newContact, setNewContact] = useState({
     first_name: "",
@@ -324,23 +326,42 @@ export default function AdminContacts() {
   }
 
   async function handleBulkTag() {
-    if (!newTag.trim() || selectedIds.size === 0) return;
-    for (const id of selectedIds) {
-      const contact = contacts.find((c) => c.id === id);
-      if (!contact) continue;
-      const updatedTags = [...new Set([...(contact.tags || []), newTag.trim()])];
-      await fetch(`/api/contacts/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tags: updatedTags }),
-      });
-    }
+    const freeTag = newTag.trim();
+    if (bulkListTagKeys.length === 0 && !freeTag) return;
+    if (selectedIds.size === 0) return;
+
+    setBulkApplying(true);
+    const tagsToAdd = [...bulkListTagKeys, ...(freeTag ? [freeTag] : [])];
+
+    // Patch en parallèle (pas séquentiel) pour que les gros lots restent rapides
+    await Promise.all(
+      Array.from(selectedIds).map((id) => {
+        const contact = contacts.find((c) => c.id === id);
+        if (!contact) return Promise.resolve();
+        const updatedTags = [...new Set([...(contact.tags || []), ...tagsToAdd])];
+        return fetch(`/api/contacts/${id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ tags: updatedTags }),
+        });
+      })
+    );
+
     const count = selectedIds.size;
+    const listNames = bulkListTagKeys
+      .map((k) => availableLists.find((l) => l.tag_key === k)?.name)
+      .filter(Boolean) as string[];
+    const parts: string[] = [];
+    if (listNames.length > 0) parts.push(`liste${listNames.length > 1 ? "s" : ""} « ${listNames.join(" + ")} »`);
+    if (freeTag) parts.push(`tag « ${freeTag} »`);
+
+    setBulkApplying(false);
     setShowTagModal(false);
     setNewTag("");
+    setBulkListTagKeys([]);
     setSelectedIds(new Set());
     fetchContacts();
-    toast.success(`Tag "${newTag.trim()}" ajouté à ${count} contact${count > 1 ? "s" : ""}`);
+    toast.success(`${parts.join(" + ")} appliqué${parts.length > 1 ? "s" : ""} à ${count} contact${count > 1 ? "s" : ""}`);
   }
 
   const allTags = Array.from(new Set(contacts.flatMap((c) => c.tags || [])));
@@ -597,8 +618,8 @@ export default function AdminContacts() {
       {selectedIds.size > 0 && (
         <div className="flex items-center gap-3 mb-4 p-3 bg-es-green/5 rounded-lg border border-es-green/20 flex-wrap">
           <span className="text-sm font-medium text-es-green">{selectedIds.size} sélectionné(s)</span>
-          <Button variant="secondary" size="sm" onClick={() => setShowTagModal(true)}>
-            Ajouter un tag
+          <Button variant="primary" size="sm" onClick={() => setShowTagModal(true)}>
+            📋 Ajouter à une liste
           </Button>
           <Button variant="ghost" size="sm" onClick={handleExportFiltered}>
             Exporter la sélection
@@ -615,35 +636,122 @@ export default function AdminContacts() {
         </div>
       )}
 
-      {/* Tag modal */}
+      {/* Modal ajout à une liste */}
       {showTagModal && (
-        <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
-          <Card className="w-96">
-            <h3 className="font-medium text-gray-900 mb-3">Ajouter un tag à {selectedIds.size} contact(s)</h3>
-            <div className="flex flex-wrap gap-2 mb-3">
-              {["client", "prospect", "ebook", "formation_gratuite", "vip", "inactif"].map((tag) => (
-                <button
-                  key={tag}
-                  onClick={() => setNewTag(tag)}
-                  className={`px-3 py-1 rounded-full text-xs font-medium cursor-pointer transition-all ${
-                    newTag === tag ? "bg-es-green text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                  }`}
-                >
-                  {tag}
-                </button>
-              ))}
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+          <Card className="w-full max-w-lg max-h-[85vh] overflow-hidden flex flex-col">
+            <div className="mb-3">
+              <h3 className="font-serif text-lg font-bold text-gray-900">Ajouter à une liste</h3>
+              <p className="text-xs text-gray-500 mt-0.5">{selectedIds.size} contact{selectedIds.size > 1 ? "s" : ""} sélectionné{selectedIds.size > 1 ? "s" : ""}</p>
             </div>
-            <Input
-              placeholder="Ou saisir un tag personnalisé..."
-              value={newTag}
-              onChange={(e) => setNewTag(e.target.value)}
-            />
-            <div className="flex gap-2 mt-4">
-              <Button variant="primary" size="sm" onClick={handleBulkTag} disabled={!newTag.trim()}>
-                Appliquer
-              </Button>
-              <Button variant="ghost" size="sm" onClick={() => { setShowTagModal(false); setNewTag(""); }}>
+
+            {availableLists.length === 0 ? (
+              <div className="p-6 text-center bg-gray-50 rounded-lg">
+                <p className="text-sm text-gray-500">Tu n&apos;as aucune liste encore.</p>
+                <Link href="/admin/lists" className="inline-block mt-3 text-sm font-semibold text-es-green hover:underline">
+                  Créer ma première liste →
+                </Link>
+              </div>
+            ) : (
+              <div className="overflow-y-auto flex-1 -mx-2 px-2">
+                {/* Listes par dossier */}
+                {listFolders
+                  .map((f) => ({ folder: f, items: availableLists.filter((l) => l.folder_id === f.id) }))
+                  .filter((g) => g.items.length > 0)
+                  .map(({ folder, items }) => (
+                    <div key={folder.id} className="mb-3">
+                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">📁 {folder.name}</p>
+                      <div className="space-y-1">
+                        {items.map((l) => {
+                          const checked = bulkListTagKeys.includes(l.tag_key);
+                          return (
+                            <label
+                              key={l.id}
+                              className={`flex items-center gap-2 p-2 rounded-lg cursor-pointer border text-sm ${
+                                checked ? "bg-es-green/5 border-es-green/30" : "border-transparent hover:bg-gray-50"
+                              }`}
+                            >
+                              <input
+                                type="checkbox"
+                                checked={checked}
+                                onChange={(e) => {
+                                  setBulkListTagKeys((prev) =>
+                                    e.target.checked ? [...prev, l.tag_key] : prev.filter((k) => k !== l.tag_key)
+                                  );
+                                }}
+                                className="rounded accent-es-green"
+                              />
+                              <span className="flex-1 text-gray-900">{l.name}</span>
+                              <span className="text-[10px] text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">
+                                {l.contact_count || 0}
+                              </span>
+                            </label>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+
+                {/* Listes sans dossier */}
+                {availableLists.filter((l) => !l.folder_id).length > 0 && (
+                  <div className="mb-3">
+                    {listFolders.some((f) => availableLists.some((l) => l.folder_id === f.id)) && (
+                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Sans dossier</p>
+                    )}
+                    <div className="space-y-1">
+                      {availableLists.filter((l) => !l.folder_id).map((l) => {
+                        const checked = bulkListTagKeys.includes(l.tag_key);
+                        return (
+                          <label
+                            key={l.id}
+                            className={`flex items-center gap-2 p-2 rounded-lg cursor-pointer border text-sm ${
+                              checked ? "bg-es-green/5 border-es-green/30" : "border-transparent hover:bg-gray-50"
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={checked}
+                              onChange={(e) => {
+                                setBulkListTagKeys((prev) =>
+                                  e.target.checked ? [...prev, l.tag_key] : prev.filter((k) => k !== l.tag_key)
+                                );
+                              }}
+                              className="rounded accent-es-green"
+                            />
+                            <span className="flex-1 text-gray-900">{l.name}</span>
+                            <span className="text-[10px] text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">
+                              {l.contact_count || 0}
+                            </span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                <details className="mt-3 pt-3 border-t border-gray-100">
+                  <summary className="text-xs text-gray-500 cursor-pointer hover:text-gray-700">+ Ajouter aussi un tag libre</summary>
+                  <Input
+                    placeholder="Ex : vip, a_rappeler, q1_2026…"
+                    value={newTag}
+                    onChange={(e) => setNewTag(e.target.value)}
+                    className="mt-2"
+                  />
+                </details>
+              </div>
+            )}
+
+            <div className="flex gap-2 justify-end mt-4 pt-3 border-t border-gray-100">
+              <Button variant="ghost" size="sm" onClick={() => { setShowTagModal(false); setNewTag(""); setBulkListTagKeys([]); }}>
                 Annuler
+              </Button>
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={handleBulkTag}
+                disabled={(bulkListTagKeys.length === 0 && !newTag.trim()) || bulkApplying}
+              >
+                {bulkApplying ? "Application…" : `Appliquer${bulkListTagKeys.length > 0 ? ` (${bulkListTagKeys.length} liste${bulkListTagKeys.length > 1 ? "s" : ""})` : ""}`}
               </Button>
             </div>
           </Card>

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/utils/admin-auth";
 import { writeAuditLog } from "@/lib/utils/audit";
@@ -133,6 +134,9 @@ export async function PATCH(
       before: { pipeline_stage: before?.pipeline_stage },
       after: { pipeline_stage: body.pipeline_stage },
     });
+    // Le funnel commercial du dashboard est un server-component : on invalide son cache
+    // pour que la prochaine visite reflète le nouveau comptage sans reload complet.
+    revalidatePath("/admin/dashboard");
   }
 
   return NextResponse.json({ contact: data });
