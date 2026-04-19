@@ -12,10 +12,23 @@ interface Contact {
   email: string;
   first_name: string;
   last_name: string;
+  phone?: string;
   tags: string[];
   source: string;
   status: string;
   subscribed_at: string;
+}
+
+interface ContactList {
+  id: string;
+  name: string;
+  tag_key: string;
+  folder_id: string | null;
+  contact_count?: number;
+}
+interface ListFolder {
+  id: string;
+  name: string;
 }
 
 type ContactType = "all" | "client" | "prospect" | "ebook" | "formation_gratuite";
@@ -59,19 +72,45 @@ export default function AdminContacts() {
   const [showTagModal, setShowTagModal] = useState(false);
   const [newTag, setNewTag] = useState("");
   const [showAddContact, setShowAddContact] = useState(false);
-  const [newContact, setNewContact] = useState({ email: "", first_name: "", last_name: "", source: "manuel", tags: "" });
+  const [newContact, setNewContact] = useState({
+    first_name: "",
+    last_name: "",
+    email: "",
+    phone: "",
+    source: "manuel",
+    list_tag_key: "",
+    extra_tags: "",
+  });
   const [addingContact, setAddingContact] = useState(false);
   const [addError, setAddError] = useState("");
+  const [availableLists, setAvailableLists] = useState<ContactList[]>([]);
+  const [listFolders, setListFolders] = useState<ListFolder[]>([]);
+  const [listFilter, setListFilter] = useState<string>("");
 
   useEffect(() => {
     fetchContacts();
-  }, [page, search, tagFilter]);
+  }, [page, search, tagFilter, listFilter]);
+
+  useEffect(() => {
+    // Charger les listes disponibles au mount
+    fetch("/api/admin/lists")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (data) {
+          setAvailableLists(data.lists || []);
+          setListFolders(data.folders || []);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   async function fetchContacts() {
     setLoading(true);
     const params = new URLSearchParams({ page: String(page), limit: "30" });
     if (search) params.set("search", search);
-    if (tagFilter) params.set("tag", tagFilter);
+    // listFilter prime sur tagFilter
+    const effectiveTag = listFilter || tagFilter;
+    if (effectiveTag) params.set("tag", effectiveTag);
 
     const res = await fetch(`/api/contacts?${params}`);
     if (res.ok) {
@@ -105,9 +144,17 @@ export default function AdminContacts() {
       return;
     }
     setAddingContact(true);
-    const tags = newContact.tags
-      ? newContact.tags.split(/[,;]/).map((t) => t.trim()).filter(Boolean)
-      : ["manuel"];
+    // Combiner la liste sélectionnée + tags libres
+    const extraTags = newContact.extra_tags
+      ? newContact.extra_tags.split(/[,;]/).map((t) => t.trim()).filter(Boolean)
+      : [];
+    const tags = Array.from(
+      new Set([
+        ...(newContact.list_tag_key ? [newContact.list_tag_key] : []),
+        ...extraTags,
+        "manuel",
+      ])
+    );
     const res = await fetch("/api/contacts", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -115,6 +162,7 @@ export default function AdminContacts() {
         email: newContact.email.trim(),
         first_name: newContact.first_name.trim(),
         last_name: newContact.last_name.trim(),
+        phone: newContact.phone.trim() || null,
         source: newContact.source || "manuel",
         tags,
       }),
@@ -122,7 +170,15 @@ export default function AdminContacts() {
     setAddingContact(false);
     if (res.ok) {
       setShowAddContact(false);
-      setNewContact({ email: "", first_name: "", last_name: "", source: "manuel", tags: "" });
+      setNewContact({
+        first_name: "",
+        last_name: "",
+        email: "",
+        phone: "",
+        source: "manuel",
+        list_tag_key: "",
+        extra_tags: "",
+      });
       fetchContacts();
     } else {
       const body = await res.json().catch(() => ({}));
@@ -262,38 +318,94 @@ export default function AdminContacts() {
 
       {/* Modal ajout manuel */}
       {showAddContact && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
-          <Card className="w-full max-w-md">
-            <h3 className="font-serif text-lg font-bold text-gray-900 mb-4">Ajouter un contact à la main</h3>
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4 overflow-y-auto">
+          <Card className="w-full max-w-lg my-8">
+            <h3 className="font-serif text-lg font-bold text-gray-900 mb-1">Ajouter un contact</h3>
+            <p className="text-xs text-gray-500 mb-4">Saisie manuelle — le contact ira directement dans ton CRM.</p>
             <div className="space-y-3">
-              <Input
-                placeholder="Email *"
-                type="email"
-                value={newContact.email}
-                onChange={(e) => setNewContact({ ...newContact, email: e.target.value })}
-              />
               <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-xs text-gray-500 mb-1 block">Prénom</label>
+                  <Input
+                    placeholder="Ex : Marie"
+                    value={newContact.first_name}
+                    onChange={(e) => setNewContact({ ...newContact, first_name: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="text-xs text-gray-500 mb-1 block">Nom</label>
+                  <Input
+                    placeholder="Ex : Dupont"
+                    value={newContact.last_name}
+                    onChange={(e) => setNewContact({ ...newContact, last_name: e.target.value })}
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="text-xs text-gray-500 mb-1 block">Email *</label>
                 <Input
-                  placeholder="Prénom"
-                  value={newContact.first_name}
-                  onChange={(e) => setNewContact({ ...newContact, first_name: e.target.value })}
-                />
-                <Input
-                  placeholder="Nom"
-                  value={newContact.last_name}
-                  onChange={(e) => setNewContact({ ...newContact, last_name: e.target.value })}
+                  type="email"
+                  placeholder="marie.dupont@exemple.com"
+                  value={newContact.email}
+                  onChange={(e) => setNewContact({ ...newContact, email: e.target.value })}
                 />
               </div>
-              <Input
-                placeholder="Source (ex : appel_direct, salon, recommandation)"
-                value={newContact.source}
-                onChange={(e) => setNewContact({ ...newContact, source: e.target.value })}
-              />
-              <Input
-                placeholder="Tags séparés par ; ou , (ex : vip ; a_rappeler)"
-                value={newContact.tags}
-                onChange={(e) => setNewContact({ ...newContact, tags: e.target.value })}
-              />
+              <div>
+                <label className="text-xs text-gray-500 mb-1 block">Téléphone</label>
+                <Input
+                  type="tel"
+                  placeholder="06 12 34 56 78"
+                  value={newContact.phone}
+                  onChange={(e) => setNewContact({ ...newContact, phone: e.target.value })}
+                />
+              </div>
+              <div>
+                <label className="text-xs text-gray-500 mb-1 block">
+                  Liste {availableLists.length === 0 && <span className="italic text-gray-400">— aucune liste, à créer dans /admin/lists</span>}
+                </label>
+                <select
+                  value={newContact.list_tag_key}
+                  onChange={(e) => setNewContact({ ...newContact, list_tag_key: e.target.value })}
+                  className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white text-sm text-gray-700"
+                >
+                  <option value="">— Aucune liste —</option>
+                  {listFolders.map((f) => {
+                    const folderLists = availableLists.filter((l) => l.folder_id === f.id);
+                    if (folderLists.length === 0) return null;
+                    return (
+                      <optgroup key={f.id} label={f.name}>
+                        {folderLists.map((l) => (
+                          <option key={l.id} value={l.tag_key}>{l.name}</option>
+                        ))}
+                      </optgroup>
+                    );
+                  })}
+                  {/* Listes sans dossier */}
+                  {availableLists.filter((l) => !l.folder_id).length > 0 && (
+                    <optgroup label="Autres">
+                      {availableLists.filter((l) => !l.folder_id).map((l) => (
+                        <option key={l.id} value={l.tag_key}>{l.name}</option>
+                      ))}
+                    </optgroup>
+                  )}
+                </select>
+              </div>
+              <div>
+                <label className="text-xs text-gray-500 mb-1 block">Tags supplémentaires</label>
+                <Input
+                  placeholder="Séparés par ; ou , (ex : vip ; a_rappeler)"
+                  value={newContact.extra_tags}
+                  onChange={(e) => setNewContact({ ...newContact, extra_tags: e.target.value })}
+                />
+              </div>
+              <div>
+                <label className="text-xs text-gray-500 mb-1 block">Source</label>
+                <Input
+                  placeholder="Ex : appel direct, salon, recommandation"
+                  value={newContact.source}
+                  onChange={(e) => setNewContact({ ...newContact, source: e.target.value })}
+                />
+              </div>
               {addError && <p className="text-sm text-red-600">{addError}</p>}
             </div>
             <div className="flex gap-2 justify-end mt-5">
@@ -349,7 +461,7 @@ export default function AdminContacts() {
         </Card>
       )}
 
-      {/* Search + tag filter */}
+      {/* Search + list + tag filter */}
       <div className="flex flex-col sm:flex-row gap-3 mb-4">
         <div className="flex-1">
           <Input
@@ -358,6 +470,35 @@ export default function AdminContacts() {
             onChange={(e) => { setSearch(e.target.value); setPage(1); }}
           />
         </div>
+        <select
+          value={listFilter}
+          onChange={(e) => { setListFilter(e.target.value); setPage(1); }}
+          className="px-4 py-3 rounded-lg border border-gray-200 bg-white text-sm text-gray-600 min-w-[180px]"
+        >
+          <option value="">Toutes les listes</option>
+          {listFolders.map((f) => {
+            const folderLists = availableLists.filter((l) => l.folder_id === f.id);
+            if (folderLists.length === 0) return null;
+            return (
+              <optgroup key={f.id} label={f.name}>
+                {folderLists.map((l) => (
+                  <option key={l.id} value={l.tag_key}>
+                    {l.name} ({l.contact_count || 0})
+                  </option>
+                ))}
+              </optgroup>
+            );
+          })}
+          {availableLists.filter((l) => !l.folder_id).length > 0 && (
+            <optgroup label="Autres listes">
+              {availableLists.filter((l) => !l.folder_id).map((l) => (
+                <option key={l.id} value={l.tag_key}>
+                  {l.name} ({l.contact_count || 0})
+                </option>
+              ))}
+            </optgroup>
+          )}
+        </select>
         <select
           value={tagFilter}
           onChange={(e) => { setTagFilter(e.target.value); setPage(1); }}

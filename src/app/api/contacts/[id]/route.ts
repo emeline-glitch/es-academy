@@ -87,6 +87,7 @@ export async function PATCH(
   if (body.first_name !== undefined) updateData.first_name = body.first_name;
   if (body.last_name !== undefined) updateData.last_name = body.last_name;
   if (body.source) updateData.source = body.source;
+  if (body.phone !== undefined) updateData.phone = body.phone ? String(body.phone).trim() : null;
   if (body.pipeline_stage !== undefined) {
     if (!VALID_STAGES.includes(body.pipeline_stage)) {
       return NextResponse.json({ error: "Stage invalide" }, { status: 400 });

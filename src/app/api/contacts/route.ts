@@ -4,7 +4,7 @@ import { createServiceClient } from "@/lib/supabase/server";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { email, first_name, last_name, source, tags, metadata } = body;
+    const { email, first_name, last_name, source, tags, metadata, phone } = body;
 
     if (!email) {
       return NextResponse.json({ error: "Email requis" }, { status: 400 });
@@ -12,17 +12,17 @@ export async function POST(request: Request) {
 
     const supabase = await createServiceClient();
 
-    const { error } = await supabase.from("contacts").upsert(
-      {
-        email: email.toLowerCase().trim(),
-        first_name: first_name || "",
-        last_name: last_name || "",
-        source: source || "website",
-        tags: tags || ["newsletter"],
-        status: "active",
-      },
-      { onConflict: "email" }
-    );
+    const upsertData: Record<string, unknown> = {
+      email: email.toLowerCase().trim(),
+      first_name: first_name || "",
+      last_name: last_name || "",
+      source: source || "website",
+      tags: tags || ["newsletter"],
+      status: "active",
+    };
+    if (phone !== undefined) upsertData.phone = phone ? String(phone).trim() : null;
+
+    const { error } = await supabase.from("contacts").upsert(upsertData, { onConflict: "email" });
 
     if (error) {
       console.error("Contact insert error:", error);
