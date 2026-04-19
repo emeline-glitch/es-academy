@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { EmailEditor } from "@/components/admin/EmailEditor";
@@ -8,6 +8,7 @@ import { AudienceTargeter } from "@/components/admin/AudienceTargeter";
 import { MergeTagsToolbar, renderMergeTagsPreview } from "@/components/admin/MergeTagsToolbar";
 import { InboxPreview } from "@/components/admin/InboxPreview";
 import { useToast } from "@/components/ui/Toast";
+import { defaultNewsletterHtml } from "@/lib/email/newsletter-template";
 
 type SectionKey = "sender" | "recipients" | "subject" | "design" | "settings" | "preview" | "schedule" | null;
 
@@ -627,6 +628,14 @@ function DesignModal({
   onClose: () => void;
 }) {
   const [html, setHtml] = useState(content);
+
+  function loadTemplate() {
+    if (html.trim() && !confirm("Remplacer le contenu actuel par la trame de newsletter L'Immo sans prise de tête ?")) {
+      return;
+    }
+    setHtml(defaultNewsletterHtml());
+  }
+
   return (
     <Modal
       icon={html ? "done" : "todo"}
@@ -641,6 +650,20 @@ function DesignModal({
         </>
       }
     >
+      <div className="mb-3 flex items-center justify-between flex-wrap gap-2 p-3 bg-es-green/5 border border-es-green/20 rounded-lg">
+        <div className="text-sm">
+          <p className="font-semibold text-gray-900">📧 Trame newsletter prête à l&apos;emploi</p>
+          <p className="text-xs text-gray-500 mt-0.5">
+            Charge ta trame « L&apos;Immo sans prise de tête » : header magazine, intro vidéo, article, callout social, actu immo, CTA podcast, signature.
+          </p>
+        </div>
+        <button
+          onClick={loadTemplate}
+          className="shrink-0 px-4 py-2 bg-es-green text-white text-sm font-semibold rounded-lg hover:bg-es-green-light"
+        >
+          Charger la trame
+        </button>
+      </div>
       <EmailEditor value={html} onChange={setHtml} />
     </Modal>
   );
@@ -902,5 +925,3 @@ function ScheduleModal({
   );
 }
 
-// Empêche les lint warnings sur useEffect non utilisé
-void useEffect;
