@@ -1,13 +1,39 @@
 import { NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase/server";
+import { rateLimit, getClientIp, cleanupBuckets } from "@/lib/utils/rate-limit";
+import { requireAdmin } from "@/lib/utils/admin-auth";
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function POST(request: Request) {
   try {
+    cleanupBuckets();
+
+    // Si c'est un admin connecté, bypass rate limit
+    const auth = await requireAdmin();
+    const isAdmin = auth.ok;
+
+    if (!isAdmin) {
+      const ip = getClientIp(request);
+      const ipCheck = rateLimit(`contacts:ip:${ip}`, 5, 60_000); // 5 req / minute / IP
+      const hourCheck = rateLimit(`contacts:ip-hour:${ip}`, 30, 60 * 60_000); // 30 req / heure / IP
+      if (!ipCheck.allowed || !hourCheck.allowed) {
+        return NextResponse.json(
+          { error: "Trop de requêtes, réessaie plus tard." },
+          { status: 429, headers: { "Retry-After": String(Math.ceil((ipCheck.resetAt - Date.now()) / 1000)) } }
+        );
+      }
+    }
+
     const body = await request.json();
     const { email, first_name, last_name, source, tags, metadata, phone } = body;
 
-    if (!email) {
-      return NextResponse.json({ error: "Email requis" }, { status: 400 });
+    if (!email || typeof email !== "string" || !EMAIL_RE.test(email.trim())) {
+      return NextResponse.json({ error: "Email invalide" }, { status: 400 });
+    }
+    // Anti-pourriel : payload trop long
+    if ((first_name && first_name.length > 100) || (last_name && last_name.length > 100)) {
+      return NextResponse.json({ error: "Nom/prénom trop long" }, { status: 400 });
     }
 
     const supabase = await createServiceClient();

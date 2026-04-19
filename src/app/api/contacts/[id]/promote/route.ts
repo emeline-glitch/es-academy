@@ -35,9 +35,49 @@ export async function POST(
     return NextResponse.json({ error: "Contact introuvable" }, { status: 404 });
   }
 
-  // 2. Trouver ou créer l'utilisateur auth
-  const { data: list } = await supabase.auth.admin.listUsers({ page: 1, perPage: 200 });
-  let authUser = list?.users?.find((u) => u.email?.toLowerCase() === contact.email.toLowerCase());
+  // 2. Trouver ou créer l'utilisateur auth (via profiles.email si dispo, sinon fallback listUsers)
+  let authUserId: string | null = null;
+  const emailLower = contact.email.toLowerCase();
+
+  const { data: existingByEmail, error: lookupErr } = await supabase
+    .from("profiles")
+    .select("id")
+    .ilike("email", emailLower)
+    .maybeSingle();
+
+  if (lookupErr && /column.*email/i.test(lookupErr.message)) {
+    // Fallback avant migration 005
+    const { data: list } = await supabase.auth.admin.listUsers({ page: 1, perPage: 200 });
+    const found = list?.users?.find((u) => u.email?.toLowerCase() === emailLower);
+    authUserId = found?.id || null;
+  } else if (existingByEmail) {
+    authUserId = existingByEmail.id;
+  }
+
+  // 3. Si déjà un enrollment actif pour ce produit, on bloque (évite les doublons)
+  if (authUserId) {
+    const { data: existingEnrollment } = await supabase
+      .from("enrollments")
+      .select("id, product_name, status, purchased_at")
+      .eq("user_id", authUserId)
+      .eq("product_name", product_name)
+      .eq("status", "active")
+      .maybeSingle();
+    if (existingEnrollment) {
+      return NextResponse.json(
+        {
+          error: `Enrollment "${product_name}" déjà actif pour ce contact depuis le ${new Date(existingEnrollment.purchased_at).toLocaleDateString("fr-FR")}. Annule ou change de produit avant de refaire la bascule.`,
+          existing_enrollment: existingEnrollment,
+        },
+        { status: 409 }
+      );
+    }
+  }
+
+  // 4. Retrouver authUser complet OU créer
+  let authUser = authUserId
+    ? (await supabase.auth.admin.getUserById(authUserId)).data?.user
+    : null;
 
   if (!authUser) {
     if (send_invite) {
@@ -116,6 +156,25 @@ export async function POST(
       tags: nextTags,
     })
     .eq("id", id);
+
+  // Audit log
+  try {
+    await supabase.from("audit_log").insert({
+      actor_id: auth.userId,
+      action: "contact_promoted",
+      entity_type: "contact",
+      entity_id: id,
+      after: {
+        user_id: authUser.id,
+        enrollment_id: enrollment?.id,
+        product_name,
+        amount_paid: Math.floor(amount_paid * 100),
+        coaching_credits: Math.max(0, Math.floor(coaching_credits)),
+      },
+    });
+  } catch (e) {
+    console.warn("[audit_log] promote:", e);
+  }
 
   return NextResponse.json({
     success: true,

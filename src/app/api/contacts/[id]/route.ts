@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/utils/admin-auth";
+import { writeAuditLog } from "@/lib/utils/audit";
 
 const VALID_STAGES = [
   "leads",
@@ -32,24 +33,39 @@ export async function GET(
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   if (!data) return NextResponse.json({ error: "Contact introuvable" }, { status: 404 });
 
-  // On tente de retrouver le profil élève correspondant via l'email
-  let profile = null;
+  // Lookup profil via profiles.email (indexé, scalable) — avec fallback listUsers si colonne pas encore présente
+  let profile: unknown = null;
   let enrollments: unknown[] = [];
   if (data.email) {
-    const { data: authUsers } = await supabase.auth.admin.listUsers({ page: 1, perPage: 200 });
-    const matched = authUsers?.users?.find((u) => u.email?.toLowerCase() === data.email.toLowerCase());
-    if (matched) {
-      const { data: p } = await supabase
-        .from("profiles")
-        .select("id, full_name, role, coaching_credits_total, coaching_credits_used")
-        .eq("id", matched.id)
-        .maybeSingle();
-      profile = p;
+    const emailLower = data.email.toLowerCase();
+    const { data: p, error: pErr } = await supabase
+      .from("profiles")
+      .select("id, full_name, role, coaching_credits_total, coaching_credits_used, email")
+      .ilike("email", emailLower)
+      .maybeSingle();
 
+    // Si la colonne email n'existe pas encore (avant migration 005), fallback sur listUsers
+    if (pErr && /column.*email/i.test(pErr.message)) {
+      const { data: authUsers } = await supabase.auth.admin.listUsers({ page: 1, perPage: 200 });
+      const matched = authUsers?.users?.find((u) => u.email?.toLowerCase() === emailLower);
+      if (matched) {
+        const { data: p2 } = await supabase
+          .from("profiles")
+          .select("id, full_name, role, coaching_credits_total, coaching_credits_used")
+          .eq("id", matched.id)
+          .maybeSingle();
+        profile = p2;
+      }
+    } else if (p) {
+      profile = p;
+    }
+
+    const profileId = (profile as { id?: string } | null)?.id;
+    if (profileId) {
       const { data: enr } = await supabase
         .from("enrollments")
         .select("id, product_name, amount_paid, purchased_at, status")
-        .eq("user_id", matched.id)
+        .eq("user_id", profileId)
         .order("purchased_at", { ascending: false });
       enrollments = enr || [];
     }
@@ -68,6 +84,13 @@ export async function PATCH(
   const supabase = await createServiceClient();
   const { id } = await params;
   const body = await request.json();
+
+  // Valeur avant changement (pour audit)
+  const { data: before } = await supabase
+    .from("contacts")
+    .select("pipeline_stage, tags, status")
+    .eq("id", id)
+    .maybeSingle();
 
   const updateData: Record<string, unknown> = {};
   if (body.tags) updateData.tags = body.tags;
@@ -92,5 +115,18 @@ export async function PATCH(
     .maybeSingle();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  // Audit log pour les changements de stage
+  if (body.pipeline_stage !== undefined && before?.pipeline_stage !== body.pipeline_stage) {
+    await writeAuditLog(supabase, {
+      actor_id: auth.userId,
+      action: "pipeline_stage_change",
+      entity_type: "contact",
+      entity_id: id,
+      before: { pipeline_stage: before?.pipeline_stage },
+      after: { pipeline_stage: body.pipeline_stage },
+    });
+  }
+
   return NextResponse.json({ contact: data });
 }

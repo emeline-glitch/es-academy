@@ -101,6 +101,15 @@ export default function ListsPage() {
     if (res.ok) fetchAll();
   }
 
+  async function renameItem(kind: "folder" | "list", id: string, name: string) {
+    const res = await fetch(`/api/admin/lists`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ kind, id, name }),
+    });
+    if (res.ok) fetchAll();
+  }
+
   const totalContacts = lists.reduce((sum, l) => sum + l.contact_count, 0);
   const unfiledLists = lists.filter((l) => !l.folder_id);
 
@@ -154,14 +163,18 @@ export default function ListsPage() {
             return (
               <div key={folder.id} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
                 <div className="bg-gray-50 px-5 py-3 flex items-center justify-between border-b border-gray-200">
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
                     <span className="text-xl">📁</span>
-                    <h2 className="font-serif text-base font-bold text-gray-900">{folder.name}</h2>
-                    <span className="text-xs text-gray-500 bg-white px-2 py-0.5 rounded-full border border-gray-200">
+                    <EditableName
+                      value={folder.name}
+                      onSave={(name) => renameItem("folder", folder.id, name)}
+                      className="font-serif text-base font-bold text-gray-900"
+                    />
+                    <span className="text-xs text-gray-500 bg-white px-2 py-0.5 rounded-full border border-gray-200 shrink-0">
                       {folderLists.length} liste{folderLists.length > 1 ? "s" : ""} · {folderTotal} contacts
                     </span>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 shrink-0">
                     <button
                       onClick={() => { setShowNewListFor(folder.id); setNewListData({ folderId: folder.id, name: "", description: "" }); }}
                       className="text-xs font-semibold text-es-green hover:underline"
@@ -210,7 +223,7 @@ export default function ListsPage() {
                     <div className="px-5 py-6 text-center text-xs text-gray-400 italic">Aucune liste dans ce dossier</div>
                   ) : (
                     folderLists.map((l) => (
-                      <ListRow key={l.id} list={l} onDelete={() => deleteItem("list", l.id)} />
+                      <ListRow key={l.id} list={l} onDelete={() => deleteItem("list", l.id)} onRename={(name) => renameItem("list", l.id, name)} />
                     ))
                   )}
                 </div>
@@ -268,7 +281,7 @@ export default function ListsPage() {
                 <div className="px-5 py-6 text-center text-xs text-gray-400 italic">Aucune liste hors dossier</div>
               ) : (
                 unfiledLists.map((l) => (
-                  <ListRow key={l.id} list={l} onDelete={() => deleteItem("list", l.id)} />
+                  <ListRow key={l.id} list={l} onDelete={() => deleteItem("list", l.id)} onRename={(name) => renameItem("list", l.id, name)} />
                 ))
               )}
             </div>
@@ -291,18 +304,41 @@ export default function ListsPage() {
   );
 }
 
-function ListRow({ list, onDelete }: { list: ContactList; onDelete: () => void }) {
+function ListRow({ list, onDelete, onRename }: { list: ContactList; onDelete: () => void; onRename: (name: string) => void }) {
+  const [editing, setEditing] = useState(false);
+  const [name, setName] = useState(list.name);
+
   return (
     <div className="flex items-center justify-between px-5 py-3 hover:bg-gray-50">
       <div className="flex items-center gap-3 flex-1 min-w-0">
         <span className="text-lg">📋</span>
-        <div className="min-w-0">
-          <Link
-            href={`/admin/contacts?tag=${encodeURIComponent(list.tag_key)}`}
-            className="text-sm font-medium text-gray-900 hover:text-es-green truncate block"
-          >
-            {list.name}
-          </Link>
+        <div className="min-w-0 flex-1">
+          {editing ? (
+            <div className="flex items-center gap-2">
+              <input
+                autoFocus
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") { onRename(name); setEditing(false); }
+                  if (e.key === "Escape") { setName(list.name); setEditing(false); }
+                }}
+                className="text-sm font-medium text-gray-900 border border-gray-300 rounded px-2 py-1 w-full max-w-xs"
+              />
+              <button onClick={() => { onRename(name); setEditing(false); }} className="text-xs px-2 py-1 bg-es-green text-white rounded">OK</button>
+              <button onClick={() => { setName(list.name); setEditing(false); }} className="text-xs text-gray-500">✕</button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Link
+                href={`/admin/contacts?tag=${encodeURIComponent(list.tag_key)}`}
+                className="text-sm font-medium text-gray-900 hover:text-es-green truncate"
+              >
+                {list.name}
+              </Link>
+              <button onClick={() => setEditing(true)} className="text-[11px] text-gray-400 hover:text-es-green" title="Renommer">✎</button>
+            </div>
+          )}
           {list.description && <p className="text-xs text-gray-500 truncate">{list.description}</p>}
           <p className="text-[10px] text-gray-400 mt-0.5 font-mono">tag : {list.tag_key}</p>
         </div>
@@ -315,6 +351,36 @@ function ListRow({ list, onDelete }: { list: ContactList; onDelete: () => void }
         </span>
         <button onClick={onDelete} className="text-xs text-red-500 hover:text-red-700">Suppr.</button>
       </div>
+    </div>
+  );
+}
+
+function EditableName({ value, onSave, className = "" }: { value: string; onSave: (name: string) => void; className?: string }) {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(value);
+
+  if (editing) {
+    return (
+      <div className="flex items-center gap-2 flex-1">
+        <input
+          autoFocus
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") { onSave(draft); setEditing(false); }
+            if (e.key === "Escape") { setDraft(value); setEditing(false); }
+          }}
+          className={`${className} border border-gray-300 rounded px-2 py-1 flex-1 min-w-0`}
+        />
+        <button onClick={() => { onSave(draft); setEditing(false); }} className="text-xs px-2 py-1 bg-es-green text-white rounded">OK</button>
+        <button onClick={() => { setDraft(value); setEditing(false); }} className="text-xs text-gray-500">✕</button>
+      </div>
+    );
+  }
+  return (
+    <div className="flex items-center gap-2 min-w-0">
+      <h2 className={`${className} truncate`}>{value}</h2>
+      <button onClick={() => { setDraft(value); setEditing(true); }} className="text-[11px] text-gray-400 hover:text-es-green shrink-0" title="Renommer">✎</button>
     </div>
   );
 }

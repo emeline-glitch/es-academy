@@ -68,6 +68,7 @@ export default function AdminContacts() {
   const [csvText, setCsvText] = useState("");
   const [importing, setImporting] = useState(false);
   const [importResult, setImportResult] = useState("");
+  const [importListTagKey, setImportListTagKey] = useState("");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [showTagModal, setShowTagModal] = useState(false);
   const [newTag, setNewTag] = useState("");
@@ -203,6 +204,13 @@ export default function AdminContacts() {
         continue;
       }
 
+      const lineTags = parts[4] ? parts[4].split(";").map((t) => t.trim()).filter(Boolean) : [];
+      const allTags = Array.from(new Set([
+        ...lineTags,
+        ...(importListTagKey ? [importListTagKey] : []),
+        "import",
+      ]));
+
       const res = await fetch("/api/contacts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -211,7 +219,7 @@ export default function AdminContacts() {
           first_name: parts[1] || "",
           last_name: parts[2] || "",
           source: parts[3] || "import_csv",
-          tags: parts[4] ? parts[4].split(";") : ["import"],
+          tags: allTags,
         }),
       });
 
@@ -219,7 +227,8 @@ export default function AdminContacts() {
       else errors++;
     }
 
-    setImportResult(`${imported} importés, ${errors} erreurs`);
+    const listLabel = availableLists.find((l) => l.tag_key === importListTagKey)?.name;
+    setImportResult(`${imported} importés${listLabel ? ` dans "${listLabel}"` : ""}, ${errors} erreurs`);
     setImporting(false);
     setCsvText("");
     fetchContacts();
@@ -445,6 +454,33 @@ export default function AdminContacts() {
           <p className="text-xs text-gray-500 mb-3">
             Format : email, prénom, nom, source, tags (séparés par ;) — un contact par ligne
           </p>
+
+          <div className="mb-3">
+            <label className="text-xs text-gray-500 mb-1 block">Liste de destination (optionnel)</label>
+            <select
+              value={importListTagKey}
+              onChange={(e) => setImportListTagKey(e.target.value)}
+              className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-white text-sm"
+            >
+              <option value="">— Pas de liste —</option>
+              {listFolders.map((f) => {
+                const folderLists = availableLists.filter((l) => l.folder_id === f.id);
+                if (folderLists.length === 0) return null;
+                return (
+                  <optgroup key={f.id} label={f.name}>
+                    {folderLists.map((l) => <option key={l.id} value={l.tag_key}>{l.name}</option>)}
+                  </optgroup>
+                );
+              })}
+              {availableLists.filter((l) => !l.folder_id).length > 0 && (
+                <optgroup label="Autres">
+                  {availableLists.filter((l) => !l.folder_id).map((l) => <option key={l.id} value={l.tag_key}>{l.name}</option>)}
+                </optgroup>
+              )}
+            </select>
+            <p className="text-[11px] text-gray-400 mt-1">Tous les contacts importés seront ajoutés à cette liste</p>
+          </div>
+
           <textarea
             value={csvText}
             onChange={(e) => setCsvText(e.target.value)}
