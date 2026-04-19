@@ -1,39 +1,48 @@
-"use client";
-
+import { createClient } from "@/lib/supabase/server";
 import { Card } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
+import { formatMoney } from "@/lib/utils/format";
 
-const tunnels = [
+interface TunnelStep {
+  name: string;
+  url: string;
+  type: string;
+}
+interface Tunnel {
+  name: string;
+  captureTag?: string;
+  productName?: string;
+  steps: TunnelStep[];
+}
+
+const tunnels: Tunnel[] = [
   {
     name: "Tunnel Outils Gratuits",
-    status: "active",
+    captureTag: "outils_gratuits",
     steps: [
       { name: "Page capture", url: "/outils-gratuits", type: "capture" },
       { name: "Page merci + Upsell", url: "/merci-outils", type: "upsell" },
-      { name: "Séquence email nurturing", url: "#", type: "email" },
+      { name: "Séquence email nurturing", url: "/admin/sequences", type: "email" },
     ],
-    conversions: "—",
   },
   {
     name: "Tunnel ES Academy",
-    status: "active",
+    captureTag: "client",
+    productName: "academy",
     steps: [
       { name: "Page de vente", url: "/academy", type: "vente" },
       { name: "Checkout Stripe", url: "#", type: "paiement" },
       { name: "Page merci", url: "/merci", type: "confirmation" },
-      { name: "Séquence bienvenue", url: "#", type: "email" },
+      { name: "Séquence bienvenue", url: "/admin/sequences", type: "email" },
     ],
-    conversions: "—",
   },
   {
     name: "Tunnel ES Family",
-    status: "active",
+    productName: "family",
     steps: [
       { name: "Page de vente", url: "/family", type: "vente" },
       { name: "Checkout Skool", url: "https://www.skool.com/es-family", type: "paiement" },
     ],
-    conversions: "—",
   },
 ];
 
@@ -46,51 +55,104 @@ const stepIcons: Record<string, string> = {
   email: "📧",
 };
 
-export default function AdminTunnels() {
+export default async function AdminTunnels() {
+  const supabase = await createClient();
+
+  // Métriques par tunnel : captures par tag, conversions via enrollments.product_name, revenu
+  const [{ data: allContacts }, { data: allEnrollments }] = await Promise.all([
+    supabase.from("contacts").select("tags").eq("status", "active"),
+    supabase.from("enrollments").select("product_name, amount_paid"),
+  ]);
+
+  const captureCounts: Record<string, number> = {};
+  for (const c of allContacts || []) {
+    for (const t of c.tags || []) captureCounts[t] = (captureCounts[t] || 0) + 1;
+  }
+  const productRevenue: Record<string, { count: number; revenue: number }> = {};
+  for (const e of allEnrollments || []) {
+    if (!e.product_name) continue;
+    if (!productRevenue[e.product_name]) productRevenue[e.product_name] = { count: 0, revenue: 0 };
+    productRevenue[e.product_name].count += 1;
+    productRevenue[e.product_name].revenue += e.amount_paid || 0;
+  }
+
   return (
     <div>
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="font-serif text-2xl font-bold text-gray-900">Tunnels de vente</h1>
-          <p className="text-sm text-gray-500 mt-1">Vos parcours de conversion</p>
-        </div>
+      <div className="mb-8">
+        <h1 className="font-serif text-2xl font-bold text-gray-900">Tunnels de vente</h1>
+        <p className="text-sm text-gray-500 mt-1">Tes parcours de conversion, avec les chiffres réels.</p>
       </div>
 
       <div className="space-y-6">
-        {tunnels.map((tunnel, i) => (
-          <Card key={i}>
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h2 className="font-serif text-lg font-bold text-gray-900">{tunnel.name}</h2>
-              </div>
-              <Badge variant={tunnel.status === "active" ? "success" : "default"}>
-                {tunnel.status}
-              </Badge>
-            </div>
+        {tunnels.map((tunnel, i) => {
+          const captures = tunnel.captureTag ? captureCounts[tunnel.captureTag] || 0 : 0;
+          const sales = tunnel.productName ? productRevenue[tunnel.productName]?.count || 0 : 0;
+          const revenue = tunnel.productName ? productRevenue[tunnel.productName]?.revenue || 0 : 0;
+          const convRate = captures > 0 ? Math.round((sales / captures) * 100) : 0;
 
-            {/* Steps */}
-            <div className="flex flex-wrap items-center gap-2">
-              {tunnel.steps.map((step, j) => (
-                <div key={j} className="flex items-center gap-2">
-                  <a
-                    href={step.url}
-                    target={step.url.startsWith("http") ? "_blank" : undefined}
-                    rel={step.url.startsWith("http") ? "noopener noreferrer" : undefined}
-                    className="flex items-center gap-2 px-4 py-2.5 bg-gray-50 rounded-lg hover:bg-es-green/5 transition-colors group"
-                  >
-                    <span>{stepIcons[step.type] || "📄"}</span>
-                    <span className="text-sm text-gray-700 group-hover:text-es-green">{step.name}</span>
-                  </a>
-                  {j < tunnel.steps.length - 1 && (
-                    <svg className="w-4 h-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
+          return (
+            <Card key={i}>
+              <div className="flex items-start justify-between mb-5 flex-wrap gap-3">
+                <div>
+                  <h2 className="font-serif text-lg font-bold text-gray-900">{tunnel.name}</h2>
+                </div>
+                <Badge variant="success">Actif</Badge>
+              </div>
+
+              {/* KPIs du tunnel */}
+              {(tunnel.captureTag || tunnel.productName) && (
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
+                  {tunnel.captureTag && (
+                    <div className="bg-blue-50 rounded-lg p-3">
+                      <p className="text-[10px] uppercase text-blue-700 font-semibold tracking-wider">Captures</p>
+                      <p className="text-xl font-bold text-blue-700 mt-1">{captures}</p>
+                    </div>
+                  )}
+                  {tunnel.productName && (
+                    <>
+                      <div className="bg-green-50 rounded-lg p-3">
+                        <p className="text-[10px] uppercase text-green-700 font-semibold tracking-wider">Ventes</p>
+                        <p className="text-xl font-bold text-green-700 mt-1">{sales}</p>
+                      </div>
+                      <div className="bg-amber-50 rounded-lg p-3">
+                        <p className="text-[10px] uppercase text-amber-700 font-semibold tracking-wider">Revenu</p>
+                        <p className="text-xl font-bold text-amber-700 mt-1">{formatMoney(revenue)}</p>
+                      </div>
+                      {tunnel.captureTag && (
+                        <div className="bg-es-green/10 rounded-lg p-3">
+                          <p className="text-[10px] uppercase text-es-green font-semibold tracking-wider">Conversion</p>
+                          <p className="text-xl font-bold text-es-green mt-1">{convRate}%</p>
+                        </div>
+                      )}
+                    </>
                   )}
                 </div>
-              ))}
-            </div>
-          </Card>
-        ))}
+              )}
+
+              {/* Steps */}
+              <div className="flex flex-wrap items-center gap-2">
+                {tunnel.steps.map((step, j) => (
+                  <div key={j} className="flex items-center gap-2">
+                    <a
+                      href={step.url}
+                      target={step.url.startsWith("http") ? "_blank" : undefined}
+                      rel={step.url.startsWith("http") ? "noopener noreferrer" : undefined}
+                      className="flex items-center gap-2 px-4 py-2.5 bg-gray-50 rounded-lg hover:bg-es-green/5 transition-colors group"
+                    >
+                      <span>{stepIcons[step.type] || "📄"}</span>
+                      <span className="text-sm text-gray-700 group-hover:text-es-green">{step.name}</span>
+                    </a>
+                    {j < tunnel.steps.length - 1 && (
+                      <svg className="w-4 h-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </Card>
+          );
+        })}
       </div>
 
       {/* Landing pages */}
@@ -116,14 +178,14 @@ export default function AdminTunnels() {
                   { name: "Merci Outils", url: "/merci-outils", type: "Upsell" },
                   { name: "Merci Achat", url: "/merci", type: "Confirmation" },
                   { name: "Blog", url: "/blog", type: "SEO" },
-                  { name: "À propos", url: "/a-propos", type: "Branding" },
+                  { name: "Qui est Emeline ?", url: "/a-propos", type: "Branding" },
                 ].map((p, i) => (
                   <tr key={i} className="hover:bg-gray-50">
                     <td className="px-5 py-3 text-sm font-medium text-gray-900">{p.name}</td>
                     <td className="px-5 py-3 text-sm text-gray-500 font-mono">{p.url}</td>
                     <td className="px-5 py-3"><Badge>{p.type}</Badge></td>
                     <td className="px-5 py-3">
-                      <a href={p.url} target="_blank" className="text-sm text-es-green hover:underline">Voir →</a>
+                      <a href={p.url} target="_blank" rel="noopener noreferrer" className="text-sm text-es-green hover:underline">Voir →</a>
                     </td>
                   </tr>
                 ))}
@@ -132,6 +194,7 @@ export default function AdminTunnels() {
           </div>
         </Card>
       </div>
+
     </div>
   );
 }

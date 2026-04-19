@@ -304,6 +304,25 @@ export default function AdminContacts() {
     }
   }
 
+  async function handleBulkStatus(newStatus: "active" | "archived") {
+    const count = selectedIds.size;
+    if (count === 0) return;
+    const verb = newStatus === "archived" ? "archiver" : "restaurer";
+    if (!confirm(`${verb[0].toUpperCase() + verb.slice(1)} ${count} contact${count > 1 ? "s" : ""} ?`)) return;
+    await Promise.all(
+      Array.from(selectedIds).map((id) =>
+        fetch(`/api/contacts/${id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ status: newStatus }),
+        })
+      )
+    );
+    setSelectedIds(new Set());
+    fetchContacts();
+    toast.success(`${count} contact${count > 1 ? "s" : ""} ${newStatus === "archived" ? "archivé(s)" : "restauré(s)"}`);
+  }
+
   async function handleBulkTag() {
     if (!newTag.trim() || selectedIds.size === 0) return;
     for (const id of selectedIds) {
@@ -576,13 +595,19 @@ export default function AdminContacts() {
 
       {/* Bulk actions */}
       {selectedIds.size > 0 && (
-        <div className="flex items-center gap-3 mb-4 p-3 bg-es-green/5 rounded-lg border border-es-green/20">
+        <div className="flex items-center gap-3 mb-4 p-3 bg-es-green/5 rounded-lg border border-es-green/20 flex-wrap">
           <span className="text-sm font-medium text-es-green">{selectedIds.size} sélectionné(s)</span>
           <Button variant="secondary" size="sm" onClick={() => setShowTagModal(true)}>
             Ajouter un tag
           </Button>
           <Button variant="ghost" size="sm" onClick={handleExportFiltered}>
             Exporter la sélection
+          </Button>
+          <Button variant="ghost" size="sm" onClick={() => handleBulkStatus("archived")}>
+            📦 Archiver
+          </Button>
+          <Button variant="ghost" size="sm" onClick={() => handleBulkStatus("active")}>
+            ↩︎ Restaurer
           </Button>
           <Button variant="ghost" size="sm" onClick={() => setSelectedIds(new Set())}>
             Désélectionner

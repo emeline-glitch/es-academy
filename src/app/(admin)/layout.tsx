@@ -14,6 +14,7 @@ const adminNav = [
   { label: "Emails", href: "/admin/emails", icon: "📧" },
   { label: "Séquences", href: "/admin/sequences", icon: "⚡" },
   { label: "Tunnels", href: "/admin/tunnels", icon: "🔄" },
+  { label: "Activité", href: "/admin/activity", icon: "🕓" },
   { label: "Paramètres", href: "/admin/settings", icon: "⚙️" },
 ];
 
