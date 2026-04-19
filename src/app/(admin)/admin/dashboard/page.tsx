@@ -13,49 +13,64 @@ function startOfToday(): string {
   return new Date(new Date().setHours(0, 0, 0, 0)).toISOString();
 }
 
+interface DashboardStats {
+  total_profiles: number;
+  total_contacts: number;
+  today_contacts: number;
+  total_enrollments: number;
+  total_revenue: number;
+  month_revenue: number;
+  month_sales_count: number;
+  total_campaigns: number;
+  pipeline_counts: Record<string, number>;
+}
+
 export default async function AdminDashboard() {
   const supabase = await createClient();
   const monthStart = startOfMonth();
   const todayStart = startOfToday();
 
-  const [
-    { count: totalProfiles },
-    { count: totalContacts },
-    { count: totalEnrollments },
-    { data: allEnrollments },
-    { data: monthEnrollments },
-    { data: recentContacts },
-    { data: recentEnrollments },
-    { count: totalCampaigns },
-    { count: todayContacts },
-    { data: pipelineAgg },
-    auditRes,
-  ] = await Promise.all([
-    supabase.from("profiles").select("*", { count: "exact", head: true }),
-    supabase.from("contacts").select("*", { count: "exact", head: true }),
-    supabase.from("enrollments").select("*", { count: "exact", head: true }),
-    supabase.from("enrollments").select("amount_paid"),
-    supabase.from("enrollments").select("amount_paid, purchased_at, product_name").gte("purchased_at", monthStart),
-    supabase.from("contacts").select("id, email, first_name, last_name, source, tags, subscribed_at, pipeline_stage").order("subscribed_at", { ascending: false }).limit(8),
-    supabase.from("enrollments").select("id, amount_paid, purchased_at, product_name, user_id").order("purchased_at", { ascending: false }).limit(5),
-    supabase.from("email_campaigns").select("*", { count: "exact", head: true }),
-    supabase.from("contacts").select("*", { count: "exact", head: true }).gte("subscribed_at", todayStart),
-    supabase.from("contacts").select("pipeline_stage"),
+  // Un seul RPC pour tous les compteurs/sommes (au lieu de charger toutes les lignes et sommer en JS).
+  // + 3 queries parallèles pour les listes "récentes" qui sont déjà limit(5-8).
+  const [statsRes, recentContactsRes, recentEnrollmentsRes, auditRes] = await Promise.all([
+    supabase.rpc("dashboard_stats", { month_start: monthStart, today_start: todayStart }),
+    supabase
+      .from("contacts")
+      .select("id, email, first_name, last_name, source, tags, subscribed_at, pipeline_stage")
+      .order("subscribed_at", { ascending: false })
+      .limit(8),
+    supabase
+      .from("enrollments")
+      .select("id, amount_paid, purchased_at, product_name, user_id")
+      .order("purchased_at", { ascending: false })
+      .limit(5),
     supabase.from("audit_log").select("*").order("created_at", { ascending: false }).limit(8),
   ]);
 
-  const totalRevenue = (allEnrollments || []).reduce((s, e) => s + (e.amount_paid || 0), 0);
-  const monthRevenue = (monthEnrollments || []).reduce((s, e) => s + (e.amount_paid || 0), 0);
-  const monthSalesCount = (monthEnrollments || []).length;
+  const stats: DashboardStats = (statsRes.data as DashboardStats) || {
+    total_profiles: 0, total_contacts: 0, today_contacts: 0,
+    total_enrollments: 0, total_revenue: 0, month_revenue: 0, month_sales_count: 0,
+    total_campaigns: 0, pipeline_counts: {},
+  };
+  const recentContacts = recentContactsRes.data;
+  const recentEnrollments = recentEnrollmentsRes.data;
+
+  const totalProfiles = stats.total_profiles;
+  const totalContacts = stats.total_contacts;
+  const totalEnrollments = stats.total_enrollments;
+  const totalRevenue = stats.total_revenue;
+  const monthRevenue = stats.month_revenue;
+  const monthSalesCount = stats.month_sales_count;
+  const totalCampaigns = stats.total_campaigns;
+  const todayContacts = stats.today_contacts;
 
   // Pipeline funnel
   const stageCounts: Record<PipelineStage, number> = {
     leads: 0, prospect: 0, rdv_pris: 0, rdv_effectif: 0, rdv_non_effectif: 0,
     offre_envoyee: 0, non_qualifie: 0, gagne: 0, perdu: 0,
   };
-  for (const c of pipelineAgg || []) {
-    const s = (c.pipeline_stage || "leads") as PipelineStage;
-    if (s in stageCounts) stageCounts[s] += 1;
+  for (const [key, n] of Object.entries(stats.pipeline_counts || {})) {
+    if (key in stageCounts) stageCounts[key as PipelineStage] = n as number;
   }
   const maxStage = Math.max(...Object.values(stageCounts), 1);
   const totalInPipeline = Object.values(stageCounts).reduce((a, b) => a + b, 0);
@@ -65,7 +80,7 @@ export default async function AdminDashboard() {
 
   const auditLog = auditRes?.data || [];
 
-  const stats = [
+  const statCards = [
     { label: "CA ce mois-ci", value: `${(monthRevenue / 100).toLocaleString("fr-FR")}€`, sub: `${monthSalesCount} vente${monthSalesCount > 1 ? "s" : ""}`, icon: "💰", color: "text-green-600 bg-green-50", href: "/admin/eleves" },
     { label: "CA total", value: `${(totalRevenue / 100).toLocaleString("fr-FR")}€`, sub: `${totalEnrollments || 0} formations`, icon: "📦", color: "text-blue-600 bg-blue-50", href: "/admin/eleves" },
     { label: "Contacts CRM", value: totalContacts || 0, sub: `${todayContacts || 0} aujourd'hui`, icon: "👥", color: "text-purple-600 bg-purple-50", href: "/admin/contacts" },
@@ -89,7 +104,7 @@ export default async function AdminDashboard() {
 
       {/* Stats grid */}
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-        {stats.map((stat, i) => (
+        {statCards.map((stat, i) => (
           <Link key={i} href={stat.href} prefetch className="block">
             <Card className="hover:shadow-md transition-shadow h-full">
               <div className="flex items-start gap-3">
