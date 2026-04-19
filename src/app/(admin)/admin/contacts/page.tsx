@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -57,6 +58,10 @@ export default function AdminContacts() {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [showTagModal, setShowTagModal] = useState(false);
   const [newTag, setNewTag] = useState("");
+  const [showAddContact, setShowAddContact] = useState(false);
+  const [newContact, setNewContact] = useState({ email: "", first_name: "", last_name: "", source: "manuel", tags: "" });
+  const [addingContact, setAddingContact] = useState(false);
+  const [addError, setAddError] = useState("");
 
   useEffect(() => {
     fetchContacts();
@@ -92,6 +97,38 @@ export default function AdminContacts() {
     },
     { all: 0, client: 0, prospect: 0, ebook: 0, formation_gratuite: 0 } as Record<ContactType, number>
   );
+
+  async function handleAddContact() {
+    setAddError("");
+    if (!newContact.email.trim() || !newContact.email.includes("@")) {
+      setAddError("Email invalide");
+      return;
+    }
+    setAddingContact(true);
+    const tags = newContact.tags
+      ? newContact.tags.split(/[,;]/).map((t) => t.trim()).filter(Boolean)
+      : ["manuel"];
+    const res = await fetch("/api/contacts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: newContact.email.trim(),
+        first_name: newContact.first_name.trim(),
+        last_name: newContact.last_name.trim(),
+        source: newContact.source || "manuel",
+        tags,
+      }),
+    });
+    setAddingContact(false);
+    if (res.ok) {
+      setShowAddContact(false);
+      setNewContact({ email: "", first_name: "", last_name: "", source: "manuel", tags: "" });
+      fetchContacts();
+    } else {
+      const body = await res.json().catch(() => ({}));
+      setAddError(body.error || "Erreur serveur");
+    }
+  }
 
   async function handleImportCSV() {
     if (!csvText.trim()) return;
@@ -210,7 +247,10 @@ export default function AdminContacts() {
           <h1 className="font-serif text-2xl font-bold text-gray-900">Contacts CRM</h1>
           <p className="text-sm text-gray-500 mt-1">{total} contacts au total</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
+          <Button variant="primary" size="sm" onClick={() => { setShowAddContact(true); setAddError(""); }}>
+            + Ajouter un contact
+          </Button>
           <Button variant="secondary" size="sm" onClick={() => setShowImport(!showImport)}>
             {showImport ? "Fermer" : "Importer CSV"}
           </Button>
@@ -219,6 +259,52 @@ export default function AdminContacts() {
           </Button>
         </div>
       </div>
+
+      {/* Modal ajout manuel */}
+      {showAddContact && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+          <Card className="w-full max-w-md">
+            <h3 className="font-serif text-lg font-bold text-gray-900 mb-4">Ajouter un contact à la main</h3>
+            <div className="space-y-3">
+              <Input
+                placeholder="Email *"
+                type="email"
+                value={newContact.email}
+                onChange={(e) => setNewContact({ ...newContact, email: e.target.value })}
+              />
+              <div className="grid grid-cols-2 gap-2">
+                <Input
+                  placeholder="Prénom"
+                  value={newContact.first_name}
+                  onChange={(e) => setNewContact({ ...newContact, first_name: e.target.value })}
+                />
+                <Input
+                  placeholder="Nom"
+                  value={newContact.last_name}
+                  onChange={(e) => setNewContact({ ...newContact, last_name: e.target.value })}
+                />
+              </div>
+              <Input
+                placeholder="Source (ex : appel_direct, salon, recommandation)"
+                value={newContact.source}
+                onChange={(e) => setNewContact({ ...newContact, source: e.target.value })}
+              />
+              <Input
+                placeholder="Tags séparés par ; ou , (ex : vip ; a_rappeler)"
+                value={newContact.tags}
+                onChange={(e) => setNewContact({ ...newContact, tags: e.target.value })}
+              />
+              {addError && <p className="text-sm text-red-600">{addError}</p>}
+            </div>
+            <div className="flex gap-2 justify-end mt-5">
+              <Button variant="ghost" size="sm" onClick={() => setShowAddContact(false)}>Annuler</Button>
+              <Button variant="primary" size="sm" onClick={handleAddContact} disabled={addingContact}>
+                {addingContact ? "Création…" : "Ajouter"}
+              </Button>
+            </div>
+          </Card>
+        </div>
+      )}
 
       {/* Type filter tabs */}
       <div className="flex flex-wrap gap-2 mb-6">
@@ -391,8 +477,16 @@ export default function AdminContacts() {
                           className="rounded border-gray-300 accent-es-green"
                         />
                       </td>
-                      <td className="px-5 py-3 text-sm text-gray-900 font-medium">{c.email}</td>
-                      <td className="px-5 py-3 text-sm text-gray-600">{c.first_name} {c.last_name}</td>
+                      <td className="px-5 py-3 text-sm text-gray-900 font-medium">
+                        <Link href={`/admin/contacts/${c.id}`} className="hover:text-es-green hover:underline">
+                          {c.email}
+                        </Link>
+                      </td>
+                      <td className="px-5 py-3 text-sm text-gray-600">
+                        <Link href={`/admin/contacts/${c.id}`} className="hover:text-es-green">
+                          {c.first_name} {c.last_name}
+                        </Link>
+                      </td>
                       <td className="px-5 py-3">{getTypeBadge(type)}</td>
                       <td className="px-5 py-3">
                         <div className="flex gap-1 flex-wrap">
