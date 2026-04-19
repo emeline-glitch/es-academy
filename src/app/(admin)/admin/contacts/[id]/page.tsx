@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { PIPELINE_STAGES, type PipelineStage } from "@/lib/utils/pipeline";
+import { useToast } from "@/components/ui/Toast";
 
 interface Contact {
   id: string;
@@ -81,18 +82,18 @@ export default function ContactDetailPage() {
   const [promoteData, setPromoteData] = useState({ product_name: "academy", amount_paid: 998, coaching_credits: 0 });
   const [editingCredits, setEditingCredits] = useState(false);
   const [creditEdits, setCreditEdits] = useState({ total: 0, used: 0 });
+  const toast = useToast();
 
   const fetchAll = useCallback(async () => {
     setLoading(true);
-    const [cRes, nRes] = await Promise.all([
-      fetch(`/api/contacts/${id}`),
-      fetch(`/api/contacts/${id}/notes`),
-    ]);
-    if (cRes.ok) {
-      const data = await cRes.json();
+    try {
+      const res = await fetch(`/api/contacts/${id}`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
       setContact(data.contact);
       setProfile(data.profile || null);
       setEnrollments(data.enrollments || []);
+      setNotes(data.notes || []);
       setEditName({ first: data.contact?.first_name || "", last: data.contact?.last_name || "" });
       if (data.profile) {
         setCreditEdits({
@@ -100,12 +101,9 @@ export default function ContactDetailPage() {
           used: data.profile.coaching_credits_used ?? 0,
         });
       }
+    } finally {
+      setLoading(false);
     }
-    if (nRes.ok) {
-      const data = await nRes.json();
-      setNotes(data.notes || []);
-    }
-    setLoading(false);
   }, [id]);
 
   useEffect(() => {
@@ -114,32 +112,44 @@ export default function ContactDetailPage() {
 
   async function updateStage(stage: PipelineStage) {
     if (!contact) return;
+    const prevStage = contact.pipeline_stage;
     setSaving(true);
     setContact({ ...contact, pipeline_stage: stage, pipeline_updated_at: new Date().toISOString() });
-    await fetch(`/api/contacts/${id}`, {
+    const res = await fetch(`/api/contacts/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ pipeline_stage: stage }),
     });
     setSaving(false);
+    if (!res.ok) {
+      setContact((c) => (c ? { ...c, pipeline_stage: prevStage } : c));
+      toast.error("Impossible de changer l'étape");
+    } else {
+      toast.success(`Étape : ${PIPELINE_STAGES.find((s) => s.key === stage)?.label}`);
+    }
   }
 
   async function saveName() {
     setSaving(true);
-    await fetch(`/api/contacts/${id}`, {
+    const res = await fetch(`/api/contacts/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ first_name: editName.first, last_name: editName.last }),
     });
+    setSaving(false);
+    if (!res.ok) {
+      toast.error("Impossible d'enregistrer");
+      return;
+    }
     setContact((c) => (c ? { ...c, first_name: editName.first, last_name: editName.last } : c));
     setEditingName(false);
-    setSaving(false);
+    toast.success("Nom mis à jour");
   }
 
   async function saveCredits() {
     if (!profile) return;
     setSaving(true);
-    await fetch("/api/admin/coaching-credits", {
+    const res = await fetch("/api/admin/coaching-credits", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -148,9 +158,14 @@ export default function ContactDetailPage() {
         credits_used: creditEdits.used,
       }),
     });
+    setSaving(false);
+    if (!res.ok) {
+      toast.error("Impossible de mettre à jour les crédits");
+      return;
+    }
     setProfile({ ...profile, coaching_credits_total: creditEdits.total, coaching_credits_used: creditEdits.used });
     setEditingCredits(false);
-    setSaving(false);
+    toast.success("Crédits coaching mis à jour");
   }
 
   async function promoteToStudent() {
@@ -165,6 +180,7 @@ export default function ContactDetailPage() {
     if (res.ok) {
       setShowPromote(false);
       fetchAll();
+      toast.success("Contact basculé en élève — invitation envoyée par email");
     } else {
       const body = await res.json().catch(() => ({}));
       setPromoteError(body.error || "Erreur serveur");
@@ -179,12 +195,15 @@ export default function ContactDetailPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ content: noteContent, kind: noteKind }),
     });
+    setPostingNote(false);
     if (res.ok) {
       const data = await res.json();
       setNotes([data.note, ...notes]);
       setNoteContent("");
+      toast.success("Note enregistrée");
+    } else {
+      toast.error("Impossible d'enregistrer la note");
     }
-    setPostingNote(false);
   }
 
   if (loading) {

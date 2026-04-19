@@ -6,6 +6,8 @@ import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { useToast } from "@/components/ui/Toast";
+import { useDebounce } from "@/hooks/useDebounce";
 
 interface Contact {
   id: string;
@@ -57,10 +59,12 @@ function getTypeBadge(type: ContactType) {
 }
 
 export default function AdminContacts() {
+  const toast = useToast();
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
-  const [search, setSearch] = useState("");
+  const [rawSearch, setRawSearch] = useState("");
+  const search = useDebounce(rawSearch, 300);
   const [tagFilter, setTagFilter] = useState("");
   const [typeFilter, setTypeFilter] = useState<ContactType>("all");
   const [loading, setLoading] = useState(true);
@@ -181,9 +185,11 @@ export default function AdminContacts() {
         extra_tags: "",
       });
       fetchContacts();
+      toast.success("Contact ajouté");
     } else {
       const body = await res.json().catch(() => ({}));
       setAddError(body.error || "Erreur serveur");
+      toast.error(body.error || "Erreur serveur");
     }
   }
 
@@ -228,10 +234,13 @@ export default function AdminContacts() {
     }
 
     const listLabel = availableLists.find((l) => l.tag_key === importListTagKey)?.name;
-    setImportResult(`${imported} importés${listLabel ? ` dans "${listLabel}"` : ""}, ${errors} erreurs`);
+    const msg = `${imported} importés${listLabel ? ` dans "${listLabel}"` : ""}${errors > 0 ? `, ${errors} erreurs` : ""}`;
+    setImportResult(msg);
     setImporting(false);
     setCsvText("");
     fetchContacts();
+    if (errors === 0 && imported > 0) toast.success(msg);
+    else if (errors > 0) toast.error(msg);
   }
 
   async function handleExportCSV() {
@@ -297,10 +306,12 @@ export default function AdminContacts() {
         body: JSON.stringify({ tags: updatedTags }),
       });
     }
+    const count = selectedIds.size;
     setShowTagModal(false);
     setNewTag("");
     setSelectedIds(new Set());
     fetchContacts();
+    toast.success(`Tag "${newTag.trim()}" ajouté à ${count} contact${count > 1 ? "s" : ""}`);
   }
 
   const allTags = Array.from(new Set(contacts.flatMap((c) => c.tags || [])));
@@ -502,8 +513,8 @@ export default function AdminContacts() {
         <div className="flex-1">
           <Input
             placeholder="Rechercher par email, nom..."
-            value={search}
-            onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+            value={rawSearch}
+            onChange={(e) => { setRawSearch(e.target.value); setPage(1); }}
           />
         </div>
         <select

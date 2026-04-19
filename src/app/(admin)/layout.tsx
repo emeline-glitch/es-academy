@@ -1,5 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { ToastProvider } from "@/components/ui/Toast";
+import { AdminNav } from "@/components/admin/AdminNav";
 import Link from "next/link";
 
 const adminNav = [
@@ -24,43 +26,34 @@ export default async function AdminLayout({
 
   if (!user) redirect("/connexion");
 
-  // Check admin role (simple email check for now)
+  // Check admin role (email-based for now, peut évoluer vers profile.role)
   const adminEmail = process.env.ADMIN_EMAIL;
   if (adminEmail && user.email !== adminEmail) {
     redirect("/dashboard");
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      {/* Admin Sidebar */}
-      <aside className="w-64 bg-es-green-dark text-white flex flex-col">
-        <div className="p-6 border-b border-white/10">
-          <Link href="/admin/dashboard" className="font-serif text-lg font-bold">
-            ES Academy
-          </Link>
-          <p className="text-xs text-white/50 mt-1">Administration</p>
-        </div>
-        <nav className="flex-1 py-4">
-          {adminNav.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="flex items-center gap-3 px-6 py-3 text-sm text-white/70 hover:text-white hover:bg-white/10 transition-colors"
-            >
-              <span>{item.icon}</span>
-              <span>{item.label}</span>
+    <ToastProvider>
+      <div className="min-h-screen bg-gray-50 flex">
+        {/* Admin Sidebar */}
+        <aside className="w-64 bg-es-green-dark text-white flex flex-col shrink-0">
+          <div className="p-6 border-b border-white/10">
+            <Link href="/admin/dashboard" className="font-serif text-lg font-bold">
+              ES Academy
             </Link>
-          ))}
-        </nav>
-        <div className="p-6 border-t border-white/10">
-          <Link href="/dashboard" className="text-xs text-white/40 hover:text-white/70 transition-colors">
-            ← Espace eleve
-          </Link>
-        </div>
-      </aside>
+            <p className="text-xs text-white/50 mt-1">Administration</p>
+          </div>
+          <AdminNav items={adminNav} />
+          <div className="p-6 border-t border-white/10">
+            <Link href="/dashboard" className="text-xs text-white/40 hover:text-white/70 transition-colors">
+              ← Espace élève
+            </Link>
+          </div>
+        </aside>
 
-      {/* Main content */}
-      <main className="flex-1 p-8">{children}</main>
-    </div>
+        {/* Main content */}
+        <main className="flex-1 p-8 overflow-x-hidden">{children}</main>
+      </div>
+    </ToastProvider>
   );
 }

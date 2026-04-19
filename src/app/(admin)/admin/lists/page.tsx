@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
+import { useToast } from "@/components/ui/Toast";
 
 interface ContactList {
   id: string;
@@ -34,6 +35,7 @@ export default function ListsPage() {
   const [showNewListFor, setShowNewListFor] = useState<string | null | "unfiled">(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const toast = useToast();
 
   const fetchAll = useCallback(async () => {
     setLoading(true);
@@ -60,12 +62,15 @@ export default function ListsPage() {
       body: JSON.stringify({ kind: "folder", name: newFolderName }),
     });
     if (res.ok) {
+      const name = newFolderName;
       setNewFolderName("");
       setShowNewFolder(false);
       fetchAll();
+      toast.success(`Dossier "${name}" créé`);
     } else {
       const body = await res.json().catch(() => ({}));
       setError(body.error || "Erreur");
+      toast.error(body.error || "Erreur serveur");
     }
     setSaving(false);
   }
@@ -85,12 +90,15 @@ export default function ListsPage() {
       }),
     });
     if (res.ok) {
+      const name = newListData.name;
       setNewListData({ folderId: null, name: "", description: "" });
       setShowNewListFor(null);
       fetchAll();
+      toast.success(`Liste "${name}" créée`);
     } else {
       const body = await res.json().catch(() => ({}));
       setError(body.error || "Erreur");
+      toast.error(body.error || "Erreur serveur");
     }
     setSaving(false);
   }
@@ -98,7 +106,12 @@ export default function ListsPage() {
   async function deleteItem(kind: "folder" | "list", id: string) {
     if (!confirm(`Supprimer ${kind === "folder" ? "ce dossier" : "cette liste"} ?`)) return;
     const res = await fetch(`/api/admin/lists?kind=${kind}&id=${id}`, { method: "DELETE" });
-    if (res.ok) fetchAll();
+    if (res.ok) {
+      fetchAll();
+      toast.success(`${kind === "folder" ? "Dossier" : "Liste"} supprimé${kind === "folder" ? "" : "e"}`);
+    } else {
+      toast.error("Suppression impossible");
+    }
   }
 
   async function renameItem(kind: "folder" | "list", id: string, name: string) {
@@ -107,7 +120,12 @@ export default function ListsPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ kind, id, name }),
     });
-    if (res.ok) fetchAll();
+    if (res.ok) {
+      fetchAll();
+      toast.success("Renommé");
+    } else {
+      toast.error("Impossible de renommer");
+    }
   }
 
   const totalContacts = lists.reduce((sum, l) => sum + l.contact_count, 0);

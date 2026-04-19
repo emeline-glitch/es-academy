@@ -71,7 +71,14 @@ export async function GET(
     }
   }
 
-  return NextResponse.json({ contact: data, profile, enrollments });
+  // Notes — inclus directement dans la réponse (évite un 2e round-trip)
+  const { data: notes } = await supabase
+    .from("contact_notes")
+    .select("id, content, kind, created_at, author_id")
+    .eq("contact_id", id)
+    .order("created_at", { ascending: false });
+
+  return NextResponse.json({ contact: data, profile, enrollments, notes: notes || [] });
 }
 
 export async function PATCH(
