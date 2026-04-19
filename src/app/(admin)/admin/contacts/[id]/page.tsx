@@ -80,7 +80,7 @@ export default function ContactDetailPage() {
   const [showPromote, setShowPromote] = useState(false);
   const [promoting, setPromoting] = useState(false);
   const [promoteError, setPromoteError] = useState("");
-  const [promoteData, setPromoteData] = useState({ product_name: "academy", amount_paid: 998, coaching_credits: 0 });
+  const [promoteData, setPromoteData] = useState({ product_name: "academy", amount_paid: 998, coaching_credits: 0, send_invite: true });
   const [editingCredits, setEditingCredits] = useState(false);
   const [creditEdits, setCreditEdits] = useState({ total: 0, used: 0 });
   const toast = useToast();
@@ -291,7 +291,30 @@ export default function ContactDetailPage() {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
                 />
               </div>
-              {promoteError && <p className="text-sm text-red-600">{promoteError}</p>}
+              <label className="flex items-start gap-2 text-sm text-gray-700 cursor-pointer pt-1">
+                <input
+                  type="checkbox"
+                  checked={promoteData.send_invite}
+                  onChange={(e) => setPromoteData({ ...promoteData, send_invite: e.target.checked })}
+                  className="mt-0.5 rounded accent-es-green"
+                />
+                <span className="flex-1">
+                  Envoyer l&apos;email d&apos;invitation
+                  <span className="block text-[11px] text-gray-400 mt-0.5">
+                    Décoche pour créer le compte silencieusement (tests, ou si tu as hit la limite d&apos;envoi Supabase).
+                  </span>
+                </span>
+              </label>
+              {promoteError && (
+                <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">
+                  <p className="font-medium">{promoteError}</p>
+                  {/email rate limit/i.test(promoteError) && (
+                    <p className="text-xs mt-1 text-red-500">
+                      💡 Décoche « Envoyer l&apos;email d&apos;invitation » ci-dessus pour contourner (création silencieuse). Tu pourras relancer l&apos;invitation plus tard depuis la fiche élève.
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
             <div className="flex gap-2 justify-end mt-5">
               <button
