@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 
@@ -55,6 +55,33 @@ export default function ExamenFinalPage() {
   const [score, setScore] = useState(0);
   const [showDiploma, setShowDiploma] = useState(false);
   const [userName, setUserName] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [alreadyValidated, setAlreadyValidated] = useState(false);
+  const [validatedAt, setValidatedAt] = useState<string | null>(null);
+
+  // Au mount : on vérifie si l'examen a déjà été validé
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/quiz?quiz_id=examen-final")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (cancelled) return;
+        const result = data?.result;
+        if (result?.passed) {
+          setScore(result.score);
+          setSubmitted(true);
+          setAlreadyValidated(true);
+          setValidatedAt(result.completed_at || null);
+        }
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   function selectAnswer(qi: number, ci: number) {
     if (submitted) return;
@@ -79,10 +106,17 @@ export default function ExamenFinalPage() {
         answers,
         passed: pct >= 70,
       }),
+    }).then(() => {
+      if (pct >= 70) {
+        setAlreadyValidated(true);
+        setValidatedAt(new Date().toISOString());
+      }
     });
   }
 
   function handleReset() {
+    // Un réessai n'est autorisé que si l'examen n'est pas déjà validé
+    if (alreadyValidated) return;
     setAnswers({});
     setSubmitted(false);
     setScore(0);
@@ -91,6 +125,17 @@ export default function ExamenFinalPage() {
 
   const passed = score >= 70;
   const allAnswered = Object.keys(answers).length === evaluationQuestions.length;
+
+  if (loading) {
+    return (
+      <div className="max-w-3xl mx-auto">
+        <div className="bg-white rounded-2xl border border-gray-100 p-12 text-center">
+          <div className="w-12 h-12 mx-auto mb-4 rounded-full border-4 border-es-green/20 border-t-es-green animate-spin" />
+          <p className="text-sm text-gray-500">Chargement de ton examen…</p>
+        </div>
+      </div>
+    );
+  }
 
   if (showDiploma) {
     return (
@@ -168,6 +213,12 @@ export default function ExamenFinalPage() {
 
       {submitted ? (
         <Card className="text-center py-12">
+          {alreadyValidated && (
+            <div className="inline-flex items-center gap-2 bg-green-50 text-green-700 text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-5">
+              <span>✅</span>
+              <span>Examen validé</span>
+            </div>
+          )}
           <div className={`w-24 h-24 mx-auto mb-6 rounded-full flex items-center justify-center ${passed ? "bg-green-100" : "bg-red-100"}`}>
             <span className={`text-3xl font-bold ${passed ? "text-green-600" : "text-red-600"}`}>
               {score}%
@@ -176,15 +227,29 @@ export default function ExamenFinalPage() {
           <h2 className="font-serif text-2xl font-bold text-gray-900 mb-2">
             {passed ? "Félicitations ! 🎉" : "Pas tout à fait..."}
           </h2>
-          <p className="text-gray-500 mb-6">
+          <p className="text-gray-500 mb-2">
             {passed
               ? `Tu as réussi l'examen final avec ${score}% de bonnes réponses.`
               : `Il faut 70% pour valider. Tu as obtenu ${score}%. Révise et réessaie !`}
           </p>
+          {alreadyValidated && validatedAt && (
+            <p className="text-xs text-gray-400 mb-6">
+              Validé le {new Date(validatedAt).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}
+            </p>
+          )}
+          {!alreadyValidated && <div className="mb-6" />}
+
           {passed ? (
-            <Button variant="primary" size="lg" onClick={() => setShowDiploma(true)}>
-              Obtenir mon diplôme 🏆
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Button variant="primary" size="lg" onClick={() => setShowDiploma(true)}>
+                {alreadyValidated ? "Télécharger mon diplôme 🏆" : "Obtenir mon diplôme 🏆"}
+              </Button>
+              {alreadyValidated && (
+                <Button variant="secondary" size="lg" href="/dashboard">
+                  Retour au dashboard
+                </Button>
+              )}
+            </div>
           ) : (
             <Button variant="secondary" onClick={handleReset}>
               Réessayer
