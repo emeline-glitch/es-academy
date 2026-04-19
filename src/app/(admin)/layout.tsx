@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { ToastProvider } from "@/components/ui/Toast";
 import { AdminNav } from "@/components/admin/AdminNav";
+import { CommandPalette } from "@/components/admin/CommandPalette";
 import Link from "next/link";
 
 const adminNav = [
@@ -34,6 +35,7 @@ export default async function AdminLayout({
 
   return (
     <ToastProvider>
+      <CommandPalette />
       <div className="min-h-screen bg-gray-50 flex">
         {/* Admin Sidebar */}
         <aside className="w-64 bg-es-green-dark text-white flex flex-col shrink-0">
@@ -42,6 +44,9 @@ export default async function AdminLayout({
               ES Academy
             </Link>
             <p className="text-xs text-white/50 mt-1">Administration</p>
+            <p className="text-[10px] text-white/30 mt-3">
+              Astuce : <kbd className="bg-white/10 px-1 rounded">⌘K</kbd> pour la recherche
+            </p>
           </div>
           <AdminNav items={adminNav} />
           <div className="p-6 border-t border-white/10">

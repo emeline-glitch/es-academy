@@ -93,7 +93,11 @@ export async function GET(request: Request) {
     .range((page - 1) * limit, page * limit - 1);
 
   if (search) {
-    query = query.or(`email.ilike.%${search}%,first_name.ilike.%${search}%,last_name.ilike.%${search}%`);
+    // Search : email + nom + prénom + téléphone (les 4 sont indexés via pg_trgm gin - migration 006)
+    const s = search.replace(/%/g, "").replace(/,/g, "");
+    query = query.or(
+      `email.ilike.%${s}%,first_name.ilike.%${s}%,last_name.ilike.%${s}%,phone.ilike.%${s}%`
+    );
   }
 
   if (tag) {

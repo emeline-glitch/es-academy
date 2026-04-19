@@ -11,6 +11,7 @@ interface Contact {
   email: string;
   first_name: string;
   last_name: string;
+  phone?: string | null;
   tags: string[];
   source: string;
   status: string;
@@ -74,7 +75,7 @@ export default function ContactDetailPage() {
   const [noteContent, setNoteContent] = useState("");
   const [noteKind, setNoteKind] = useState<Note["kind"]>("rdv");
   const [postingNote, setPostingNote] = useState(false);
-  const [editName, setEditName] = useState({ first: "", last: "" });
+  const [editName, setEditName] = useState({ first: "", last: "", phone: "" });
   const [editingName, setEditingName] = useState(false);
   const [showPromote, setShowPromote] = useState(false);
   const [promoting, setPromoting] = useState(false);
@@ -94,7 +95,11 @@ export default function ContactDetailPage() {
       setProfile(data.profile || null);
       setEnrollments(data.enrollments || []);
       setNotes(data.notes || []);
-      setEditName({ first: data.contact?.first_name || "", last: data.contact?.last_name || "" });
+      setEditName({
+        first: data.contact?.first_name || "",
+        last: data.contact?.last_name || "",
+        phone: data.contact?.phone || "",
+      });
       if (data.profile) {
         setCreditEdits({
           total: data.profile.coaching_credits_total ?? 0,
@@ -134,16 +139,29 @@ export default function ContactDetailPage() {
     const res = await fetch(`/api/contacts/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ first_name: editName.first, last_name: editName.last }),
+      body: JSON.stringify({
+        first_name: editName.first,
+        last_name: editName.last,
+        phone: editName.phone || null,
+      }),
     });
     setSaving(false);
     if (!res.ok) {
       toast.error("Impossible d'enregistrer");
       return;
     }
-    setContact((c) => (c ? { ...c, first_name: editName.first, last_name: editName.last } : c));
+    setContact((c) =>
+      c
+        ? {
+            ...c,
+            first_name: editName.first,
+            last_name: editName.last,
+            phone: editName.phone || null,
+          }
+        : c
+    );
     setEditingName(false);
-    toast.success("Nom mis à jour");
+    toast.success("Fiche mise à jour");
   }
 
   async function saveCredits() {
@@ -530,6 +548,13 @@ export default function ContactDetailPage() {
                   placeholder="Nom"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
                 />
+                <input
+                  type="tel"
+                  value={editName.phone}
+                  onChange={(e) => setEditName({ ...editName, phone: e.target.value })}
+                  placeholder="Téléphone"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                />
                 <div className="flex gap-2 justify-end">
                   <button
                     onClick={() => setEditingName(false)}
@@ -562,6 +587,16 @@ export default function ContactDetailPage() {
                     <a href={`mailto:${contact.email}`} className="hover:text-es-green">
                       {contact.email}
                     </a>
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-xs text-gray-400">Téléphone</dt>
+                  <dd className="text-gray-900">
+                    {contact.phone ? (
+                      <a href={`tel:${contact.phone}`} className="hover:text-es-green">{contact.phone}</a>
+                    ) : (
+                      <span className="text-gray-400">—</span>
+                    )}
                   </dd>
                 </div>
                 <div>

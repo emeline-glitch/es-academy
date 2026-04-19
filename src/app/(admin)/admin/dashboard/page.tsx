@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import { PIPELINE_STAGES, type PipelineStage } from "@/lib/utils/pipeline";
+import { formatRelative } from "@/lib/utils/format";
 
 function startOfMonth(d = new Date()): string {
   return new Date(d.getFullYear(), d.getMonth(), 1).toISOString();
@@ -57,6 +58,10 @@ export default async function AdminDashboard() {
     if (s in stageCounts) stageCounts[s] += 1;
   }
   const maxStage = Math.max(...Object.values(stageCounts), 1);
+  const totalInPipeline = Object.values(stageCounts).reduce((a, b) => a + b, 0);
+  // Taux de conversion : % de gagne parmi les contacts qui ont été scorés (hors leads)
+  const scored = totalInPipeline - stageCounts.leads;
+  const winRate = scored > 0 ? Math.round((stageCounts.gagne / scored) * 100) : 0;
 
   const auditLog = auditRes?.data || [];
 
@@ -104,14 +109,21 @@ export default async function AdminDashboard() {
 
       {/* Pipeline funnel */}
       <Card className="mb-8">
-        <div className="flex items-center justify-between mb-5">
-          <h2 className="font-serif text-lg font-bold text-gray-900">Funnel commercial</h2>
+        <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
+          <div>
+            <h2 className="font-serif text-lg font-bold text-gray-900">Funnel commercial</h2>
+            <p className="text-xs text-gray-500 mt-0.5">
+              {totalInPipeline} contacts · <span className="text-es-green font-semibold">{winRate}% de taux de conversion</span>
+              <span className="text-gray-400"> (hors leads)</span>
+            </p>
+          </div>
           <Link href="/admin/pipeline" prefetch className="text-xs text-es-green hover:underline">Voir le pipeline →</Link>
         </div>
         <div className="space-y-2">
           {PIPELINE_STAGES.map((s) => {
             const n = stageCounts[s.key];
             const pct = Math.round((n / maxStage) * 100);
+            const stagePctOfTotal = totalInPipeline > 0 ? Math.round((n / totalInPipeline) * 100) : 0;
             return (
               <Link
                 key={s.key}
@@ -129,6 +141,7 @@ export default async function AdminDashboard() {
                     {n}
                   </span>
                 </div>
+                <span className="text-[10px] text-gray-400 w-12 shrink-0 text-right">{stagePctOfTotal}%</span>
               </Link>
             );
           })}
@@ -241,7 +254,7 @@ export default async function AdminDashboard() {
                           voir →
                         </Link>
                       )}{" "}
-                      · {new Date(entry.created_at).toLocaleString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
+                      · {formatRelative(entry.created_at)}
                     </p>
                   </div>
                 </div>

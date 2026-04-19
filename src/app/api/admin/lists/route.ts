@@ -156,8 +156,24 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ error: "kind et id requis" }, { status: 400 });
   }
 
+  // Si c'est une liste, on retire son tag de tous les contacts avant de supprimer
+  let cleanedContacts = 0;
+  if (kind === "list") {
+    const { data: list } = await supabase
+      .from("contact_lists")
+      .select("tag_key")
+      .eq("id", id)
+      .maybeSingle();
+    if (list?.tag_key) {
+      const { data: count } = await supabase.rpc("remove_tag_from_all_contacts", {
+        tag_to_remove: list.tag_key,
+      });
+      cleanedContacts = typeof count === "number" ? count : 0;
+    }
+  }
+
   const table = kind === "folder" ? "contact_list_folders" : "contact_lists";
   const { error } = await supabase.from(table).delete().eq("id", id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ success: true });
+  return NextResponse.json({ success: true, cleaned_contacts: cleanedContacts });
 }

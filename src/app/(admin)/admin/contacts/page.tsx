@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -60,6 +61,7 @@ function getTypeBadge(type: ContactType) {
 
 export default function AdminContacts() {
   const toast = useToast();
+  const searchParams = useSearchParams();
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -108,6 +110,14 @@ export default function AdminContacts() {
       })
       .catch(() => {});
   }, []);
+
+  // Auto-ouvrir la modale d'ajout si ?add=1 dans l'URL (raccourci depuis /admin/pipeline)
+  useEffect(() => {
+    if (searchParams?.get("add") === "1") {
+      setShowAddContact(true);
+      setAddError("");
+    }
+  }, [searchParams]);
 
   async function fetchContacts() {
     setLoading(true);
@@ -640,6 +650,7 @@ export default function AdminContacts() {
                 </th>
                 <th className="px-5 py-3 text-xs font-medium text-gray-500 uppercase">Email</th>
                 <th className="px-5 py-3 text-xs font-medium text-gray-500 uppercase">Nom</th>
+                <th className="px-5 py-3 text-xs font-medium text-gray-500 uppercase">Téléphone</th>
                 <th className="px-5 py-3 text-xs font-medium text-gray-500 uppercase">Type</th>
                 <th className="px-5 py-3 text-xs font-medium text-gray-500 uppercase">Tags</th>
                 <th className="px-5 py-3 text-xs font-medium text-gray-500 uppercase">Source</th>
@@ -649,9 +660,9 @@ export default function AdminContacts() {
             </thead>
             <tbody className="divide-y divide-gray-50">
               {loading ? (
-                <tr><td colSpan={8} className="px-5 py-8 text-center text-sm text-gray-400">Chargement...</td></tr>
+                <tr><td colSpan={9} className="px-5 py-8 text-center text-sm text-gray-400">Chargement...</td></tr>
               ) : filteredContacts.length === 0 ? (
-                <tr><td colSpan={8} className="px-5 py-12 text-center text-sm text-gray-400">Aucun contact trouvé</td></tr>
+                <tr><td colSpan={9} className="px-5 py-12 text-center text-sm text-gray-400">Aucun contact trouvé</td></tr>
               ) : (
                 filteredContacts.map((c) => {
                   const type = getTypeFromContact(c);
@@ -674,6 +685,13 @@ export default function AdminContacts() {
                         <Link href={`/admin/contacts/${c.id}`} className="hover:text-es-green">
                           {c.first_name} {c.last_name}
                         </Link>
+                      </td>
+                      <td className="px-5 py-3 text-sm text-gray-600">
+                        {c.phone ? (
+                          <a href={`tel:${c.phone}`} className="text-es-green hover:underline">{c.phone}</a>
+                        ) : (
+                          <span className="text-gray-300">—</span>
+                        )}
                       </td>
                       <td className="px-5 py-3">{getTypeBadge(type)}</td>
                       <td className="px-5 py-3">

@@ -6,6 +6,7 @@ import { PIPELINE_STAGES, type PipelineStage } from "@/lib/utils/pipeline";
 import { useToast } from "@/components/ui/Toast";
 import { useDebounce } from "@/hooks/useDebounce";
 import { createClient as createBrowserSupabase } from "@/lib/supabase/client";
+import { formatRelative } from "@/lib/utils/format";
 
 interface Contact {
   id: string;
@@ -221,7 +222,22 @@ export default function PipelinePage() {
   }
 
   function byStage(stage: PipelineStage) {
-    return contacts.filter((c) => (c.pipeline_stage || "leads") === stage);
+    return contacts
+      .filter((c) => (c.pipeline_stage || "leads") === stage)
+      .sort((a, b) => {
+        const da = new Date(a.pipeline_updated_at || a.subscribed_at).getTime();
+        const db = new Date(b.pipeline_updated_at || b.subscribed_at).getTime();
+        return db - da;
+      });
+  }
+
+  // Un contact est "en retard" s'il est dans un stage d'action et n'a pas bougé depuis 7 jours
+  function isOverdue(c: Contact): boolean {
+    const overdueStages: PipelineStage[] = ["rdv_pris", "offre_envoyee"];
+    if (!overdueStages.includes(c.pipeline_stage || "leads")) return false;
+    const last = new Date(c.pipeline_updated_at || c.subscribed_at).getTime();
+    const sevenDays = 7 * 24 * 60 * 60 * 1000;
+    return Date.now() - last > sevenDays;
   }
 
   return (
@@ -243,6 +259,13 @@ export default function PipelinePage() {
             onChange={(e) => setRawSearch(e.target.value)}
             className="flex-1 sm:flex-none sm:w-80 px-4 py-2 border border-gray-300 rounded-lg text-sm"
           />
+          <Link
+            href="/admin/contacts?add=1"
+            prefetch
+            className="bg-es-green text-white text-sm font-semibold px-3 py-2 rounded-lg hover:bg-es-green-light shrink-0"
+          >
+            + Contact
+          </Link>
         </div>
       </div>
 
@@ -316,6 +339,7 @@ export default function PipelinePage() {
                       <PipelineCard
                         key={c.id}
                         contact={c}
+                        overdue={isOverdue(c)}
                         selected={selected.has(c.id)}
                         dragging={draggingId === c.id}
                         onToggleSelect={() => toggleSelect(c.id)}
@@ -355,6 +379,7 @@ export default function PipelinePage() {
 
 function PipelineCard({
   contact: c,
+  overdue,
   selected,
   dragging,
   onToggleSelect,
@@ -363,6 +388,7 @@ function PipelineCard({
   onChangeStage,
 }: {
   contact: Contact;
+  overdue: boolean;
   selected: boolean;
   dragging: boolean;
   onToggleSelect: () => void;
@@ -371,16 +397,33 @@ function PipelineCard({
   onChangeStage: (s: PipelineStage) => void;
 }) {
   const name = [c.first_name, c.last_name].filter(Boolean).join(" ") || c.email;
+  const daysSince = Math.floor(
+    (Date.now() - new Date(c.pipeline_updated_at || c.subscribed_at).getTime()) / (1000 * 60 * 60 * 24)
+  );
 
   return (
     <div
       draggable
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
-      className={`group bg-white rounded-lg border p-3 shadow-sm hover:shadow-md transition-all cursor-move ${
+      className={`group bg-white rounded-lg border p-3 shadow-sm hover:shadow-md transition-all cursor-move relative ${
         dragging ? "opacity-40" : ""
-      } ${selected ? "border-es-green ring-2 ring-es-green/30" : "border-gray-200"}`}
+      } ${
+        selected
+          ? "border-es-green ring-2 ring-es-green/30"
+          : overdue
+          ? "border-red-300 ring-1 ring-red-200"
+          : "border-gray-200"
+      }`}
     >
+      {overdue && (
+        <span
+          className="absolute -top-2 -right-2 bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full shadow"
+          title={`Sans activité depuis ${daysSince} jours`}
+        >
+          ⏰ {daysSince}j
+        </span>
+      )}
       <div className="flex items-start gap-2">
         {/* Checkbox indépendant du Link (bug fix click-through) */}
         <label className="shrink-0 mt-1 cursor-pointer" onClick={(e) => e.stopPropagation()}>
@@ -401,6 +444,15 @@ function PipelineCard({
           {name !== c.email && (
             <p className="text-xs text-gray-500 truncate">{c.email}</p>
           )}
+          {c.phone && (
+            <a
+              href={`tel:${c.phone}`}
+              onClick={(e) => e.stopPropagation()}
+              className="text-xs text-es-green hover:underline truncate block mt-0.5"
+            >
+              📞 {c.phone}
+            </a>
+          )}
           {c.tags && c.tags.length > 0 && (
             <div className="flex flex-wrap gap-1 mt-2">
               {c.tags.slice(0, 3).map((t) => (
@@ -414,7 +466,7 @@ function PipelineCard({
             </div>
           )}
           <p className="text-[10px] text-gray-400 mt-2">
-            {new Date(c.pipeline_updated_at || c.subscribed_at).toLocaleDateString("fr-FR")}
+            {formatRelative(c.pipeline_updated_at || c.subscribed_at)}
           </p>
         </Link>
       </div>
