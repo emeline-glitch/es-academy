@@ -39,6 +39,10 @@ export default function FormEditor() {
   const [form, setForm] = useState<FormConfig | null>(null);
   const [lists, setLists] = useState<ContactList[]>([]);
   const [folders, setFolders] = useState<Array<{ id: string; name: string }>>([]);
+  const [listsLoading, setListsLoading] = useState(true);
+  const [creatingList, setCreatingList] = useState(false);
+  const [newListName, setNewListName] = useState("");
+  const [showNewList, setShowNewList] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -57,18 +61,51 @@ export default function FormEditor() {
     }
   }, [id, toast]);
 
+  const fetchLists = useCallback(async () => {
+    setListsLoading(true);
+    try {
+      const r = await fetch("/api/admin/lists");
+      if (!r.ok) throw new Error();
+      const d = await r.json();
+      setLists(d.lists || []);
+      setFolders(d.folders || []);
+    } catch {
+      // silencieux — on affichera juste "aucune liste"
+    } finally {
+      setListsLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     if (id) fetchForm();
-    fetch("/api/admin/lists")
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => {
-        if (d) {
-          setLists(d.lists || []);
-          setFolders(d.folders || []);
-        }
-      })
-      .catch(() => {});
-  }, [id, fetchForm]);
+    fetchLists();
+  }, [id, fetchForm, fetchLists]);
+
+  async function createListInline() {
+    if (!newListName.trim()) return;
+    setCreatingList(true);
+    try {
+      const r = await fetch("/api/admin/lists", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ kind: "list", name: newListName.trim() }),
+      });
+      if (!r.ok) {
+        const b = await r.json().catch(() => ({}));
+        throw new Error(b.error || "Erreur");
+      }
+      const d = await r.json();
+      await fetchLists();
+      if (d.list?.id) patch({ list_id: d.list.id });
+      setNewListName("");
+      setShowNewList(false);
+      toast.success(`Liste « ${d.list.name} » créée et associée`);
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : "Impossible de créer la liste");
+    } finally {
+      setCreatingList(false);
+    }
+  }
 
   function patch(changes: Partial<FormConfig>) {
     if (!form) return;
@@ -244,30 +281,106 @@ export default function FormEditor() {
           </Card>
 
           <Card>
-            <h2 className="font-serif text-lg font-bold text-gray-900 mb-4">Liste de destination</h2>
-            <select
-              value={form.list_id || ""}
-              onChange={(e) => patch({ list_id: e.target.value || null })}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white"
-            >
-              <option value="">— Aucune liste (tag form_signup par défaut) —</option>
-              {folders.map((f) => {
-                const fl = lists.filter((l) => l.folder_id === f.id);
-                if (fl.length === 0) return null;
-                return (
-                  <optgroup key={f.id} label={f.name}>
-                    {fl.map((l) => <option key={l.id} value={l.id}>{l.name}</option>)}
-                  </optgroup>
-                );
-              })}
-              {lists.filter((l) => !l.folder_id).length > 0 && (
-                <optgroup label="Autres">
-                  {lists.filter((l) => !l.folder_id).map((l) => <option key={l.id} value={l.id}>{l.name}</option>)}
-                </optgroup>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-serif text-lg font-bold text-gray-900">Liste de destination</h2>
+              {!showNewList && (
+                <button
+                  onClick={() => setShowNewList(true)}
+                  className="text-xs text-es-green hover:underline font-medium"
+                >
+                  + Créer une liste
+                </button>
               )}
-            </select>
+            </div>
+
+            {showNewList && (
+              <div className="mb-3 p-3 bg-es-green/5 border border-es-green/20 rounded-lg">
+                <p className="text-xs font-medium text-gray-700 mb-2">Nouvelle liste</p>
+                <div className="flex gap-2">
+                  <input
+                    autoFocus
+                    value={newListName}
+                    onChange={(e) => setNewListName(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === "Enter") createListInline(); if (e.key === "Escape") { setShowNewList(false); setNewListName(""); } }}
+                    placeholder="Ex : Newsletter hebdo, Lead magnet rentabilité…"
+                    className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm"
+                  />
+                  <button
+                    onClick={createListInline}
+                    disabled={!newListName.trim() || creatingList}
+                    className="px-3 py-2 bg-es-green text-white text-sm rounded-lg hover:bg-es-green-light disabled:opacity-50"
+                  >
+                    {creatingList ? "…" : "Créer"}
+                  </button>
+                  <button
+                    onClick={() => { setShowNewList(false); setNewListName(""); }}
+                    className="px-2 py-2 text-sm text-gray-500 hover:text-gray-700"
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {listsLoading ? (
+              <div className="py-3 text-sm text-gray-400 italic">Chargement des listes…</div>
+            ) : lists.length === 0 ? (
+              <div className="py-3 text-sm text-gray-500">
+                Tu n&apos;as encore aucune liste.{" "}
+                {!showNewList && (
+                  <button onClick={() => setShowNewList(true)} className="text-es-green hover:underline font-medium">
+                    Créer ta première liste →
+                  </button>
+                )}
+              </div>
+            ) : (
+              <>
+                <select
+                  value={form.list_id || ""}
+                  onChange={(e) => patch({ list_id: e.target.value || null })}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white"
+                >
+                  <option value="">— Aucune liste (tag form_signup par défaut) —</option>
+                  {(() => {
+                    // Render lists grouped by folder. Lists without a matching folder
+                    // all go in "Autres" (même si folder_id est non-null mais inconnu).
+                    const folderIds = new Set(folders.map((f) => f.id));
+                    const grouped = folders.map((f) => ({
+                      folder: f,
+                      items: lists.filter((l) => l.folder_id === f.id),
+                    })).filter((g) => g.items.length > 0);
+                    const orphans = lists.filter((l) => !l.folder_id || !folderIds.has(l.folder_id));
+                    return (
+                      <>
+                        {grouped.map(({ folder, items }) => (
+                          <optgroup key={folder.id} label={folder.name}>
+                            {items.map((l) => <option key={l.id} value={l.id}>{l.name}</option>)}
+                          </optgroup>
+                        ))}
+                        {orphans.length > 0 && (
+                          grouped.length > 0 ? (
+                            <optgroup label="Autres">
+                              {orphans.map((l) => <option key={l.id} value={l.id}>{l.name}</option>)}
+                            </optgroup>
+                          ) : (
+                            // pas de dossier du tout → liste plate
+                            orphans.map((l) => <option key={l.id} value={l.id}>{l.name}</option>)
+                          )
+                        )}
+                      </>
+                    );
+                  })()}
+                </select>
+                {form.list && (
+                  <p className="text-[11px] text-gray-500 mt-2">
+                    Tag appliqué : <code className="bg-gray-100 px-1.5 py-0.5 rounded font-mono">{form.list.tag_key}</code>
+                  </p>
+                )}
+              </>
+            )}
+
             <p className="text-[11px] text-gray-400 mt-2">
-              Les contacts inscrits recevront automatiquement le tag de cette liste. Tu peux créer/gérer les listes dans{" "}
+              Les contacts inscrits recevront automatiquement le tag de cette liste. Gestion complète dans{" "}
               <Link href="/admin/lists" className="text-es-green hover:underline">/admin/lists</Link>.
             </p>
           </Card>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useCallback, useState } from "react";
+import { useRef, useCallback, useState, useEffect } from "react";
 
 interface EmailEditorProps {
   value: string;
@@ -25,26 +25,46 @@ const COLORS = [
 
 export function EmailEditor({ value, onChange }: EmailEditorProps) {
   const editorRef = useRef<HTMLDivElement>(null);
+  // Track the HTML we last emitted via onChange. Used to distinguish
+  // "parent re-fed us our own output" (ignore) from "parent fed us new content" (sync into DOM).
+  const lastEmittedRef = useRef<string>(value);
+
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [showBgColorPicker, setShowBgColorPicker] = useState(false);
   const [showLinkInput, setShowLinkInput] = useState(false);
   const [linkUrl, setLinkUrl] = useState("");
   const [showImageInput, setShowImageInput] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [activeFontSize, setActiveFontSize] = useState("16px");
   const [activeFontFamily, setActiveFontFamily] = useState(FONT_FAMILIES[0].value);
 
-  const exec = useCallback((command: string, value?: string) => {
-    document.execCommand(command, false, value);
-    editorRef.current?.focus();
-    syncContent();
-  }, []);
+  // Initialize DOM content on mount (and only re-sync when value changes externally,
+  // i.e. not as a result of our own onChange cycle). This is the fix for the
+  // "cursor jumps, characters disappear" bug caused by dangerouslySetInnerHTML
+  // re-applying on every keystroke.
+  useEffect(() => {
+    if (!editorRef.current) return;
+    if (value !== lastEmittedRef.current) {
+      editorRef.current.innerHTML = value;
+      lastEmittedRef.current = value;
+    }
+  }, [value]);
 
   const syncContent = useCallback(() => {
-    if (editorRef.current) {
-      onChange(editorRef.current.innerHTML);
-    }
+    if (!editorRef.current) return;
+    const html = editorRef.current.innerHTML;
+    lastEmittedRef.current = html;
+    onChange(html);
   }, [onChange]);
+
+  const exec = useCallback((command: string, val?: string) => {
+    document.execCommand(command, false, val);
+    editorRef.current?.focus();
+    syncContent();
+  }, [syncContent]);
 
   function handleInsertLink() {
     if (!linkUrl.trim()) return;
@@ -53,11 +73,41 @@ export function EmailEditor({ value, onChange }: EmailEditorProps) {
     setLinkUrl("");
   }
 
-  function handleInsertImage() {
+  function handleInsertImageFromUrl() {
     if (!imageUrl.trim()) return;
     exec("insertImage", imageUrl);
     setShowImageInput(false);
     setImageUrl("");
+  }
+
+  async function handleFileUpload(file: File) {
+    setUploadError("");
+    if (!file.type.startsWith("image/")) {
+      setUploadError("Ce fichier n'est pas une image");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setUploadError("Image trop lourde (max 5 Mo)");
+      return;
+    }
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/admin/upload-image", { method: "POST", body: fd });
+      const data = await res.json();
+      if (!res.ok) {
+        setUploadError(data.error || "Erreur upload");
+        return;
+      }
+      exec("insertImage", data.url);
+      setShowImageInput(false);
+      setImageUrl("");
+    } catch {
+      setUploadError("Erreur réseau");
+    } finally {
+      setUploading(false);
+    }
   }
 
   const ToolbarButton = ({
@@ -73,6 +123,7 @@ export function EmailEditor({ value, onChange }: EmailEditorProps) {
   }) => (
     <button
       type="button"
+      onMouseDown={(e) => e.preventDefault()} // garde le focus sur l'éditeur, empêche la perte de sélection
       onClick={onClick}
       title={title}
       className={`p-2 rounded text-sm transition-colors cursor-pointer ${
@@ -90,6 +141,7 @@ export function EmailEditor({ value, onChange }: EmailEditorProps) {
         {/* Font family */}
         <select
           value={activeFontFamily}
+          onMouseDown={(e) => e.stopPropagation()}
           onChange={(e) => {
             setActiveFontFamily(e.target.value);
             exec("fontName", e.target.value);
@@ -106,9 +158,7 @@ export function EmailEditor({ value, onChange }: EmailEditorProps) {
           value={activeFontSize}
           onChange={(e) => {
             setActiveFontSize(e.target.value);
-            // execCommand fontSize uses 1-7, we use a span workaround
             exec("fontSize", "7");
-            // Replace font size 7 with actual px
             if (editorRef.current) {
               const bigElements = editorRef.current.querySelectorAll('font[size="7"]');
               bigElements.forEach((el) => {
@@ -158,6 +208,8 @@ export function EmailEditor({ value, onChange }: EmailEditorProps) {
               {COLORS.map((color) => (
                 <button
                   key={color}
+                  type="button"
+                  onMouseDown={(e) => e.preventDefault()}
                   onClick={() => { exec("foreColor", color); setShowColorPicker(false); }}
                   className="w-6 h-6 rounded border border-gray-200 cursor-pointer hover:scale-110 transition-transform"
                   style={{ backgroundColor: color }}
@@ -177,6 +229,8 @@ export function EmailEditor({ value, onChange }: EmailEditorProps) {
               {COLORS.map((color) => (
                 <button
                   key={color}
+                  type="button"
+                  onMouseDown={(e) => e.preventDefault()}
                   onClick={() => { exec("hiliteColor", color); setShowBgColorPicker(false); }}
                   className="w-6 h-6 rounded border border-gray-200 cursor-pointer hover:scale-110 transition-transform"
                   style={{ backgroundColor: color }}
@@ -197,6 +251,9 @@ export function EmailEditor({ value, onChange }: EmailEditorProps) {
         </ToolbarButton>
         <ToolbarButton onClick={() => exec("justifyRight")} title="Aligner à droite">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="3" width="12" height="1.5"/><rect x="6" y="7" width="8" height="1.5"/><rect x="4" y="11" width="10" height="1.5"/></svg>
+        </ToolbarButton>
+        <ToolbarButton onClick={() => exec("justifyFull")} title="Justifier">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="3" width="12" height="1.5"/><rect x="2" y="7" width="12" height="1.5"/><rect x="2" y="11" width="12" height="1.5"/></svg>
         </ToolbarButton>
 
         <div className="w-px h-6 bg-gray-200 mx-1" />
@@ -226,7 +283,7 @@ export function EmailEditor({ value, onChange }: EmailEditorProps) {
                 className="flex-1 px-3 py-1.5 text-sm border border-gray-200 rounded"
                 onKeyDown={(e) => e.key === "Enter" && handleInsertLink()}
               />
-              <button onClick={handleInsertLink} className="px-3 py-1.5 bg-es-green text-white text-sm rounded cursor-pointer hover:bg-es-green-light">OK</button>
+              <button type="button" onClick={handleInsertLink} className="px-3 py-1.5 bg-es-green text-white text-sm rounded cursor-pointer hover:bg-es-green-light">OK</button>
             </div>
           )}
         </div>
@@ -236,22 +293,53 @@ export function EmailEditor({ value, onChange }: EmailEditorProps) {
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/><line x1="4" y1="20" x2="20" y2="4"/></svg>
         </ToolbarButton>
 
-        {/* Image */}
+        {/* Image (upload + URL) */}
         <div className="relative">
-          <ToolbarButton onClick={() => { setShowImageInput(!showImageInput); setShowLinkInput(false); }} title="Insérer une image">
+          <ToolbarButton onClick={() => { setShowImageInput(!showImageInput); setShowLinkInput(false); setUploadError(""); }} title="Insérer une image">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
           </ToolbarButton>
           {showImageInput && (
-            <div className="absolute top-full right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-10 flex gap-2 w-80">
+            <div className="absolute top-full right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-10 w-96">
+              <p className="text-xs font-semibold text-gray-700 mb-2">Depuis ton ordinateur</p>
               <input
-                type="url"
-                value={imageUrl}
-                onChange={(e) => setImageUrl(e.target.value)}
-                placeholder="URL de l'image..."
-                className="flex-1 px-3 py-1.5 text-sm border border-gray-200 rounded"
-                onKeyDown={(e) => e.key === "Enter" && handleInsertImage()}
+                ref={fileInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) handleFileUpload(f);
+                  e.target.value = "";
+                }}
+                className="hidden"
               />
-              <button onClick={handleInsertImage} className="px-3 py-1.5 bg-es-green text-white text-sm rounded cursor-pointer hover:bg-es-green-light">OK</button>
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploading}
+                className="w-full px-3 py-2 border-2 border-dashed border-gray-300 rounded text-sm text-gray-600 hover:border-es-green hover:bg-es-green/5 disabled:opacity-50 cursor-pointer"
+              >
+                {uploading ? "Upload…" : "📎 Choisir une image (max 5 Mo)"}
+              </button>
+              {uploadError && <p className="text-xs text-red-600 mt-2">{uploadError}</p>}
+
+              <div className="flex items-center gap-2 my-3">
+                <div className="flex-1 h-px bg-gray-200" />
+                <span className="text-[10px] text-gray-400 uppercase">ou</span>
+                <div className="flex-1 h-px bg-gray-200" />
+              </div>
+
+              <p className="text-xs font-semibold text-gray-700 mb-2">Depuis une URL</p>
+              <div className="flex gap-2">
+                <input
+                  type="url"
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
+                  placeholder="https://..."
+                  className="flex-1 px-3 py-1.5 text-sm border border-gray-200 rounded"
+                  onKeyDown={(e) => e.key === "Enter" && handleInsertImageFromUrl()}
+                />
+                <button type="button" onClick={handleInsertImageFromUrl} className="px-3 py-1.5 bg-es-green text-white text-sm rounded cursor-pointer hover:bg-es-green-light">OK</button>
+              </div>
             </div>
           )}
         </div>
@@ -282,14 +370,20 @@ export function EmailEditor({ value, onChange }: EmailEditorProps) {
         </ToolbarButton>
       </div>
 
-      {/* Editable area */}
+      {/* Editable area — NO dangerouslySetInnerHTML (set via effect instead to
+          avoid re-applying innerHTML on every onChange, which would reset the cursor). */}
       <div
         ref={editorRef}
         contentEditable
         suppressContentEditableWarning
         onInput={syncContent}
         onBlur={syncContent}
-        dangerouslySetInnerHTML={{ __html: value }}
+        onPaste={(e) => {
+          // Coller en texte brut (évite d'importer les styles Word, fond blanc, classes random)
+          e.preventDefault();
+          const text = e.clipboardData.getData("text/plain");
+          document.execCommand("insertText", false, text);
+        }}
         className="min-h-[400px] p-6 text-sm text-gray-800 leading-relaxed focus:outline-none [&_a]:text-es-green [&_a]:underline [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mb-3 [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:mb-2 [&_img]:max-w-full [&_img]:rounded-lg [&_img]:my-3 [&_hr]:my-4 [&_hr]:border-gray-200 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6 [&_li]:mb-1"
         style={{ fontFamily: "Arial, Helvetica, sans-serif" }}
       />
