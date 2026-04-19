@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/utils/admin-auth";
 
@@ -72,6 +73,8 @@ export async function PATCH(
     }
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+  revalidatePath("/admin/forms");
+  revalidatePath(`/admin/forms/${id}`);
   return NextResponse.json({ form: data });
 }
 
@@ -86,5 +89,6 @@ export async function DELETE(
   const supabase = await createServiceClient();
   const { error } = await supabase.from("forms").delete().eq("id", id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  revalidatePath("/admin/forms");
   return NextResponse.json({ success: true });
 }

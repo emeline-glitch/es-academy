@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/utils/admin-auth";
 
@@ -74,10 +75,11 @@ export async function POST(
     }
   }
 
-  // 4. Retrouver authUser complet OU créer
+  // 4. Retrouver authUser complet OU créer (en flaguant si on vient juste de le créer, pour rollback)
   let authUser = authUserId
     ? (await supabase.auth.admin.getUserById(authUserId)).data?.user
     : null;
+  let createdAuthUserInThisRequest = false;
 
   if (!authUser) {
     if (send_invite) {
@@ -92,8 +94,8 @@ export async function POST(
         return NextResponse.json({ error: iErr?.message || "Échec invitation" }, { status: 500 });
       }
       authUser = invited.user;
+      createdAuthUserInThisRequest = true;
     } else {
-      // Création silencieuse (pas d'email envoyé)
       const { data: created, error: cErr2 } = await supabase.auth.admin.createUser({
         email: contact.email,
         email_confirm: true,
@@ -105,10 +107,23 @@ export async function POST(
         return NextResponse.json({ error: cErr2?.message || "Échec création utilisateur" }, { status: 500 });
       }
       authUser = created.user;
+      createdAuthUserInThisRequest = true;
     }
   }
 
-  // 3. S'assurer que le profil existe (le trigger handle_new_user le crée normalement)
+  // Helper pour rollback : si on vient de créer l'auth user et qu'une étape suivante échoue,
+  // on évite de laisser un user fantôme sans enrollment.
+  async function rollbackIfJustCreated() {
+    if (createdAuthUserInThisRequest && authUser) {
+      try {
+        await supabase.auth.admin.deleteUser(authUser.id);
+      } catch (e) {
+        console.error("[promote] rollback deleteUser failed:", e);
+      }
+    }
+  }
+
+  // 5. S'assurer que le profil existe (le trigger handle_new_user le crée normalement)
   const { data: existingProfile } = await supabase
     .from("profiles")
     .select("id")
@@ -116,11 +131,15 @@ export async function POST(
     .maybeSingle();
 
   if (!existingProfile) {
-    await supabase.from("profiles").insert({
+    const { error: pErr } = await supabase.from("profiles").insert({
       id: authUser.id,
       full_name: [contact.first_name, contact.last_name].filter(Boolean).join(" ") || contact.email,
       coaching_credits_total: Math.max(0, Math.floor(coaching_credits)),
     });
+    if (pErr) {
+      await rollbackIfJustCreated();
+      return NextResponse.json({ error: `Création profil échouée : ${pErr.message}` }, { status: 500 });
+    }
   } else if (coaching_credits > 0) {
     await supabase
       .from("profiles")
@@ -128,7 +147,7 @@ export async function POST(
       .eq("id", authUser.id);
   }
 
-  // 4. Créer l'enrollment
+  // 6. Créer l'enrollment — si ça échoue, on rollback le user créé pour ne pas laisser d'orphelin
   const { data: enrollment, error: eErr } = await supabase
     .from("enrollments")
     .insert({
@@ -142,10 +161,14 @@ export async function POST(
     .single();
 
   if (eErr) {
-    return NextResponse.json({ error: eErr.message }, { status: 500 });
+    await rollbackIfJustCreated();
+    return NextResponse.json(
+      { error: `Création enrollment échouée : ${eErr.message}` },
+      { status: 500 }
+    );
   }
 
-  // 5. Mettre à jour le contact : pipeline gagné + tag client
+  // 7. Mettre à jour le contact : pipeline gagné + tag client
   const currentTags: string[] = contact.tags || [];
   const nextTags = Array.from(new Set([...currentTags, "client"]));
   await supabase
@@ -175,6 +198,12 @@ export async function POST(
   } catch (e) {
     console.warn("[audit_log] promote:", e);
   }
+
+  // Invalidate les pages server-component qui affichent ces données
+  revalidatePath("/admin/contacts");
+  revalidatePath(`/admin/contacts/${id}`);
+  revalidatePath("/admin/dashboard");
+  revalidatePath("/admin/eleves");
 
   return NextResponse.json({
     success: true,

@@ -333,21 +333,26 @@ export default function AdminContacts() {
     setBulkApplying(true);
     const tagsToAdd = [...bulkListTagKeys, ...(freeTag ? [freeTag] : [])];
 
-    // Patch en parallèle (pas séquentiel) pour que les gros lots restent rapides
-    await Promise.all(
-      Array.from(selectedIds).map((id) => {
-        const contact = contacts.find((c) => c.id === id);
-        if (!contact) return Promise.resolve();
-        const updatedTags = [...new Set([...(contact.tags || []), ...tagsToAdd])];
-        return fetch(`/api/contacts/${id}`, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ tags: updatedTags }),
-        });
-      })
-    );
+    // Fait le merge côté serveur pour éviter la race condition (écrase les changements
+    // faits entre notre dernier fetch et maintenant par d'autres sessions ou realtime)
+    const res = await fetch("/api/admin/contacts/bulk-add-tags", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contact_ids: Array.from(selectedIds),
+        tags_to_add: tagsToAdd,
+      }),
+    });
 
-    const count = selectedIds.size;
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      setBulkApplying(false);
+      toast.error(body.error || "Échec de l'assignation");
+      return;
+    }
+    const result = await res.json();
+
+    const count = result.updated || selectedIds.size;
     const listNames = bulkListTagKeys
       .map((k) => availableLists.find((l) => l.tag_key === k)?.name)
       .filter(Boolean) as string[];

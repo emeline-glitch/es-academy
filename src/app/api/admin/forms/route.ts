@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/utils/admin-auth";
 
@@ -43,7 +44,19 @@ export async function POST(request: Request) {
   }
 
   const supabase = await createServiceClient();
-  const finalSlug = (slug ? slugify(slug) : slugify(name)) || `form-${Date.now()}`;
+  let finalSlug = (slug ? slugify(slug) : slugify(name)) || `form-${Date.now()}`;
+
+  // Check proactif : si le slug existe déjà, on suffixe -2, -3 … pour éviter le 409
+  const { data: existingSlugs } = await supabase
+    .from("forms")
+    .select("slug")
+    .ilike("slug", `${finalSlug}%`);
+  const takenSlugs = new Set((existingSlugs || []).map((f) => f.slug));
+  if (takenSlugs.has(finalSlug)) {
+    let i = 2;
+    while (takenSlugs.has(`${finalSlug}-${i}`)) i++;
+    finalSlug = `${finalSlug}-${i}`;
+  }
 
   const { data, error } = await supabase
     .from("forms")
@@ -64,5 +77,6 @@ export async function POST(request: Request) {
     }
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+  revalidatePath("/admin/forms");
   return NextResponse.json({ form: data });
 }

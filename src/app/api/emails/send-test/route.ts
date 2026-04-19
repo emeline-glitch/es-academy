@@ -1,12 +1,15 @@
 import { NextResponse } from "next/server";
-import { createServiceClient } from "@/lib/supabase/server";
+import { createClient, createServiceClient } from "@/lib/supabase/server";
 import { sendEmail } from "@/lib/ses/client";
 import { applyTracking } from "@/lib/email/tracking";
 
 export async function POST(request: Request) {
-  const supabase = await createServiceClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  // Auth via le client cookies (createServiceClient bypasse RLS mais n'a plus de cookies)
+  const authClient = await createClient();
+  const { data: { user } } = await authClient.auth.getUser();
   if (!user) return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
+
+  const supabase = await createServiceClient();
 
   const body = await request.json();
   const { to, subject, html_content } = body;

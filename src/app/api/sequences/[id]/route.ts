@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+
+const VALID_STATUSES = ["draft", "active", "paused", "archived"] as const;
+const VALID_TRIGGERS = ["tag_added", "form_submit", "manual", "product_purchase"] as const;
 
 // GET — Get a single sequence with steps
 export async function GET(
@@ -39,9 +43,19 @@ export async function PATCH(
 
   const updateData: Record<string, unknown> = { updated_at: new Date().toISOString() };
   if (body.name !== undefined) updateData.name = body.name;
-  if (body.trigger_type !== undefined) updateData.trigger_type = body.trigger_type;
   if (body.trigger_value !== undefined) updateData.trigger_value = body.trigger_value;
-  if (body.status !== undefined) updateData.status = body.status;
+  if (body.trigger_type !== undefined) {
+    if (!VALID_TRIGGERS.includes(body.trigger_type)) {
+      return NextResponse.json({ error: `trigger_type invalide (attendu: ${VALID_TRIGGERS.join(", ")})` }, { status: 400 });
+    }
+    updateData.trigger_type = body.trigger_type;
+  }
+  if (body.status !== undefined) {
+    if (!VALID_STATUSES.includes(body.status)) {
+      return NextResponse.json({ error: `status invalide (attendu: ${VALID_STATUSES.join(", ")})` }, { status: 400 });
+    }
+    updateData.status = body.status;
+  }
 
   const { data, error } = await supabase
     .from("email_sequences")
@@ -51,6 +65,8 @@ export async function PATCH(
     .single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  revalidatePath("/admin/sequences");
+  revalidatePath(`/admin/sequences/${id}`);
   return NextResponse.json(data);
 }
 
@@ -71,5 +87,6 @@ export async function DELETE(
     .eq("id", id);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  revalidatePath("/admin/sequences");
   return NextResponse.json({ success: true });
 }

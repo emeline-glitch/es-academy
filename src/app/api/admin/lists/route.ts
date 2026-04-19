@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/utils/admin-auth";
 
@@ -81,6 +82,8 @@ export async function PATCH(request: Request) {
   const table = kind === "folder" ? "contact_list_folders" : "contact_lists";
   const { data, error } = await supabase.from(table).update(update).eq("id", id).select().maybeSingle();
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  revalidatePath("/admin/lists");
+  revalidatePath("/admin/contacts");
   return NextResponse.json({ [kind]: data });
 }
 
@@ -107,6 +110,7 @@ export async function POST(request: Request) {
       .select()
       .single();
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    revalidatePath("/admin/lists");
     return NextResponse.json({ folder: data });
   }
 
@@ -117,11 +121,29 @@ export async function POST(request: Request) {
       description?: string;
       color?: string;
     };
-    const key = (tag_key || name)
+    let key = (tag_key || name)
       .toLowerCase()
       .trim()
       .replace(/[^a-z0-9]+/g, "_")
       .replace(/^_|_$/g, "");
+
+    if (!key) {
+      return NextResponse.json({ error: "Nom invalide : donne au moins une lettre ou un chiffre" }, { status: 400 });
+    }
+
+    // Si ce tag_key existe déjà → on suffixe _2, _3… pour éviter la collision silencieuse qui
+    // partageait les contacts entre 2 listes homonymes
+    const { data: existing } = await supabase
+      .from("contact_lists")
+      .select("tag_key")
+      .ilike("tag_key", `${key}%`);
+    const existingKeys = new Set((existing || []).map((l) => l.tag_key));
+    if (existingKeys.has(key)) {
+      let i = 2;
+      while (existingKeys.has(`${key}_${i}`)) i++;
+      key = `${key}_${i}`;
+    }
+
     const { data, error } = await supabase
       .from("contact_lists")
       .insert({
@@ -133,7 +155,14 @@ export async function POST(request: Request) {
       })
       .select()
       .single();
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) {
+      if (error.code === "23505") {
+        return NextResponse.json({ error: "Un tag avec cette clé existe déjà" }, { status: 409 });
+      }
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+    revalidatePath("/admin/lists");
+    revalidatePath("/admin/contacts");
     return NextResponse.json({ list: data });
   }
 
@@ -175,5 +204,7 @@ export async function DELETE(request: Request) {
   const table = kind === "folder" ? "contact_list_folders" : "contact_lists";
   const { error } = await supabase.from(table).delete().eq("id", id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  revalidatePath("/admin/lists");
+  revalidatePath("/admin/contacts");
   return NextResponse.json({ success: true, cleaned_contacts: cleanedContacts });
 }

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
 import { rateLimit, getClientIp, cleanupBuckets } from "@/lib/utils/rate-limit";
 import { requireAdmin } from "@/lib/utils/admin-auth";
@@ -55,13 +56,18 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    // Log metadata (simulator inputs/outputs) — à brancher sur table simulator_captures plus tard
     if (metadata) {
       console.log("[Simulator Capture]", {
         email,
         source,
         metadata,
       });
+    }
+
+    // Invalidate les pages admin qui affichent la liste/compteur
+    if (isAdmin) {
+      revalidatePath("/admin/contacts");
+      revalidatePath("/admin/dashboard");
     }
 
     return NextResponse.json({ success: true });
@@ -72,13 +78,11 @@ export async function POST(request: Request) {
 }
 
 export async function GET(request: Request) {
-  const supabase = await createServiceClient();
+  // Vérification admin via cookies (createServiceClient bypasse RLS mais n'a plus de cookies)
+  const auth = await requireAdmin();
+  if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: auth.status });
 
-  // Check admin role
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
-    return NextResponse.json({ error: "Non authentifie" }, { status: 401 });
-  }
+  const supabase = await createServiceClient();
 
   const { searchParams } = new URL(request.url);
   const page = parseInt(searchParams.get("page") || "1");
