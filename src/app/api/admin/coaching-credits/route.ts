@@ -1,28 +1,13 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
-
-async function requireAdmin() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { error: "Non authentifié", status: 401 as const, supabase: null };
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .maybeSingle();
-
-  if (profile?.role !== "admin") {
-    return { error: "Accès réservé aux admins", status: 403 as const, supabase: null };
-  }
-  return { error: null, status: 200 as const, supabase };
-}
+import { createServiceClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/utils/admin-auth";
 
 export async function PATCH(request: Request) {
-  const { error: authError, status, supabase } = await requireAdmin();
-  if (authError || !supabase) {
-    return NextResponse.json({ error: authError }, { status });
+  const auth = await requireAdmin();
+  if (!auth.ok) {
+    return NextResponse.json({ error: auth.error }, { status: auth.status });
   }
+  const supabase = await createServiceClient();
 
   const body = await request.json().catch(() => ({}));
   const { user_id, credits_total, credits_used } = body as {

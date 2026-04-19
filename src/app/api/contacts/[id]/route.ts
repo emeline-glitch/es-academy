@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { createServiceClient, createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/utils/admin-auth";
 
 const VALID_STAGES = [
   "leads",
@@ -12,19 +13,6 @@ const VALID_STAGES = [
   "gagne",
   "perdu",
 ] as const;
-
-async function requireAdmin() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { ok: false, status: 401 as const, error: "Non authentifié" };
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .maybeSingle();
-  if (profile?.role !== "admin") return { ok: false, status: 403 as const, error: "Accès réservé aux admins" };
-  return { ok: true };
-}
 
 export async function GET(
   _request: Request,
