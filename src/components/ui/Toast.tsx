@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 
 type ToastKind = "success" | "error" | "info";
 
@@ -20,22 +20,35 @@ interface ToastContextValue {
 
 const ToastContext = createContext<ToastContextValue | null>(null);
 
+// Anti-spam : dédupliquer les messages identiques affichés dans les 2 dernières secondes
+const DEDUPE_WINDOW_MS = 2000;
+
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<ToastItem[]>([]);
+  const recentRef = useRef<Map<string, number>>(new Map());
 
   const show = useCallback<ToastContextValue["show"]>((kind, message, opts) => {
-    const id = Date.now() + Math.random();
+    const key = `${kind}::${message}`;
+    const now = Date.now();
+    const last = recentRef.current.get(key);
+    if (last && now - last < DEDUPE_WINDOW_MS) {
+      // Silently swallow duplicate
+      return;
+    }
+    recentRef.current.set(key, now);
+
+    const id = now + Math.random();
     setItems((prev) => [...prev, { id, kind, message, action: opts?.action }]);
     const duration = opts?.durationMs ?? (kind === "error" ? 6000 : 3500);
     setTimeout(() => setItems((prev) => prev.filter((t) => t.id !== id)), duration);
   }, []);
 
-  const ctx: ToastContextValue = {
-    show,
-    success: (m, o) => show("success", m, o),
-    error: (m, o) => show("error", m, o),
-    info: (m, o) => show("info", m, o),
-  };
+  const success = useCallback<ToastContextValue["success"]>((m, o) => show("success", m, o), [show]);
+  const error = useCallback<ToastContextValue["error"]>((m, o) => show("error", m, o), [show]);
+  const info = useCallback<ToastContextValue["info"]>((m, o) => show("info", m, o), [show]);
+
+  // ctx stable : tous les callbacks sont memoizés, le ctx ne change jamais après mount
+  const ctx = useMemo<ToastContextValue>(() => ({ show, success, error, info }), [show, success, error, info]);
 
   return (
     <ToastContext.Provider value={ctx}>
@@ -81,16 +94,18 @@ function ToastCard({ item }: { item: ToastItem }) {
   );
 }
 
+// Fallback stable hors provider (si un composant rend dans un arbre sans ToastProvider)
+const FALLBACK_CTX: ToastContextValue = {
+  show: (kind, msg) => {
+    if (kind === "error") console.error(msg);
+    else console.log(msg);
+  },
+  success: (msg) => console.log("[toast]", msg),
+  error: (msg) => console.error("[toast]", msg),
+  info: (msg) => console.log("[toast]", msg),
+};
+
 export function useToast(): ToastContextValue {
   const ctx = useContext(ToastContext);
-  if (!ctx) {
-    // Safe fallback hors provider (log only)
-    return {
-      show: (kind, msg) => console[kind === "error" ? "error" : "log"](msg),
-      success: (msg) => console.log(msg),
-      error: (msg) => console.error(msg),
-      info: (msg) => console.log(msg),
-    };
-  }
-  return ctx;
+  return ctx ?? FALLBACK_CTX;
 }

@@ -53,16 +53,31 @@ export async function GET(request: Request) {
     .map((e) => (e.profiles as { id?: string } | null)?.id)
     .filter((x): x is string => !!x);
 
-  let progressByUser: Record<string, number> = {};
+  const progressByUser: Record<string, number> = {};
+  const lastProgressByUser: Record<string, string> = {};
   if (userIds.length > 0) {
     const { data: progress } = await supabase
       .from("progress")
-      .select("user_id")
-      .in("user_id", userIds);
-    progressByUser = (progress || []).reduce<Record<string, number>>((acc, p) => {
-      acc[p.user_id] = (acc[p.user_id] || 0) + 1;
-      return acc;
-    }, {});
+      .select("user_id, completed_at")
+      .in("user_id", userIds)
+      .order("completed_at", { ascending: false });
+    for (const p of progress || []) {
+      progressByUser[p.user_id] = (progressByUser[p.user_id] || 0) + 1;
+      if (!lastProgressByUser[p.user_id] && p.completed_at) {
+        lastProgressByUser[p.user_id] = p.completed_at;
+      }
+    }
+  }
+
+  // Last sign-in : on tire un seul listUsers pour tous les élèves visibles
+  const lastSignInByUser: Record<string, string | null> = {};
+  if (userIds.length > 0) {
+    const { data: authList } = await supabase.auth.admin.listUsers({ page: 1, perPage: 1000 });
+    for (const u of authList?.users || []) {
+      if (userIds.includes(u.id)) {
+        lastSignInByUser[u.id] = u.last_sign_in_at || null;
+      }
+    }
   }
 
   // KPIs globaux
@@ -78,10 +93,15 @@ export async function GET(request: Request) {
   const monthRevenue = (monthEnrollments.data || []).reduce((s, e) => s + (e.amount_paid || 0), 0);
 
   return NextResponse.json({
-    enrollments: filtered.map((e) => ({
-      ...e,
-      progress_count: progressByUser[(e.profiles as { id?: string } | null)?.id || ""] || 0,
-    })),
+    enrollments: filtered.map((e) => {
+      const uid = (e.profiles as { id?: string } | null)?.id || "";
+      return {
+        ...e,
+        progress_count: progressByUser[uid] || 0,
+        last_progress_at: lastProgressByUser[uid] || null,
+        last_sign_in_at: lastSignInByUser[uid] || null,
+      };
+    }),
     total: count || 0,
     page,
     pageSize,

@@ -26,6 +26,8 @@ interface Enrollment {
   status: string;
   profiles: Profile | null;
   progress_count: number;
+  last_progress_at: string | null;
+  last_sign_in_at: string | null;
 }
 
 interface Response {
@@ -141,8 +143,8 @@ export default function AdminEleves() {
                 <th className="px-5 py-3 text-xs font-medium text-gray-500 uppercase">Élève</th>
                 <th className="px-5 py-3 text-xs font-medium text-gray-500 uppercase">Formule</th>
                 <th className="px-5 py-3 text-xs font-medium text-gray-500 uppercase">Achat</th>
-                <th className="px-5 py-3 text-xs font-medium text-gray-500 uppercase">Montant</th>
                 <th className="px-5 py-3 text-xs font-medium text-gray-500 uppercase">Progression</th>
+                <th className="px-5 py-3 text-xs font-medium text-gray-500 uppercase">Dernière connexion</th>
                 <th className="px-5 py-3 text-xs font-medium text-gray-500 uppercase">Coaching</th>
                 <th className="px-5 py-3 text-xs font-medium text-gray-500 uppercase">Actions</th>
               </tr>
@@ -183,9 +185,6 @@ export default function AdminEleves() {
                       <td className="px-5 py-3 text-xs text-gray-500">
                         {formatRelative(e.purchased_at)}
                       </td>
-                      <td className="px-5 py-3 text-sm font-bold text-gray-900">
-                        {formatMoney(e.amount_paid)}
-                      </td>
                       <td className="px-5 py-3">
                         <div className="flex items-center gap-2 min-w-[120px]">
                           <div className="flex-1 bg-gray-100 rounded-full h-1.5 min-w-[60px]">
@@ -198,7 +197,21 @@ export default function AdminEleves() {
                         </div>
                         <p className="text-[10px] text-gray-400 mt-0.5">
                           {e.progress_count}/{TOTAL_LESSONS} leçons
+                          {e.last_progress_at && <span className="ml-1">· {formatRelative(e.last_progress_at)}</span>}
                         </p>
+                      </td>
+                      <td className="px-5 py-3">
+                        {e.last_sign_in_at ? (
+                          <div>
+                            <p className="text-xs text-gray-700">{formatRelative(e.last_sign_in_at)}</p>
+                            <p className="text-[10px] text-gray-400 mt-0.5">{formatMoney(e.amount_paid)}</p>
+                          </div>
+                        ) : (
+                          <div>
+                            <p className="text-xs text-gray-400 italic">Jamais connecté</p>
+                            <p className="text-[10px] text-gray-400 mt-0.5">{formatMoney(e.amount_paid)}</p>
+                          </div>
+                        )}
                       </td>
                       <td className="px-5 py-3">
                         {p && (
