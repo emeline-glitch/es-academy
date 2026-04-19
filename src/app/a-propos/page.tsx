@@ -44,11 +44,16 @@ type ChapterImageMosaic = {
   type: "mosaic";
   items: { src: import("next/image").StaticImageData; alt: string }[];
 };
+type ChapterImageMosaicPlusFeature = {
+  type: "mosaic-plus-feature";
+  items: { src: import("next/image").StaticImageData; alt: string }[];
+  feature: { src: import("next/image").StaticImageData; alt: string };
+};
 type ChapterPlaceholder = {
   type: "placeholder";
   label: string;
 };
-type ChapterMedia = ChapterImageFull | ChapterImageSinglePortrait | ChapterImageMosaic | ChapterPlaceholder;
+type ChapterMedia = ChapterImageFull | ChapterImageSinglePortrait | ChapterImageMosaic | ChapterImageMosaicPlusFeature | ChapterPlaceholder;
 
 interface Chapter {
   id: string;
@@ -78,10 +83,11 @@ const chapters: Chapter[] = [
   {
     id: "parcours-pro",
     year: "2008–2019",
-    title: "Le parcours classique — et les burnouts",
+    title: "Le parcours classique et les burnouts",
     content: [
-      "BTS, licence, master en gestion de patrimoine immobilier. Puis 2 ans en alternance dans une boîte de centres commerciaux : deux burnouts avant 25 ans. L'ambiance était pourrie, 19 personnes sont parties en 6 mois.",
-      "Intérim, Swiss Life, Lifento — 3 ans à gérer 250 millions d'euros d'immobilier de santé en Europe (EHPAD, dialyse, psychiatrie). Je passais ma vie sur les chantiers. J'adorais ça.",
+      "BTS, licence, master en gestion de patrimoine immobilier. Puis 2 ans en alternance dans une société de gestion immo de centres commerciaux : deux burnouts avant 25 ans. L'ambiance était pourrie, 19 personnes sont parties en 6 mois. J'ai vécu un enfer professionnel.",
+      "Intérim, société d'assurance, et la dernière, une société de gestion de fonds d'investissements : 3 ans à gérer 250 millions d'euros d'immobilier de santé en Europe (EHPAD, dialyse, psychiatrie). Je passais ma vie sur les chantiers. J'adorais ça. J'avais un job extra.",
+      "J'étais toujours pas à ma place, je le savais... mais j'avais un job génial.",
     ],
   },
   {
@@ -93,11 +99,6 @@ const chapters: Chapter[] = [
       "Puis un jour, une amie me propose de visiter un bien avec elle. Déclic total.",
       "En 2 semaines, j'ai signé 2 compromis pour 15 studios. J'ai appliqué ce que je savais faire pour les fonds : business plans, tableaux, négociation. Mon premier immeuble de 8 appartements a généré +1 300€ de cash-flow mensuel dès le premier mois.",
     ],
-    media: {
-      type: "full",
-      src: avantApresCles,
-      alt: "Avant/après : 2 clés en 2019, un tas de clés en 2022",
-    },
   },
   {
     id: "enchainement",
@@ -109,12 +110,16 @@ const chapters: Chapter[] = [
       "Je me retrouve à devoir prendre une décision. Je n'arrive plus à gérer mes 2 vies, pro et perso : elles prennent trop d'ampleur.",
     ],
     media: {
-      type: "mosaic",
+      type: "mosaic-plus-feature",
       items: [
         { src: chantierMasse, alt: "Emeline avec une masse sur un chantier" },
         { src: chantierMarteau, alt: "Emeline avec marteau et lunettes de protection" },
         { src: chantierMasque, alt: "Emeline avec un masque de poussière sur un chantier" },
       ],
+      feature: {
+        src: avantApresCles,
+        alt: "Avant/après : 2 clés en 2019, un tas de clés en 2022",
+      },
     },
   },
   {
@@ -263,6 +268,32 @@ export default function QuiEstEmeline() {
                             ))}
                           </div>
                         )}
+                        {chapter.media.type === "mosaic-plus-feature" && (
+                          <div className="space-y-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                              {chapter.media.items.map((img, k) => (
+                                <div key={k} className="rounded-xl overflow-hidden shadow-sm">
+                                  <Image
+                                    src={img.src}
+                                    alt={img.alt}
+                                    quality={85}
+                                    className="w-full h-full object-cover aspect-square"
+                                    placeholder="blur"
+                                  />
+                                </div>
+                              ))}
+                            </div>
+                            <div className="rounded-2xl overflow-hidden shadow-md max-w-sm mx-auto">
+                              <Image
+                                src={chapter.media.feature.src}
+                                alt={chapter.media.feature.alt}
+                                quality={85}
+                                className="w-full h-auto object-contain"
+                                placeholder="blur"
+                              />
+                            </div>
+                          </div>
+                        )}
                         {chapter.media.type === "placeholder" && (
                           <div
                             className="rounded-xl bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center p-6 text-center"
@@ -288,7 +319,6 @@ export default function QuiEstEmeline() {
             <span className="text-xs text-es-terracotta uppercase tracking-widest font-medium">2026</span>
             <h2 className="font-serif text-3xl sm:text-4xl font-bold text-es-text mt-3 mb-4">L&apos;écosystème</h2>
             <p className="text-es-text-muted max-w-2xl mx-auto leading-relaxed">
-              Je structure aujourd&apos;hui ce que j&apos;avais en tête depuis le début.
               Trois entités, un écosystème. Trois portes d&apos;entrée. Une vision : te donner les outils que j&apos;aurais voulu avoir au début.
             </p>
           </div>
@@ -411,75 +441,6 @@ export default function QuiEstEmeline() {
             &ldquo; Si j&apos;ai pu le faire, tu peux le faire aussi. &rdquo;
           </p>
           <p className="text-sm text-es-text-muted mt-4 font-medium">— Emeline</p>
-        </div>
-      </section>
-
-      {/* Podcast — 3 derniers épisodes */}
-      <section className="py-20 bg-es-cream">
-        <div className="max-w-5xl mx-auto px-6">
-          <div className="text-center mb-10">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/images/logo-otb.png"
-              alt="Out of the Box — Podcast Emeline Siron"
-              className="h-14 sm:h-16 mx-auto mb-3"
-            />
-            <p className="text-es-text-muted max-w-xl mx-auto text-sm">
-              Chaque mardi, un épisode de 30 minutes pour repenser ton rapport à l&apos;argent, l&apos;investissement et l&apos;entrepreneuriat.
-            </p>
-          </div>
-
-          {/* 3 derniers épisodes */}
-          <div className="grid md:grid-cols-3 gap-6">
-            {[1, 2, 3].map((n) => (
-              <article key={n} className="bg-white rounded-2xl overflow-hidden border border-es-cream-dark card-hover flex flex-col">
-                {/* Thumbnail placeholder */}
-                <div className="aspect-video bg-gradient-to-br from-es-green to-es-green-light flex items-center justify-center">
-                  {/* TODO: [TODO_EPISODE_{n}_THUMBNAIL_URL] — pour l'instant placeholder */}
-                  <svg className="w-12 h-12 text-white/60" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
-                  </svg>
-                </div>
-                <div className="p-5 flex-1 flex flex-col">
-                  <p className="text-xs text-es-text-muted uppercase tracking-wider mb-2">Épisode {n}</p>
-                  <h3 className="font-serif font-bold text-es-text mb-2 flex-1">
-                    {/* TODO: [TODO_EPISODE_{n}_TITRE] */}
-                    Titre de l&apos;épisode à venir
-                  </h3>
-                  <p className="text-xs text-es-text-muted mb-4">30 min</p>
-                  <div className="flex flex-wrap gap-2">
-                    <a
-                      href="#"
-                      className="text-xs px-3 py-1.5 rounded-full bg-es-green/10 text-es-green hover:bg-es-green hover:text-white transition-colors"
-                      aria-label="Écouter sur Apple Podcasts"
-                    >
-                      {/* TODO: [TODO_EPISODE_{n}_APPLE_URL] */}
-                      Apple
-                    </a>
-                    <a
-                      href="#"
-                      className="text-xs px-3 py-1.5 rounded-full bg-es-green/10 text-es-green hover:bg-es-green hover:text-white transition-colors"
-                      aria-label="Écouter sur Spotify"
-                    >
-                      {/* TODO: [TODO_EPISODE_{n}_SPOTIFY_URL] */}
-                      Spotify
-                    </a>
-                    <a
-                      href="#"
-                      className="text-xs px-3 py-1.5 rounded-full bg-es-green/10 text-es-green hover:bg-es-green hover:text-white transition-colors"
-                      aria-label="Regarder sur YouTube"
-                    >
-                      {/* TODO: [TODO_EPISODE_{n}_YOUTUBE_URL] */}
-                      YouTube
-                    </a>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
-          <p className="text-center text-xs text-gray-400 italic mt-6">
-            Les 3 derniers épisodes seront affichés automatiquement une fois les URLs fournies.
-          </p>
         </div>
       </section>
 
