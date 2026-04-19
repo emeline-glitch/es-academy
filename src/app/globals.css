@@ -321,3 +321,31 @@ html {
 .accordion-content[data-state="open"] {
   opacity: 1;
 }
+
+/* ============================================
+   PRINT — Certificat : on n'imprime QUE le diplôme
+   ============================================ */
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+  /* Masquer tout ce qui n'est pas le diplôme */
+  body * {
+    visibility: hidden !important;
+  }
+  #diploma,
+  #diploma * {
+    visibility: visible !important;
+  }
+  #diploma {
+    position: absolute !important;
+    left: 0;
+    top: 0;
+    width: 100%;
+    box-shadow: none !important;
+  }
+  html, body {
+    background: white !important;
+  }
+}
