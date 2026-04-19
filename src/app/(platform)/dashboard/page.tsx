@@ -13,7 +13,7 @@ export default async function Dashboard() {
   if (!user) redirect("/connexion");
 
   const displayName =
-    user.user_metadata?.full_name || user.email?.split("@")[0] || "Eleve";
+    user.user_metadata?.full_name || user.email?.split("@")[0] || "Élève";
 
   // TODO: Fetch enrollments and progress from Supabase
   // For now, show a placeholder dashboard
@@ -22,7 +22,7 @@ export default async function Dashboard() {
     <div>
       <div className="mb-8">
         <h1 className="font-serif text-3xl font-bold text-gray-900">
-          Bonjour, {displayName} !
+          Bonjour {displayName} !
         </h1>
         <p className="text-gray-500 mt-1">Bienvenue dans ton espace de formation.</p>
       </div>
@@ -35,10 +35,10 @@ export default async function Dashboard() {
             <span className="font-serif text-2xl font-bold text-es-green">ES</span>
           </div>
           <h3 className="font-serif text-lg font-bold text-gray-900 mb-1">
-            La Methode Emeline SIRON
+            La Méthode Emeline SIRON
           </h3>
           <p className="text-sm text-gray-500 mb-4 flex-1">
-            15 modules — 64 lecons
+            14 modules · 30h de vidéo · 60 outils
           </p>
           <ProgressBar value={0} label="Progression" className="mb-4" />
           <Button href="/cours/methode-emeline-siron" variant="primary" className="w-full">
@@ -53,7 +53,7 @@ export default async function Dashboard() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
             </svg>
           </div>
-          <p className="text-sm text-gray-400">D&apos;autres formations bientot</p>
+          <p className="text-sm text-gray-400">D&apos;autres formations bientôt</p>
         </Card>
       </div>
 
@@ -65,25 +65,25 @@ export default async function Dashboard() {
           <div className="relative p-8 md:p-10">
             <div className="flex items-center gap-2 mb-1">
               <span className="text-2xl">👑</span>
-              <span className="text-xs font-bold text-white/50 uppercase tracking-widest">Communaute patrimoniale</span>
+              <span className="text-xs font-bold text-white/70 uppercase tracking-widest">Communauté patrimoniale</span>
             </div>
             <h2 className="font-serif text-2xl md:text-3xl font-bold text-white mb-3">Rejoins ES Family</h2>
-            <p className="text-white/80 text-sm mb-5 max-w-xl leading-relaxed">
-              Ne reste pas seul(e) dans tes investissements. Rejoins une communaute d'investisseurs ambitieux
-              pour echanger, apprendre et saisir des opportunites que tu ne trouveras nulle part ailleurs.
+            <p className="text-white/85 text-sm md:text-base mb-5 max-w-2xl leading-relaxed">
+              Pas juste un groupe immo. Un écosystème patrimoine complet — immo, bourse, fiscalité, entrepreneuriat, mindset — dans ta poche, 7j/7.
+              <strong className="block mt-1 text-white">1 800 membres déjà actifs.</strong>
             </p>
 
             {/* Features grid */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
               {[
-                { icon: "📊", text: "Analyses flash video" },
-                { icon: "🎙", text: "Lives mensuels + replays" },
-                { icon: "📖", text: "Ebooks mensuels" },
-                { icon: "💎", text: "Opportunites exclusives" },
-                { icon: "👥", text: "Networking investisseurs" },
-                { icon: "🏆", text: "Challenges gamifies" },
-                { icon: "🏠", text: "Sous-groupes thematiques" },
-                { icon: "📁", text: "Annuaire membres" },
+                { icon: "📱", text: "App mobile 7j/7" },
+                { icon: "🎙", text: "Lives mensuels + replays à vie" },
+                { icon: "💬", text: "Groupes thématiques actifs" },
+                { icon: "📊", text: "5 simulateurs intégrés" },
+                { icon: "🛠", text: "Bons plans Sorel (chantiers)" },
+                { icon: "🤝", text: "Partenaires exclusifs" },
+                { icon: "🏆", text: "Gamification + parrainage" },
+                { icon: "👥", text: "Annuaire + networking" },
               ].map((f, i) => (
                 <div key={i} className="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-2">
                   <span className="text-sm">{f.icon}</span>
@@ -97,12 +97,12 @@ export default async function Dashboard() {
                 href="/family"
                 className="inline-flex items-center justify-center font-semibold rounded-lg px-6 py-3 bg-white text-es-terracotta hover:bg-es-cream transition-all text-sm"
               >
-                Decouvrir ES Family — 19€/mois fondateurs →
+                Découvrir ES Family — 19€/mois fondateurs →
               </a>
-              <div className="flex items-center gap-4 text-white/50 text-xs">
+              <div className="flex items-center gap-4 text-white/60 text-xs">
                 <span>Sans engagement</span>
                 <span>·</span>
-                <span>Prix garanti a vie</span>
+                <span>Prix bloqué à vie</span>
               </div>
             </div>
           </div>
@@ -116,7 +116,7 @@ export default async function Dashboard() {
             <div className="flex-1">
               <h3 className="font-serif text-lg font-bold text-gray-900 mb-1">Tu aimes la formation ? Dis-le ! 💬</h3>
               <p className="text-sm text-gray-500">
-                Ton avis aide d'autres investisseurs a nous decouvrir. 2 minutes suffisent et ca compte enormement.
+                Ton avis aide d&apos;autres investisseurs à nous découvrir. 2 minutes suffisent et ça compte énormément.
               </p>
             </div>
             <div className="flex gap-3 shrink-0">
