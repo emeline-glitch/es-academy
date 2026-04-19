@@ -78,6 +78,12 @@ export async function PATCH(
   if (body.html_content !== undefined) updateData.html_content = body.html_content;
   if (body.status !== undefined) updateData.status = body.status;
   if (body.target_tag !== undefined) updateData.target_tag = body.target_tag;
+  if (body.target_tags !== undefined) updateData.target_tags = body.target_tags;
+  if (body.preview_text !== undefined) updateData.preview_text = body.preview_text;
+  if (body.from_name !== undefined) updateData.from_name = body.from_name;
+  if (body.from_email !== undefined) updateData.from_email = body.from_email;
+  if (body.reply_to !== undefined) updateData.reply_to = body.reply_to;
+  if (body.scheduled_at !== undefined) updateData.scheduled_at = body.scheduled_at;
 
   const { data, error } = await supabase
     .from("email_campaigns")
