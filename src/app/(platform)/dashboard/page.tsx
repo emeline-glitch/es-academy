@@ -74,20 +74,55 @@ export default async function Dashboard() {
             </p>
 
             {/* Features grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
               {[
-                { icon: "📱", text: "App mobile 7j/7" },
-                { icon: "🎙", text: "Lives mensuels + replays à vie" },
-                { icon: "💬", text: "Groupes thématiques actifs" },
-                { icon: "📊", text: "5 simulateurs intégrés" },
-                { icon: "🛠", text: "Bons plans Sorel (chantiers)" },
-                { icon: "🤝", text: "Partenaires exclusifs" },
-                { icon: "🏆", text: "Gamification + parrainage" },
-                { icon: "👥", text: "Annuaire + networking" },
+                {
+                  icon: "📱",
+                  title: "App mobile 7j/7",
+                  desc: "Ta communauté dans ta poche, disponible partout et à tout moment.",
+                },
+                {
+                  icon: "🎙",
+                  title: "Lives mensuels + replays à vie",
+                  desc: "Décryptage d'opportunités, Q&A et études de cas avec Emeline et ses partenaires experts.",
+                },
+                {
+                  icon: "💬",
+                  title: "Groupes thématiques actifs",
+                  desc: "Immobilier, patrimoine, bricolage, gestion locative, bourse, entrepreneuriat, fiscalité…",
+                },
+                {
+                  icon: "📊",
+                  title: "5 simulateurs intégrés",
+                  desc: "Capacité d'emprunt, cashflow mensuel, frais de notaire, prix au m² (France), rendement locatif.",
+                },
+                {
+                  icon: "🛠",
+                  title: "Bons plans Sorel",
+                  desc: "Chaque semaine, les promos matériaux, mobilier et équipement sélectionnées pour les chantiers.",
+                },
+                {
+                  icon: "🤝",
+                  title: "Partenaires exclusifs",
+                  desc: "Fiscaliste, expert-comptable, décoratrice, artisan travaux, chasseur immo — codes promo réservés aux membres.",
+                },
+                {
+                  icon: "🏆",
+                  title: "Gamification + parrainage",
+                  desc: "Badges et classement pour progresser. Ton code parrain = mois offerts à chaque filleul.",
+                },
+                {
+                  icon: "👥",
+                  title: "Annuaire + networking",
+                  desc: "Retrouve les membres par région ou par projet, ouvre une discussion directe, construis ton réseau.",
+                },
               ].map((f, i) => (
-                <div key={i} className="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-2">
-                  <span className="text-sm">{f.icon}</span>
-                  <span className="text-xs text-white/90">{f.text}</span>
+                <div key={i} className="flex items-start gap-3 bg-white/10 rounded-lg p-3">
+                  <span className="text-xl shrink-0 leading-none mt-0.5">{f.icon}</span>
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-white leading-snug">{f.title}</p>
+                    <p className="text-xs text-white/70 leading-relaxed mt-1">{f.desc}</p>
+                  </div>
                 </div>
               ))}
             </div>
