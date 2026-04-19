@@ -266,7 +266,6 @@ export default function ContactDetailPage() {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
                 >
                   <option value="academy">Academy (998€)</option>
-                  <option value="expert">Expert (3 996€)</option>
                   <option value="coaching">Coaching seul</option>
                   <option value="family">ES Family</option>
                 </select>

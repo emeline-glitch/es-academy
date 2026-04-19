@@ -41,7 +41,6 @@ interface Response {
 const PRODUCTS = [
   { key: "all", label: "Toutes formules" },
   { key: "academy", label: "Academy" },
-  { key: "expert", label: "Expert" },
   { key: "coaching", label: "Coaching seul" },
   { key: "family", label: "Family" },
 ];
