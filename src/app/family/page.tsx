@@ -52,14 +52,14 @@ export default function FamilyPage() {
                   Pas à t&apos;enrichir.
                 </span>
               </h1>
-              <p className="text-lg text-white/85 mb-4 leading-relaxed">
-                Immobilier, bourse, fiscalité, transmission, actifs alternatifs : les règles du patrimoine, personne ne te les explique vraiment.
+              <p className="text-lg text-white/90 mb-4 leading-relaxed font-medium">
+                Pas juste un groupe immo. Un écosystème patrimoine complet — immo, bourse, fiscalité, entrepreneuriat, mindset — dans ta poche, 7j/7.
               </p>
-              <p className="text-lg text-white/85 mb-4 leading-relaxed">
-                ES Family, c&apos;est la communauté qui prend le relais. <strong>1 900 investisseurs dans l&apos;écosystème. Encore 500 places pour le tarif fondateur.</strong>
+              <p className="text-base text-white/80 mb-4 leading-relaxed">
+                ES Family, c&apos;est la communauté qui prend le relais là où l&apos;école s&apos;est arrêtée. <strong className="text-white">1 800 membres déjà actifs. Encore 500 places au tarif fondateur.</strong>
               </p>
               <p className="text-sm text-white/60 mb-10 leading-relaxed italic">
-                Plateforme conçue et développée en interne par Emeline.
+                Plateforme mobile conçue et développée en interne par Emeline.
               </p>
 
               <a
@@ -71,7 +71,7 @@ export default function FamilyPage() {
                 Rejoindre ES Family à 19€/mois
               </a>
               <p className="text-xs text-white/50 mt-4">
-                Pour le prix d&apos;un forfait téléphonique · Sans engagement
+                Pour le prix d&apos;un forfait téléphonique · Sans engagement · Prix bloqué à vie
               </p>
             </div>
 
@@ -141,77 +141,95 @@ export default function FamilyPage() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-14">
             <span className="text-xs text-es-terracotta uppercase tracking-widest font-medium">L&apos;application</span>
-            <h2 className="font-serif text-3xl font-bold text-es-text mt-3">Tout ce dont tu as besoin, au même endroit</h2>
+            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-es-text mt-3 mb-4">Un seul abonnement, 12 usages dans ta poche</h2>
+            <p className="text-es-text-muted max-w-2xl mx-auto leading-relaxed">
+              Formation, communauté, outils, coaching, bons plans, partenaires : tout est centralisé dans une app mobile pensée pour être consultée au quotidien.
+            </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Bloc 1 */}
-            <div className="bg-es-cream rounded-2xl p-6">
-              <div className="w-12 h-12 rounded-xl bg-es-terracotta/10 flex items-center justify-center mb-4">
-                <svg className="w-6 h-6 text-es-terracotta" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-                </svg>
-              </div>
-              <h3 className="font-serif text-lg font-bold text-es-text mb-2">Reste informée sans effort</h3>
-              <p className="text-sm text-es-text-muted leading-relaxed">Actus immo, fiscalité et marché triées pour toi chaque semaine. Les sujets importants remontent automatiquement.</p>
-              {/* TODO: Ajouter screenshot [SCREENSHOT_BLOC_1] */}
-            </div>
-
-            {/* Bloc 2 */}
-            <div className="bg-es-cream rounded-2xl p-6">
-              <div className="w-12 h-12 rounded-xl bg-es-terracotta/10 flex items-center justify-center mb-4">
-                <svg className="w-6 h-6 text-es-terracotta" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            {[
+              {
+                title: "Feed vivant, groupes thématiques",
+                body: "Pilier Immo (financement, fiscalité, gestion locative, travaux, négo) + Pilier Patrimoine (bourse & ETF, actifs alternatifs, assurance vie, entrepreneuriat) + Annonces d'Emeline et wins des membres.",
+                icon: (
                   <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                </svg>
-              </div>
-              <h3 className="font-serif text-lg font-bold text-es-text mb-2">Pose tes questions, obtiens des réponses</h3>
-              <p className="text-sm text-es-text-muted leading-relaxed">Des groupes thématiques actifs où tu postes ton cas et où les membres expérimentés te répondent dans la journée.</p>
-              {/* TODO: Liste finale des groupes thématiques à définir [LISTE_GROUPES_À_DÉFINIR] */}
-            </div>
-
-            {/* Bloc 3 */}
-            <div className="bg-es-cream rounded-2xl p-6">
-              <div className="w-12 h-12 rounded-xl bg-es-terracotta/10 flex items-center justify-center mb-4">
-                <svg className="w-6 h-6 text-es-terracotta" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                ),
+              },
+              {
+                title: "Bibliothèque vidéo à la demande",
+                body: "Formations classées par thème : immo, patrimoine, fiscalité, placements, entrepreneuriat. Tu regardes quand tu veux, autant de fois que tu veux.",
+                icon: (
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                </svg>
-              </div>
-              <h3 className="font-serif text-lg font-bold text-es-text mb-2">Apprends des meilleurs chaque semaine</h3>
-              <p className="text-sm text-es-text-muted leading-relaxed">Lives mensuels avec moi et mes partenaires experts (fiscaliste, expert-comptable, artisan, décoratrice). Tous les replays accessibles à vie.</p>
-            </div>
-
-            {/* Bloc 4 */}
-            <div className="bg-es-cream rounded-2xl p-6">
-              <div className="w-12 h-12 rounded-xl bg-es-terracotta/10 flex items-center justify-center mb-4">
-                <svg className="w-6 h-6 text-es-terracotta" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                ),
+              },
+              {
+                title: "5 modules de La Méthode Emeline SIRON",
+                body: "Bienvenue · Stratégie patrimoniale · Immobilier · Placements et diversification · Fiscalité et optimisation. Les fondamentaux à ton rythme.",
+                icon: (
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                ),
+              },
+              {
+                title: "5 simulateurs pour décider vite",
+                body: "Capacité d'emprunt, cashflow mensuel, frais de notaire, prix au m², rendement locatif. Tu testes ton projet en 30 secondes.",
+                icon: (
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-              </div>
-              <h3 className="font-serif text-lg font-bold text-es-text mb-2">Des outils pro à portée de main</h3>
-              <p className="text-sm text-es-text-muted leading-relaxed">4 simulateurs intégrés (notaire, rendement, cashflow, emprunt). 34 fichiers pratiques classés par thème. Le podcast Out of the Box en accès direct.</p>
-            </div>
-
-            {/* Bloc 5 */}
-            <div className="bg-es-cream rounded-2xl p-6">
-              <div className="w-12 h-12 rounded-xl bg-es-terracotta/10 flex items-center justify-center mb-4">
-                <svg className="w-6 h-6 text-es-terracotta" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                ),
+              },
+              {
+                title: "Lives mensuels + replays à vie",
+                body: "Lives avec Emeline et ses partenaires experts (fiscaliste, expert-comptable, artisan, décoratrice). Webinars thématiques. Tous les replays consultables sans limite.",
+                icon: (
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                ),
+              },
+              {
+                title: "Ressources prêtes à l'emploi",
+                body: "Modèles de courriers, fiches financement, fiscalité, gestion locative, travaux. + Les ebooks mensuels d'Emeline et 34 fichiers pratiques classés par thème.",
+                icon: (
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                ),
+              },
+              {
+                title: "Les bons plans de Sorel",
+                body: "Les promos matériaux et mobilier qu'Emeline utilise pour ses propres chantiers : parquet, électricité, équipement. Tu économises sur chaque rénovation.",
+                icon: (
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                ),
+              },
+              {
+                title: "Partenaires exclusifs ES Family",
+                body: "Avantages négociés pour les membres : courtiers, assurances PNO, artisans, outils. Codes promo réservés. Et tu peux réserver un coaching visio direct avec Emeline depuis l'app.",
+                icon: (
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
-              </div>
-              <h3 className="font-serif text-lg font-bold text-es-text mb-2">Des partenaires vérifiés</h3>
-              <p className="text-sm text-es-text-muted leading-relaxed">6 partenaires experts accessibles aux membres (fiscaliste, expert-comptable, artisan, décoratrice, etc.). Codes promo réservés. Coaching accessible avec moi.</p>
-            </div>
-
-            {/* Bloc 6 */}
-            <div className="bg-es-cream rounded-2xl p-6">
-              <div className="w-12 h-12 rounded-xl bg-es-terracotta/10 flex items-center justify-center mb-4">
-                <svg className="w-6 h-6 text-es-terracotta" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                ),
+              },
+              {
+                title: "Annuaire, gamification et parrainage",
+                body: "Retrouve les membres par région, par projet, ouvre une DM privée, construis ton réseau. Badges et classement pour progresser en apprenant. Ton code parrain = des mois offerts.",
+                icon: (
                   <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
+                ),
+              },
+            ].map((block, i) => (
+              <div key={i} className="bg-es-cream rounded-2xl p-6">
+                <div className="w-12 h-12 rounded-xl bg-es-terracotta/10 flex items-center justify-center mb-4">
+                  <svg className="w-6 h-6 text-es-terracotta" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    {block.icon}
+                  </svg>
+                </div>
+                <h3 className="font-serif text-lg font-bold text-es-text mb-2">{block.title}</h3>
+                <p className="text-sm text-es-text-muted leading-relaxed">{block.body}</p>
               </div>
-              <h3 className="font-serif text-lg font-bold text-es-text mb-2">Une reconnaissance entre membres</h3>
-              <p className="text-sm text-es-text-muted leading-relaxed">Les membres qui contribuent régulièrement (réponses, partages d&apos;expérience, accompagnement des nouveaux) sont mis en avant. C&apos;est toi qui fais vivre ES Family.</p>
-            </div>
+            ))}
+          </div>
+
+          {/* Callout — patrimoine large */}
+          <div className="mt-14 max-w-3xl mx-auto bg-gradient-to-br from-es-terracotta/10 to-es-green/5 border border-es-terracotta/30 rounded-2xl p-8 text-center">
+            <p className="font-serif text-xl sm:text-2xl text-es-text leading-relaxed">
+              Pas juste de l&apos;immo. <strong className="text-es-terracotta">Tout ce qui fait une vraie indépendance financière</strong> : bourse, fiscalité, actifs alternatifs, transmission, entrepreneuriat, mindset.
+            </p>
           </div>
         </div>
       </section>
