@@ -103,19 +103,19 @@ export default function ExamenFinalPage() {
 
             <div className="my-8">
               <p className="text-gray-500 text-sm">Ce certificat atteste que</p>
-              {userName ? (
-                <p className="font-serif text-2xl font-bold text-es-text my-3">{userName}</p>
-              ) : (
-                <div className="my-3">
-                  <input
-                    type="text"
-                    placeholder="Ton nom complet"
-                    value={userName}
-                    onChange={(e) => setUserName(e.target.value)}
-                    className="font-serif text-2xl font-bold text-es-text text-center border-b-2 border-es-gold/30 focus:border-es-gold outline-none pb-1 w-full max-w-xs"
-                  />
-                </div>
-              )}
+              <div className="my-3 print:my-3">
+                <input
+                  type="text"
+                  placeholder="Ton nom complet"
+                  value={userName}
+                  onChange={(e) => setUserName(e.target.value)}
+                  aria-label="Nom du participant"
+                  className="font-serif text-2xl font-bold text-es-text text-center outline-none pb-1 w-full max-w-md mx-auto bg-transparent border-b-2 border-es-gold/20 hover:border-es-gold/50 focus:border-es-gold transition-colors print:border-none"
+                />
+                {!userName && (
+                  <p className="text-[11px] text-gray-400 italic mt-2 print:hidden">Clique ici pour saisir ton nom</p>
+                )}
+              </div>
               <p className="text-gray-500 text-sm mt-4">a complété avec succès la formation</p>
               <p className="font-serif text-lg font-bold text-es-green mt-2">La Méthode Emeline Siron</p>
               <p className="font-serif text-base text-es-green/80 mt-1">Investissement immobilier locatif</p>
