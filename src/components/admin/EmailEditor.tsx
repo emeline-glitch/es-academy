@@ -27,7 +27,10 @@ export function EmailEditor({ value, onChange }: EmailEditorProps) {
   const editorRef = useRef<HTMLDivElement>(null);
   // Track the HTML we last emitted via onChange. Used to distinguish
   // "parent re-fed us our own output" (ignore) from "parent fed us new content" (sync into DOM).
-  const lastEmittedRef = useRef<string>(value);
+  // Init à null (pas à `value`) pour que le PREMIER render set bien innerHTML depuis la prop.
+  // Avant, init à value faisait que le useEffect voyait value === lastEmitted et skippait
+  // l'assignation, laissant l'éditeur vide alors que les données étaient bien passées.
+  const lastEmittedRef = useRef<string | null>(null);
 
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [showBgColorPicker, setShowBgColorPicker] = useState(false);
