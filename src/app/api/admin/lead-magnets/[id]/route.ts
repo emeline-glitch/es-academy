@@ -51,7 +51,13 @@ export async function PATCH(
   if (body.landing_page_url !== undefined) update.landing_page_url = body.landing_page_url || null;
   if (body.asset_url !== undefined) update.asset_url = body.asset_url || null;
   if (body.cover_image_url !== undefined) update.cover_image_url = body.cover_image_url || null;
-  if (body.opt_in_tag !== undefined) update.opt_in_tag = body.opt_in_tag;
+  if (body.opt_in_tag !== undefined) {
+    const trimmed = String(body.opt_in_tag).trim();
+    if (!trimmed) {
+      return NextResponse.json({ error: "opt_in_tag ne peut pas être vide" }, { status: 400 });
+    }
+    update.opt_in_tag = trimmed;
+  }
   if (body.sort_order !== undefined) update.sort_order = Number(body.sort_order) || 0;
 
   if (Object.keys(update).length === 0) {

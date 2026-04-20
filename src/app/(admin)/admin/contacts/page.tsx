@@ -364,8 +364,15 @@ export default function AdminContacts() {
     setShowTagModal(false);
     setNewTag("");
     setBulkListTagKeys([]);
+    // Optimistic UI : on update localement les tags au lieu de refetch la page complète
+    setContacts((prev) =>
+      prev.map((c) =>
+        selectedIds.has(c.id)
+          ? { ...c, tags: Array.from(new Set([...(c.tags || []), ...tagsToAdd])) }
+          : c
+      )
+    );
     setSelectedIds(new Set());
-    fetchContacts();
     toast.success(`${parts.join(" + ")} appliqué${parts.length > 1 ? "s" : ""} à ${count} contact${count > 1 ? "s" : ""}`);
   }
 

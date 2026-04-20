@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef } from "react";
+import { memo, useEffect, useState, useCallback, useRef } from "react";
 import Link from "next/link";
 import { PIPELINES, type PipelineType } from "@/lib/utils/pipeline";
 import { useToast } from "@/components/ui/Toast";
@@ -60,7 +60,9 @@ export default function PipelinePage() {
 
   const fetchContacts = useCallback(async () => {
     setLoading(true);
-    const params = new URLSearchParams({ limit: "500" });
+    // Limit abaissé de 500 à 200 : plus rapide, et le Kanban reste usable même sur grosse base
+    // (les contacts inactifs/archivés apparaissent moins haut vu le sort par pipeline_updated_at)
+    const params = new URLSearchParams({ limit: "200" });
     if (search) params.set("search", search);
     try {
       const res = await fetch(`/api/contacts?${params}`);
@@ -83,25 +85,27 @@ export default function PipelinePage() {
     if (undo) clearTimeout(undo.timer);
   }, [undo]);
 
-  // Realtime : écoute les changements de pipeline_stage depuis d'autres sessions
+  // Realtime : écoute les changements depuis d'autres sessions.
+  // Patch ciblé sur les updates pour ne pas re-mapper 200 contacts à chaque tick.
+  // Les INSERT sont ignorés (seront ramassés au prochain search/refresh), évite le bruit quand
+  // un formulaire public capture un lead pendant qu'on bosse sur le pipeline.
   useEffect(() => {
     const supabase = createBrowserSupabase();
     const channel = supabase
-      .channel("pipeline-contacts")
+      .channel("pipeline-contacts-v2")
       .on(
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "contacts" },
         (payload) => {
           const updated = payload.new as Contact;
-          setContacts((prev) => prev.map((c) => (c.id === updated.id ? { ...c, ...updated } : c)));
-        }
-      )
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "contacts" },
-        (payload) => {
-          const inserted = payload.new as Contact;
-          setContacts((prev) => [inserted, ...prev]);
+          // Update uniquement si le contact est dans notre liste actuelle
+          setContacts((prev) => {
+            const idx = prev.findIndex((c) => c.id === updated.id);
+            if (idx === -1) return prev; // contact pas visible, ignore
+            const next = prev.slice();
+            next[idx] = { ...next[idx], ...updated };
+            return next;
+          });
         }
       )
       .subscribe();
@@ -170,6 +174,8 @@ export default function PipelinePage() {
   async function bulkMove(targetStage: string) {
     const ids = Array.from(selected);
     if (ids.length === 0) return;
+    // Optimistic : on met à jour le state localement, PAS de refetch après succès.
+    // Le refetch complet (200 contacts) ajoutait 500ms à 2s de lag après chaque bulk move.
     setContacts((prev) =>
       prev.map((c) =>
         selected.has(c.id)
@@ -182,6 +188,7 @@ export default function PipelinePage() {
     setSelected(new Set());
     if (fails > 0) {
       toast.error(`${fails} échec${fails > 1 ? "s" : ""} sur ${ids.length} déplacements`);
+      // Refetch seulement en cas d'erreur pour re-synchroniser
       fetchContacts();
     } else {
       toast.success(`${ids.length} contact${ids.length > 1 ? "s" : ""} déplacé${ids.length > 1 ? "s" : ""}`);
@@ -441,7 +448,7 @@ export default function PipelinePage() {
   );
 }
 
-function PipelineCard({
+const PipelineCard = memo(function PipelineCard({
   contact: c,
   overdue,
   selected,
@@ -553,4 +560,4 @@ function PipelineCard({
       </select>
     </div>
   );
-}
+});

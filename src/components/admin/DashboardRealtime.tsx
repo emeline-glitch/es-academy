@@ -1,41 +1,44 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 /**
- * Mini-composant qui s'abonne aux mutations realtime sur `contacts` et `enrollments`
- * et déclenche un router.refresh() pour que le dashboard (server component) re-fetch
- * ses RPC dashboard_stats à jour. Sans ça, tu dois changer d'onglet pour voir le
- * funnel se mettre à jour après un move pipeline.
+ * Abonnement realtime avec DEBOUNCE LONG.
  *
- * Debounced à 800ms pour éviter un refresh par tick quand tu fais du bulk.
+ * Avant : refetch (router.refresh()) 800ms après chaque mutation sur contacts/enrollments.
+ * Sur une page avec 200 contacts et 5 admins qui bougent des fiches, c'était 50+ refreshes
+ * par minute → dashboard toujours en train de recharger, UX horrible.
+ *
+ * Maintenant : 5 secondes de debounce. Les mutations cumulées déclenchent 1 seul refresh
+ * quand l'activité se calme. Pour un vrai "temps réel" immédiat, l'utilisatrice peut toujours
+ * cliquer sur le logo dashboard.
  */
 export function DashboardRealtime() {
   const router = useRouter();
+  const pendingRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const supabase = createClient();
-    let timer: ReturnType<typeof setTimeout> | null = null;
 
     const scheduleRefresh = () => {
-      if (timer) clearTimeout(timer);
-      timer = setTimeout(() => {
+      if (pendingRef.current) clearTimeout(pendingRef.current);
+      pendingRef.current = setTimeout(() => {
         router.refresh();
-      }, 800);
+      }, 5000);
     };
 
+    // On écoute seulement les UPDATE sur contacts (changement stage) et INSERT sur enrollments (nouvelle vente).
+    // Retiré : INSERT/DELETE contacts (bruit) + on ne refresh plus sur DELETE.
     const channel = supabase
-      .channel("dashboard-realtime")
+      .channel("dashboard-realtime-v2")
       .on("postgres_changes", { event: "UPDATE", schema: "public", table: "contacts" }, scheduleRefresh)
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "contacts" }, scheduleRefresh)
-      .on("postgres_changes", { event: "DELETE", schema: "public", table: "contacts" }, scheduleRefresh)
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "enrollments" }, scheduleRefresh)
       .subscribe();
 
     return () => {
-      if (timer) clearTimeout(timer);
+      if (pendingRef.current) clearTimeout(pendingRef.current);
       supabase.removeChannel(channel);
     };
   }, [router]);
