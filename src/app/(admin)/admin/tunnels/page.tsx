@@ -55,26 +55,19 @@ const stepIcons: Record<string, string> = {
   email: "📧",
 };
 
+interface TunnelsStats {
+  captures_by_tag: Record<string, number>;
+  sales_by_product: Record<string, { count: number; revenue: number }>;
+}
+
 export default async function AdminTunnels() {
   const supabase = await createClient();
 
-  // Métriques par tunnel : captures par tag, conversions via enrollments.product_name, revenu
-  const [{ data: allContacts }, { data: allEnrollments }] = await Promise.all([
-    supabase.from("contacts").select("tags").eq("status", "active"),
-    supabase.from("enrollments").select("product_name, amount_paid"),
-  ]);
-
-  const captureCounts: Record<string, number> = {};
-  for (const c of allContacts || []) {
-    for (const t of c.tags || []) captureCounts[t] = (captureCounts[t] || 0) + 1;
-  }
-  const productRevenue: Record<string, { count: number; revenue: number }> = {};
-  for (const e of allEnrollments || []) {
-    if (!e.product_name) continue;
-    if (!productRevenue[e.product_name]) productRevenue[e.product_name] = { count: 0, revenue: 0 };
-    productRevenue[e.product_name].count += 1;
-    productRevenue[e.product_name].revenue += e.amount_paid || 0;
-  }
+  // 1 seul RPC qui agrège captures par tag + ventes/revenu par produit (migration 017)
+  const { data } = await supabase.rpc("tunnels_stats");
+  const stats: TunnelsStats = (data as TunnelsStats) || { captures_by_tag: {}, sales_by_product: {} };
+  const captureCounts = stats.captures_by_tag || {};
+  const productRevenue = stats.sales_by_product || {};
 
   return (
     <div>
