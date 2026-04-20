@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { triggerAntonyAlert } from "@/lib/alerts/antony";
 
 /**
  * Moteur d'auto-enrollment : quand un tag est ajouté à un contact, vérifie s'il existe
@@ -63,6 +64,14 @@ export async function autoEnrollByTags(
     } else {
       enrolled++;
     }
+  }
+
+  // Side-effect : si les tags contiennent commercial:lead-warm ou lead-hot, déclenche l'alerte Antony
+  // (anti-spam 24h géré dans triggerAntonyAlert)
+  if (newlyAddedTags.includes("commercial:lead-hot")) {
+    await triggerAntonyAlert(supabase, contactId, "hot", `Tag 'commercial:lead-hot' ajouté (${newlyAddedTags.join(", ")})`);
+  } else if (newlyAddedTags.includes("commercial:lead-warm")) {
+    await triggerAntonyAlert(supabase, contactId, "warm", `Tag 'commercial:lead-warm' ajouté (${newlyAddedTags.join(", ")})`);
   }
 
   return { enrolled, skipped, errors };

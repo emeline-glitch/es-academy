@@ -33,7 +33,11 @@ export default async function AdminDashboard() {
 
   // Un seul RPC pour tous les compteurs/sommes (au lieu de charger toutes les lignes et sommer en JS).
   // + 3 queries parallèles pour les listes "récentes" qui sont déjà limit(5-8).
-  const [statsRes, recentContactsRes, recentEnrollmentsRes, auditRes] = await Promise.all([
+  // + extensions Sprint 4 : LM perf, alumni, quiz distribution, Chatel upcoming.
+  const [
+    statsRes, recentContactsRes, recentEnrollmentsRes, auditRes,
+    lmPerfRes, alumniRes, chatelRes, quizRes,
+  ] = await Promise.all([
     supabase.rpc("dashboard_stats", { month_start: monthStart, today_start: todayStart }),
     supabase
       .from("contacts")
@@ -46,6 +50,21 @@ export default async function AdminDashboard() {
       .order("purchased_at", { ascending: false })
       .limit(5),
     supabase.from("audit_log").select("*").order("created_at", { ascending: false }).limit(8),
+    supabase.rpc("lead_magnets_performance", { period_days: 30 }),
+    supabase.rpc("alumni_dashboard"),
+    supabase
+      .from("billing_reminders")
+      .select("id, contact_id, trial_end, monthly_price_cents, reminder_j15_sent_at, reminder_j7_sent_at")
+      .is("cancelled_at", null)
+      .is("activation_confirmed_at", null)
+      .gte("trial_end", new Date().toISOString().slice(0, 10))
+      .lte("trial_end", new Date(Date.now() + 30 * 24 * 3600 * 1000).toISOString().slice(0, 10))
+      .order("trial_end", { ascending: true })
+      .limit(10),
+    supabase
+      .from("quiz_responses")
+      .select("result_category")
+      .gte("completed_at", new Date(Date.now() - 30 * 24 * 3600 * 1000).toISOString()),
   ]);
 
   const stats: DashboardStats = (statsRes.data as DashboardStats) || {
@@ -80,6 +99,17 @@ export default async function AdminDashboard() {
   const winRate = scored > 0 ? Math.round((stageCounts.gagne / scored) * 100) : 0;
 
   const auditLog = auditRes?.data || [];
+
+  // Extensions Sprint 4
+  const lmPerf = (lmPerfRes.data || []) as Array<{ lead_magnet_slug: string; lead_magnet_name: string; opt_ins: number; conversions_to_academy: number; conversion_rate: number }>;
+  const alumniData = (alumniRes.data as { total_alumni: number; migrated: number; family_activated: number; family_cancelled: number; opted_out: number } | null) || null;
+  const chatelUpcoming = (chatelRes.data || []) as Array<{ id: string; contact_id: string; trial_end: string; monthly_price_cents: number; reminder_j15_sent_at: string | null; reminder_j7_sent_at: string | null }>;
+
+  const quizCounts = { tu_perds_argent: 0, operation_blanche: 0, autofinancement_positif: 0 };
+  for (const r of (quizRes.data || []) as Array<{ result_category: string }>) {
+    if (r.result_category in quizCounts) quizCounts[r.result_category as keyof typeof quizCounts]++;
+  }
+  const totalQuiz = quizCounts.tu_perds_argent + quizCounts.operation_blanche + quizCounts.autofinancement_positif;
 
   const statCards = [
     { label: "CA ce mois-ci", value: `${(monthRevenue / 100).toLocaleString("fr-FR")}€`, sub: `${monthSalesCount} vente${monthSalesCount > 1 ? "s" : ""}`, icon: "💰", color: "text-green-600 bg-green-50", href: "/admin/eleves" },
@@ -168,6 +198,134 @@ export default async function AdminDashboard() {
           })}
         </div>
       </Card>
+
+      {/* Sprint 4 : 4 nouvelles cards performance */}
+      <div className="grid lg:grid-cols-2 gap-6 mb-8">
+        {/* Lead magnets perf 30j */}
+        <Card>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="font-serif text-lg font-bold text-gray-900">Lead magnets (30j)</h2>
+              <p className="text-xs text-gray-500 mt-0.5">Opt-ins, conversions Academy, taux</p>
+            </div>
+            <Link href="/admin/lead-magnets" prefetch className="text-xs text-es-green hover:underline">Gérer →</Link>
+          </div>
+          {lmPerf.length > 0 ? (
+            <div className="space-y-2">
+              {lmPerf.slice(0, 5).map((lm) => (
+                <div key={lm.lead_magnet_slug} className="flex items-center justify-between py-1.5 border-b border-gray-50 last:border-0">
+                  <span className="text-sm text-gray-700 truncate flex-1">{lm.lead_magnet_name}</span>
+                  <span className="text-xs text-gray-500 shrink-0 ml-2">
+                    <span className="font-bold text-gray-900">{lm.opt_ins}</span> opt-ins · {lm.conversion_rate}%
+                  </span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-gray-400 italic py-4 text-center">Aucun lead magnet configuré. <Link href="/admin/lead-magnets" className="text-es-green hover:underline">En créer un →</Link></p>
+          )}
+        </Card>
+
+        {/* Quiz distribution 30j */}
+        <Card>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="font-serif text-lg font-bold text-gray-900">Quiz investisseur (30j)</h2>
+              <p className="text-xs text-gray-500 mt-0.5">{totalQuiz} quiz complétés</p>
+            </div>
+          </div>
+          {totalQuiz > 0 ? (
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <span className="text-xs w-40 shrink-0 text-gray-700">Tu perds de l&apos;argent</span>
+                <div className="flex-1 h-6 bg-gray-100 rounded overflow-hidden">
+                  <div className="h-full bg-red-400" style={{ width: `${(quizCounts.tu_perds_argent / totalQuiz) * 100}%` }} />
+                </div>
+                <span className="text-xs font-bold text-gray-900 w-10 text-right">{quizCounts.tu_perds_argent}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs w-40 shrink-0 text-gray-700">Opération blanche</span>
+                <div className="flex-1 h-6 bg-gray-100 rounded overflow-hidden">
+                  <div className="h-full bg-amber-400" style={{ width: `${(quizCounts.operation_blanche / totalQuiz) * 100}%` }} />
+                </div>
+                <span className="text-xs font-bold text-gray-900 w-10 text-right">{quizCounts.operation_blanche}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs w-40 shrink-0 text-gray-700">Autofinancement positif</span>
+                <div className="flex-1 h-6 bg-gray-100 rounded overflow-hidden">
+                  <div className="h-full bg-es-green" style={{ width: `${(quizCounts.autofinancement_positif / totalQuiz) * 100}%` }} />
+                </div>
+                <span className="text-xs font-bold text-gray-900 w-10 text-right">{quizCounts.autofinancement_positif}</span>
+              </div>
+            </div>
+          ) : (
+            <p className="text-sm text-gray-400 italic py-4 text-center">Aucune réponse quiz pour le moment.</p>
+          )}
+        </Card>
+
+        {/* Loi Chatel upcoming */}
+        <Card>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="font-serif text-lg font-bold text-gray-900">Rappels loi Chatel (30j)</h2>
+              <p className="text-xs text-gray-500 mt-0.5">ES Family trial à facturer bientôt</p>
+            </div>
+          </div>
+          {chatelUpcoming.length > 0 ? (
+            <div className="space-y-2">
+              {chatelUpcoming.slice(0, 5).map((r) => {
+                const daysUntil = Math.ceil((new Date(r.trial_end).getTime() - Date.now()) / (24 * 3600 * 1000));
+                const reminderStatus = r.reminder_j15_sent_at ? "J-15 ✓" : daysUntil <= 15 ? "J-15 à envoyer" : "à venir";
+                return (
+                  <div key={r.id} className="flex items-center justify-between py-1.5 border-b border-gray-50 last:border-0 text-xs">
+                    <Link href={`/admin/contacts/${r.contact_id}`} className="text-gray-700 hover:text-es-green truncate flex-1">
+                      Contact #{r.contact_id.slice(0, 8)}
+                    </Link>
+                    <span className="text-gray-500 mx-2">J-{daysUntil}</span>
+                    <span className={`text-[10px] px-2 py-0.5 rounded ${r.reminder_j15_sent_at ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"}`}>
+                      {reminderStatus}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="text-sm text-gray-400 italic py-4 text-center">Aucun rappel Chatel dans les 30 prochains jours.</p>
+          )}
+        </Card>
+
+        {/* Alumni Evermind */}
+        <Card>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="font-serif text-lg font-bold text-gray-900">Alumni Evermind</h2>
+              <p className="text-xs text-gray-500 mt-0.5">Migration + activation ES Family</p>
+            </div>
+          </div>
+          {alumniData && alumniData.total_alumni > 0 ? (
+            <div className="grid grid-cols-2 gap-3">
+              <div className="bg-gray-50 p-3 rounded">
+                <p className="text-[10px] text-gray-500 uppercase">Total alumni</p>
+                <p className="text-2xl font-bold text-gray-900">{alumniData.total_alumni}</p>
+              </div>
+              <div className="bg-es-green/5 p-3 rounded">
+                <p className="text-[10px] text-gray-500 uppercase">Family activé</p>
+                <p className="text-2xl font-bold text-es-green">{alumniData.family_activated}</p>
+              </div>
+              <div className="bg-amber-50 p-3 rounded">
+                <p className="text-[10px] text-gray-500 uppercase">Migrés</p>
+                <p className="text-xl font-bold text-amber-600">{alumniData.migrated}</p>
+              </div>
+              <div className="bg-red-50 p-3 rounded">
+                <p className="text-[10px] text-gray-500 uppercase">Opt-out</p>
+                <p className="text-xl font-bold text-red-500">{alumniData.opted_out}</p>
+              </div>
+            </div>
+          ) : (
+            <p className="text-sm text-gray-400 italic py-4 text-center">Aucun alumni importé encore. <Link href="/admin/import-contacts" className="text-es-green hover:underline">Importer la liste →</Link></p>
+          )}
+        </Card>
+      </div>
 
       <div className="grid lg:grid-cols-2 gap-6 mb-8">
         {/* Dernières ventes */}
