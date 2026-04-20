@@ -17,7 +17,7 @@ interface Step {
   delay_days: number;
   delay_hours: number;
   subject: string;
-  html_content: string;
+  html_content?: string; // Lazy-loaded : absent dans la liste, fetché au clic "Modifier" pour la perf
   status: string;
 }
 
@@ -162,14 +162,34 @@ export default function AdminSequences() {
     toast.success("Étape ajoutée");
   }
 
-  function startEditStep(step: Step) {
+  async function startEditStep(step: Step) {
     setEditingStepId(step.id);
+    // Affiche immédiatement sujet + délais (déjà chargés dans la liste)
     setEditStepSubject(step.subject);
-    setEditStepContent(step.html_content);
     setEditStepDelayDays(step.delay_days);
     setEditStepDelayHours(step.delay_hours);
     setLastSavedAt(null);
     setIsDirty(false);
+    // Le html_content n'est pas dans le payload de la liste (perf : évite de charger 64 mails × 1-2 Ko).
+    // On le fetch à la demande au clic. Placeholder "…" pendant le fetch.
+    if (step.html_content) {
+      // Déjà chargé (fallback pour anciennes versions / futurs contextes)
+      setEditStepContent(step.html_content);
+    } else {
+      setEditStepContent("");
+      // On a besoin du sequenceId — on le récupère depuis le step via la séquence parente
+      const seq = sequences.find((s) => s.steps.some((st) => st.id === step.id));
+      if (!seq) return;
+      try {
+        const res = await fetch(`/api/sequences/${seq.id}/steps/${step.id}`);
+        if (res.ok) {
+          const data = await res.json();
+          setEditStepContent(data.html_content || "");
+        }
+      } catch {
+        // silencieux, l'utilisatrice peut refresh
+      }
+    }
   }
 
   // Auto-save : persiste les changements en arrière-plan toutes les 30s si dirty.
@@ -249,13 +269,23 @@ export default function AdminSequences() {
       return;
     }
     setTestingStepId(step.id);
+    // Si appelé depuis le bouton test inline (en mode édition), on a déjà le contenu
+    // dans editStepContent. Sinon on fetch on-demand.
+    let htmlContent = step.html_content;
+    if (!htmlContent) {
+      const seq = sequences.find((s) => s.steps.some((st) => st.id === step.id));
+      if (seq) {
+        const r = await fetch(`/api/sequences/${seq.id}/steps/${step.id}`);
+        if (r.ok) htmlContent = (await r.json()).html_content;
+      }
+    }
     const res = await fetch("/api/emails/send-test", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         to: testEmail,
         subject: step.subject,
-        html_content: step.html_content,
+        html_content: htmlContent || "",
       }),
     });
     setTestingStepId(null);

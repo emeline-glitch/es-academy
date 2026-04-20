@@ -11,10 +11,13 @@ export async function GET() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
 
+  // PERF : on NE charge PLUS html_content dans la liste (peut faire 100+ Ko de JSON total avec 64 mails).
+  // Le html_content est chargé à la demande quand l'utilisatrice clique sur "Modifier" un step
+  // (via GET /api/sequences/[id]/steps/[stepId] ou le payload d'édition).
   const [sequencesRes, countsRes] = await Promise.all([
     supabase
       .from("email_sequences")
-      .select("*, steps:email_sequence_steps(id, step_order, delay_days, delay_hours, subject, html_content, status)")
+      .select("*, steps:email_sequence_steps(id, step_order, delay_days, delay_hours, subject, status)")
       .order("created_at", { ascending: false }),
     supabase.rpc("sequences_with_counts"),
   ]);
