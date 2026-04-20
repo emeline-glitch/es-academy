@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/utils/admin-auth";
+import { autoEnrollByTags } from "@/lib/sequences/auto-enroll";
 
 /**
  * Bulk ajoute un ou plusieurs tags à une sélection de contacts.
@@ -44,11 +45,20 @@ export async function POST(request: Request) {
   const results = await Promise.all(updates);
   const errors = results.filter((r) => r.error).length;
 
+  // Auto-enrollment : pour chaque contact tagué, enroll dans les séquences matching
+  // (le tags_to_add peut matcher plusieurs séquences, l'upsert est idempotent)
+  let totalEnrolled = 0;
+  for (const c of contacts || []) {
+    const { enrolled } = await autoEnrollByTags(supabase, c.id, tags_to_add);
+    totalEnrolled += enrolled;
+  }
+
   revalidatePath("/admin/contacts");
   revalidatePath("/admin/dashboard");
 
   return NextResponse.json({
     updated: (contacts?.length || 0) - errors,
     errors,
+    auto_enrolled: totalEnrolled,
   });
 }

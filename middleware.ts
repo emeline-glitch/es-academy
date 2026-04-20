@@ -13,7 +13,8 @@ export async function middleware(request: NextRequest) {
       path.startsWith("/api/site-auth") ||
       path.startsWith("/api/forms/") || // Endpoint public des formulaires (GET config + POST submit)
       path.startsWith("/api/contacts") || // Endpoint public d'inscription newsletter
-      path.startsWith("/form/") || // Page publique du formulaire — doit être accessible sans mot de passe site
+      path.startsWith("/api/webhooks/") || // Webhooks externes (VideoAsk, Stripe, etc.)
+      path.startsWith("/form/") || // Page publique du formulaire, doit être accessible sans mot de passe site
       path.startsWith("/desabonnement") || // Lien de désinscription email doit marcher sans mdp
       path.startsWith("/_next/") ||
       path.startsWith("/favicon") ||

@@ -3,6 +3,7 @@ import { revalidatePath } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/utils/admin-auth";
 import { writeAuditLog } from "@/lib/utils/audit";
+import { autoEnrollByTags, tagsAdded } from "@/lib/sequences/auto-enroll";
 
 const VALID_STAGES = [
   "leads",
@@ -134,9 +135,16 @@ export async function PATCH(
       before: { pipeline_stage: before?.pipeline_stage },
       after: { pipeline_stage: body.pipeline_stage },
     });
-    // Le funnel commercial du dashboard est un server-component : on invalide son cache
-    // pour que la prochaine visite reflète le nouveau comptage sans reload complet.
     revalidatePath("/admin/dashboard");
+  }
+
+  // Auto-enrollment : si de nouveaux tags ont été ajoutés, enroll dans les séquences
+  // actives dont le trigger_value correspond à l'un de ces tags.
+  if (body.tags && Array.isArray(body.tags)) {
+    const added = tagsAdded(before?.tags, body.tags);
+    if (added.length > 0) {
+      await autoEnrollByTags(supabase, id, added);
+    }
   }
 
   return NextResponse.json({ contact: data });

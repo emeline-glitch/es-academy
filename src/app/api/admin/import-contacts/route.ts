@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/utils/admin-auth";
+import { autoEnrollByTags } from "@/lib/sequences/auto-enroll";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const VALID_CONSENT_TYPES = ["explicit", "legitimate_interest", "re_consent"] as const;
@@ -261,6 +262,16 @@ export async function POST(request: Request) {
     }
   }
 
+  // Auto-enrollment : pour chaque contact importé, enroll dans les séquences
+  // actives dont le trigger_value matche un des tags appliqués
+  let totalEnrolled = 0;
+  if (extraTags.length > 0 && upsertedIds.length > 0) {
+    for (const contactId of upsertedIds) {
+      const { enrolled } = await autoEnrollByTags(supabase, contactId, extraTags);
+      totalEnrolled += enrolled;
+    }
+  }
+
   // Audit log
   await supabase.from("audit_log").insert({
     actor_id: auth.userId,
@@ -274,6 +285,7 @@ export async function POST(request: Request) {
       rgpd_cohort: rgpd_cohort || null,
       alumni: !!set_alumni_evermind,
       source_detail: source_detail || null,
+      auto_enrolled: totalEnrolled,
     },
   });
 
@@ -290,5 +302,6 @@ export async function POST(request: Request) {
     duplicates_in_csv: validated.length - unique.length,
     tags_applied: extraTags,
     consent_logs_created: consentRows.length,
+    auto_enrolled: totalEnrolled,
   });
 }

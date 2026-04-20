@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase/server";
 import { rateLimit, getClientIp, cleanupBuckets } from "@/lib/utils/rate-limit";
+import { autoEnrollByTags, tagsAdded } from "@/lib/sequences/auto-enroll";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -116,6 +117,22 @@ export async function POST(
     if (upsertErr) {
       console.error("[form submit] upsert error:", upsertErr);
       return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+    }
+
+    // 4bis. Auto-enrollment : trouve l'id du contact (celui qu'on vient d'upsert)
+    // puis enroll dans les séquences actives dont le trigger_value matche un NOUVEAU tag
+    const { data: upsertedContact } = await supabase
+      .from("contacts")
+      .select("id")
+      .ilike("email", emailLower)
+      .maybeSingle();
+
+    if (upsertedContact) {
+      // Les tags "nouveaux" sont ceux qui n'existaient pas déjà sur le contact AVANT ce submit
+      const newlyAdded = tagsAdded(existing?.tags, mergedTags);
+      if (newlyAdded.length > 0) {
+        await autoEnrollByTags(supabase, upsertedContact.id, newlyAdded);
+      }
     }
 
     // 5. Incrément du compteur
