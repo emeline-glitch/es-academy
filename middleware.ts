@@ -6,11 +6,15 @@ export async function middleware(request: NextRequest) {
   const sitePassword = process.env.SITE_PASSWORD;
 
   if (sitePassword) {
-    // Ne pas protéger les assets, les API, et le tracking
+    // Ne pas protéger les assets, les API publiques, les formulaires publics et le tracking
     const path = request.nextUrl.pathname;
     if (
       path.startsWith("/api/track/") ||
       path.startsWith("/api/site-auth") ||
+      path.startsWith("/api/forms/") || // Endpoint public des formulaires (GET config + POST submit)
+      path.startsWith("/api/contacts") || // Endpoint public d'inscription newsletter
+      path.startsWith("/form/") || // Page publique du formulaire — doit être accessible sans mot de passe site
+      path.startsWith("/desabonnement") || // Lien de désinscription email doit marcher sans mdp
       path.startsWith("/_next/") ||
       path.startsWith("/favicon") ||
       path === "/site-password"
