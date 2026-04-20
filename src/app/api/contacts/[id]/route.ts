@@ -17,6 +17,9 @@ const VALID_STAGES = [
   "perdu",
 ] as const;
 
+const VALID_FAMILY_STAGES = ["leads", "trial_actif", "membre_payant", "churn", "perdu"] as const;
+const VALID_CUSTOM_STAGES = ["demande", "qualification", "devis_envoye", "accepte", "en_cours", "termine", "perdu"] as const;
+
 export async function GET(
   _request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -97,7 +100,7 @@ export async function PATCH(
   // Valeur avant changement (pour audit)
   const { data: before } = await supabase
     .from("contacts")
-    .select("pipeline_stage, tags, status")
+    .select("pipeline_stage, pipeline_family_stage, pipeline_custom_stage, tags, status")
     .eq("id", id)
     .maybeSingle();
 
@@ -109,11 +112,25 @@ export async function PATCH(
   if (body.source) updateData.source = body.source;
   if (body.phone !== undefined) updateData.phone = body.phone ? String(body.phone).trim() : null;
   if (body.pipeline_stage !== undefined) {
-    if (!VALID_STAGES.includes(body.pipeline_stage)) {
-      return NextResponse.json({ error: "Stage invalide" }, { status: 400 });
+    if (body.pipeline_stage !== null && !VALID_STAGES.includes(body.pipeline_stage)) {
+      return NextResponse.json({ error: "Stage Academy invalide" }, { status: 400 });
     }
     updateData.pipeline_stage = body.pipeline_stage;
     updateData.pipeline_updated_at = new Date().toISOString();
+  }
+  if (body.pipeline_family_stage !== undefined) {
+    if (body.pipeline_family_stage !== null && !VALID_FAMILY_STAGES.includes(body.pipeline_family_stage)) {
+      return NextResponse.json({ error: "Stage Family invalide" }, { status: 400 });
+    }
+    updateData.pipeline_family_stage = body.pipeline_family_stage;
+    updateData.pipeline_family_updated_at = new Date().toISOString();
+  }
+  if (body.pipeline_custom_stage !== undefined) {
+    if (body.pipeline_custom_stage !== null && !VALID_CUSTOM_STAGES.includes(body.pipeline_custom_stage)) {
+      return NextResponse.json({ error: "Stage Sur-mesure invalide" }, { status: 400 });
+    }
+    updateData.pipeline_custom_stage = body.pipeline_custom_stage;
+    updateData.pipeline_custom_updated_at = new Date().toISOString();
   }
 
   const { data, error } = await supabase
@@ -125,16 +142,28 @@ export async function PATCH(
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  // Audit log pour les changements de stage
+  // Audit log pour les changements de stage (tous pipelines)
+  const pipelineChanges: Array<{ pipeline: string; before: string | null; after: string | null }> = [];
   if (body.pipeline_stage !== undefined && before?.pipeline_stage !== body.pipeline_stage) {
+    pipelineChanges.push({ pipeline: "academy", before: before?.pipeline_stage || null, after: body.pipeline_stage });
+  }
+  if (body.pipeline_family_stage !== undefined && before?.pipeline_family_stage !== body.pipeline_family_stage) {
+    pipelineChanges.push({ pipeline: "family", before: before?.pipeline_family_stage || null, after: body.pipeline_family_stage });
+  }
+  if (body.pipeline_custom_stage !== undefined && before?.pipeline_custom_stage !== body.pipeline_custom_stage) {
+    pipelineChanges.push({ pipeline: "custom", before: before?.pipeline_custom_stage || null, after: body.pipeline_custom_stage });
+  }
+  for (const change of pipelineChanges) {
     await writeAuditLog(supabase, {
       actor_id: auth.userId,
       action: "pipeline_stage_change",
       entity_type: "contact",
       entity_id: id,
-      before: { pipeline_stage: before?.pipeline_stage },
-      after: { pipeline_stage: body.pipeline_stage },
+      before: { pipeline: change.pipeline, stage: change.before },
+      after: { pipeline: change.pipeline, stage: change.after },
     });
+  }
+  if (pipelineChanges.length > 0) {
     revalidatePath("/admin/dashboard");
   }
 

@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { PIPELINE_STAGES, type PipelineStage } from "@/lib/utils/pipeline";
+import { PIPELINES, PIPELINE_STAGES, type PipelineStage, type PipelineType } from "@/lib/utils/pipeline";
 import { useToast } from "@/components/ui/Toast";
 
 interface Contact {
@@ -15,8 +15,12 @@ interface Contact {
   tags: string[];
   source: string;
   status: string;
-  pipeline_stage: PipelineStage;
+  pipeline_stage: PipelineStage | null;
   pipeline_updated_at: string | null;
+  pipeline_family_stage: string | null;
+  pipeline_family_updated_at: string | null;
+  pipeline_custom_stage: string | null;
+  pipeline_custom_updated_at: string | null;
   subscribed_at: string;
   created_at: string;
   metadata: Record<string, unknown> | null;
@@ -199,23 +203,48 @@ export default function ContactDetailPage() {
     }
   }
 
-  async function updateStage(stage: PipelineStage) {
+  async function updatePipelineStage(type: PipelineType, stage: string | null) {
     if (!contact) return;
-    const prevStage = contact.pipeline_stage;
+    const columnMap: Record<PipelineType, "pipeline_stage" | "pipeline_family_stage" | "pipeline_custom_stage"> = {
+      academy: "pipeline_stage",
+      family: "pipeline_family_stage",
+      custom: "pipeline_custom_stage",
+    };
+    const updatedAtMap: Record<PipelineType, "pipeline_updated_at" | "pipeline_family_updated_at" | "pipeline_custom_updated_at"> = {
+      academy: "pipeline_updated_at",
+      family: "pipeline_family_updated_at",
+      custom: "pipeline_custom_updated_at",
+    };
+    const col = columnMap[type];
+    const updatedAtCol = updatedAtMap[type];
+    const prevStage = contact[col] as string | null;
+
     setSaving(true);
-    setContact({ ...contact, pipeline_stage: stage, pipeline_updated_at: new Date().toISOString() });
+    setContact({ ...contact, [col]: stage, [updatedAtCol]: new Date().toISOString() });
+
+    const body: Record<string, string | null> = {};
+    body[col] = stage;
+
     const res = await fetch(`/api/contacts/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ pipeline_stage: stage }),
+      body: JSON.stringify(body),
     });
     setSaving(false);
     if (!res.ok) {
-      setContact((c) => (c ? { ...c, pipeline_stage: prevStage } : c));
+      setContact((c) => (c ? { ...c, [col]: prevStage } : c));
       toast.error("Impossible de changer l'étape");
+    } else if (stage) {
+      const label = PIPELINES[type].stages.find((s) => s.key === stage)?.label || stage;
+      toast.success(`${PIPELINES[type].label} : ${label}`);
     } else {
-      toast.success(`Étape : ${PIPELINE_STAGES.find((s) => s.key === stage)?.label}`);
+      toast.success(`Retiré du pipeline ${PIPELINES[type].label}`);
     }
+  }
+
+  // Alias pour compatibilité avec les anciens composants qui appellent updateStage(stage)
+  async function updateStage(stage: PipelineStage) {
+    return updatePipelineStage("academy", stage);
   }
 
   async function saveName() {
@@ -600,21 +629,47 @@ export default function ContactDetailPage() {
             </div>
           )}
 
-          {/* Pipeline stage */}
-          <div className="bg-white rounded-xl border border-gray-200 p-5">
-            <h2 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Étape du pipeline</h2>
-            <select
-              value={contact.pipeline_stage}
-              onChange={(e) => updateStage(e.target.value as PipelineStage)}
-              disabled={saving}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-es-green/30 focus:border-es-green"
-            >
-              {PIPELINE_STAGES.map((s) => (
-                <option key={s.key} value={s.key}>
-                  {s.label}
-                </option>
-              ))}
-            </select>
+          {/* Pipelines (3 pipelines : Academy, Family, Sur-mesure) */}
+          <div className="bg-white rounded-xl border border-gray-200 p-5 space-y-4">
+            <h2 className="text-xs font-bold text-gray-500 uppercase tracking-wider">Pipelines</h2>
+
+            {(Object.keys(PIPELINES) as PipelineType[]).map((type) => {
+              const cfg = PIPELINES[type];
+              const columnMap: Record<PipelineType, keyof Contact> = {
+                academy: "pipeline_stage",
+                family: "pipeline_family_stage",
+                custom: "pipeline_custom_stage",
+              };
+              const currentStage = contact[columnMap[type]] as string | null;
+              return (
+                <div key={type}>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="text-xs text-gray-600 font-medium">
+                      {cfg.icon} {cfg.label}
+                    </label>
+                    {currentStage && (
+                      <button
+                        onClick={() => updatePipelineStage(type, null)}
+                        className="text-[10px] text-gray-400 hover:text-red-500"
+                      >
+                        Retirer
+                      </button>
+                    )}
+                  </div>
+                  <select
+                    value={currentStage || ""}
+                    onChange={(e) => updatePipelineStage(type, e.target.value || null)}
+                    disabled={saving}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-es-green/30 focus:border-es-green"
+                  >
+                    <option value="">— Pas dans ce pipeline —</option>
+                    {cfg.stages.map((s) => (
+                      <option key={s.key} value={s.key}>{s.label}</option>
+                    ))}
+                  </select>
+                </div>
+              );
+            })}
             {contact.pipeline_updated_at && (
               <p className="text-[11px] text-gray-400 mt-2">
                 Mise à jour le{" "}

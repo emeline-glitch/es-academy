@@ -27,21 +27,25 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<ToastItem[]>([]);
   const recentRef = useRef<Map<string, number>>(new Map());
 
+  const dismiss = useCallback((id: number) => {
+    setItems((prev) => prev.filter((t) => t.id !== id));
+  }, []);
+
   const show = useCallback<ToastContextValue["show"]>((kind, message, opts) => {
     const key = `${kind}::${message}`;
     const now = Date.now();
     const last = recentRef.current.get(key);
     if (last && now - last < DEDUPE_WINDOW_MS) {
-      // Silently swallow duplicate
       return;
     }
     recentRef.current.set(key, now);
 
     const id = now + Math.random();
     setItems((prev) => [...prev, { id, kind, message, action: opts?.action }]);
-    const duration = opts?.durationMs ?? (kind === "error" ? 6000 : 3500);
-    setTimeout(() => setItems((prev) => prev.filter((t) => t.id !== id)), duration);
-  }, []);
+    // Durée rallongée : errors 8s, success/info 6s (c'était 6s/3,5s, trop court pour lire une confirmation)
+    const duration = opts?.durationMs ?? (kind === "error" ? 8000 : 6000);
+    setTimeout(() => dismiss(id), duration);
+  }, [dismiss]);
 
   const success = useCallback<ToastContextValue["success"]>((m, o) => show("success", m, o), [show]);
   const error = useCallback<ToastContextValue["error"]>((m, o) => show("error", m, o), [show]);
@@ -55,14 +59,14 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       {children}
       <div className="fixed bottom-6 right-6 z-[100] flex flex-col gap-2 items-end pointer-events-none">
         {items.map((t) => (
-          <ToastCard key={t.id} item={t} />
+          <ToastCard key={t.id} item={t} onDismiss={() => dismiss(t.id)} />
         ))}
       </div>
     </ToastContext.Provider>
   );
 }
 
-function ToastCard({ item }: { item: ToastItem }) {
+function ToastCard({ item, onDismiss }: { item: ToastItem; onDismiss: () => void }) {
   const [visible, setVisible] = useState(false);
   useEffect(() => {
     const t = setTimeout(() => setVisible(true), 10);
@@ -90,6 +94,13 @@ function ToastCard({ item }: { item: ToastItem }) {
           {item.action.label}
         </button>
       )}
+      <button
+        onClick={onDismiss}
+        aria-label="Fermer"
+        className="ml-1 text-white/70 hover:text-white text-lg leading-none shrink-0"
+      >
+        ×
+      </button>
     </div>
   );
 }
