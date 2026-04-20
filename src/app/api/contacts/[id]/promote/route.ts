@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/utils/admin-auth";
+import { renderEmailTemplate } from "@/lib/email/render-template";
+import { sendEmail } from "@/lib/ses/client";
 
 export async function POST(
   request: Request,
@@ -80,20 +82,29 @@ export async function POST(
     ? (await supabase.auth.admin.getUserById(authUserId)).data?.user
     : null;
   let createdAuthUserInThisRequest = false;
+  let activationLink: string | null = null;
 
   if (!authUser) {
+    // Dans tous les cas on crée l'utilisateur sans faire envoyer d'email par Supabase.
+    // Si send_invite=true, on génère un lien d'invitation et on envoie notre propre email
+    // avec notre template DB éditable depuis /admin/emails/templates.
     if (send_invite) {
       const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://emeline-siron.fr";
-      const { data: invited, error: iErr } = await supabase.auth.admin.inviteUserByEmail(contact.email, {
-        redirectTo: `${siteUrl}/connexion`,
-        data: {
-          full_name: [contact.first_name, contact.last_name].filter(Boolean).join(" ") || contact.email,
+      const { data: linkData, error: iErr } = await supabase.auth.admin.generateLink({
+        type: "invite",
+        email: contact.email,
+        options: {
+          redirectTo: `${siteUrl}/connexion`,
+          data: {
+            full_name: [contact.first_name, contact.last_name].filter(Boolean).join(" ") || contact.email,
+          },
         },
       });
-      if (iErr || !invited?.user) {
-        return NextResponse.json({ error: iErr?.message || "Échec invitation" }, { status: 500 });
+      if (iErr || !linkData?.user) {
+        return NextResponse.json({ error: iErr?.message || "Échec création du lien" }, { status: 500 });
       }
-      authUser = invited.user;
+      authUser = linkData.user;
+      activationLink = linkData.properties?.action_link || `${siteUrl}/connexion`;
       createdAuthUserInThisRequest = true;
     } else {
       const { data: created, error: cErr2 } = await supabase.auth.admin.createUser({
@@ -199,6 +210,35 @@ export async function POST(
     console.warn("[audit_log] promote:", e);
   }
 
+  // 8. Envoi du mail d'invitation avec notre template DB (si demandé)
+  let emailSent = false;
+  let emailError: string | null = null;
+  if (send_invite && activationLink) {
+    const rendered = await renderEmailTemplate("invite_student", {
+      prenom: contact.first_name || "",
+      email: contact.email,
+      activation_url: activationLink,
+      product_name,
+    });
+    if (rendered) {
+      const res = await sendEmail({
+        to: contact.email,
+        subject: rendered.subject,
+        html: rendered.html,
+        from: `${rendered.from_name} <${rendered.from_email}>`,
+        replyTo: rendered.reply_to || undefined,
+      });
+      if (res.success) {
+        emailSent = true;
+      } else {
+        emailError = res.error || "Échec d'envoi email";
+        console.error("[promote] email send failed:", res.error);
+      }
+    } else {
+      emailError = "Template 'invite_student' introuvable — configure-le dans /admin/emails/templates";
+    }
+  }
+
   // Invalidate les pages server-component qui affichent ces données
   revalidatePath("/admin/contacts");
   revalidatePath(`/admin/contacts/${id}`);
@@ -209,5 +249,10 @@ export async function POST(
     success: true,
     user_id: authUser.id,
     enrollment_id: enrollment?.id,
+    email_sent: emailSent,
+    email_error: emailError,
+    // Si SES pas configuré ou template absent, on retourne le lien brut pour que
+    // l'admin puisse le copier/coller manuellement dans un DM.
+    activation_link: !emailSent ? activationLink : undefined,
   });
 }

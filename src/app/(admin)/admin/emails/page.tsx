@@ -60,9 +60,17 @@ export default async function AdminEmails({
           <h1 className="font-serif text-2xl font-bold text-gray-900">Campagnes Email</h1>
           <p className="text-sm text-gray-500 mt-1">{statusCounts.all || 0} campagnes au total</p>
         </div>
-        <Button href="/admin/emails/new" variant="primary">
-          + Nouvelle campagne
-        </Button>
+        <div className="flex items-center gap-2 flex-wrap">
+          <Link
+            href="/admin/emails/templates"
+            className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium bg-white text-gray-700 hover:bg-gray-50"
+          >
+            📨 Templates transactionnels
+          </Link>
+          <Button href="/admin/emails/new" variant="primary">
+            + Nouvelle campagne
+          </Button>
+        </div>
       </div>
 
       {/* Stats overview */}
