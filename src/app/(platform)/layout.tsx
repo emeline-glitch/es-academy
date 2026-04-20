@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { getCachedUser } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 
@@ -16,14 +16,8 @@ export default async function PlatformLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect("/connexion");
-  }
+  const user = await getCachedUser();
+  if (!user) redirect("/connexion");
 
   const displayName =
     user.user_metadata?.full_name || user.email?.split("@")[0] || "Élève";

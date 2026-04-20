@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { getCachedUser } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { Card } from "@/components/ui/Card";
 
@@ -107,11 +107,12 @@ const typeIcons: Record<string, string> = {
 };
 
 export default async function RessourcesPage() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  // Parallel : auth check + Notion fetch en même temps au lieu de séquentiel (gain ~500ms)
+  const [user, notionResources] = await Promise.all([
+    getCachedUser(),
+    getNotionResources(),
+  ]);
   if (!user) redirect("/connexion");
-
-  const notionResources = await getNotionResources();
 
   const notionByType: Record<string, NotionResource[]> = {};
   for (const r of notionResources) {

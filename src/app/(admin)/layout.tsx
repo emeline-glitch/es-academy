@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { getCachedUser } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { ToastProvider } from "@/components/ui/Toast";
 import { AdminNav } from "@/components/admin/AdminNav";
@@ -25,9 +25,7 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-
+  const user = await getCachedUser();
   if (!user) redirect("/connexion");
 
   // Check admin role (email-based for now, peut évoluer vers profile.role)

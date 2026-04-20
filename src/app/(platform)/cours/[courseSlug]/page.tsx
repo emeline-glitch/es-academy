@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getCachedUser } from "@/lib/supabase/server";
 import { getFullCourseStructure } from "@/lib/notion/queries";
 import { redirect, notFound } from "next/navigation";
 import { Button } from "@/components/ui/Button";
@@ -10,13 +10,15 @@ export default async function CoursePage({
   params: Promise<{ courseSlug: string }>;
 }) {
   const { courseSlug } = await params;
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-
+  // Parallel : auth + Notion course structure
+  const [user, structure] = await Promise.all([
+    getCachedUser(),
+    getFullCourseStructure(courseSlug),
+  ]);
   if (!user) redirect("/connexion");
-
-  const structure = await getFullCourseStructure(courseSlug);
   if (!structure) notFound();
+
+  const supabase = await createClient();
 
   // Get user progress
   const { data: progressData } = await supabase

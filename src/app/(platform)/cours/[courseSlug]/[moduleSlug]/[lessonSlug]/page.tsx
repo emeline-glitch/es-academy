@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getCachedUser } from "@/lib/supabase/server";
 import { getLessonBySlug, getLessonBlocks, getResourcesByLesson, getFullCourseStructure } from "@/lib/notion/queries";
 import { generateSignedVideoUrl } from "@/lib/bunny/signed-url";
 import { redirect, notFound } from "next/navigation";
@@ -13,37 +13,34 @@ export default async function LessonPage({
   params: Promise<{ courseSlug: string; moduleSlug: string; lessonSlug: string }>;
 }) {
   const { courseSlug, lessonSlug } = await params;
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-
+  // Parallélise : user + lesson + structure (tous indépendants)
+  const [user, lesson, structure] = await Promise.all([
+    getCachedUser(),
+    getLessonBySlug(lessonSlug),
+    getFullCourseStructure(courseSlug),
+  ]);
   if (!user) redirect("/connexion");
-
-  // Fetch lesson
-  const lesson = await getLessonBySlug(lessonSlug);
   if (!lesson) notFound();
-
-  // Fetch course structure for sidebar
-  const structure = await getFullCourseStructure(courseSlug);
   if (!structure) notFound();
 
-  // Fetch lesson content blocks
-  const blocks = await getLessonBlocks(lesson.id);
-
-  // Fetch resources
-  const resources = await getResourcesByLesson(lesson.id);
+  // Parallélise aussi : blocks + resources + progress (tous dépendent de lesson/structure mais indépendants entre eux)
+  const supabase = await createClient();
+  const [blocks, resources, progressRes] = await Promise.all([
+    getLessonBlocks(lesson.id),
+    getResourcesByLesson(lesson.id),
+    supabase
+      .from("progress")
+      .select("lesson_id")
+      .eq("user_id", user.id)
+      .eq("course_id", structure.course.id),
+  ]);
+  const progressData = progressRes.data;
 
   // Generate signed video URL
   let signedVideoUrl: string | undefined;
   if (lesson.videoId) {
     signedVideoUrl = generateSignedVideoUrl({ videoId: lesson.videoId });
   }
-
-  // Get user progress
-  const { data: progressData } = await supabase
-    .from("progress")
-    .select("lesson_id")
-    .eq("user_id", user.id)
-    .eq("course_id", structure.course.id);
 
   const completedIds = new Set((progressData || []).map((p) => p.lesson_id));
   const isCompleted = completedIds.has(lesson.id);

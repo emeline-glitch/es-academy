@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getCachedUser } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { Card } from "@/components/ui/Card";
 
@@ -7,10 +7,10 @@ const CALENDLY_INCLUDED_URL = ""; // Coaching inclus (pas de paiement)
 const CALENDLY_PAID_URL = ""; // Coaching 150€ avec paiement Stripe intégré
 
 export default async function CoachingPage() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const user = await getCachedUser();
   if (!user) redirect("/connexion");
 
+  const supabase = await createClient();
   const { data: profile } = await supabase
     .from("profiles")
     .select("coaching_credits_total, coaching_credits_used")

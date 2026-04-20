@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
+import { cache } from "react";
 
 export async function createClient() {
   const cookieStore = await cookies();
@@ -26,6 +27,18 @@ export async function createClient() {
     }
   );
 }
+
+/**
+ * getCachedUser : wrapper sur supabase.auth.getUser() avec React cache.
+ * Pendant un même render-tree (page + layouts), le résultat est mémoïsé.
+ * Si 3 composants appellent getCachedUser(), il n'y aura qu'UN seul round-trip Supabase.
+ * Gain attendu : /admin/xxx qui check user dans le layout + dans la page = 1 call au lieu de 2.
+ */
+export const getCachedUser = cache(async () => {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  return user;
+});
 
 /**
  * Service role client — bypasse RLS. À utiliser uniquement après un `requireAdmin()` côté API.
