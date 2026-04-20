@@ -373,7 +373,7 @@ export default function AdminContacts() {
 
   return (
     <div>
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
         <div>
           <h1 className="font-serif text-2xl font-bold text-gray-900">Contacts CRM</h1>
           <p className="text-sm text-gray-500 mt-1">{total} contacts au total</p>
@@ -390,6 +390,43 @@ export default function AdminContacts() {
           </Button>
         </div>
       </div>
+
+      {/* Parcours type : visible quand l'utilisatrice a 0 liste ET < 5 contacts (onboarding) */}
+      {availableLists.length === 0 && total < 5 && (
+        <div className="mb-6 bg-es-cream/50 border border-es-green/20 rounded-xl p-4">
+          <p className="text-xs font-bold text-es-green uppercase tracking-wider mb-2">💡 Par où commencer</p>
+          <ol className="grid md:grid-cols-4 gap-3 text-xs text-gray-700">
+            <li className="flex gap-2">
+              <span className="shrink-0 w-5 h-5 rounded-full bg-es-green text-white text-[10px] font-bold flex items-center justify-center">1</span>
+              <div>
+                <p className="font-semibold text-gray-900">Crée une liste</p>
+                <p className="text-gray-500">Ex : « Leads Instagram », « Newsletter ». <Link href="/admin/lists" className="text-es-green hover:underline">→</Link></p>
+              </div>
+            </li>
+            <li className="flex gap-2">
+              <span className="shrink-0 w-5 h-5 rounded-full bg-es-green text-white text-[10px] font-bold flex items-center justify-center">2</span>
+              <div>
+                <p className="font-semibold text-gray-900">Ajoute des contacts</p>
+                <p className="text-gray-500">Un par un ou en CSV. Chaque contact peut être dans plusieurs listes.</p>
+              </div>
+            </li>
+            <li className="flex gap-2">
+              <span className="shrink-0 w-5 h-5 rounded-full bg-es-green text-white text-[10px] font-bold flex items-center justify-center">3</span>
+              <div>
+                <p className="font-semibold text-gray-900">Crée un formulaire</p>
+                <p className="text-gray-500">Lié à une liste. <Link href="/admin/forms" className="text-es-green hover:underline">→</Link></p>
+              </div>
+            </li>
+            <li className="flex gap-2">
+              <span className="shrink-0 w-5 h-5 rounded-full bg-es-green text-white text-[10px] font-bold flex items-center justify-center">4</span>
+              <div>
+                <p className="font-semibold text-gray-900">Envoie une newsletter</p>
+                <p className="text-gray-500">Cible une ou plusieurs listes. <Link href="/admin/emails/new" className="text-es-green hover:underline">→</Link></p>
+              </div>
+            </li>
+          </ol>
+        </div>
+      )}
 
       {/* Modal ajout manuel */}
       {showAddContact && (
@@ -435,35 +472,49 @@ export default function AdminContacts() {
                 />
               </div>
               <div>
-                <label className="text-xs text-gray-500 mb-1 block">
-                  Liste {availableLists.length === 0 && <span className="italic text-gray-400">— aucune liste, à créer dans /admin/lists</span>}
-                </label>
-                <select
-                  value={newContact.list_tag_key}
-                  onChange={(e) => setNewContact({ ...newContact, list_tag_key: e.target.value })}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white text-sm text-gray-700"
-                >
-                  <option value="">— Aucune liste —</option>
-                  {listFolders.map((f) => {
-                    const folderLists = availableLists.filter((l) => l.folder_id === f.id);
-                    if (folderLists.length === 0) return null;
-                    return (
-                      <optgroup key={f.id} label={f.name}>
-                        {folderLists.map((l) => (
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-xs text-gray-500">Liste</label>
+                  <Link href="/admin/lists" className="text-[11px] text-es-green hover:underline" target="_blank">
+                    Gérer mes listes →
+                  </Link>
+                </div>
+                {availableLists.length === 0 ? (
+                  <div className="px-4 py-3 rounded-lg border border-dashed border-gray-300 bg-gray-50 text-sm text-gray-500">
+                    Tu n&apos;as pas encore de liste.{" "}
+                    <Link href="/admin/lists" className="text-es-green hover:underline font-medium" target="_blank">
+                      Crée ta première liste →
+                    </Link>
+                    <p className="text-[11px] text-gray-400 mt-1">
+                      Exemples : « Leads Instagram », « Newsletter », « Coaching gratuit ».
+                    </p>
+                  </div>
+                ) : (
+                  <select
+                    value={newContact.list_tag_key}
+                    onChange={(e) => setNewContact({ ...newContact, list_tag_key: e.target.value })}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white text-sm text-gray-700"
+                  >
+                    <option value="">— Aucune liste —</option>
+                    {listFolders.map((f) => {
+                      const folderLists = availableLists.filter((l) => l.folder_id === f.id);
+                      if (folderLists.length === 0) return null;
+                      return (
+                        <optgroup key={f.id} label={f.name}>
+                          {folderLists.map((l) => (
+                            <option key={l.id} value={l.tag_key}>{l.name}</option>
+                          ))}
+                        </optgroup>
+                      );
+                    })}
+                    {availableLists.filter((l) => !l.folder_id).length > 0 && (
+                      <optgroup label="Autres">
+                        {availableLists.filter((l) => !l.folder_id).map((l) => (
                           <option key={l.id} value={l.tag_key}>{l.name}</option>
                         ))}
                       </optgroup>
-                    );
-                  })}
-                  {/* Listes sans dossier */}
-                  {availableLists.filter((l) => !l.folder_id).length > 0 && (
-                    <optgroup label="Autres">
-                      {availableLists.filter((l) => !l.folder_id).map((l) => (
-                        <option key={l.id} value={l.tag_key}>{l.name}</option>
-                      ))}
-                    </optgroup>
-                  )}
-                </select>
+                    )}
+                  </select>
+                )}
               </div>
               <div>
                 <label className="text-xs text-gray-500 mb-1 block">Tags supplémentaires</label>

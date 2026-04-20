@@ -63,6 +63,14 @@ const LEAD_MAGNET_TAGS = [
   "simulateur_capture",
 ];
 
+interface AvailableList {
+  id: string;
+  name: string;
+  tag_key: string;
+  folder_id: string | null;
+  contact_count?: number;
+}
+
 export default function ContactDetailPage() {
   const params = useParams();
   const id = params?.id as string;
@@ -83,6 +91,10 @@ export default function ContactDetailPage() {
   const [promoteData, setPromoteData] = useState({ product_name: "academy", amount_paid: 998, coaching_credits: 0, send_invite: true });
   const [editingCredits, setEditingCredits] = useState(false);
   const [creditEdits, setCreditEdits] = useState({ total: 0, used: 0 });
+  const [availableLists, setAvailableLists] = useState<AvailableList[]>([]);
+  const [showCreateList, setShowCreateList] = useState(false);
+  const [newListName, setNewListName] = useState("");
+  const [creatingList, setCreatingList] = useState(false);
   const toast = useToast();
 
   const fetchAll = useCallback(async () => {
@@ -114,6 +126,78 @@ export default function ContactDetailPage() {
   useEffect(() => {
     if (id) fetchAll();
   }, [id, fetchAll]);
+
+  const fetchLists = useCallback(async () => {
+    try {
+      const res = await fetch("/api/admin/lists");
+      if (!res.ok) return;
+      const data = await res.json();
+      setAvailableLists(data.lists || []);
+    } catch {
+      // silencieux
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchLists();
+  }, [fetchLists]);
+
+  async function toggleListMembership(tagKey: string, add: boolean) {
+    if (!contact) return;
+    const prevTags = contact.tags || [];
+    const nextTags = add
+      ? Array.from(new Set([...prevTags, tagKey]))
+      : prevTags.filter((t) => t !== tagKey);
+    setContact({ ...contact, tags: nextTags });
+    const res = await fetch(`/api/contacts/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ tags: nextTags }),
+    });
+    if (!res.ok) {
+      setContact((c) => (c ? { ...c, tags: prevTags } : c));
+      toast.error("Impossible de modifier la liste");
+      return;
+    }
+    const listName = availableLists.find((l) => l.tag_key === tagKey)?.name || tagKey;
+    toast.success(add ? `Ajouté à « ${listName} »` : `Retiré de « ${listName} »`);
+    // Recharge les counts
+    fetchLists();
+  }
+
+  async function createListAndAdd() {
+    if (!newListName.trim() || !contact) return;
+    setCreatingList(true);
+    try {
+      const res = await fetch("/api/admin/lists", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ kind: "list", name: newListName.trim() }),
+      });
+      if (!res.ok) {
+        const b = await res.json().catch(() => ({}));
+        throw new Error(b.error || "Erreur");
+      }
+      const data = await res.json();
+      const newList: AvailableList = data.list;
+      // Ajoute le contact à la nouvelle liste immédiatement
+      const nextTags = Array.from(new Set([...(contact.tags || []), newList.tag_key]));
+      await fetch(`/api/contacts/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tags: nextTags }),
+      });
+      setContact({ ...contact, tags: nextTags });
+      setNewListName("");
+      setShowCreateList(false);
+      toast.success(`Liste « ${newList.name} » créée et contact ajouté`);
+      fetchLists();
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : "Erreur");
+    } finally {
+      setCreatingList(false);
+    }
+  }
 
   async function updateStage(stage: PipelineStage) {
     if (!contact) return;
@@ -637,6 +721,95 @@ export default function ContactDetailPage() {
                 </div>
               </dl>
             )}
+          </div>
+
+          {/* Listes */}
+          <div className="bg-white rounded-xl border border-gray-200 p-5">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-xs font-bold text-gray-500 uppercase tracking-wider">📋 Listes</h2>
+              {!showCreateList && (
+                <button
+                  onClick={() => setShowCreateList(true)}
+                  className="text-[11px] text-es-green hover:underline font-medium"
+                >
+                  + Nouvelle liste
+                </button>
+              )}
+            </div>
+
+            {showCreateList && (
+              <div className="mb-3 p-2 bg-es-green/5 border border-es-green/20 rounded-lg">
+                <div className="flex gap-1.5">
+                  <input
+                    autoFocus
+                    value={newListName}
+                    onChange={(e) => setNewListName(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") createListAndAdd();
+                      if (e.key === "Escape") { setShowCreateList(false); setNewListName(""); }
+                    }}
+                    placeholder="Ex : Leads Instagram, VIP…"
+                    className="flex-1 px-2 py-1.5 border border-gray-200 rounded text-xs"
+                  />
+                  <button
+                    onClick={createListAndAdd}
+                    disabled={!newListName.trim() || creatingList}
+                    className="px-2 py-1.5 bg-es-green text-white text-xs rounded hover:bg-es-green-light disabled:opacity-50"
+                  >
+                    {creatingList ? "…" : "OK"}
+                  </button>
+                  <button
+                    onClick={() => { setShowCreateList(false); setNewListName(""); }}
+                    className="px-1.5 py-1.5 text-xs text-gray-500"
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {availableLists.length === 0 ? (
+              <p className="text-xs text-gray-400 italic">
+                Tu n&apos;as pas encore de liste.{" "}
+                {!showCreateList && (
+                  <button onClick={() => setShowCreateList(true)} className="text-es-green hover:underline font-medium">
+                    Créer la première →
+                  </button>
+                )}
+              </p>
+            ) : (
+              <div className="space-y-1">
+                {availableLists.map((l) => {
+                  const isMember = (contact.tags || []).includes(l.tag_key);
+                  return (
+                    <label
+                      key={l.id}
+                      className={`flex items-center gap-2 p-2 rounded-lg cursor-pointer text-sm transition-colors ${
+                        isMember ? "bg-es-green/5" : "hover:bg-gray-50"
+                      }`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={isMember}
+                        onChange={(e) => toggleListMembership(l.tag_key, e.target.checked)}
+                        className="rounded accent-es-green"
+                      />
+                      <span className={`flex-1 ${isMember ? "text-es-green font-medium" : "text-gray-700"}`}>
+                        {l.name}
+                      </span>
+                      <span className="text-[10px] text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">
+                        {l.contact_count || 0}
+                      </span>
+                    </label>
+                  );
+                })}
+              </div>
+            )}
+
+            <p className="text-[10px] text-gray-400 mt-3 pt-3 border-t border-gray-100">
+              Les listes servent à cibler les newsletters et créer des{" "}
+              <Link href="/admin/forms" className="text-es-green hover:underline">formulaires d&apos;inscription</Link>.
+            </p>
           </div>
 
           {/* Lead magnets téléchargés */}
