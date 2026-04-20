@@ -628,12 +628,32 @@ function DesignModal({
   onClose: () => void;
 }) {
   const [html, setHtml] = useState(content);
+  const [loadingTemplate, setLoadingTemplate] = useState(false);
 
   function loadTemplate() {
     if (html.trim() && !confirm("Remplacer le contenu actuel par la trame de newsletter L'Immo sans prise de tête ?")) {
       return;
     }
     setHtml(defaultNewsletterHtml());
+  }
+
+  async function loadSavedTemplate() {
+    if (html.trim() && !confirm("Remplacer le contenu actuel par la newsletter bi-hebdo sauvegardée ?")) {
+      return;
+    }
+    setLoadingTemplate(true);
+    try {
+      const res = await fetch("/api/admin/email-templates/newsletter_bihebdo");
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+      if (data.template?.html_content) {
+        setHtml(data.template.html_content);
+      }
+    } catch {
+      // silencieux : si le template n'existe pas encore, on garde le HTML courant
+    } finally {
+      setLoadingTemplate(false);
+    }
   }
 
   return (
@@ -650,19 +670,32 @@ function DesignModal({
         </>
       }
     >
-      <div className="mb-3 flex items-center justify-between flex-wrap gap-2 p-3 bg-es-green/5 border border-es-green/20 rounded-lg">
-        <div className="text-sm">
-          <p className="font-semibold text-gray-900">📧 Trame newsletter prête à l&apos;emploi</p>
-          <p className="text-xs text-gray-500 mt-0.5">
-            Charge ta trame « L&apos;Immo sans prise de tête » : header magazine, intro vidéo, article, callout social, actu immo, CTA podcast, signature.
-          </p>
+      <div className="mb-3 grid sm:grid-cols-2 gap-2">
+        <div className="flex items-center justify-between gap-2 p-3 bg-es-green/5 border border-es-green/20 rounded-lg">
+          <div className="text-xs">
+            <p className="font-semibold text-gray-900">📧 Trame newsletter magazine</p>
+            <p className="text-gray-500 mt-0.5">L&apos;Immo sans prise de tête (intégrée au code)</p>
+          </div>
+          <button
+            onClick={loadTemplate}
+            className="shrink-0 px-3 py-1.5 bg-es-green text-white text-xs font-semibold rounded hover:bg-es-green-light"
+          >
+            Charger
+          </button>
         </div>
-        <button
-          onClick={loadTemplate}
-          className="shrink-0 px-4 py-2 bg-es-green text-white text-sm font-semibold rounded-lg hover:bg-es-green-light"
-        >
-          Charger la trame
-        </button>
+        <div className="flex items-center justify-between gap-2 p-3 bg-es-terracotta/5 border border-es-terracotta/20 rounded-lg">
+          <div className="text-xs">
+            <p className="font-semibold text-gray-900">✍️ Template bi-hebdo sauvegardé</p>
+            <p className="text-gray-500 mt-0.5">Éditable dans <a href="/admin/emails/templates" className="underline">/admin/emails/templates</a></p>
+          </div>
+          <button
+            onClick={loadSavedTemplate}
+            disabled={loadingTemplate}
+            className="shrink-0 px-3 py-1.5 bg-es-terracotta text-white text-xs font-semibold rounded hover:bg-es-terracotta-dark disabled:opacity-50"
+          >
+            {loadingTemplate ? "…" : "Charger"}
+          </button>
+        </div>
       </div>
       <EmailEditor value={html} onChange={setHtml} />
     </Modal>
