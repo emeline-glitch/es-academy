@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import { PIPELINE_STAGES, type PipelineStage } from "@/lib/utils/pipeline";
 import { formatRelative } from "@/lib/utils/format";
+import { DashboardRealtime } from "@/components/admin/DashboardRealtime";
 
 function startOfMonth(d = new Date()): string {
   return new Date(d.getFullYear(), d.getMonth(), 1).toISOString();
@@ -91,6 +92,11 @@ export default async function AdminDashboard() {
 
   return (
     <div>
+      {/* Listener realtime : quand un contact bouge dans le pipeline ou qu'un enrollment
+          est créé, déclenche un router.refresh() pour que ce server-component re-fetch
+          ses stats à jour (debounced 800ms). */}
+      <DashboardRealtime />
+
       <div className="flex items-center justify-between mb-8 flex-wrap gap-3">
         <div>
           <h1 className="font-serif text-2xl font-bold text-gray-900">Dashboard</h1>
