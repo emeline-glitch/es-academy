@@ -11,6 +11,7 @@ const adminNav = [
   { label: "Contacts CRM", href: "/admin/contacts", icon: "👥" },
   { label: "Listes", href: "/admin/lists", icon: "📋" },
   { label: "Formulaires", href: "/admin/forms", icon: "📝" },
+  { label: "Lead Magnets", href: "/admin/lead-magnets", icon: "🧲" },
   { label: "Élèves", href: "/admin/eleves", icon: "🎓" },
   { label: "Emails", href: "/admin/emails", icon: "📧" },
   { label: "Séquences", href: "/admin/sequences", icon: "⚡" },

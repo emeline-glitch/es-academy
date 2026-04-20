@@ -382,9 +382,12 @@ export default function AdminContacts() {
           <Button variant="primary" size="sm" onClick={() => { setShowAddContact(true); setAddError(""); }}>
             + Ajouter un contact
           </Button>
-          <Button variant="secondary" size="sm" onClick={() => setShowImport(!showImport)}>
-            {showImport ? "Fermer" : "Importer CSV"}
-          </Button>
+          <Link
+            href="/admin/import-contacts"
+            className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm font-medium bg-white text-gray-700 hover:bg-gray-50"
+          >
+            Importer CSV
+          </Link>
           <Button variant="ghost" size="sm" onClick={handleExportCSV}>
             Exporter tout
           </Button>
