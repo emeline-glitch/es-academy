@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -59,6 +59,10 @@ export default function AdminSequences() {
   const [editStepDelayDays, setEditStepDelayDays] = useState(0);
   const [editStepDelayHours, setEditStepDelayHours] = useState(0);
   const [saving, setSaving] = useState(false);
+  const [lastSavedAt, setLastSavedAt] = useState<number | null>(null);
+  const [isDirty, setIsDirty] = useState(false);
+  const autoSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const currentEditSeqIdRef = useRef<string | null>(null);
   const [testEmail, setTestEmail] = useState("");
   const [testingStepId, setTestingStepId] = useState<string | null>(null);
 
@@ -164,10 +168,47 @@ export default function AdminSequences() {
     setEditStepContent(step.html_content);
     setEditStepDelayDays(step.delay_days);
     setEditStepDelayHours(step.delay_hours);
+    setLastSavedAt(null);
+    setIsDirty(false);
   }
+
+  // Auto-save : persiste les changements en arrière-plan toutes les 30s si dirty.
+  // Tiffany peut rédiger sans stress, la sauvegarde se fait toute seule.
+  const autoSaveStep = useCallback(async (sequenceId: string, stepId: string) => {
+    const res = await fetch(`/api/sequences/${sequenceId}/steps/${stepId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        subject: editStepSubject,
+        html_content: editStepContent,
+        delay_days: editStepDelayDays,
+        delay_hours: editStepDelayHours,
+      }),
+    });
+    if (res.ok) {
+      setLastSavedAt(Date.now());
+      setIsDirty(false);
+    }
+  }, [editStepSubject, editStepContent, editStepDelayDays, editStepDelayHours]);
+
+  // Quand un des champs change pendant l'édition → marque dirty + schedule auto-save
+  useEffect(() => {
+    if (!editingStepId) return;
+    setIsDirty(true);
+    if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
+    const seqId = currentEditSeqIdRef.current;
+    if (!seqId) return;
+    autoSaveTimerRef.current = setTimeout(() => {
+      autoSaveStep(seqId, editingStepId);
+    }, 30_000);
+    return () => {
+      if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
+    };
+  }, [editStepSubject, editStepContent, editStepDelayDays, editStepDelayHours, editingStepId, autoSaveStep]);
 
   async function handleSaveStep(sequenceId: string) {
     if (!editingStepId) return;
+    if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
     setSaving(true);
     const res = await fetch(`/api/sequences/${sequenceId}/steps/${editingStepId}`, {
       method: "PATCH",
@@ -181,6 +222,8 @@ export default function AdminSequences() {
     });
     setSaving(false);
     setEditingStepId(null);
+    setIsDirty(false);
+    setLastSavedAt(null);
     if (res.ok) {
       fetchSequences();
       toast.success("Étape mise à jour");
@@ -444,7 +487,7 @@ export default function AdminSequences() {
                               </Button>
                             </div>
 
-                            <div className="flex gap-2 pt-2 border-t border-gray-200">
+                            <div className="flex gap-2 pt-2 border-t border-gray-200 items-center">
                               <Button variant="primary" size="sm" onClick={() => handleSaveStep(seq.id)} disabled={saving}>
                                 {saving ? "…" : "Sauvegarder"}
                               </Button>
@@ -454,12 +497,25 @@ export default function AdminSequences() {
                               <Button variant="danger" size="sm" onClick={() => handleDeleteStep(seq.id, step.id)}>
                                 Supprimer
                               </Button>
+                              {/* Indicateur auto-save : Tiffany voit que ses modifs sont protégées */}
+                              <span className="text-[11px] text-gray-400 italic ml-auto">
+                                {isDirty
+                                  ? "Modifié (sauvegarde auto dans 30s)"
+                                  : lastSavedAt
+                                    ? `Sauvegardé auto ${Math.round((Date.now() - lastSavedAt) / 1000)}s`
+                                    : "Sauvegarde auto activée"}
+                              </span>
                             </div>
                           </div>
                         ) : (
                           <div
                             className={`pb-2 ${editingId === seq.id ? "cursor-pointer hover:bg-gray-50 rounded-lg p-2 -m-2" : ""}`}
-                            onClick={() => editingId === seq.id && startEditStep(step)}
+                            onClick={() => {
+                              if (editingId === seq.id) {
+                                currentEditSeqIdRef.current = seq.id;
+                                startEditStep(step);
+                              }
+                            }}
                           >
                             <div className="flex items-center gap-2 mb-0.5">
                               <span className="text-xs font-medium text-amber-600">
