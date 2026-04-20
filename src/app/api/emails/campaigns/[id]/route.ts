@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+
+const VALID_STATUSES = ["draft", "scheduled", "sending", "sent", "failed", "archived"] as const;
 
 export async function GET(
   request: Request,
@@ -76,8 +79,12 @@ export async function PATCH(
   const updateData: Record<string, unknown> = {};
   if (body.subject !== undefined) updateData.subject = body.subject;
   if (body.html_content !== undefined) updateData.html_content = body.html_content;
-  if (body.status !== undefined) updateData.status = body.status;
-  if (body.target_tag !== undefined) updateData.target_tag = body.target_tag;
+  if (body.status !== undefined) {
+    if (!VALID_STATUSES.includes(body.status)) {
+      return NextResponse.json({ error: `status invalide (attendu: ${VALID_STATUSES.join(", ")})` }, { status: 400 });
+    }
+    updateData.status = body.status;
+  }
   if (body.target_tags !== undefined) updateData.target_tags = body.target_tags;
   if (body.preview_text !== undefined) updateData.preview_text = body.preview_text;
   if (body.from_name !== undefined) updateData.from_name = body.from_name;
@@ -93,5 +100,7 @@ export async function PATCH(
     .single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  revalidatePath("/admin/emails");
+  revalidatePath(`/admin/emails/${id}`);
   return NextResponse.json(data);
 }

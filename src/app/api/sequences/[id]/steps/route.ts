@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 
 // POST — Add a step to a sequence
@@ -37,5 +38,7 @@ export async function POST(
     .single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  revalidatePath("/admin/sequences");
+  revalidatePath(`/admin/sequences/${id}`);
   return NextResponse.json(data);
 }

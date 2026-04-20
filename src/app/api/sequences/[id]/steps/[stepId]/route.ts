@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 
 // PATCH — Update a step
@@ -10,7 +11,7 @@ export async function PATCH(
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
 
-  const { stepId } = await params;
+  const { id, stepId } = await params;
   const body = await request.json();
 
   const updateData: Record<string, unknown> = {};
@@ -29,6 +30,8 @@ export async function PATCH(
     .single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  revalidatePath("/admin/sequences");
+  revalidatePath(`/admin/sequences/${id}`);
   return NextResponse.json(data);
 }
 
@@ -41,7 +44,7 @@ export async function DELETE(
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
 
-  const { stepId } = await params;
+  const { id, stepId } = await params;
 
   const { error } = await supabase
     .from("email_sequence_steps")
@@ -49,5 +52,7 @@ export async function DELETE(
     .eq("id", stepId);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  revalidatePath("/admin/sequences");
+  revalidatePath(`/admin/sequences/${id}`);
   return NextResponse.json({ success: true });
 }

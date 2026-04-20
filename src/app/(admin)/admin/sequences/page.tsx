@@ -33,12 +33,12 @@ interface Sequence {
   active_count?: number;
 }
 
+// IMPORTANT : ces valeurs doivent matcher VALID_TRIGGERS côté API sequences (/api/sequences/route.ts)
+// et le CHECK constraint email_sequences_trigger_type_check en DB (migration 014).
 const TRIGGER_TYPES = [
-  { value: "signup", label: "Inscription (formulaire / newsletter)" },
-  { value: "purchase", label: "Après un achat" },
-  { value: "tag_added", label: "Quand un tag est ajouté" },
-  { value: "lead_magnet", label: "Téléchargement lead magnet" },
-  { value: "formation_gratuite", label: "Inscription formation gratuite" },
+  { value: "form_submit", label: "Inscription via formulaire" },
+  { value: "tag_added", label: "Quand un tag est ajouté au contact" },
+  { value: "product_purchase", label: "Après un achat" },
   { value: "manual", label: "Inscription manuelle" },
 ];
 
@@ -48,7 +48,7 @@ export default function AdminSequences() {
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
   const [newName, setNewName] = useState("");
-  const [newTrigger, setNewTrigger] = useState("signup");
+  const [newTrigger, setNewTrigger] = useState("form_submit");
   const [newTriggerValue, setNewTriggerValue] = useState("");
   const [creating, setCreating] = useState(false);
 
