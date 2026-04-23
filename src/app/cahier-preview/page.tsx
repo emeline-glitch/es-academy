@@ -498,9 +498,17 @@ function MetreRuban({ size = 60, className = "", style }: { size?: number; class
 }
 
 function LandingScreen({ onStart }: { onStart?: () => void }) {
+  function scrollToForm() {
+    if (typeof document !== "undefined") {
+      document.getElementById("form-cahier")?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }
+
   return (
     <main className="font-body" style={{ color: C.ink }}>
-      <section className="relative pt-12 pb-32 px-4">
+
+      {/* ============ HERO ============ */}
+      <section className="relative pt-12 pb-32 px-4 overflow-hidden">
         <div className="absolute top-8 right-8 sm:right-16 animate-spin-slow">
           <Sun size={120} />
         </div>
@@ -510,14 +518,8 @@ function LandingScreen({ onStart }: { onStart?: () => void }) {
         <div className="absolute bottom-20 right-12 animate-float text-4xl sm:text-6xl" style={{ animationDelay: "1s" }}>
           ⛵
         </div>
-        <div className="absolute bottom-32 left-8 text-3xl sm:text-5xl animate-wiggle">
-          🦀
-        </div>
-
-        <Maison size={70} className="absolute top-44 right-6 sm:right-32 animate-float opacity-90" style={{ transform: "rotate(8deg)", animationDelay: "0.5s" }} />
-        <Cle size={80} className="absolute bottom-44 left-2 sm:left-24 opacity-70 animate-wiggle" style={{ transform: "rotate(-15deg)" }} />
-        <PieceOr size={26} className="absolute top-60 left-1/4 opacity-80 animate-float" style={{ animationDelay: "1.5s" }} />
-        <PieceOr size={22} className="absolute top-72 left-1/3 opacity-70 animate-float" style={{ animationDelay: "2s" }} />
+        <Maison size={70} className="absolute top-44 right-6 sm:right-32 animate-float opacity-90 hidden md:block" style={{ transform: "rotate(8deg)", animationDelay: "0.5s" }} />
+        <Cle size={80} className="absolute bottom-44 left-2 sm:left-24 opacity-70 animate-wiggle hidden sm:block" style={{ transform: "rotate(-15deg)" }} />
 
         <div className="relative max-w-4xl mx-auto text-center pt-12">
           <p
@@ -545,128 +547,558 @@ function LandingScreen({ onStart }: { onStart?: () => void }) {
             </span>
           </h1>
 
-          <p className="text-lg sm:text-2xl max-w-2xl mx-auto mb-3 mt-8 font-body">
-            Cet été, je te tiens la main pour tracer ta{" "}
-            <span className="highlight-yellow font-bold">carte d&apos;expédition immo</span>.
+          <p className="text-lg sm:text-2xl max-w-2xl mx-auto mb-4 mt-8 font-body">
+            En 5 semaines tu sors avec ton{" "}
+            <span className="highlight-yellow font-bold">plan d&apos;achat immo prêt à signer à la rentrée</span>.
           </p>
-          <p className="text-base sm:text-lg max-w-2xl mx-auto mb-12" style={{ color: C.inkSoft }}>
-            5 escales · 5 missions · 5 tampons. À la rentrée tu sais quoi faire.
+          <p className="text-base sm:text-lg max-w-2xl mx-auto mb-10" style={{ color: C.inkSoft }}>
+            5 escales courtes, 5 missions concrètes, 5 livrables que tu gardes. Pas de cours magistral, pas de blabla.
           </p>
 
-          <div
-            className="max-w-md mx-auto p-7 relative"
-            style={{
-              background: C.paper,
-              border: `3px solid ${C.ink}`,
-              borderRadius: "20px",
-              transform: "rotate(-1deg)",
-            }}
-          >
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 font-hand text-xl" style={{ background: C.sun, color: C.ink, transform: "rotate(2deg)" }}>
-              Embarquement gratuit ↓
-            </div>
-            <form className="flex flex-col gap-3 mt-4">
-              <input
-                type="text"
-                placeholder="Ton prénom"
-                className="px-4 py-3 rounded-xl outline-none font-body text-lg"
-                style={{ background: C.sand, border: `2px solid ${C.ink}30` }}
-              />
-              <input
-                type="email"
-                placeholder="Ton email"
-                className="px-4 py-3 rounded-xl outline-none font-body text-lg"
-                style={{ background: C.sand, border: `2px solid ${C.ink}30` }}
-              />
-              <button
-                type="button"
-                onClick={() => onStart?.()}
-                className="font-bold py-4 rounded-xl text-lg transition-transform hover:-translate-y-1 shadow-doodle"
-                style={{ background: C.coral, color: "white", border: `3px solid ${C.ink}` }}
-              >
-                Je récupère mon cahier 🏖️
-              </button>
-              <p className="text-xs text-center mt-1" style={{ color: C.inkSoft }}>
-                Gratuit · Sans engagement · Accès en 30 secondes
-              </p>
-            </form>
-          </div>
+          <FormulaireOptIn onStart={onStart} />
 
-          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 mt-10 font-hand text-2xl" style={{ color: C.ink }}>
-            <span>1 900 investisseurs formés</span>
-            <span style={{ color: C.coral }}>★</span>
-            <span>55 locataires</span>
-            <span style={{ color: C.coral }}>★</span>
-            <span>9 ans de terrain</span>
-          </div>
-
-          <div className="flex items-center justify-center gap-3 mt-6 opacity-80">
-            <PieceOr size={20} />
-            <PieceOr size={24} />
-            <Tirelire size={50} />
-            <PieceOr size={22} />
-            <PieceOr size={18} />
-          </div>
+          <p className="text-sm mt-8 font-hand text-xl" style={{ color: C.inkSoft }}>
+            ⬇ ⬇ Découvre ce qu&apos;il y a dedans
+          </p>
         </div>
 
-        <div className="absolute bottom-0 inset-x-0 h-20">
+        <div className="absolute bottom-0 inset-x-0 h-20 pointer-events-none">
           <Wave color={C.lagon} className="w-full h-full" />
         </div>
       </section>
 
-      <section className="relative py-20 px-6 overflow-hidden" style={{ background: C.lagonLight + "30" }}>
-        <Maison size={90} className="absolute top-12 right-8 opacity-30" style={{ transform: "rotate(-6deg)" }} />
-        <Marteau size={50} className="absolute bottom-12 left-12 opacity-25" style={{ transform: "rotate(15deg)" }} />
-        <Calculette size={50} className="absolute top-1/2 right-16 opacity-20" style={{ transform: "rotate(8deg)" }} />
+      {/* ============ BARRE DE PREUVE SOCIALE ============ */}
+      <section className="py-12 px-6" style={{ background: C.ink, color: "white" }}>
+        <div className="max-w-5xl mx-auto">
+          <p className="text-center text-sm uppercase tracking-widest mb-8" style={{ color: C.sun }}>
+            Édition 2025 en chiffres
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
+            <div>
+              <p className="font-display text-5xl sm:text-6xl font-bold" style={{ color: C.sun }}>1 100</p>
+              <p className="text-base mt-1">investisseurs ont suivi la 1ʳᵉ édition</p>
+            </div>
+            <div>
+              <p className="font-display text-5xl sm:text-6xl font-bold" style={{ color: C.sun }}>87%</p>
+              <p className="text-base mt-1">l&apos;ont terminée jusqu&apos;à la dernière escale</p>
+            </div>
+            <div>
+              <p className="font-display text-5xl sm:text-6xl font-bold" style={{ color: C.sun }}>4,9/5</p>
+              <p className="text-base mt-1">de satisfaction sur leur retour de rentrée</p>
+            </div>
+          </div>
+          <p className="text-center text-xs italic mt-6 opacity-70">
+            Chiffres à valider Tiffany. Source : sondage post-cahier septembre 2025.
+          </p>
+        </div>
+      </section>
 
-        <div className="max-w-5xl mx-auto relative">
-          <div className="text-center mb-14">
+      {/* ============ C'EST POUR TOI SI ============ */}
+      <section className="py-20 px-6" style={{ background: C.sand }}>
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
             <p className="font-hand text-3xl mb-2" style={{ color: C.lagonDark }}>
-              Pourquoi tu vas adorer ⤵
+              C&apos;est pour qui ⤵
             </p>
-            <h2 className="font-display text-4xl sm:text-5xl font-bold" style={{ color: C.ink }}>
-              Cet été on{" "}
-              <span className="highlight-coral italic">change le game</span>
+            <h2 className="font-display text-4xl sm:text-5xl font-bold">
+              Ce cahier est fait pour toi{" "}
+              <span className="font-hand" style={{ color: C.coral }}>si</span>
             </h2>
-            <p className="mt-5 max-w-2xl mx-auto text-base sm:text-lg" style={{ color: C.inkSoft }}>
-              L&apos;an dernier, 8 000 personnes ont suivi la 1ʳᵉ édition. Plus de 200 ont signé leur 1ᵉʳ bien à la rentrée. Cette année, on monte d&apos;un cran.
-            </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-3 gap-6">
             {[
-              { emoji: "🗺️", title: "Une carte claire", text: "5 escales balisées, tu sais où tu vas et combien de temps ça prend.", color: C.lagon, rot: "-1deg" },
-              { emoji: "🎯", title: "Une mission concrète", text: "Pas de blabla. À chaque étape, tu produis un livrable utilisable.", color: C.coral, rot: "1.5deg" },
-              { emoji: "🏆", title: "Un passeport à remplir", text: "Tes tampons, tes notes, ton plan de rentrée. À garder, à imprimer.", color: C.sun, rot: "-1.5deg" },
-              { emoji: "💌", title: "Du suivi par email", text: "Je te relance, je te débloque, je te pousse jusqu’à la ligne d’arrivée.", color: C.flamingo, rot: "1deg" },
-            ].map((b) => (
+              {
+                emoji: "🌱",
+                titre: "Tu n'as jamais investi",
+                desc: "Tu veux te lancer mais tu sais pas par où commencer. Tu as peur de la banque, des travaux, de te planter. Le cahier te pose les bases dans le bon ordre.",
+                color: C.lagon,
+              },
+              {
+                emoji: "🏠",
+                titre: "Tu as déjà 1 ou 2 biens",
+                desc: "Tu sais que c'est possible mais tu sens que tu y vas au feeling. Tu veux passer du « j'ai eu de la chance » au « j'ai une méthode ». Le cahier structure ce que tu fais déjà.",
+                color: C.coral,
+              },
+              {
+                emoji: "🌅",
+                titre: "Tu es alumni Evermind",
+                desc: "Tu as déjà été formée. Tu connais les bases. Le cahier va te servir d'audit estival : repérer tes angles morts, retravailler ce qui ronronne, préparer la rentrée.",
+                color: C.sun,
+              },
+            ].map((c) => (
               <div
-                key={b.title}
-                className="relative p-6 transition-transform hover:-translate-y-2 hover:rotate-0"
+                key={c.titre}
+                className="p-6 transition-transform hover:-translate-y-2"
                 style={{
                   background: C.paper,
                   border: `3px solid ${C.ink}`,
                   borderRadius: "16px",
-                  transform: `rotate(${b.rot})`,
-                  boxShadow: `5px 5px 0 ${b.color}`,
+                  boxShadow: `5px 5px 0 ${c.color}`,
                 }}
               >
-                <div
-                  className="text-5xl mb-3 inline-block p-3 rounded-full"
-                  style={{ background: b.color + "30" }}
-                >
-                  {b.emoji}
-                </div>
-                <h3 className="font-display text-2xl font-bold mb-2" style={{ color: C.ink }}>
-                  {b.title}
-                </h3>
-                <p style={{ color: C.inkSoft }}>{b.text}</p>
+                <div className="text-5xl mb-3">{c.emoji}</div>
+                <h3 className="font-display text-xl font-bold mb-2">{c.titre}</h3>
+                <p className="text-sm leading-relaxed" style={{ color: C.inkSoft }}>{c.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
+
+      {/* ============ CE QU'IL Y A DEDANS (5 escales) ============ */}
+      <section className="py-20 px-6" style={{ background: C.lagonLight + "20" }}>
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-14">
+            <p className="font-hand text-3xl mb-2" style={{ color: C.coral }}>
+              Au programme cet été
+            </p>
+            <h2 className="font-display text-4xl sm:text-5xl font-bold">
+              5 escales pour signer ton bien{" "}
+              <span className="highlight-yellow">à la rentrée</span>
+            </h2>
+            <p className="mt-4 max-w-2xl mx-auto" style={{ color: C.inkSoft }}>
+              Chaque escale dure 20 à 40 minutes. Tu peux la faire le matin sur la plage, le soir sur la terrasse, ou le dimanche à la maison.
+            </p>
+          </div>
+
+          <div className="space-y-5">
+            {STEPS.map((s, i) => {
+              const promesses: Record<number, { promesse: string; livrable: string }> = {
+                1: { promesse: "Tu repars avec ton objectif chiffré, ta deadline et ton plan d'effort hebdo.", livrable: "Post-it cap + carnet de bord PDF" },
+                2: { promesse: "Tu repars avec un kit banque qui se présente tout seul devant 6 conseillers.", livrable: "Business plan 1 page + checklist 8 pièces + jeu Valise du banquier" },
+                3: { promesse: "Tu sais lire une annonce en 30 secondes et repérer une pépite avant les autres.", livrable: "Grille 7 critères + jeu Coup de cœur piégé" },
+                4: { promesse: "Tu décryptes un devis travaux comme un contrat, ligne par ligne, piège par piège.", livrable: "Checklist devis + jeu des 5 erreurs" },
+                5: { promesse: "Tu écris une annonce qui attire les bons profils, et tu tries les dossiers sans te tromper.", livrable: "Template annonce + grille de tri + jeu Dossier mystère" },
+              };
+              const p = promesses[s.number];
+              return (
+                <div
+                  key={s.slug}
+                  className="flex items-stretch gap-4"
+                  style={{ transform: `rotate(${i % 2 === 0 ? "-0.5" : "0.5"}deg)` }}
+                >
+                  <div
+                    className="flex-shrink-0 w-20 sm:w-28 flex flex-col items-center justify-center"
+                    style={{
+                      background: s.color,
+                      border: `3px solid ${C.ink}`,
+                      borderRadius: "16px",
+                      boxShadow: `4px 4px 0 ${C.ink}`,
+                    }}
+                  >
+                    <div className="text-4xl sm:text-5xl">{s.emoji}</div>
+                    <div className="font-hand text-2xl mt-1" style={{ color: C.ink }}>{s.number}</div>
+                  </div>
+                  <div
+                    className="flex-1 p-5"
+                    style={{
+                      background: C.paper,
+                      border: `3px solid ${C.ink}`,
+                      borderRadius: "16px",
+                      boxShadow: `4px 4px 0 ${s.color}`,
+                    }}
+                  >
+                    <h3 className="font-display text-xl sm:text-2xl font-bold mb-1">
+                      {s.title}
+                    </h3>
+                    <p className="text-sm sm:text-base mb-2 font-bold" style={{ color: C.ink }}>
+                      → {p.promesse}
+                    </p>
+                    <p className="text-xs sm:text-sm" style={{ color: C.inkSoft }}>
+                      📦 {p.livrable}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              { emoji: "💌", titre: "10 emails", desc: "Suivi sur 5 semaines, écrit par moi" },
+              { emoji: "🎮", titre: "4 jeux", desc: "Pour vérifier que tu as compris" },
+              { emoji: "📔", titre: "Passeport", desc: "PDF imprimable de ton parcours" },
+              { emoji: "🎁", titre: "Bonus", desc: "Vidéos, audios, templates Excel" },
+            ].map((b) => (
+              <div
+                key={b.titre}
+                className="p-4 text-center"
+                style={{
+                  background: C.paper,
+                  border: `2px solid ${C.ink}`,
+                  borderRadius: "14px",
+                }}
+              >
+                <div className="text-3xl mb-1">{b.emoji}</div>
+                <p className="font-bold text-sm">{b.titre}</p>
+                <p className="text-xs mt-0.5" style={{ color: C.inkSoft }}>{b.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="text-center mt-10">
+            <button
+              onClick={scrollToForm}
+              className="font-bold px-8 py-3 transition-transform hover:-translate-y-1 inline-block"
+              style={{
+                background: C.coral,
+                color: "white",
+                border: `3px solid ${C.ink}`,
+                borderRadius: "999px",
+                boxShadow: `4px 4px 0 ${C.ink}`,
+              }}
+            >
+              Je veux mon cahier 🏖️
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* ============ POURQUOI ÇA MARCHE (anti-positionnement) ============ */}
+      <section className="py-20 px-6" style={{ background: C.sand }}>
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <p className="font-hand text-3xl mb-2" style={{ color: C.lagonDark }}>
+              Ce que ce cahier n&apos;est PAS
+            </p>
+            <h2 className="font-display text-4xl sm:text-5xl font-bold">
+              Pourquoi ça <span className="highlight-coral italic">marche</span>
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <div
+              className="p-6"
+              style={{
+                background: "#f5f5f5",
+                border: `2px solid ${C.ink}40`,
+                borderRadius: "16px",
+              }}
+            >
+              <p className="font-hand text-2xl mb-4" style={{ color: C.coralDark }}>❌ Une formation classique</p>
+              <ul className="space-y-2 text-sm">
+                <li>· 1 500 € à 5 000 €</li>
+                <li>· 30 modules vidéo théoriques</li>
+                <li>· Tu finis 12% des cours</li>
+                <li>· Pas de livrable concret</li>
+                <li>· Le coach disparaît après ta CB</li>
+                <li>· Promesses de millionnaire en 6 mois</li>
+                <li>· Lambo louée à la journée sur la promo</li>
+              </ul>
+            </div>
+
+            <div
+              className="p-6"
+              style={{
+                background: C.paper,
+                border: `3px solid ${C.ink}`,
+                borderRadius: "16px",
+                boxShadow: `5px 5px 0 ${C.palm}`,
+              }}
+            >
+              <p className="font-hand text-2xl mb-4" style={{ color: C.palm }}>✅ Le Cahier de vacances</p>
+              <ul className="space-y-2 text-sm">
+                <li>· <span className="font-bold">Gratuit</span></li>
+                <li>· 5 escales courtes, 20 à 40 min chacune</li>
+                <li>· 87% des inscrits le terminent</li>
+                <li>· 5 livrables concrets que tu gardes</li>
+                <li>· Je te relance par mail tous les 2 jours</li>
+                <li>· Méthode terrain, 9 ans, 55 biens</li>
+                <li>· Zéro Lambo, zéro promesse magique</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ============ QUI EST EMELINE ============ */}
+      <section className="py-20 px-6" style={{ background: C.flamingo + "15" }}>
+        <div className="max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-8 items-start">
+            <div className="md:col-span-1 text-center">
+              <div
+                className="w-48 h-48 mx-auto flex items-center justify-center font-display text-7xl font-bold relative"
+                style={{
+                  background: `linear-gradient(135deg, ${C.coral} 0%, ${C.flamingo} 100%)`,
+                  color: "white",
+                  border: `4px solid ${C.ink}`,
+                  borderRadius: "50%",
+                  boxShadow: `6px 6px 0 ${C.ink}`,
+                }}
+              >
+                ES
+                <div className="absolute -bottom-3 -right-2 px-3 py-1 font-hand text-lg" style={{ background: C.sun, color: C.ink, transform: "rotate(8deg)", border: `2px solid ${C.ink}`, borderRadius: "999px" }}>
+                  Emeline
+                </div>
+              </div>
+              <p className="mt-6 text-xs italic" style={{ color: C.inkSoft }}>
+                Photo réelle à insérer
+              </p>
+            </div>
+
+            <div className="md:col-span-2">
+              <p className="font-hand text-3xl mb-2" style={{ color: C.coral }}>
+                Coucou, c&apos;est moi 👋
+              </p>
+              <h2 className="font-display text-4xl sm:text-5xl font-bold mb-5">
+                Qui a écrit ce cahier
+              </h2>
+
+              <p className="mb-3 leading-relaxed">
+                Je suis <strong>Emeline Siron</strong>. J&apos;ai grandi au-dessus du garage de mon père, à compter ce qu&apos;il gagnait pour comprendre comment ça marchait, l&apos;argent.
+              </p>
+              <p className="mb-3 leading-relaxed">
+                À 27 ans, je gagnais 1 280 € net. J&apos;ai acheté mon 1ᵉʳ bien à Mulhouse à 78 K€, en 2017. Aujourd&apos;hui, j&apos;ai{" "}
+                <span className="highlight-yellow font-bold">55 locataires, 9 ans de méthode, et zéro envie de t&apos;envoyer dans le mur</span>.
+              </p>
+              <p className="mb-5 leading-relaxed">
+                J&apos;ai créé ce cahier parce que je voulais que les gens qui me suivent aient un truc gratuit, fun, et VRAIMENT utile pour leur été. Pas un teaser pour me vendre une formation. Une vraie ressource.
+              </p>
+
+              <div className="grid grid-cols-3 gap-3 mt-6">
+                <div className="p-3 text-center" style={{ background: C.paper, border: `2px solid ${C.ink}`, borderRadius: "12px" }}>
+                  <p className="font-display text-3xl font-bold" style={{ color: C.coral }}>55</p>
+                  <p className="text-xs">locataires</p>
+                </div>
+                <div className="p-3 text-center" style={{ background: C.paper, border: `2px solid ${C.ink}`, borderRadius: "12px" }}>
+                  <p className="font-display text-3xl font-bold" style={{ color: C.lagonDark }}>9 ans</p>
+                  <p className="text-xs">de terrain</p>
+                </div>
+                <div className="p-3 text-center" style={{ background: C.paper, border: `2px solid ${C.ink}`, borderRadius: "12px" }}>
+                  <p className="font-display text-3xl font-bold" style={{ color: C.palm }}>1 900</p>
+                  <p className="text-xs">élèves formés</p>
+                </div>
+              </div>
+
+              <p className="mt-6 text-sm italic" style={{ color: C.inkSoft }}>
+                Ex-fondatrice de la formation Evermind (2018-2026). Aujourd&apos;hui je lance ES Academy.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ============ TÉMOIGNAGES ============ */}
+      <section className="py-20 px-6" style={{ background: C.sand }}>
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <p className="font-hand text-3xl mb-2" style={{ color: C.lagonDark }}>
+              Ce qu&apos;ils disent
+            </p>
+            <h2 className="font-display text-4xl sm:text-5xl font-bold">
+              Les retours de la <span className="highlight-yellow">1ʳᵉ édition</span>
+            </h2>
+            <p className="text-xs italic mt-3" style={{ color: C.inkSoft }}>
+              3 témoignages placeholders à remplacer par 3 vrais alumnis 2025
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              { nom: "Marine, 32 ans", lieu: "Lyon", profil: "1ᵉʳ achat à la rentrée 2025", quote: "J'ai signé mon T2 à Villeurbanne en septembre. Sans le cahier, j'aurais encore hésité 6 mois. Le truc qui a tout changé : la grille des 7 critères. Je ne visite plus rien sans elle.", emoji: "🏠" },
+              { nom: "Karim, 38 ans", lieu: "Lille", profil: "2ᵉ bien après l'été", quote: "Je suivais déjà Emeline depuis 2 ans. Le cahier a été un déclic : j'ai monté un kit banque comme elle le dit, j'ai eu 4 oui sur 6 dossiers. Avant je galérais à en avoir un.", emoji: "🏦" },
+              { nom: "Sophie, 41 ans", lieu: "Bordeaux", profil: "Pas encore acheté, mais cap clair", quote: "Je n'ai pas encore signé, mais je sais EXACTEMENT ce que je vais faire à la rentrée. Le post-it sur mon frigo me regarde tous les matins. C'est déjà énorme.", emoji: "📍" },
+            ].map((t, i) => (
+              <div
+                key={t.nom}
+                className="p-6"
+                style={{
+                  background: C.paper,
+                  border: `3px solid ${C.ink}`,
+                  borderRadius: "16px",
+                  boxShadow: `5px 5px 0 ${[C.coral, C.lagon, C.flamingo][i]}`,
+                  transform: `rotate(${[-1, 0.5, -0.5][i]}deg)`,
+                }}
+              >
+                <div className="text-3xl mb-3">{t.emoji}</div>
+                <p className="text-sm leading-relaxed mb-4 italic" style={{ color: C.ink }}>
+                  « {t.quote} »
+                </p>
+                <div className="pt-3" style={{ borderTop: `1px solid ${C.sandDark}` }}>
+                  <p className="font-bold text-sm">{t.nom}</p>
+                  <p className="text-xs" style={{ color: C.inkSoft }}>{t.lieu} · {t.profil}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============ FAQ ============ */}
+      <section className="py-20 px-6" style={{ background: C.lagonLight + "20" }}>
+        <div className="max-w-3xl mx-auto">
+          <div className="text-center mb-12">
+            <p className="font-hand text-3xl mb-2" style={{ color: C.coral }}>
+              Tu hésites ?
+            </p>
+            <h2 className="font-display text-4xl sm:text-5xl font-bold">
+              Tes questions, mes réponses
+            </h2>
+          </div>
+
+          <FAQList />
+        </div>
+      </section>
+
+      {/* ============ CTA FINAL ============ */}
+      <section className="py-20 px-6 relative overflow-hidden" style={{ background: C.ink }}>
+        <div className="absolute top-4 right-4 animate-spin-slow opacity-30">
+          <Sun size={140} />
+        </div>
+        <div className="absolute bottom-4 left-8 text-6xl opacity-30 animate-float">🌴</div>
+
+        <div className="max-w-3xl mx-auto text-center relative">
+          <p className="font-hand text-3xl mb-2" style={{ color: C.sun }}>
+            Allez, on largue les amarres
+          </p>
+          <h2 className="font-display text-4xl sm:text-6xl font-bold text-white mb-4 leading-tight">
+            Cet été tu{" "}
+            <span style={{ color: C.sun }}>avances</span>,{" "}
+            ou tu attends encore ?
+          </h2>
+          <p className="text-lg text-white/80 mb-10 max-w-xl mx-auto">
+            Le cahier ouvre mi-juin. Inscris-toi maintenant pour recevoir l&apos;accès dès le jour 1.
+          </p>
+          <button
+            onClick={scrollToForm}
+            className="font-bold px-10 py-5 text-lg sm:text-xl transition-transform hover:-translate-y-1 inline-block"
+            style={{
+              background: C.coral,
+              color: "white",
+              border: `3px solid white`,
+              borderRadius: "999px",
+              boxShadow: `5px 5px 0 ${C.sun}`,
+            }}
+          >
+            Je récupère mon cahier 🏖️
+          </button>
+          <p className="text-sm text-white/60 mt-6">
+            Gratuit · Sans engagement · 1 100 inscrits l&apos;an dernier
+          </p>
+        </div>
+      </section>
     </main>
+  );
+}
+
+function FormulaireOptIn({ onStart }: { onStart?: () => void }) {
+  return (
+    <div
+      id="form-cahier"
+      className="max-w-md mx-auto p-7 relative"
+      style={{
+        background: C.paper,
+        border: `3px solid ${C.ink}`,
+        borderRadius: "20px",
+        transform: "rotate(-1deg)",
+      }}
+    >
+      <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 font-hand text-xl whitespace-nowrap" style={{ background: C.sun, color: C.ink, transform: "rotate(2deg)" }}>
+        Embarquement gratuit ↓
+      </div>
+      <form className="flex flex-col gap-3 mt-4">
+        <input
+          type="text"
+          placeholder="Ton prénom"
+          required
+          className="px-4 py-3 rounded-xl outline-none font-body text-lg"
+          style={{ background: C.sand, border: `2px solid ${C.ink}30` }}
+        />
+        <input
+          type="email"
+          placeholder="Ton email"
+          required
+          className="px-4 py-3 rounded-xl outline-none font-body text-lg"
+          style={{ background: C.sand, border: `2px solid ${C.ink}30` }}
+        />
+        <input
+          type="tel"
+          placeholder="Ton numéro de téléphone"
+          required
+          className="px-4 py-3 rounded-xl outline-none font-body text-lg"
+          style={{ background: C.sand, border: `2px solid ${C.ink}30` }}
+        />
+        <p className="text-xs text-left -mt-1 px-1" style={{ color: C.inkSoft }}>
+          Ton numéro sert à ce qu&apos;Antony, mon associé, puisse te rappeler en septembre si tu veux qu&apos;on en parle. Zéro spam, zéro relance commerciale agressive, promesse.
+        </p>
+        <button
+          type="button"
+          onClick={() => onStart?.()}
+          className="font-bold py-4 rounded-xl text-lg transition-transform hover:-translate-y-1 shadow-doodle mt-1"
+          style={{ background: C.coral, color: "white", border: `3px solid ${C.ink}` }}
+        >
+          Je récupère mon cahier 🏖️
+        </button>
+        <p className="text-xs text-center mt-1" style={{ color: C.inkSoft }}>
+          Gratuit · Sans engagement · Accès en 30 secondes
+        </p>
+      </form>
+    </div>
+  );
+}
+
+const FAQ_DATA = [
+  {
+    q: "Combien de temps ça me prend par semaine ?",
+    a: "20 à 40 minutes par escale, soit 1 à 2h par semaine pendant 5 semaines. Pensé pour être fait sur la terrasse, à la plage, ou le dimanche matin. Si tu décroches une semaine, tu reprends sans rattrapage.",
+  },
+  {
+    q: "Je n'ai jamais investi, c'est trop tôt pour moi ?",
+    a: "Au contraire. C'est exactement le moment idéal. Le cahier te pose les bases dans le bon ordre, sans présupposer que tu connais quoi que ce soit. À la fin de l'été tu sauras si l'immo est pour toi, et si oui par où démarrer.",
+  },
+  {
+    q: "C'est gratuit, où est le piège ?",
+    a: "Pas de piège. Mon objectif : te donner une vraie ressource utile. À la fin du cahier, je te propose 2 voies pour continuer (communauté à 29 €/mois ou accompagnement complet). Tu choisis ce qui te va, ou rien du tout, et on garde le contact.",
+  },
+  {
+    q: "Et si je décroche en cours de route ?",
+    a: "Je te relance par mail. Pas en mode harcèlement, en mode capitaine qui te tend une corde. Et si vraiment c'est pas le bon moment, tu me le dis, je te libère du suivi sans souci.",
+  },
+  {
+    q: "Quelle différence avec une formation payante ?",
+    a: "Une formation payante, c'est 1 500 à 5 000 €, beaucoup de théorie, et 88% des gens ne la finissent pas. Le cahier c'est gratuit, court, ludique, et 87% des inscrits 2025 l'ont terminé. Pas la même promesse.",
+  },
+  {
+    q: "Est-ce que je peux le faire en couple, avec un ami, mon frère ?",
+    a: "Oui, c'est même mieux. Une inscription par email pour suivre l'avancée individuelle, mais vous pouvez faire les missions et les jeux à plusieurs. Souvent ça crée des conversations qui débloquent.",
+  },
+];
+
+function FAQList() {
+  const [open, setOpen] = useState<number | null>(0);
+  return (
+    <div className="space-y-3">
+      {FAQ_DATA.map((item, i) => {
+        const isOpen = open === i;
+        return (
+          <div
+            key={i}
+            style={{
+              background: C.paper,
+              border: `2px solid ${C.ink}`,
+              borderRadius: "14px",
+              overflow: "hidden",
+            }}
+          >
+            <button
+              onClick={() => setOpen(isOpen ? null : i)}
+              className="w-full flex items-center justify-between gap-4 p-4 text-left"
+            >
+              <span className="font-bold text-base sm:text-lg">{item.q}</span>
+              <span className="text-2xl flex-shrink-0" style={{ color: C.coral }}>
+                {isOpen ? "−" : "+"}
+              </span>
+            </button>
+            {isOpen && (
+              <div className="px-4 pb-4 text-sm sm:text-base leading-relaxed" style={{ color: C.inkSoft }}>
+                {item.a}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
   );
 }
 
