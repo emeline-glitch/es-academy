@@ -1342,116 +1342,46 @@ function SectionWhatsApp() {
             </p>
           </div>
 
-          {/* Right : faux WhatsApp */}
-          <div
-            className="relative max-w-sm mx-auto w-full"
-            style={{
-              background: WHATSAPP_BG,
-              border: `4px solid ${C.ink}`,
-              borderRadius: "24px",
-              boxShadow: `8px 8px 0 ${C.ink}`,
-              overflow: "hidden",
-              transform: "rotate(1deg)",
-            }}
-          >
-            {/* Header WhatsApp */}
-            <div
-              className="px-4 py-3 flex items-center gap-3"
-              style={{ background: WHATSAPP_DARK, color: "white" }}
-            >
-              <div
-                className="w-10 h-10 flex items-center justify-center font-bold"
-                style={{ background: C.coral, borderRadius: "50%" }}
-              >
-                🏖️
-              </div>
-              <div className="flex-1">
-                <p className="font-bold text-sm">Cahier de vacances 2026</p>
-                <p className="text-xs opacity-80">1 102 membres · en ligne</p>
-              </div>
-              <div className="text-xl opacity-80">📞 ⋮</div>
-            </div>
+          {/* Right : vraies captures WhatsApp empilées */}
+          <div className="relative mx-auto w-full max-w-md">
+            <p className="font-hand text-2xl text-center mb-5" style={{ color: WHATSAPP_DARK }}>
+              Aperçu vrai du groupe ↓
+            </p>
 
-            {/* Messages */}
-            <div className="p-3 space-y-3" style={{ minHeight: "420px" }}>
-              <FakeMessage
-                from="Marielle"
-                color="#E54A3A"
-                time="14:03"
-                content={
-                  <>
-                    <p className="text-xs mb-1 font-bold" style={{ color: "#E54A3A" }}>Marielle</p>
-                    <p>Quelqu&apos;un a une idée de combien de refaire cette salle de bain de 3m² ?</p>
-                    <p className="mt-1 text-xs" style={{ color: C.inkSoft }}>
-                      Objectif : douche, lavabo, faïence, VMC, peinture
-                    </p>
-                  </>
-                }
+            {/* Stack de 3 vraies captures avec rotations */}
+            <div className="relative" style={{ minHeight: "560px" }}>
+              <WhatsAppShot
+                src="/images/cahier/whatsapp-marielle.jpeg"
+                alt="Message de Marielle qui partage un devis salle de bain pour comparaison"
+                rotate="-4deg"
+                top="0px"
+                left="-10px"
+                z={1}
+                accent={C.coral}
               />
-
-              <FakeMessage
-                from="Cyrielle"
-                color="#2D9D8F"
-                time="23:52"
-                content={
-                  <>
-                    <p className="text-xs mb-1 font-bold" style={{ color: "#2D9D8F" }}>Cyrielle</p>
-                    <p>Hello la communauté ! Besoin d&apos;un conseil pour la création d&apos;une SCI pour un achat 🙏</p>
-                  </>
-                }
+              <WhatsAppShot
+                src="/images/cahier/whatsapp-cyrielle.jpeg"
+                alt="Message de Cyrielle qui demande conseil sur la création d'une SCI"
+                rotate="3deg"
+                top="120px"
+                left="60px"
+                z={2}
+                accent={C.palm}
               />
-
-              <FakeMessage
-                from="Audrey"
-                color="#9B59B6"
-                time="13:48"
-                isAudio
-                content={
-                  <>
-                    <p className="text-xs mb-1 font-bold" style={{ color: "#9B59B6" }}>Audrey</p>
-                    <div className="flex items-center gap-2 py-1">
-                      <span className="text-xl">▶</span>
-                      <div className="flex-1 flex items-center gap-px">
-                        {Array.from({ length: 22 }).map((_, i) => (
-                          <span
-                            key={i}
-                            className="inline-block"
-                            style={{
-                              width: "2px",
-                              height: `${6 + (i % 4) * 4}px`,
-                              background: C.inkSoft,
-                              borderRadius: "1px",
-                            }}
-                          />
-                        ))}
-                      </div>
-                      <span className="text-xs" style={{ color: C.inkSoft }}>2:26</span>
-                    </div>
-                    <p className="text-xs italic mt-1" style={{ color: C.inkSoft }}>
-                      Je t&apos;ai annoté ton plan, regarde
-                    </p>
-                  </>
-                }
+              <WhatsAppShot
+                src="/images/cahier/whatsapp-audrey.jpeg"
+                alt="Audrey envoie un message audio avec un plan d'appartement annoté"
+                rotate="-2deg"
+                top="240px"
+                left="20px"
+                z={3}
+                accent={C.flamingo}
               />
             </div>
 
-            <div
-              className="p-2 flex items-center gap-2"
-              style={{ background: WHATSAPP_BG, borderTop: `1px solid ${C.inkSoft}30` }}
-            >
-              <div
-                className="flex-1 px-3 py-2 text-xs"
-                style={{ background: "white", borderRadius: "999px", color: C.inkSoft }}
-              >
-                Écris ton message...
-              </div>
-              <div
-                className="w-10 h-10 flex items-center justify-center text-xl text-white"
-                style={{ background: WHATSAPP_GREEN, borderRadius: "50%" }}
-              >
-                🎙
-              </div>
-            </div>
+            <p className="text-xs italic text-center mt-4" style={{ color: C.inkSoft }}>
+              Captures réelles de l&apos;édition 2025 (prénoms gardés avec leur accord)
+            </p>
           </div>
         </div>
       </div>
@@ -1459,32 +1389,53 @@ function SectionWhatsApp() {
   );
 }
 
-function FakeMessage({
-  color,
-  time,
-  content,
-  isAudio,
+function WhatsAppShot({
+  src,
+  alt,
+  rotate,
+  top,
+  left,
+  z,
+  accent,
 }: {
-  from: string;
-  color: string;
-  time: string;
-  content: React.ReactNode;
-  isAudio?: boolean;
+  src: string;
+  alt: string;
+  rotate: string;
+  top: string;
+  left: string;
+  z: number;
+  accent: string;
 }) {
   return (
     <div
-      className="px-3 py-2 max-w-[88%] text-sm relative"
+      className="absolute"
       style={{
+        top,
+        left,
+        right: "0",
+        zIndex: z,
+        transform: `rotate(${rotate})`,
         background: "white",
-        borderRadius: "10px",
-        borderTopLeftRadius: "2px",
-        boxShadow: "0 1px 1px rgba(0,0,0,0.1)",
-        borderLeft: `3px solid ${color}`,
-        minHeight: isAudio ? "auto" : undefined,
+        border: `3px solid ${C.ink}`,
+        borderRadius: "12px",
+        boxShadow: `5px 5px 0 ${accent}`,
+        padding: "8px",
+        maxWidth: "260px",
+        margin: "0 auto",
       }}
     >
-      {content}
-      <p className="text-xs text-right mt-1" style={{ color: C.inkSoft }}>{time}</p>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={src}
+        alt={alt}
+        loading="lazy"
+        style={{
+          width: "100%",
+          height: "auto",
+          display: "block",
+          borderRadius: "6px",
+        }}
+      />
     </div>
   );
 }
