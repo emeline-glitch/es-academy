@@ -575,11 +575,11 @@ function LandingScreen({ onStart }: { onStart?: () => void }) {
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
             <div>
-              <p className="font-display text-5xl sm:text-6xl font-bold" style={{ color: C.sun }}>1 100</p>
+              <p className="font-display text-5xl sm:text-6xl font-bold" style={{ color: C.sun }}>7 500</p>
               <p className="text-base mt-1">investisseurs ont suivi la 1ʳᵉ édition</p>
             </div>
             <div>
-              <p className="font-display text-5xl sm:text-6xl font-bold" style={{ color: C.sun }}>87%</p>
+              <p className="font-display text-5xl sm:text-6xl font-bold" style={{ color: C.sun }}>92%</p>
               <p className="text-base mt-1">l&apos;ont terminée jusqu&apos;à la dernière escale</p>
             </div>
             <div>
@@ -587,9 +587,6 @@ function LandingScreen({ onStart }: { onStart?: () => void }) {
               <p className="text-base mt-1">de satisfaction sur leur retour de rentrée</p>
             </div>
           </div>
-          <p className="text-center text-xs italic mt-6 opacity-70">
-            Chiffres à valider Tiffany. Source : sondage post-cahier septembre 2025.
-          </p>
         </div>
       </section>
 
@@ -621,9 +618,9 @@ function LandingScreen({ onStart }: { onStart?: () => void }) {
                 color: C.coral,
               },
               {
-                emoji: "🌅",
-                titre: "Tu es alumni Evermind",
-                desc: "Tu as déjà été formée. Tu connais les bases. Le cahier va te servir d'audit estival : repérer tes angles morts, retravailler ce qui ronronne, préparer la rentrée.",
+                emoji: "🏘️",
+                titre: "Tu as déjà 3 biens ou plus",
+                desc: "Tu as un vrai parc. Le cahier va te servir d'audit estival : repérer tes angles morts, retravailler ce qui ronronne, préparer la suite (revente, optimisation, montée en gamme).",
                 color: C.sun,
               },
             ].map((c) => (
@@ -755,59 +752,64 @@ function LandingScreen({ onStart }: { onStart?: () => void }) {
         </div>
       </section>
 
-      {/* ============ POURQUOI ÇA MARCHE (anti-positionnement) ============ */}
+      {/* ============ MES ENGAGEMENTS (positionnement positif) ============ */}
       <section className="py-20 px-6" style={{ background: C.sand }}>
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
             <p className="font-hand text-3xl mb-2" style={{ color: C.lagonDark }}>
-              Ce que ce cahier n&apos;est PAS
+              Mes engagements pour cet été
             </p>
             <h2 className="font-display text-4xl sm:text-5xl font-bold">
-              Pourquoi ça <span className="highlight-coral italic">marche</span>
+              Ce que tu vas <span className="highlight-coral italic">vraiment</span> avoir
             </h2>
+            <p className="mt-4 max-w-2xl mx-auto" style={{ color: C.inkSoft }}>
+              Le cahier est un cadeau. Pas un teaser, pas un appât. Voici ce que je m&apos;engage à te donner, en clair.
+            </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
-            <div
-              className="p-6"
-              style={{
-                background: "#f5f5f5",
-                border: `2px solid ${C.ink}40`,
-                borderRadius: "16px",
-              }}
-            >
-              <p className="font-hand text-2xl mb-4" style={{ color: C.coralDark }}>❌ Une formation classique</p>
-              <ul className="space-y-2 text-sm">
-                <li>· 1 500 € à 5 000 €</li>
-                <li>· 30 modules vidéo théoriques</li>
-                <li>· Tu finis 12% des cours</li>
-                <li>· Pas de livrable concret</li>
-                <li>· Le coach disparaît après ta CB</li>
-                <li>· Promesses de millionnaire en 6 mois</li>
-                <li>· Lambo louée à la journée sur la promo</li>
-              </ul>
-            </div>
-
-            <div
-              className="p-6"
-              style={{
-                background: C.paper,
-                border: `3px solid ${C.ink}`,
-                borderRadius: "16px",
-                boxShadow: `5px 5px 0 ${C.palm}`,
-              }}
-            >
-              <p className="font-hand text-2xl mb-4" style={{ color: C.palm }}>✅ Le Cahier de vacances</p>
-              <ul className="space-y-2 text-sm">
-                <li>· <span className="font-bold">Gratuit</span></li>
-                <li>· 5 escales courtes, 20 à 40 min chacune</li>
-                <li>· 87% des inscrits le terminent</li>
-                <li>· 5 livrables concrets que tu gardes</li>
-                <li>· Je te relance par mail tous les 2 jours</li>
-                <li>· Méthode terrain, 9 ans, 55 biens</li>
-                <li>· Zéro Lambo, zéro promesse magique</li>
-              </ul>
-            </div>
+            {[
+              {
+                emoji: "🎯",
+                titre: "Du concret, pas de la théorie",
+                desc: "Chaque escale produit un livrable que tu gardes : un post-it, un kit banque, une grille d'analyse, une annonce. Tu ressors avec des outils, pas avec des notes de cours.",
+                color: C.coral,
+              },
+              {
+                emoji: "🌍",
+                titre: "Une méthode terrain, pas magique",
+                desc: "9 ans de pratique, 55 biens à mon nom, zéro Lambo louée à la journée. Je te montre ce qui marche pour moi et pour les 7 500 personnes qui ont suivi l'an dernier.",
+                color: C.lagon,
+              },
+              {
+                emoji: "💌",
+                titre: "Un suivi par mail, sans harcèlement",
+                desc: "Je t'écris tous les 2 à 3 jours pendant 5 semaines. Si tu décroches, je te tends une corde. Si c'est pas le bon moment, tu me le dis et je te libère du suivi, zéro jugement.",
+                color: C.flamingo,
+              },
+              {
+                emoji: "🤝",
+                titre: "Ton choix à la rentrée",
+                desc: "À la fin du cahier, je te propose 2 options pour continuer si tu veux : la communauté ES Family (29 €/mois) ou l'accompagnement complet ES Academy. Mais le cahier reste utile en lui-même, sans rien acheter.",
+                color: C.sun,
+              },
+            ].map((b, i) => (
+              <div
+                key={b.titre}
+                className="p-6"
+                style={{
+                  background: C.paper,
+                  border: `3px solid ${C.ink}`,
+                  borderRadius: "16px",
+                  boxShadow: `5px 5px 0 ${b.color}`,
+                  transform: `rotate(${i % 2 === 0 ? "-0.5" : "0.5"}deg)`,
+                }}
+              >
+                <div className="text-4xl mb-3">{b.emoji}</div>
+                <h3 className="font-display text-xl font-bold mb-2">{b.titre}</h3>
+                <p className="text-sm leading-relaxed" style={{ color: C.inkSoft }}>{b.desc}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -815,29 +817,54 @@ function LandingScreen({ onStart }: { onStart?: () => void }) {
       {/* ============ QUI EST EMELINE ============ */}
       <section className="py-20 px-6" style={{ background: C.flamingo + "15" }}>
         <div className="max-w-5xl mx-auto">
-          <div className="grid md:grid-cols-3 gap-8 items-start">
-            <div className="md:col-span-1 text-center">
+          <div className="grid md:grid-cols-5 gap-8 items-center">
+            <div className="md:col-span-2 text-center">
               <div
-                className="w-48 h-48 mx-auto flex items-center justify-center font-display text-7xl font-bold relative"
+                className="relative inline-block"
                 style={{
-                  background: `linear-gradient(135deg, ${C.coral} 0%, ${C.flamingo} 100%)`,
-                  color: "white",
                   border: `4px solid ${C.ink}`,
-                  borderRadius: "50%",
-                  boxShadow: `6px 6px 0 ${C.ink}`,
+                  borderRadius: "20px",
+                  boxShadow: `8px 8px 0 ${C.coral}`,
+                  overflow: "hidden",
+                  transform: "rotate(-2deg)",
+                  background: C.paper,
+                  padding: "10px 10px 50px 10px",
                 }}
               >
-                ES
-                <div className="absolute -bottom-3 -right-2 px-3 py-1 font-hand text-lg" style={{ background: C.sun, color: C.ink, transform: "rotate(8deg)", border: `2px solid ${C.ink}`, borderRadius: "999px" }}>
-                  Emeline
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/images/cahier/emeline-chantier.jpeg"
+                  alt="Emeline Siron sur un chantier, perceuse à la main"
+                  style={{
+                    width: "100%",
+                    maxWidth: "280px",
+                    height: "auto",
+                    display: "block",
+                    borderRadius: "8px",
+                  }}
+                />
+                <div
+                  className="absolute bottom-3 left-0 right-0 font-hand text-2xl text-center"
+                  style={{ color: C.ink }}
+                >
+                  Emeline, en chantier
+                </div>
+                <div
+                  className="absolute -top-2 left-1/2 -translate-x-1/2 px-3 py-1 font-hand text-base"
+                  style={{
+                    background: C.sun,
+                    color: C.ink,
+                    border: `2px solid ${C.ink}`,
+                    borderRadius: "999px",
+                    transform: "rotate(-3deg)",
+                  }}
+                >
+                  Été 2024
                 </div>
               </div>
-              <p className="mt-6 text-xs italic" style={{ color: C.inkSoft }}>
-                Photo réelle à insérer
-              </p>
             </div>
 
-            <div className="md:col-span-2">
+            <div className="md:col-span-3">
               <p className="font-hand text-3xl mb-2" style={{ color: C.coral }}>
                 Coucou, c&apos;est moi 👋
               </p>
@@ -846,14 +873,17 @@ function LandingScreen({ onStart }: { onStart?: () => void }) {
               </h2>
 
               <p className="mb-3 leading-relaxed">
-                Je suis <strong>Emeline Siron</strong>. J&apos;ai grandi au-dessus du garage de mon père, à compter ce qu&apos;il gagnait pour comprendre comment ça marchait, l&apos;argent.
+                Je m&apos;appelle <strong>Emeline Siron</strong>. J&apos;ai grandi dans un garage auto. Pas de patrimoine familial, pas de réseau, pas de capital de départ.
               </p>
               <p className="mb-3 leading-relaxed">
-                À 27 ans, je gagnais 1 280 € net. J&apos;ai acheté mon 1ᵉʳ bien à Mulhouse à 78 K€, en 2017. Aujourd&apos;hui, j&apos;ai{" "}
-                <span className="highlight-yellow font-bold">55 locataires, 9 ans de méthode, et zéro envie de t&apos;envoyer dans le mur</span>.
+                Je suis diplômée en immobilier, j&apos;ai été Real Estate Asset Manager dans un fonds d&apos;investissement immobilier en Europe. En parallèle de ce job, j&apos;ai investi pour moi.
               </p>
               <p className="mb-5 leading-relaxed">
-                J&apos;ai créé ce cahier parce que je voulais que les gens qui me suivent aient un truc gratuit, fun, et VRAIMENT utile pour leur été. Pas un teaser pour me vendre une formation. Une vraie ressource.
+                9 ans plus tard, j&apos;ai{" "}
+                <span className="highlight-yellow font-bold">55 locataires</span>, j&apos;accompagne des centaines d&apos;investisseurs, et j&apos;ai construit ma méthode brique par brique.
+              </p>
+              <p className="font-hand text-2xl" style={{ color: C.coral }}>
+                Si j&apos;ai pu le faire, toi aussi.
               </p>
 
               <div className="grid grid-cols-3 gap-3 mt-6">
@@ -867,13 +897,9 @@ function LandingScreen({ onStart }: { onStart?: () => void }) {
                 </div>
                 <div className="p-3 text-center" style={{ background: C.paper, border: `2px solid ${C.ink}`, borderRadius: "12px" }}>
                   <p className="font-display text-3xl font-bold" style={{ color: C.palm }}>1 900</p>
-                  <p className="text-xs">élèves formés</p>
+                  <p className="text-xs">à la newsletter</p>
                 </div>
               </div>
-
-              <p className="mt-6 text-sm italic" style={{ color: C.inkSoft }}>
-                Ex-fondatrice de la formation Evermind (2018-2026). Aujourd&apos;hui je lance ES Academy.
-              </p>
             </div>
           </div>
         </div>
@@ -974,7 +1000,7 @@ function LandingScreen({ onStart }: { onStart?: () => void }) {
             Je récupère mon cahier 🏖️
           </button>
           <p className="text-sm text-white/60 mt-6">
-            Gratuit · Sans engagement · 1 100 inscrits l&apos;an dernier
+            Gratuit · Sans engagement · 7 500 inscrits l&apos;an dernier
           </p>
         </div>
       </section>
@@ -1057,7 +1083,7 @@ const FAQ_DATA = [
   },
   {
     q: "Quelle différence avec une formation payante ?",
-    a: "Une formation payante, c'est 1 500 à 5 000 €, beaucoup de théorie, et 88% des gens ne la finissent pas. Le cahier c'est gratuit, court, ludique, et 87% des inscrits 2025 l'ont terminé. Pas la même promesse.",
+    a: "Le cahier, c'est gratuit, court, ludique, fait pour ton été. 92% des inscrits 2025 l'ont terminé. Si tu veux ensuite aller plus loin avec un suivi rapproché, je propose ES Academy à la rentrée, mais c'est ton choix. Le cahier reste utile en lui-même.",
   },
   {
     q: "Est-ce que je peux le faire en couple, avec un ami, mon frère ?",
