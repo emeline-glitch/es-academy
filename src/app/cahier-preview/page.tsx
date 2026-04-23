@@ -1046,7 +1046,7 @@ function FormulaireOptIn({ onStart }: { onStart?: () => void }) {
           style={{ background: C.sand, border: `2px solid ${C.ink}30` }}
         />
         <p className="text-xs text-left -mt-1 px-1" style={{ color: C.inkSoft }}>
-          Ton numéro sert à ce qu&apos;Antony, mon associé, puisse te rappeler en septembre si tu veux qu&apos;on en parle. Zéro spam, zéro relance commerciale agressive, promesse.
+          Ton numéro sert à ce qu&apos;Antony, de mon équipe, puisse te rappeler en septembre si tu veux qu&apos;on en parle. Zéro spam, zéro relance commerciale agressive, promesse.
         </p>
         <button
           type="button"
