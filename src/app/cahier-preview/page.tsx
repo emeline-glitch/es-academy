@@ -1378,10 +1378,6 @@ function SectionWhatsApp() {
                 accent={C.flamingo}
               />
             </div>
-
-            <p className="text-xs italic text-center mt-4" style={{ color: C.inkSoft }}>
-              Captures réelles de l&apos;édition 2025 (prénoms gardés avec leur accord)
-            </p>
           </div>
         </div>
       </div>
