@@ -8,6 +8,7 @@ type Profile = {
   niveau: string;
   ambition: string;
   tempsSemaine: string;
+  epargne: string;
   blocage: string;
   situation: string;
 };
@@ -2134,12 +2135,12 @@ const ETAT_LIEUX_QUESTIONS = [
   },
   {
     key: "ambition" as const,
-    label: "Dans 5 ans, tu veux...",
+    label: "Dans 5 ans, ton objectif principal c'est...",
     options: [
-      { v: "autofi", text: "1 à 2 biens qui s'autofinancent", emoji: "⚓" },
-      { v: "patrimoine", text: "3 à 5 biens, un vrai patrimoine", emoji: "🏛️" },
-      { v: "liberte", text: "Remplacer mon salaire", emoji: "🌅" },
-      { v: "sais-pas", text: "Je sais pas, je cherche", emoji: "🤔" },
+      { v: "autofi", text: "1 à 2 biens immo qui s'autofinancent", emoji: "⚓" },
+      { v: "diversifie", text: "Un patrimoine diversifié : assurance vie, SCPI, immobilier", emoji: "🏛️" },
+      { v: "liberte", text: "Remplacer mon salaire ou assurer ma retraite", emoji: "🌅" },
+      { v: "sais-pas", text: "Je sais pas encore, je cherche à comprendre", emoji: "🤔" },
     ],
   },
   {
@@ -2150,6 +2151,16 @@ const ETAT_LIEUX_QUESTIONS = [
       { v: "2-5h", text: "2 à 5h, soirées et week-ends", emoji: "🌙" },
       { v: "5-10h", text: "5 à 10h, je suis motivée", emoji: "💪" },
       { v: "10+h", text: "10h ou plus, c'est ma priorité", emoji: "🔥" },
+    ],
+  },
+  {
+    key: "epargne" as const,
+    label: "Côté épargne aujourd'hui, t'en es où franchement ?",
+    options: [
+      { v: "rien", text: "Aucune épargne, parfois en découvert", emoji: "😬" },
+      { v: "fragile", text: "Quelques centaines d'euros, pas un vrai matelas", emoji: "🌬️" },
+      { v: "stable", text: "3 à 6 mois de mes charges fixes de côté", emoji: "🛟" },
+      { v: "investie", text: "Plus de 6 mois + de l'épargne placée (LDD, AV, etc.)", emoji: "💎" },
     ],
   },
   {
@@ -2228,6 +2239,39 @@ function EtatLieuxScreen({ onComplete }: { onComplete: (p: Profile) => void }) {
             <p className="text-sm" style={{ color: C.inkSoft }}>{verdict.parcours}</p>
           </div>
         </div>
+
+        {verdict.alerte && (
+          <div
+            className="p-4 mb-6 text-sm"
+            style={{
+              background: C.coral + "15",
+              borderLeft: `4px solid ${C.coral}`,
+              borderRadius: "10px",
+              color: C.ink,
+            }}
+          >
+            <span className="font-hand text-lg block mb-1" style={{ color: C.coralDark }}>Alerte capitaine</span>
+            {verdict.alerte}
+          </div>
+        )}
+
+        {verdict.pisteSolstice && (
+          <div
+            className="p-5 mb-6"
+            style={{
+              background: C.lagonLight + "30",
+              border: `2px dashed ${C.lagonDark}`,
+              borderRadius: "14px",
+            }}
+          >
+            <p className="font-hand text-xl mb-2 flex items-center gap-2" style={{ color: C.lagonDark }}>
+              🌅 Une autre piste pour toi
+            </p>
+            <p className="text-sm leading-relaxed" style={{ color: C.ink }}>
+              {verdict.pisteSolstice}
+            </p>
+          </div>
+        )}
 
         <button
           onClick={() => onComplete(profile)}
@@ -2315,32 +2359,103 @@ function EtatLieuxScreen({ onComplete }: { onComplete: (p: Profile) => void }) {
   );
 }
 
-function getVerdict(p: Profile): { titre: string; description: string; parcours: string } {
+function getVerdict(p: Profile): {
+  titre: string;
+  description: string;
+  parcours: string;
+  alerte?: string;
+  pisteSolstice?: string;
+} {
+  // Cas 1 : épargne nulle ou fragile -> on freine sur l'immo, on oriente sur les bases
+  if (p.epargne === "rien") {
+    return {
+      titre: "La Rêveuse honnête",
+      description:
+        "Tu es lucide, et c'est ce qui me plaît : tu reconnais que tes finances perso sont à reprendre avant de te lancer dans l'immo. Acheter un bien locatif sans matelas, c'est se mettre à genoux dès le 1ᵉʳ coup dur (chaudière HS, locataire qui paie pas, vacance).",
+      parcours:
+        "Fais quand même les 5 escales pour comprendre la mécanique. Mais ta vraie mission cet été, c'est de monter ton matelas avant tout. Vise 3 mois de tes charges fixes en épargne d'urgence avant de viser un crédit immo.",
+      alerte:
+        "⛔ Ne te lance PAS dans un achat sans matelas. C'est la 1ʳᵉ règle non négociable de ma méthode.",
+      pisteSolstice:
+        "Si tu veux qu'on regarde ensemble comment structurer tes finances perso AVANT l'immo, mon cabinet de gestion patrimoine Solstice peut faire un point gratuit avec toi à la rentrée.",
+    };
+  }
+  if (p.epargne === "fragile") {
+    return {
+      titre: "La Préparatrice",
+      description:
+        "Tu as commencé à mettre de côté mais tu n'es pas encore au niveau de sécurité pour te lancer. C'est OK. Le cahier va te servir à apprendre la méthode pendant que tu consolides ton matelas en parallèle.",
+      parcours:
+        "Fais les 5 escales sans pression cet été. En septembre, tu décides : si ton épargne a atteint 3 mois de charges, tu peux passer à l'action. Sinon, tu continues de consolider.",
+      pisteSolstice:
+        "Pour optimiser ta capacité d'épargne (placement de précaution, réduction d'impôts), Solstice peut t'aider à structurer ça à la rentrée.",
+    };
+  }
+
+  // Cas 2 : ambition diversifiée -> piste Solstice claire
+  if (p.ambition === "diversifie") {
+    return {
+      titre: "La Bâtisseuse multi-facettes",
+      description:
+        "Tu vises un patrimoine qui mixe immo + financier (assurance vie, SCPI, etc.). Excellent positionnement long terme : tu ne mets pas tous tes œufs dans un panier, tu construis solide.",
+      parcours:
+        "Le cahier va te lancer côté immo locatif (escales 1 à 5). En parallèle, garde en tête que tu as besoin d'un vrai conseil patrimonial pour la partie financière.",
+      pisteSolstice:
+        "Solstice, mon cabinet de gestion patrimoine, est exactement fait pour ton profil. À la rentrée on peut faire un bilan complet : immo + AV + SCPI + fiscalité.",
+    };
+  }
+
+  // Cas 3 : ambition retraite/salaire -> long terme, plus stratégique
+  if (p.ambition === "liberte") {
+    return {
+      titre: "La Stratège long terme",
+      description:
+        "Tu vises grand : remplacer ton salaire ou assurer ta retraite. C'est ambitieux et faisable, mais ça demande une stratégie en plusieurs étapes (pas un coup de chance, une montée en charge).",
+      parcours:
+        "Fais les 5 escales en mode étude. Concentre-toi sur les escales 1 (objectifs) et 2 (finances) qui sont les fondations. Les autres viennent ensuite, projet par projet.",
+      pisteSolstice:
+        "Pour un objectif retraite/salaire, l'immo seule ne suffit pas toujours. Solstice peut compléter avec assurance vie, PER, SCPI selon ton profil fiscal. À la rentrée si tu veux qu'on en parle.",
+    };
+  }
+
+  // Cas 4 : "je sais pas" -> exploratrice
+  if (p.ambition === "sais-pas") {
+    return {
+      titre: "L'Exploratrice",
+      description:
+        "Tu es en phase de clarification, et c'est un bon endroit pour démarrer. Ce cahier va t'aider à savoir SI l'immo est pour toi, pas juste COMMENT faire. Prends ton temps cet été pour découvrir.",
+      parcours:
+        "Fais les 5 escales dans l'ordre. Ne saute pas l'escale 1, c'est celle qui va te débloquer. À la fin, tu sauras si tu veux te lancer ou pas.",
+    };
+  }
+
+  // Cas 5 : niveau immo
   if (p.niveau === "debut") {
     return {
       titre: "La Défricheuse",
-      description: "Tu démarres de zéro et c'est parfait. Pas de mauvaises habitudes, pas de mauvaise méthode. Tu peux construire ta base sur des fondations propres. L'été est EXACTEMENT ce qu'il te faut : pas de stress, juste de la construction.",
-      parcours: "Commence par les escales 1 (Port des objectifs) et 2 (Plage des finances) avant d'ouvrir la moindre annonce. Les escales 3 et 4 viendront quand ta machine bancaire est calée.",
+      description:
+        "Tu démarres de zéro côté immo et c'est parfait. Pas de mauvaises habitudes, pas de mauvaise méthode. Tu peux construire ta base sur des fondations propres.",
+      parcours:
+        "Commence par les escales 1 (Port des objectifs) et 2 (Plage des finances) avant d'ouvrir la moindre annonce. Les escales 3 et 4 viendront quand ta machine bancaire est calée.",
     };
   }
   if (p.niveau === "1bien") {
     return {
       titre: "La Navigatrice",
-      description: "Tu as déjà 1 bien, donc tu sais que c'est possible. Ce cahier va t'aider à passer du « j'ai fait un coup » au « j'ai une méthode ». L'enjeu pour toi : professionnaliser ton œil et ta sélection.",
-      parcours: "Tu peux zapper l'escale 1 si ton cap est clair. Attaque fort l'escale 3 (Chasse aux pépites) et 4 (Jungle des travaux), c'est là où tu vas vraiment monter en niveau.",
-    };
-  }
-  if (p.niveau === "2-3" || p.niveau === "4+") {
-    return {
-      titre: "La Capitaine",
-      description: "Tu as déjà un vrai parc. Ce cahier va te servir d'audit plus que de formation. L'enjeu pour toi : repérer les angles morts de ta méthode actuelle et optimiser ce qui ronronne.",
-      parcours: "Parcours libre. Utilise les escales comme check-list. L'escale 5 (Pêche aux locataires) est probablement celle où tu vas trouver le plus de trucs à retravailler.",
+      description:
+        "Tu as déjà 1 bien, donc tu sais que c'est possible. Ce cahier va t'aider à passer du « j'ai fait un coup » au « j'ai une méthode ». L'enjeu pour toi : professionnaliser ton œil et ta sélection.",
+      parcours:
+        "Tu peux zapper l'escale 1 si ton cap est clair. Attaque fort l'escale 3 (Chasse aux pépites) et 4 (Jungle des travaux), c'est là où tu vas vraiment monter en niveau.",
     };
   }
   return {
-    titre: "L'Exploratrice",
-    description: "Tu es en phase de clarification. C'est un bon endroit. Ce cahier va t'aider à savoir SI l'immo est pour toi, pas juste COMMENT faire. Prends ton temps.",
-    parcours: "Fais les 5 escales dans l'ordre. Ne saute pas l'escale 1, c'est celle qui va te débloquer.",
+    titre: "La Capitaine",
+    description:
+      "Tu as déjà un vrai parc. Ce cahier va te servir d'audit plus que de formation. L'enjeu pour toi : repérer les angles morts de ta méthode actuelle et optimiser ce qui ronronne.",
+    parcours:
+      "Parcours libre. Utilise les escales comme check-list. L'escale 5 (Pêche aux locataires) est probablement celle où tu vas trouver le plus de trucs à retravailler.",
+    pisteSolstice:
+      "Avec un parc déjà constitué, tu pourrais avoir besoin d'optimiser fiscalement. Solstice peut faire un point complet à la rentrée.",
   };
 }
 
