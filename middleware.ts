@@ -13,7 +13,8 @@ export async function middleware(request: NextRequest) {
       path.startsWith("/api/site-auth") ||
       path.startsWith("/api/forms/") || // Endpoint public des formulaires (GET config + POST submit)
       path.startsWith("/api/contacts") || // Endpoint public d'inscription newsletter
-      path.startsWith("/api/webhooks/") || // Webhooks externes (VideoAsk, Stripe, etc.)
+      path.startsWith("/api/webhooks/") || // Webhooks externes (VideoAsk, etc.)
+      path.startsWith("/api/stripe/") || // Webhook + checkout Stripe (POST depuis Stripe + POST client-side)
       path.startsWith("/api/cron/") || // Endpoints cron protégés par CRON_SECRET
       path.startsWith("/form/") || // Page publique du formulaire, doit être accessible sans mot de passe site
       path.startsWith("/desabonnement") || // Lien de désinscription email doit marcher sans mdp

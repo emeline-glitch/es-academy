@@ -1,49 +1,35 @@
 import { NextResponse } from "next/server";
-import { createCheckoutSession } from "@/lib/stripe/checkout";
+import { createAcademyCheckoutSession } from "@/lib/stripe/checkout";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3001";
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { product } = body;
+    const plan = body?.plan;
 
-    let priceId: string;
-    let productName: string;
-    let courseId: string;
-
-    if (product === "formation") {
-      priceId = process.env.STRIPE_PRICE_FORMATION!;
-      productName = "formation";
-      courseId = "methode-emeline-siron";
-    } else if (product === "expert") {
-      priceId = process.env.STRIPE_PRICE_EXPERT!;
-      productName = "expert";
-      courseId = "methode-emeline-siron";
-    } else {
-      return NextResponse.json({ error: "Produit invalide" }, { status: 400 });
-    }
-
-    if (!priceId) {
+    if (plan !== "1x" && plan !== "3x" && plan !== "4x") {
       return NextResponse.json(
-        { error: "Prix Stripe non configure" },
-        { status: 500 }
+        { error: "Plan invalide (attendu: 1x, 3x ou 4x)" },
+        { status: 400 }
       );
     }
 
-    const session = await createCheckoutSession({
-      priceId,
-      productName,
-      courseId,
-      successUrl: `${SITE_URL}/connexion?checkout=success`,
-      cancelUrl: `${SITE_URL}/?checkout=cancelled`,
+    const session = await createAcademyCheckoutSession({
+      plan,
+      successUrl: `${SITE_URL}/connexion?checkout=success&plan=${plan}`,
+      cancelUrl: `${SITE_URL}/academy?checkout=cancelled`,
     });
 
     return NextResponse.json({ url: session.url });
   } catch (error) {
-    console.error("Stripe checkout error:", error);
+    // On ne log que le message (pas l'objet complet Stripe qui contient
+    // requestId + détails de payload qui peuvent matérialiser des données
+    // clients en clair dans les logs Netlify).
+    const message = error instanceof Error ? error.message : "Erreur inconnue";
+    console.error("[stripe/checkout]", message);
     return NextResponse.json(
-      { error: "Erreur lors de la creation du paiement" },
+      { error: "Erreur lors de la création du paiement" },
       { status: 500 }
     );
   }

@@ -3,6 +3,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { BottomBanner } from "@/components/marketing/BottomBanner";
 import { TestimonialsGrid } from "@/components/marketing/TestimonialsGrid";
+import { AcademyCheckoutButtons } from "@/components/marketing/AcademyCheckoutButtons";
 import { Button } from "@/components/ui/Button";
 import { Accordion } from "@/components/ui/Accordion";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
@@ -234,7 +235,7 @@ export default function AcademyPage() {
                 <span className="text-6xl sm:text-7xl lg:text-8xl font-bold text-es-cream">998€</span>
                 <span className="text-lg font-normal text-es-cream/50">TTC</span>
               </div>
-              <p className="text-base text-es-cream/70 mt-3">Paiement en 1x, 3x ou 10x sans frais</p>
+              <p className="text-base text-es-cream/70 mt-3">Paiement en 1, 3 ou 4 fois sans frais</p>
               <p className="text-sm text-es-terracotta-light mt-4 font-medium">Déjà plus de 1 900 investisseurs formés</p>
             </div>
           </ScrollReveal>
@@ -279,7 +280,7 @@ export default function AcademyPage() {
                 </div>
 
                 <p className="italic text-es-cream/80 text-[15px] leading-relaxed mb-6">
-                  ES Family, c'est la communauté privée qui fait passer la théorie à l'action.
+                  ES Family, c&apos;est la communauté privée qui fait passer la théorie à l&apos;action.
                 </p>
 
                 <ul className="space-y-5">
@@ -311,15 +312,7 @@ export default function AcademyPage() {
           {/* 4. CTA final centré */}
           <ScrollReveal delay={300}>
             <div className="max-w-2xl mx-auto text-center">
-              <Button variant="cta" size="lg" className="w-full sm:w-auto sm:px-12 font-semibold text-base">
-                Je rejoins la formation →
-              </Button>
-              <p className="text-sm text-es-cream/70 mt-4">
-                Paiement sécurisé · Accès immédiat · Satisfait ou remboursé 14 jours
-              </p>
-              <p className="text-[11px] text-es-cream/40 mt-6 max-w-xl mx-auto leading-relaxed">
-                À l'issue des 3 mois, l'accès ES Family se poursuit automatiquement à 29€/mois, sans engagement, annulable en 1 clic.
-              </p>
+              <AcademyCheckoutButtons />
             </div>
           </ScrollReveal>
         </div>
