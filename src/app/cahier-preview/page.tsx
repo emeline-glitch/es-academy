@@ -1227,6 +1227,96 @@ function DashboardScreen({ profile }: { profile: Profile | null }) {
   );
 }
 
+function VideoMiniature({ video }: { video: { title: string; duration: string; thumbColor: string; thumbEmoji: string } }) {
+  return (
+    <section className="mb-8">
+      <div className="flex items-center gap-2 mb-3">
+        <span className="text-2xl">🎥</span>
+        <h3 className="font-display text-xl font-bold" style={{ color: C.ink }}>
+          La vidéo de l&apos;escale
+        </h3>
+      </div>
+      <button
+        type="button"
+        className="block w-full max-w-2xl mx-auto group transition-transform hover:-translate-y-1"
+        style={{ background: "transparent" }}
+        aria-label={`Lire la vidéo : ${video.title}`}
+      >
+        <div
+          className="relative overflow-hidden"
+          style={{
+            background: `linear-gradient(135deg, ${video.thumbColor} 0%, ${C.ink} 100%)`,
+            border: `3px solid ${C.ink}`,
+            borderRadius: "16px",
+            boxShadow: `5px 5px 0 ${C.ink}`,
+            aspectRatio: "16/9",
+          }}
+        >
+          {/* fond emoji géant */}
+          <div
+            className="absolute inset-0 flex items-center justify-center text-[180px] opacity-30"
+            style={{ filter: "drop-shadow(0 4px 12px rgba(0,0,0,0.3))" }}
+          >
+            {video.thumbEmoji}
+          </div>
+
+          {/* play button central */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div
+              className="flex items-center justify-center transition-transform group-hover:scale-110"
+              style={{
+                width: "80px",
+                height: "80px",
+                background: "rgba(255, 255, 255, 0.95)",
+                borderRadius: "50%",
+                boxShadow: "0 4px 20px rgba(0,0,0,0.4)",
+              }}
+            >
+              <div
+                style={{
+                  width: 0,
+                  height: 0,
+                  borderTop: "16px solid transparent",
+                  borderBottom: "16px solid transparent",
+                  borderLeft: `24px solid ${C.coral}`,
+                  marginLeft: "6px",
+                }}
+              />
+            </div>
+          </div>
+
+          {/* badge durée bas droite (style YouTube) */}
+          <div
+            className="absolute bottom-3 right-3 px-2 py-1 text-xs font-bold"
+            style={{
+              background: "rgba(0,0,0,0.85)",
+              color: "white",
+              borderRadius: "4px",
+            }}
+          >
+            ▶ {video.duration}
+          </div>
+
+          {/* titre vidéo overlay bas */}
+          <div
+            className="absolute bottom-0 inset-x-0 p-4 pt-12"
+            style={{
+              background: "linear-gradient(to top, rgba(0,0,0,0.8), transparent)",
+            }}
+          >
+            <p className="text-white font-bold text-base sm:text-lg leading-tight text-left">
+              {video.title}
+            </p>
+            <p className="text-white/80 text-xs mt-1 text-left">
+              Avec Emeline Siron · Cahier de vacances 2026
+            </p>
+          </div>
+        </div>
+      </button>
+    </section>
+  );
+}
+
 function PolaroidStep({ step, index }: { step: (typeof STEPS)[number]; index: number }) {
   const isDone = step.status === "done";
   const isCurrent = step.status === "current";
@@ -1340,9 +1430,10 @@ type LettreData = {
   missionTitle: string;
   missionIntro: string;
   missionSteps: { title: string; body: string }[];
+  video: { title: string; duration: string; thumbColor: string; thumbEmoji: string };
   quiz: QuizQ[];
   game: "valise" | "coup-de-coeur" | "cinq-erreurs" | "dossier-mystere" | null;
-  bonus: { icon: string; title: string; desc: string }[];
+  bonus: { icon: string; title: string; desc: string };
   ps: string;
 };
 
@@ -1366,6 +1457,7 @@ const LETTRES: Record<number, LettreData> = {
       { title: "2) Le message", body: "À UNE personne qui te porte (pas celui qui va dire « fais gaffe »). Texte exact : « Cet été je me lance sur l'immo. Mon objectif : [ton post-it]. T'es la 1ʳᵉ personne à qui je le dis. Note la date. »" },
       { title: "3) Le passeport", body: "Recopie tes 3 lignes dans ton passeport (dans ton dashboard). À chaque escale tu reviens vérifier que tu tiens le cap." },
     ],
+    video: { title: "Pourquoi je veux investir, comment trouver ton vrai pourquoi", duration: "8 min", thumbColor: "#1FBED6", thumbEmoji: "⚓" },
     quiz: [
       {
         id: 1,
@@ -1402,11 +1494,7 @@ const LETTRES: Record<number, LettreData> = {
       },
     ],
     game: null,
-    bonus: [
-      { icon: "🎥", title: "Vidéo", desc: "« Pourquoi je veux investir, comment trouver ton vrai pourquoi » (réutilisée 2025, 8 min)" },
-      { icon: "📎", title: "Téléchargement", desc: "Modèle de post-it imprimable A6" },
-      { icon: "🎧", title: "Audio", desc: "« Le post-it qui m'a sauvée » (4 min, pour ta marche du soir)" },
-    ],
+    bonus: { icon: "📎", title: "Modèle de post-it", desc: "Format A6 imprimable, à coller sur ton frigo dès ce soir." },
     ps: "Si tu as envoyé ton message et qu'on t'a répondu, fais-en une capture et envoie-la-moi en réponse au prochain mail. Je veux les voir.",
   },
   2: {
@@ -1429,6 +1517,7 @@ const LETTRES: Record<number, LettreData> = {
       { title: "2) Écris ton business plan 1 page", body: "Prix du bien, apport, mensualité, loyer projeté, charges, autofinancement. Modèle dans le téléchargement bonus." },
       { title: "3) Liste 6 banques à attaquer", body: "Ta banque actuelle + 5 autres. Inclus au moins 1 banque en ligne (Boursorama, Fortuneo) et 1 mutualiste (Crédit Mutuel, Banque Populaire). Un courtier en parallèle." },
     ],
+    video: { title: "Comment je parle à mon banquier", duration: "12 min", thumbColor: "#FFC93C", thumbEmoji: "🏦" },
     quiz: [
       {
         id: 1,
@@ -1465,11 +1554,7 @@ const LETTRES: Record<number, LettreData> = {
       },
     ],
     game: "valise",
-    bonus: [
-      { icon: "📄", title: "Template", desc: "Business plan 1 page à remplir" },
-      { icon: "📋", title: "Checklist", desc: "Kit banque complet, 8 pièces à rassembler" },
-      { icon: "🎥", title: "Vidéo", desc: "« Comment je parle à mon banquier » (réutilisée 2025, 12 min)" },
-    ],
+    bonus: { icon: "🎧", title: "Ma sélection podcasts", desc: "10 épisodes Out of the Box à écouter cet été pour comprendre ta banque comme jamais." },
     ps: "Si ta banque actuelle te dit non, ne le vis pas comme un rejet personnel. Vis-le comme une info : c'est pas ton partenaire, suivant. Et écris-moi pour me le raconter, j'adore ces histoires.",
   },
   3: {
@@ -1492,6 +1577,7 @@ const LETTRES: Record<number, LettreData> = {
       { title: "2) Les 3 filtres Emeline", body: "Copro saine (demande le PV de la dernière AG avant de visiter), chaudière / toiture / façade en bon état (sinon provisions), emplacement vivant (commerces, transports, écoles)." },
       { title: "3) Le verdict", body: "5 annonces analysées, tu barres 3, tu gardes 2. Sur les 2, tu appelles le propriétaire aujourd'hui pour visiter cette semaine." },
     ],
+    video: { title: "Comment je lis une annonce en 30 secondes", duration: "9 min", thumbColor: "#FF6B5B", thumbEmoji: "🗺️" },
     quiz: [
       {
         id: 1,
@@ -1528,11 +1614,7 @@ const LETTRES: Record<number, LettreData> = {
       },
     ],
     game: "coup-de-coeur",
-    bonus: [
-      { icon: "📊", title: "Grille", desc: "Ma grille 7 critères au format Excel + PDF imprimable" },
-      { icon: "🎥", title: "Vidéo", desc: "« Comment je lis une annonce en 30 secondes » (réutilisée 2025, 9 min)" },
-      { icon: "📍", title: "Carte", desc: "Les 10 zones françaises que je regarde en priorité en 2026" },
-    ],
+    bonus: { icon: "📊", title: "Ma grille 7 critères", desc: "Format Excel + PDF imprimable, à remplir en 5 min par bien." },
     ps: "Quand tu auras visité ton 1ᵉʳ bien avec ma grille, envoie-moi l'analyse. Je te dis si tu fonces ou si tu passes, en 24h.",
   },
   4: {
@@ -1554,6 +1636,7 @@ const LETTRES: Record<number, LettreData> = {
       { title: "2) Ta checklist devis", body: "Une fois les 5 erreurs trouvées, télécharge la checklist que je lis à chaque devis reçu. 12 points, à imprimer et garder dans ta pochette visite." },
       { title: "3) Le protocole 3 devis", body: "Règle absolue : tu demandes toujours 3 devis sur les gros lots (cuisine, salle de bain, électricité). Pas 2. Pas 4. Trois. Et tu prends le médian, pas le moins cher." },
     ],
+    video: { title: "Mes 3 règles sacrées sur les devis travaux", duration: "11 min", thumbColor: "#2D9D8F", thumbEmoji: "🔨" },
     quiz: [
       {
         id: 1,
@@ -1590,11 +1673,7 @@ const LETTRES: Record<number, LettreData> = {
       },
     ],
     game: "cinq-erreurs",
-    bonus: [
-      { icon: "📋", title: "Checklist", desc: "12 points à vérifier sur tout devis reçu" },
-      { icon: "🎥", title: "Vidéo", desc: "« Mes 3 règles sacrées sur les devis » (réutilisée 2025, 11 min)" },
-      { icon: "📇", title: "Annuaire", desc: "Mes 10 questions à poser à un artisan avant de signer" },
-    ],
+    bonus: { icon: "📋", title: "Checklist devis", desc: "Les 12 points à vérifier sur tout devis reçu, à imprimer et garder dans ta pochette visite." },
     ps: "Si un artisan refuse de fractionner les paiements ou de fournir son attestation décennale, fuis. Pas de négociation, pas d'exception.",
   },
   5: {
@@ -1617,6 +1696,7 @@ const LETTRES: Record<number, LettreData> = {
       { title: "2) La grille de tri en 3 colonnes", body: "OUI (revenus 3× loyer + garant solide + stabilité pro/familiale), PEUT-ÊTRE (2 sur 3), NON (1 ou 0). Pas de discussion, pas d'émotion." },
       { title: "3) La visite, 4 questions piège", body: "Tu poses toujours : « Pourquoi vous déménagez ? », « Combien de temps dans votre logement actuel ? », « Votre prochain projet perso dans 2 ans ? », « Un garant solide vous gêne ? ». Les réponses te disent tout." },
     ],
+    video: { title: "Comment je sélectionne mes locataires", duration: "14 min", thumbColor: "#FF8FAB", thumbEmoji: "👥" },
     quiz: [
       {
         id: 1,
@@ -1653,11 +1733,7 @@ const LETTRES: Record<number, LettreData> = {
       },
     ],
     game: "dossier-mystere",
-    bonus: [
-      { icon: "📝", title: "Template", desc: "Annonce 200 mots à remplir, testée sur mes 55 locataires" },
-      { icon: "📊", title: "Grille de tri", desc: "Ma grille 3 colonnes + les 4 questions piège de visite" },
-      { icon: "🎥", title: "Vidéo", desc: "« Comment je sélectionne mes locataires » (réutilisée 2025, 14 min)" },
-    ],
+    bonus: { icon: "📝", title: "Template d'annonce", desc: "200 mots à remplir, testée sur mes 55 locataires. Tu as eu 200 candidatures ou tu reviens m'engueuler." },
     ps: "Le meilleur locataire n'est jamais le plus évident sur le papier. Fie-toi à ton instinct de visite + la grille. Jamais l'un sans l'autre.",
   },
 };
@@ -1769,6 +1845,8 @@ function EtapeScreen({ stepNum }: { stepNum: number }) {
           ))}
         </ol>
       </section>
+
+      <VideoMiniature video={L.video} />
 
       {L.game === "valise" && <JeuValiseBanquier />}
       {L.game === "coup-de-coeur" && <JeuCoupDeCoeur />}
@@ -1941,18 +2019,25 @@ function EtapeScreen({ stepNum }: { stepNum: number }) {
         }}
       >
         <h3 className="font-display text-xl font-bold mb-4" style={{ color: C.ink }}>
-          🎁 Tes bonus de l&apos;escale
+          🎁 Ton bonus de l&apos;escale
         </h3>
-        <div className="space-y-3">
-          {L.bonus.map((b, i) => (
-            <div key={i} className="flex items-start gap-3 p-3" style={{ background: C.sand, borderRadius: "12px" }}>
-              <span className="text-2xl flex-shrink-0">{b.icon}</span>
-              <div>
-                <p className="font-bold">{b.title}</p>
-                <p className="text-sm" style={{ color: C.inkSoft }}>{b.desc}</p>
-              </div>
-            </div>
-          ))}
+        <div className="flex items-start gap-3 p-4" style={{ background: C.sand, borderRadius: "12px" }}>
+          <span className="text-3xl flex-shrink-0">{L.bonus.icon}</span>
+          <div className="flex-1">
+            <p className="font-bold text-lg mb-1">{L.bonus.title}</p>
+            <p className="text-sm" style={{ color: C.inkSoft }}>{L.bonus.desc}</p>
+          </div>
+          <button
+            className="font-bold px-4 py-2 text-sm flex-shrink-0 transition-transform hover:-translate-y-0.5"
+            style={{
+              background: C.coral,
+              color: "white",
+              border: `2px solid ${C.ink}`,
+              borderRadius: "999px",
+            }}
+          >
+            Télécharger
+          </button>
         </div>
       </section>
 
@@ -2021,11 +2106,16 @@ function CoffreScreen() {
             Continue avec ES Family
           </h2>
           <p className="mb-5 leading-relaxed" style={{ color: C.inkSoft }}>
-            Le suivi mensuel pour ne pas lâcher. Lives, replays, entraide, templates.
-            Tu avances à ton rythme, jamais seule.
+            La communauté pour continuer d&apos;avancer tous ensemble, toute l&apos;année. Tu n&apos;es plus jamais seule face à ton projet immo.
           </p>
           <ul className="space-y-2 mb-6 text-base">
-            {["Lives mensuels avec moi", "Bibliothèque de templates", "Réponses à tes questions", "Sans engagement"].map((it) => (
+            {[
+              "Actualité immo & fiscale chaque semaine",
+              "Bons plans travaux et matériaux de la semaine",
+              "Communauté active et discussions de groupe",
+              "Lives mensuels avec moi",
+              "Outil simulateur prix au m²",
+            ].map((it) => (
               <li key={it} className="flex items-start gap-2">
                 <span style={{ color: C.flamingo }} className="text-xl flex-shrink-0">✓</span>
                 <span>{it}</span>
@@ -2049,7 +2139,7 @@ function CoffreScreen() {
             Je rejoins ES Family
           </button>
           <p className="text-xs text-center mt-3" style={{ color: C.inkSoft }}>
-            Pour le prix d&apos;un forfait téléphonique. Sans engagement.
+            Pour le prix d&apos;un forfait téléphonique. Résiliable à tout moment.
           </p>
         </div>
 
@@ -2074,11 +2164,15 @@ function CoffreScreen() {
             Rejoins l&apos;Academy
           </h2>
           <p className="text-white/80 mb-5 leading-relaxed">
-            5 sprints, 6 mois de coaching, ma méthode complète. Tu signes ton bien
-            d&apos;ici la fin d&apos;année, ou je te rembourse.
+            Ma formation complète, accès à vie. 14 modules, ~64 leçons, pour signer ton bien d&apos;ici la fin d&apos;année.
           </p>
           <ul className="space-y-2 mb-6 text-base text-white/90">
-            {["La méthode Emeline SIRON complète", "Coaching individuel inclus", "3 mois ES Family offerts", "Garantie résultat ou remboursé"].map((it) => (
+            {[
+              "La méthode Emeline SIRON complète",
+              "14 modules, ~64 leçons, accès à vie",
+              "3 mois ES Family offerts inclus",
+              "Garantie satisfait ou remboursé 14 jours",
+            ].map((it) => (
               <li key={it} className="flex items-start gap-2">
                 <span style={{ color: C.sun }} className="text-xl flex-shrink-0">✓</span>
                 <span>{it}</span>
@@ -2089,7 +2183,9 @@ function CoffreScreen() {
             <span className="font-display text-5xl font-bold" style={{ color: C.sun }}>
               998€
             </span>
-            <span className="text-base text-white/60"> ou 3x 333€</span>
+            <p className="text-sm text-white/60 mt-1">
+              Paiement en 1 fois, ou en 3× ou 4× (max) sans frais
+            </p>
           </div>
           <button
             className="w-full font-bold py-3 text-lg transition-transform hover:-translate-y-1"
@@ -2104,7 +2200,7 @@ function CoffreScreen() {
             Mon appel découverte
           </button>
           <p className="text-xs text-center mt-3 text-white/60">
-            15 min avec Antony, gratuit, sans engagement.
+            30 min avec Antony, gratuit, sans engagement.
           </p>
         </div>
       </div>
@@ -2759,10 +2855,72 @@ function JeuCinqErreurs() {
         <span className="text-3xl">🔎</span>
         <h2 className="font-display text-2xl font-bold">Jeu : Les 5 erreurs du devis</h2>
       </div>
-      <p className="mb-5 text-sm" style={{ color: C.inkSoft }}>
-        Voici un vrai devis, reçu d'un artisan en 2017. Il contient 5 erreurs qui m'auraient coûté +9 K€. Clique sur chaque erreur trouvée.{" "}
-        <span className="font-bold">{found.length}/{total} trouvées.</span>
+      <p className="mb-3 text-sm" style={{ color: C.inkSoft }}>
+        Voici un vrai devis, reçu d&apos;un artisan en 2017. Il contient 5 erreurs qui m&apos;auraient coûté +9 K€.
       </p>
+
+      <div
+        className="mb-5 p-4 text-center"
+        style={{
+          background: C.sun,
+          border: `3px solid ${C.ink}`,
+          borderRadius: "12px",
+          boxShadow: `3px 3px 0 ${C.ink}`,
+        }}
+      >
+        <p className="font-display text-xl sm:text-2xl font-bold" style={{ color: C.ink }}>
+          👉 Clique sur chaque erreur que tu trouves dans le devis
+        </p>
+        <p className="mt-1 font-hand text-2xl" style={{ color: C.coralDark }}>
+          {found.length} / {total} trouvées
+        </p>
+      </div>
+
+      <div
+        className="mb-4 p-3 flex items-start gap-3 text-xs sm:text-sm"
+        style={{
+          background: C.lagonLight + "40",
+          border: `2px dashed ${C.lagonDark}`,
+          borderRadius: "10px",
+        }}
+      >
+        <span className="text-2xl">💡</span>
+        <div>
+          <p className="font-bold mb-1" style={{ color: C.lagonDark }}>Comment ça marche</p>
+          <p style={{ color: C.ink }}>
+            Tu cliques sur une ligne suspecte du devis. Si c&apos;est une erreur, elle s&apos;entoure en rouge et l&apos;explication apparaît plus bas. Exemple ci-dessous, j&apos;en ai déjà entouré une pour te montrer 👇
+          </p>
+        </div>
+      </div>
+
+      {/* Exemple démonstratif d'une zone déjà entourée */}
+      <div
+        className="mx-auto mb-3 p-3 font-mono text-xs sm:text-sm relative"
+        style={{
+          background: "#fffdf0",
+          border: `2px solid ${C.ink}`,
+          borderRadius: "8px",
+          maxWidth: "600px",
+        }}
+      >
+        <div
+          className="relative"
+          style={{
+            background: C.coral + "30",
+            border: `3px dashed ${C.coral}`,
+            borderRadius: "6px",
+            padding: "6px 10px",
+          }}
+        >
+          <span className="absolute -top-3 -right-2 px-2 py-0.5 text-xs font-hand" style={{ background: C.sun, color: C.ink, border: `2px solid ${C.ink}`, borderRadius: "999px", transform: "rotate(5deg)" }}>
+            Exemple
+          </span>
+          <p>· Démolition cloison ................. <span className="font-bold">2 200 €</span></p>
+          <p className="text-xs italic mt-1" style={{ color: C.coralDark }}>
+            ↑ Ici une vraie démolition de cloison coûte 400-600€. 2 200€, c&apos;est 4× le prix. Je décrocherais le devis.
+          </p>
+        </div>
+      </div>
 
       <div
         className="relative mx-auto p-6 font-mono text-xs sm:text-sm leading-relaxed"
@@ -3150,8 +3308,8 @@ Je t'ouvre le Coffre : [lien]
 
 Deux portes, deux rythmes, zéro mauvaise réponse :
 
-· La voie communauté · ES Family · 29 €/mois · Suivi mensuel + lives + entraide
-· La voie coaching · Academy · 998 € · 5 sprints + coaching individuel + garantie
+· La voie communauté · ES Family · 29 €/mois · Actu immo, bons plans travaux, lives, simulateur prix m², communauté
+· La voie formation · Academy · 998 € · 14 modules accès à vie, 3 mois ES Family offerts, garantie 14 jours
 
 Prends le temps. Regarde les deux. Choisis ce qui colle à TA vitesse.
 
@@ -3205,7 +3363,7 @@ Zéro pression, jamais.
 
 Bises, Emeline
 
-PS : 72% des alumnis Academy signent leur 1ᵉʳ bien dans les 6 mois. Si tu hésites, appelle Antony en 15 min, gratuit, pas vendeur. Il te dit juste ce qu'il voit.`,
+PS : 72% des alumnis Academy signent leur 1ᵉʳ bien dans les 6 mois. Si tu hésites, appelle Antony pour 30 min gratuites, pas vendeur. Il te dit juste ce qu'il voit, et tu décides après.`,
   },
 ];
 
