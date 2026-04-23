@@ -752,68 +752,6 @@ function LandingScreen({ onStart }: { onStart?: () => void }) {
         </div>
       </section>
 
-      {/* ============ MES ENGAGEMENTS (positionnement positif) ============ */}
-      <section className="py-20 px-6" style={{ background: C.sand }}>
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <p className="font-hand text-3xl mb-2" style={{ color: C.lagonDark }}>
-              Mes engagements pour cet été
-            </p>
-            <h2 className="font-display text-4xl sm:text-5xl font-bold">
-              Ce que tu vas <span className="highlight-coral italic">vraiment</span> avoir
-            </h2>
-            <p className="mt-4 max-w-2xl mx-auto" style={{ color: C.inkSoft }}>
-              Le cahier est un cadeau. Pas un teaser, pas un appât. Voici ce que je m&apos;engage à te donner, en clair.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            {[
-              {
-                emoji: "🎯",
-                titre: "Du concret, pas de la théorie",
-                desc: "Chaque escale produit un livrable que tu gardes : un post-it, un kit banque, une grille d'analyse, une annonce. Tu ressors avec des outils, pas avec des notes de cours.",
-                color: C.coral,
-              },
-              {
-                emoji: "🌍",
-                titre: "Une méthode terrain, pas magique",
-                desc: "9 ans de pratique, 55 biens à mon nom, zéro Lambo louée à la journée. Je te montre ce qui marche pour moi et pour les 7 500 personnes qui ont suivi l'an dernier.",
-                color: C.lagon,
-              },
-              {
-                emoji: "💌",
-                titre: "Un suivi par mail, sans harcèlement",
-                desc: "Je t'écris tous les 2 à 3 jours pendant 5 semaines. Si tu décroches, je te tends une corde. Si c'est pas le bon moment, tu me le dis et je te libère du suivi, zéro jugement.",
-                color: C.flamingo,
-              },
-              {
-                emoji: "🤝",
-                titre: "Ton choix à la rentrée",
-                desc: "À la fin du cahier, je te propose 2 options pour continuer si tu veux : la communauté ES Family (29 €/mois) ou l'accompagnement complet ES Academy. Mais le cahier reste utile en lui-même, sans rien acheter.",
-                color: C.sun,
-              },
-            ].map((b, i) => (
-              <div
-                key={b.titre}
-                className="p-6"
-                style={{
-                  background: C.paper,
-                  border: `3px solid ${C.ink}`,
-                  borderRadius: "16px",
-                  boxShadow: `5px 5px 0 ${b.color}`,
-                  transform: `rotate(${i % 2 === 0 ? "-0.5" : "0.5"}deg)`,
-                }}
-              >
-                <div className="text-4xl mb-3">{b.emoji}</div>
-                <h3 className="font-display text-xl font-bold mb-2">{b.titre}</h3>
-                <p className="text-sm leading-relaxed" style={{ color: C.inkSoft }}>{b.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ============ QUI EST EMELINE ============ */}
       <section className="py-20 px-6" style={{ background: C.flamingo + "15" }}>
         <div className="max-w-5xl mx-auto">
@@ -896,11 +834,73 @@ function LandingScreen({ onStart }: { onStart?: () => void }) {
                   <p className="text-xs">de terrain</p>
                 </div>
                 <div className="p-3 text-center" style={{ background: C.paper, border: `2px solid ${C.ink}`, borderRadius: "12px" }}>
-                  <p className="font-display text-3xl font-bold" style={{ color: C.palm }}>1 900</p>
+                  <p className="font-display text-3xl font-bold" style={{ color: C.palm }}>26K</p>
                   <p className="text-xs">à la newsletter</p>
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ============ MES ENGAGEMENTS (positionnement positif) ============ */}
+      <section className="py-20 px-6" style={{ background: C.sun + "20" }}>
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <p className="font-hand text-3xl mb-2" style={{ color: C.lagonDark }}>
+              Mes engagements pour cet été
+            </p>
+            <h2 className="font-display text-4xl sm:text-5xl font-bold">
+              Ce que tu vas <span className="highlight-coral italic">vraiment</span> avoir
+            </h2>
+            <p className="mt-4 max-w-2xl mx-auto" style={{ color: C.inkSoft }}>
+              Le cahier est un cadeau. Pas un teaser, pas un appât. Voici ce que je m&apos;engage à te donner, en clair.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            {[
+              {
+                emoji: "🎯",
+                titre: "Du concret, pas de la théorie",
+                desc: "Chaque escale produit un livrable que tu gardes : un post-it, un kit banque, une grille d'analyse, une annonce. Tu ressors avec des outils, pas avec des notes de cours.",
+                color: C.coral,
+              },
+              {
+                emoji: "🌍",
+                titre: "Une méthode terrain, pas magique",
+                desc: "9 ans de pratique, 55 biens à mon nom, zéro Lambo louée à la journée. Je te montre ce qui marche pour moi et pour les 7 500 personnes qui ont suivi l'an dernier.",
+                color: C.lagon,
+              },
+              {
+                emoji: "💌",
+                titre: "Un suivi par mail, sans harcèlement",
+                desc: "Je t'écris tous les 2 à 3 jours pendant 5 semaines. Si tu décroches, je te tends une corde. Si c'est pas le bon moment, tu me le dis et je te libère du suivi, zéro jugement.",
+                color: C.flamingo,
+              },
+              {
+                emoji: "🤝",
+                titre: "Ton choix à la rentrée",
+                desc: "À la fin du cahier, je te propose 2 options pour continuer si tu veux : la communauté ES Family (29 €/mois) ou l'accompagnement complet ES Academy. Mais le cahier reste utile en lui-même, sans rien acheter.",
+                color: C.sun,
+              },
+            ].map((b, i) => (
+              <div
+                key={b.titre}
+                className="p-6"
+                style={{
+                  background: C.paper,
+                  border: `3px solid ${C.ink}`,
+                  borderRadius: "16px",
+                  boxShadow: `5px 5px 0 ${b.color}`,
+                  transform: `rotate(${i % 2 === 0 ? "-0.5" : "0.5"}deg)`,
+                }}
+              >
+                <div className="text-4xl mb-3">{b.emoji}</div>
+                <h3 className="font-display text-xl font-bold mb-2">{b.titre}</h3>
+                <p className="text-sm leading-relaxed" style={{ color: C.inkSoft }}>{b.desc}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
