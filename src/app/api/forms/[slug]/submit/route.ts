@@ -85,54 +85,40 @@ export async function POST(
       ])
     );
 
-    // 3. Lookup avant upsert : on veut préserver les tags existants (ex: un contact 'client'
-    //    qui se réinscrit à une newsletter garde son tag 'client')
+    // 3. Upsert atomique via RPC (merge tags + préservation status RGPD,
+    //    + retour des previous_tags pour calculer les "newly added" sans race).
+    //    La RPC ne gère pas phone : on fait un UPDATE séparé après si nécessaire.
     const emailLower = email.toLowerCase().trim();
-    const { data: existing } = await supabase
-      .from("contacts")
-      .select("id, tags")
-      .ilike("email", emailLower)
-      .maybeSingle();
+    const { data: rpcResult, error: upsertErr } = await supabase
+      .rpc("upsert_contact_with_tags", {
+        p_email: emailLower,
+        p_first_name: (first_name || "").trim(),
+        p_last_name: (last_name || "").trim(),
+        p_add_tags: tags,
+        p_source: `form:${slug}`,
+      });
 
-    const mergedTags = Array.from(
-      new Set([...(existing?.tags || []), ...tags])
-    );
-
-    const upsertData: Record<string, unknown> = {
-      email: emailLower,
-      first_name: (first_name || "").trim(),
-      last_name: (last_name || "").trim(),
-      phone: phone?.trim() || null,
-      source: existing ? existing.id ? undefined : `form:${slug}` : `form:${slug}`,
-      tags: mergedTags,
-      status: "active",
-    };
-    // Ne pas overrider la source d'un contact qui existe déjà via un autre canal
-    if (existing) delete upsertData.source;
-
-    const { error: upsertErr } = await supabase
-      .from("contacts")
-      .upsert(upsertData, { onConflict: "email" });
-
-    if (upsertErr) {
-      console.error("[form submit] upsert error:", upsertErr);
+    if (upsertErr || !rpcResult || rpcResult.length === 0) {
+      console.error("[form submit] upsert RPC error:", upsertErr);
       return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
     }
 
-    // 4bis. Auto-enrollment : trouve l'id du contact (celui qu'on vient d'upsert)
-    // puis enroll dans les séquences actives dont le trigger_value matche un NOUVEAU tag
-    const { data: upsertedContact } = await supabase
-      .from("contacts")
-      .select("id")
-      .ilike("email", emailLower)
-      .maybeSingle();
+    const contactId = rpcResult[0].id as string;
+    const previousTags = (rpcResult[0].previous_tags || []) as string[];
 
-    if (upsertedContact) {
-      // Les tags "nouveaux" sont ceux qui n'existaient pas déjà sur le contact AVANT ce submit
-      const newlyAdded = tagsAdded(existing?.tags, mergedTags);
-      if (newlyAdded.length > 0) {
-        await autoEnrollByTags(supabase, upsertedContact.id, newlyAdded);
-      }
+    // Update phone si fourni (la RPC n'écrit pas phone, on overwrite simple).
+    if (phone?.trim()) {
+      await supabase
+        .from("contacts")
+        .update({ phone: phone.trim() })
+        .eq("id", contactId);
+    }
+
+    // 4bis. Auto-enrollment : enroll dans les séquences actives dont le trigger_value
+    // matche un NOUVEAU tag (pas déjà présent avant ce submit).
+    const newlyAdded = tagsAdded(previousTags, tags);
+    if (newlyAdded.length > 0) {
+      await autoEnrollByTags(supabase, contactId, newlyAdded);
     }
 
     // 5. Incrément du compteur

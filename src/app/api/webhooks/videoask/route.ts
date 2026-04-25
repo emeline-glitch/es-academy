@@ -107,48 +107,32 @@ export async function POST(request: Request) {
 
   const supabase = await createServiceClient();
 
-  // 3. Upsert contact avec tags lm:quiz-investissement + quiz-score:X-Y
+  // 3. Upsert atomique via RPC (merge tags + status RGPD + retour previous_tags
+  //    pour calculer les newly added sans race entre webhooks concurrents).
   const tagsToApply = ["lm:quiz-investissement", scoreTag, "rgpd:consent-explicit"];
+  const { data: rpcResult, error: upsertErr } = await supabase
+    .rpc("upsert_contact_with_tags", {
+      p_email: email,
+      p_first_name: firstName,
+      p_last_name: lastName,
+      p_add_tags: tagsToApply,
+      p_source: "quiz-investisseur",
+    });
 
-  // Fetch existing pour merger tags (pas écraser)
-  const { data: existing } = await supabase
-    .from("contacts")
-    .select("id, tags")
-    .ilike("email", email)
-    .maybeSingle();
-
-  const mergedTags = Array.from(new Set([...(existing?.tags || []), ...tagsToApply]));
-
-  const { error: upsertErr } = await supabase
-    .from("contacts")
-    .upsert(
-      {
-        email,
-        first_name: firstName,
-        last_name: lastName,
-        phone,
-        tags: mergedTags,
-        source: existing ? undefined : "quiz-investisseur",
-        status: "active",
-      },
-      { onConflict: "email" }
-    );
-
-  if (upsertErr) {
-    console.error("[videoask] upsert error:", upsertErr);
+  if (upsertErr || !rpcResult || rpcResult.length === 0) {
+    console.error("[videoask] upsert RPC error:", upsertErr);
     return NextResponse.json({ error: "Erreur upsert contact" }, { status: 500 });
   }
 
-  // Récupérer l'ID du contact upserté
-  const { data: contact } = await supabase
-    .from("contacts")
-    .select("id")
-    .ilike("email", email)
-    .maybeSingle();
+  const contactId = rpcResult[0].id as string;
+  const previousTags = (rpcResult[0].previous_tags || []) as string[];
 
-  if (!contact) {
-    return NextResponse.json({ error: "Contact introuvable après upsert" }, { status: 500 });
+  // La RPC ne gère pas phone, on l'overwrite si fourni.
+  if (phone) {
+    await supabase.from("contacts").update({ phone }).eq("id", contactId);
   }
+  // Pour rester compatible avec le reste du handler qui utilise `contact.id`.
+  const contact = { id: contactId };
 
   // 4. Enregistrer la réponse dans quiz_responses
   await supabase.from("quiz_responses").insert({
@@ -175,8 +159,9 @@ export async function POST(request: Request) {
   });
 
   // 6. Auto-enroll dans la bonne séquence SEQ_QZ_LOW / _MID / _HIGH
-  // (l'auto-enroll ne se déclenche que pour les tags *nouvellement* ajoutés)
-  const newlyAdded = tagsToApply.filter((t) => !(existing?.tags || []).includes(t));
+  // (l'auto-enroll ne se déclenche que pour les tags *nouvellement* ajoutés,
+  // diff calculée à partir du previous_tags retourné atomiquement par la RPC).
+  const newlyAdded = tagsToApply.filter((t) => !previousTags.includes(t));
   if (newlyAdded.length > 0) {
     await autoEnrollByTags(supabase, contact.id, newlyAdded);
   }
