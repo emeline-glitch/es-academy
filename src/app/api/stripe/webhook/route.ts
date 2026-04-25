@@ -147,19 +147,23 @@ async function handleAcademyPurchase(session: Stripe.Checkout.Session) {
   const enrollmentId = enrolled?.id as string | undefined;
   const alreadySentAt = enrolled?.family_gift_email_sent_at as string | null;
 
-  // 5. Upsert contact CRM. On préserve le status existant (RGPD : un contact
-  //    "unsubscribed" ne doit JAMAIS être réactivé en "active" automatiquement).
-  //    On préserve aussi les tags existants en mergeant avec array_cat.
+  // 5. Upsert contact CRM via RPC atomique (migration 029).
+  //    Le merge des tags + préservation du status (unsubscribed reste unsubscribed)
+  //    sont gérés en SQL avec un row lock pris par ON CONFLICT, ce qui élimine
+  //    la race condition entre webhooks Stripe concurrents.
   const firstName = session.customer_details?.name?.split(" ")[0] || "";
   const lastName =
     session.customer_details?.name?.split(" ").slice(1).join(" ") || "";
-  await upsertContactPreservingStatus({
-    supabase,
-    email,
-    firstName,
-    lastName,
-    addTags: ["client", "academy"],
+  const { error: contactErr } = await supabase.rpc("upsert_contact_with_tags", {
+    p_email: email,
+    p_first_name: firstName,
+    p_last_name: lastName,
+    p_add_tags: ["client", "academy"],
+    p_source: "stripe",
   });
+  if (contactErr) {
+    console.error("[webhook] Contact upsert RPC error:", contactErr.message);
+  }
 
   // 6. Envoyer le mail de bienvenue avec le code.
   //    Idempotence : si Stripe retry le webhook après un envoi déjà réussi, on
@@ -261,48 +265,6 @@ async function findOrCreateUserIdByEmail(params: {
   throw new Error(
     `findOrCreateUserIdByEmail a échoué pour ${email}: ${createError?.message || "unknown"}`
   );
-}
-
-async function upsertContactPreservingStatus(params: {
-  supabase: Awaited<ReturnType<typeof createServiceClient>>;
-  email: string;
-  firstName: string;
-  lastName: string;
-  addTags: string[];
-}) {
-  const { supabase, email, firstName, lastName, addTags } = params;
-
-  // Lecture préalable : on veut préserver status (ex: "unsubscribed") et
-  // merger les tags existants (ex: newsletter, lead_magnets).
-  const { data: existing } = await supabase
-    .from("contacts")
-    .select("status, tags")
-    .eq("email", email)
-    .maybeSingle();
-
-  const mergedTags = Array.from(
-    new Set([...(existing?.tags || []), ...addTags])
-  );
-
-  const row: Record<string, unknown> = {
-    email,
-    first_name: firstName || undefined,
-    last_name: lastName || undefined,
-    tags: mergedTags,
-    source: "stripe",
-  };
-  // Ne set status que si le contact n'existait pas OU s'il était "lead"
-  // (un "unsubscribed" reste unsubscribed tant qu'il ne se réinscrit pas volontairement).
-  if (!existing || existing.status === "lead") {
-    row.status = "active";
-  }
-
-  const { error } = await supabase
-    .from("contacts")
-    .upsert(row, { onConflict: "email" });
-  if (error) {
-    console.error("[webhook] Contact upsert error:", error.message);
-  }
 }
 
 async function capSubscriptionAtInstallments(
