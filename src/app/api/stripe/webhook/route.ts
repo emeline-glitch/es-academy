@@ -3,6 +3,8 @@ import { getStripe } from "@/lib/stripe/client";
 import { createServiceClient } from "@/lib/supabase/server";
 import { createFamilyGiftPromotionCode } from "@/lib/stripe/family-gift-code";
 import { sendAcademyWelcomeEmail } from "@/lib/email/welcome-academy";
+import { renderEmailTemplate } from "@/lib/email/render-template";
+import { sendEmail } from "@/lib/ses/client";
 import Stripe from "stripe";
 
 export async function POST(request: Request) {
@@ -47,7 +49,121 @@ export async function POST(request: Request) {
     }
   }
 
+  if (event.type === "invoice.payment_failed") {
+    const invoice = event.data.object as Stripe.Invoice;
+    try {
+      await handleAcademyPaymentFailed(invoice);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "unknown";
+      console.error("[webhook] Academy dunning failed:", msg);
+      // On retourne 200 quand même : Stripe retry l'event si on renvoie 5xx,
+      // mais notre best-effort de mail dunning ne doit pas bloquer la pipeline
+      // (Stripe continue ses smart retries indépendamment).
+    }
+  }
+
   return NextResponse.json({ received: true });
+}
+
+/**
+ * Mail custom de dunning quand une mensualité Academy 3x ou 4x échoue.
+ *
+ * Stripe gère le smart retry automatique pendant ~7 jours. Notre mail
+ * informe le client + lien vers hosted_invoice_url pour mettre à jour
+ * sa carte avant que la subscription soit annulée.
+ *
+ * Détection Academy 3x/4x : on matche STRIPE_PRICE_ACADEMY_3X / _4X
+ * dans les invoice line items. Si pas de match (paiement Family ou autre),
+ * on ignore l'event proprement.
+ *
+ * Pas d'idempotence Phase 1 : si Stripe retry l'event sur 5xx, le client
+ * reçoit potentiellement 2 mails (rare car retries espacés). À durcir avec
+ * une table de dédup invoice_id si volume.
+ */
+async function handleAcademyPaymentFailed(invoice: Stripe.Invoice) {
+  // Stripe API récente : invoice.subscription a été déplacé sous parent.subscription_details.
+  const subId = invoice.parent?.subscription_details?.subscription;
+  if (!subId) return; // One-shot 1x ou facture manuelle : pas géré ici.
+
+  const academy3x = process.env.STRIPE_PRICE_ACADEMY_3X;
+  const academy4x = process.env.STRIPE_PRICE_ACADEMY_4X;
+  const academyPriceIds = [academy3x, academy4x].filter(Boolean);
+  if (academyPriceIds.length === 0) return;
+
+  let matchedInstallments: number | null = null;
+  for (const line of invoice.lines?.data || []) {
+    // Stripe API récente : line.price est dans line.pricing.price_details.price.
+    const priceRef = line.pricing?.price_details?.price;
+    const priceId = typeof priceRef === "string" ? priceRef : priceRef?.id;
+    if (priceId === academy3x) matchedInstallments = 3;
+    else if (priceId === academy4x) matchedInstallments = 4;
+    if (matchedInstallments) break;
+  }
+  if (!matchedInstallments) return; // Pas une mensualité Academy 3x/4x.
+
+  const email = invoice.customer_email;
+  if (!email) {
+    console.warn("[dunning] invoice", invoice.id, "sans customer_email");
+    return;
+  }
+
+  // Récupère le prénom via profiles si dispo, sinon parse customer_name.
+  const supabase = await createServiceClient();
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("full_name")
+    .eq("email", email.toLowerCase())
+    .maybeSingle();
+  const fullName = profile?.full_name || invoice.customer_name || "";
+  const firstName = fullName.split(" ")[0] || "";
+
+  const amount = ((invoice.amount_due || 0) / 100).toFixed(2);
+  const attemptDate = new Date().toLocaleDateString("fr-FR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+  const invoiceUrl = invoice.hosted_invoice_url || `${process.env.NEXT_PUBLIC_SITE_URL || "https://emeline-siron.fr"}/dashboard`;
+
+  const rendered = await renderEmailTemplate("academy_dunning_payment_failed", {
+    prenom: firstName,
+    email,
+    amount,
+    attempt_date: attemptDate,
+    invoice_url: invoiceUrl,
+    installments: matchedInstallments,
+  });
+
+  if (!rendered) {
+    console.error("[dunning] Template 'academy_dunning_payment_failed' introuvable");
+    return;
+  }
+
+  const result = await sendEmail({
+    to: email,
+    subject: rendered.subject,
+    html: rendered.html,
+    from: `${rendered.from_name} <${rendered.from_email}>`,
+    replyTo: rendered.reply_to ?? undefined,
+  });
+
+  // Audit log pour traçabilité (utile si client se plaint de ne pas avoir reçu le mail).
+  await supabase.from("audit_log").insert({
+    action: result.success ? "academy_dunning_sent" : "academy_dunning_failed",
+    entity_type: "invoice",
+    after: {
+      stripe_invoice_id: invoice.id,
+      email,
+      amount_eur: amount,
+      installments: matchedInstallments,
+      attempt_count: invoice.attempt_count || 1,
+      ses_error: result.success ? null : result.error || "unknown",
+    },
+  });
+
+  if (!result.success) {
+    console.error("[dunning] SES fail:", result.error);
+  }
 }
 
 async function handleAcademyPurchase(session: Stripe.Checkout.Session) {
