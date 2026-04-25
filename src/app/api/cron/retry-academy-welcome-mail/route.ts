@@ -16,6 +16,8 @@ import { sendAcademyWelcomeEmail } from "@/lib/email/welcome-academy";
  * Sécurité : header Authorization: Bearer <CRON_SECRET>
  */
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://emeline-siron.fr";
+
 export async function POST(request: Request) {
   const expectedSecret = process.env.CRON_SECRET;
   if (!expectedSecret) {
@@ -42,6 +44,24 @@ export async function POST(request: Request) {
   for (const row of pending || []) {
     const firstName = (row.full_name || "").split(" ")[0] || "";
     try {
+      // Re-génère un magic link à chaque retry. Les liens "type=invite" du webhook
+      // initial expirent (24h par défaut), donc on régénère un "type=magiclink"
+      // pour l'user existant, valide à nouveau pour 24h.
+      let magicLink: string | null = null;
+      try {
+        const { data: linkData } = await supabase.auth.admin.generateLink({
+          type: "magiclink",
+          email: row.email,
+          options: { redirectTo: `${SITE_URL}/dashboard` },
+        });
+        magicLink = linkData?.properties?.action_link || null;
+      } catch (linkErr) {
+        console.warn(
+          `[retry-welcome-mail] generateLink failed for ${row.email}:`,
+          linkErr instanceof Error ? linkErr.message : linkErr
+        );
+      }
+
       const res = await sendAcademyWelcomeEmail({
         supabase,
         enrollmentId: row.enrollment_id,
@@ -49,6 +69,7 @@ export async function POST(request: Request) {
         firstName,
         giftCode: row.family_gift_code,
         installments: row.installments || 1,
+        magicLink,
       });
       if (res.success) {
         stats.sent++;

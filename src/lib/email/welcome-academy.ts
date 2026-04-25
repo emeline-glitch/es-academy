@@ -13,6 +13,9 @@ export interface SendAcademyWelcomeArgs {
   firstName: string;
   giftCode: string;
   installments: number;
+  /** Magic link d'activation Supabase (générée par generateLink type=invite).
+   *  Null si l'user existait déjà : le template renvoie alors vers /connexion. */
+  magicLink?: string | null;
 }
 
 /**
@@ -27,6 +30,9 @@ export async function sendAcademyWelcomeEmail(args: SendAcademyWelcomeArgs): Pro
       ? "998€ en une fois"
       : `${args.installments}x paiement mensuel`;
 
+  // magic_link est toujours fourni au template :
+  //   - new user (action_link signé via type=invite/magiclink) : active la session sans password
+  //   - user existant sans link : fallback sur /connexion (où il peut entrer son password ou cliquer "mot de passe oublié")
   const rendered = await renderEmailTemplate("academy_welcome_with_family_gift", {
     prenom: args.firstName,
     email: args.to,
@@ -34,6 +40,7 @@ export async function sendAcademyWelcomeEmail(args: SendAcademyWelcomeArgs): Pro
     family_activation_url: familyActivationUrl,
     payment_label: paymentLabel,
     site_url: SITE_URL,
+    magic_link: args.magicLink || `${SITE_URL}/connexion`,
   });
 
   if (!rendered) {

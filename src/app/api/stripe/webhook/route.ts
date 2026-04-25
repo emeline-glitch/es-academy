@@ -89,7 +89,9 @@ async function handleAcademyPurchase(session: Stripe.Checkout.Session) {
 
   // 2. Créer ou retrouver l'user auth (via profiles.email indexé, pas listUsers
   //    qui plafonne silencieusement à perPage=50 et crée des doublons au-delà).
-  const userId = await findOrCreateUserIdByEmail({
+  //    Si on crée, on génère un magic link d'activation à passer dans le mail
+  //    (sinon le client doit cliquer "mot de passe oublié" sur /connexion).
+  const { userId, magicLink } = await findOrCreateUserIdByEmail({
     supabase,
     email,
     emailLower,
@@ -172,6 +174,7 @@ async function handleAcademyPurchase(session: Stripe.Checkout.Session) {
     firstName,
     giftCode: gift.code,
     installments,
+    magicLink,
   });
 }
 
@@ -180,8 +183,9 @@ async function findOrCreateUserIdByEmail(params: {
   email: string;
   emailLower: string;
   fullName: string;
-}): Promise<string> {
+}): Promise<{ userId: string; magicLink: string | null }> {
   const { supabase, email, emailLower, fullName } = params;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://emeline-siron.fr";
 
   // Lookup via profiles.email avec .eq() (pas .ilike) pour 2 raisons :
   //  1. Supabase auth (GoTrue) normalise les emails en lowercase avant stockage,
@@ -196,17 +200,32 @@ async function findOrCreateUserIdByEmail(params: {
     .select("id")
     .eq("email", emailLower)
     .maybeSingle();
-  if (existingProfile?.id) return existingProfile.id as string;
+  if (existingProfile?.id) {
+    // User existant : pas de magic link, le mail renvoie vers /connexion.
+    return { userId: existingProfile.id as string, magicLink: null };
+  }
 
-  // Sinon on crée. Si race condition (2 webhooks simultanés), createUser renvoie
-  // l'erreur "already registered" → on retombe sur le fallback listUsers.
-  const { data: newUser, error: createError } =
-    await supabase.auth.admin.createUser({
+  // Création : on utilise generateLink({type: "invite"}) plutôt que createUser(),
+  // ce qui crée l'user ET retourne un action_link signé qu'on envoie dans notre
+  // propre template SES. Sans ça, le client doit faire "mot de passe oublié"
+  // sur /connexion pour activer son compte (UX cassée post-achat).
+  // Important : Supabase n'envoie pas d'email automatiquement quand on appelle
+  // generateLink (contrairement à inviteUserByEmail).
+  const { data: linkData, error: createError } =
+    await supabase.auth.admin.generateLink({
+      type: "invite",
       email,
-      email_confirm: true,
-      user_metadata: { full_name: fullName },
+      options: {
+        redirectTo: `${siteUrl}/dashboard`,
+        data: { full_name: fullName },
+      },
     });
-  if (newUser?.user) return newUser.user.id;
+  if (linkData?.user) {
+    return {
+      userId: linkData.user.id,
+      magicLink: linkData.properties?.action_link || null,
+    };
+  }
 
   const msg = (createError?.message || "").toLowerCase();
   const alreadyExists =
@@ -219,7 +238,9 @@ async function findOrCreateUserIdByEmail(params: {
       .select("id")
       .eq("email", emailLower)
       .maybeSingle();
-    if (retryProfile?.id) return retryProfile.id as string;
+    if (retryProfile?.id) {
+      return { userId: retryProfile.id as string, magicLink: null };
+    }
 
     // Fallback ultime : user pré-migration 005 ou trigger handle_new_user cassé
     // → profile row manquante. On cherche via auth.admin.listUsers paginé.
@@ -232,7 +253,7 @@ async function findOrCreateUserIdByEmail(params: {
       const found = list?.users?.find(
         (u) => u.email?.toLowerCase() === emailLower
       );
-      if (found) return found.id;
+      if (found) return { userId: found.id, magicLink: null };
       if (!list?.users?.length || list.users.length < 1000) break;
     }
   }
