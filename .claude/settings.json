@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Claude_in_Chrome__navigate",
+      "mcp__Claude_in_Chrome__find",
+      "mcp__Claude_in_Chrome__tabs_context_mcp",
+      "mcp__Claude_in_Chrome__read_page",
+      "mcp__Claude_in_Chrome__get_page_text",
+      "mcp__Claude_in_Chrome__read_network_requests",
+      "mcp__Control_Chrome__list_tabs",
+      "mcp__Control_Chrome__get_page_content",
+      "mcp__Claude_Preview__preview_screenshot",
+      "mcp__Claude_Preview__preview_logs",
+      "mcp__Claude_Preview__preview_list",
+      "mcp__adae7c98-1b33-43c7-9c18-dbe8f9370817__search_threads",
+      "mcp__2a38846c-4dce-4587-867b-68ff0081750e__notion-fetch",
+      "mcp__2a38846c-4dce-4587-867b-68ff0081750e__notion-search",
+      "mcp__ccd_session__mark_chapter",
+      "Bash(curl -sI *)"
+    ]
+  }
+}
