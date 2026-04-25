@@ -177,7 +177,7 @@ export default function AdminEleves() {
                         </Link>
                       </td>
                       <td className="px-5 py-3">
-                        <Badge variant={e.product_name === "expert" ? "warning" : "success"}>
+                        <Badge variant="success">
                           {e.product_name}
                         </Badge>
                       </td>

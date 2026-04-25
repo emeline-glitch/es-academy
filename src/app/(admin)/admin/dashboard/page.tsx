@@ -357,7 +357,7 @@ export default async function AdminDashboard() {
               {recentEnrollments.map((e) => (
                 <div key={e.id} className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
                   <div className="flex items-center gap-3">
-                    <Badge variant={e.product_name === "expert" ? "warning" : "success"}>
+                    <Badge variant="success">
                       {e.product_name}
                     </Badge>
                     <span className="text-xs text-gray-400">

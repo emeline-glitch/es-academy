@@ -183,7 +183,7 @@ export default function StudentDetailPage() {
                 {data.enrollments.map((e) => (
                   <div key={e.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div className="flex items-center gap-3">
-                      <Badge variant={e.product_name === "expert" ? "warning" : "success"}>
+                      <Badge variant="success">
                         {e.product_name}
                       </Badge>
                       {e.course_id && <span className="text-xs text-gray-600 font-mono">{e.course_id}</span>}
