@@ -149,7 +149,8 @@ export default async function AdminDashboard() {
                 {welcomeFailedCount} mail{welcomeFailedCount > 1 ? "s" : ""} de bienvenue Academy non envoyé{welcomeFailedCount > 1 ? "s" : ""} après 3 tentatives
               </p>
               <p className="text-xs text-red-600 mt-1">
-                Ces élèves ont payé mais n&apos;ont pas reçu leur code cadeau ES Family. Vérifie SES (DKIM, sandbox, domaine vérifié), puis remets le compteur à zéro côté DB pour relancer le retry automatique : <code className="bg-red-100 px-1 rounded">UPDATE enrollments SET family_gift_email_attempts = 0 WHERE family_gift_email_attempts &gt;= 3 AND family_gift_email_sent_at IS NULL</code>
+                Ces élèves ont payé mais n&apos;ont pas reçu leur code cadeau ES Family. Vérifie d&apos;abord SES (DKIM, sandbox, domaine vérifié), puis va sur la fiche de chaque élève pour relancer manuellement.
+                <Link href="/admin/eleves" prefetch className="underline ml-1 font-semibold">Voir les élèves</Link>
               </p>
             </div>
           </div>

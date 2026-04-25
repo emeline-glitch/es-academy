@@ -26,7 +26,18 @@ interface StudentData {
     created_at: string | null;
     email_confirmed_at: string | null;
   };
-  enrollments: Array<{ id: string; course_id: string; product_name: string; amount_paid: number; purchased_at: string; status: string }>;
+  enrollments: Array<{
+    id: string;
+    course_id: string;
+    product_name: string;
+    amount_paid: number;
+    purchased_at: string;
+    status: string;
+    family_gift_code: string | null;
+    family_gift_email_sent_at: string | null;
+    family_gift_email_attempts: number | null;
+    family_gift_email_last_error: string | null;
+  }>;
   progress: Array<{ id: string; lesson_id: string; course_id: string; completed_at: string }>;
   progress_by_course: Record<string, number>;
   last_progress_at: string | null;
@@ -44,6 +55,7 @@ export default function StudentDetailPage() {
   const [loading, setLoading] = useState(true);
   const [noteText, setNoteText] = useState("");
   const [saving, setSaving] = useState(false);
+  const [resendingId, setResendingId] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -61,6 +73,21 @@ export default function StudentDetailPage() {
   useEffect(() => {
     if (userId) fetchData();
   }, [userId, fetchData]);
+
+  async function handleResendWelcome(enrollmentId: string) {
+    setResendingId(enrollmentId);
+    try {
+      const res = await fetch(`/api/admin/enrollments/${enrollmentId}/resend-welcome-mail`, { method: "POST" });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(json.error || "Erreur");
+      toast.success("Mail Family renvoye");
+      fetchData();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Erreur");
+    } finally {
+      setResendingId(null);
+    }
+  }
 
   async function handleAddNote() {
     if (!noteText.trim()) return;
@@ -180,20 +207,51 @@ export default function StudentDetailPage() {
             <h2 className="font-serif text-lg font-bold text-gray-900 mb-4">Formations achetées</h2>
             {data.enrollments.length > 0 ? (
               <div className="space-y-3">
-                {data.enrollments.map((e) => (
-                  <div key={e.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <Badge variant="success">
-                        {e.product_name}
-                      </Badge>
-                      {e.course_id && <span className="text-xs text-gray-600 font-mono">{e.course_id}</span>}
+                {data.enrollments.map((e) => {
+                  const attempts = e.family_gift_email_attempts || 0;
+                  const sentAt = e.family_gift_email_sent_at;
+                  const hasGift = !!e.family_gift_code;
+                  const giveUp = hasGift && !sentAt && attempts >= 3;
+                  const pending = hasGift && !sentAt && attempts > 0 && attempts < 3;
+                  return (
+                    <div key={e.id} className="bg-gray-50 rounded-lg p-3 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <Badge variant="success">{e.product_name}</Badge>
+                          {e.course_id && <span className="text-xs text-gray-600 font-mono">{e.course_id}</span>}
+                        </div>
+                        <div className="text-right">
+                          <span className="font-bold text-gray-900">{formatMoney(e.amount_paid)}</span>
+                          <p className="text-[10px] text-gray-400">{formatRelative(e.purchased_at)}</p>
+                        </div>
+                      </div>
+                      {hasGift && sentAt && (
+                        <p className="text-[11px] text-gray-500">Mail bienvenue + code Family envoye {formatRelative(sentAt)}</p>
+                      )}
+                      {giveUp && (
+                        <div className="flex items-center justify-between gap-2 pt-1 border-t border-red-100">
+                          <p className="text-[11px] text-red-600">
+                            Echec apres {attempts} tentatives.
+                            {e.family_gift_email_last_error && (
+                              <span className="ml-1 text-red-400 italic">({e.family_gift_email_last_error.slice(0, 80)})</span>
+                            )}
+                          </p>
+                          <Button
+                            size="sm"
+                            variant="primary"
+                            onClick={() => handleResendWelcome(e.id)}
+                            disabled={resendingId === e.id}
+                          >
+                            {resendingId === e.id ? "Envoi..." : "Renvoyer mail Family"}
+                          </Button>
+                        </div>
+                      )}
+                      {pending && (
+                        <p className="text-[11px] text-amber-600">Mail Family en attente de retry auto ({attempts}/3 tentatives)</p>
+                      )}
                     </div>
-                    <div className="text-right">
-                      <span className="font-bold text-gray-900">{formatMoney(e.amount_paid)}</span>
-                      <p className="text-[10px] text-gray-400">{formatRelative(e.purchased_at)}</p>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : (
               <p className="text-sm text-gray-400">Aucune formation achetée</p>

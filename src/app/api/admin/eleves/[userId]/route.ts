@@ -21,7 +21,7 @@ export async function GET(
       .maybeSingle(),
     supabase
       .from("enrollments")
-      .select("id, product_name, amount_paid, purchased_at, status, course_id")
+      .select("id, product_name, amount_paid, purchased_at, status, course_id, family_gift_code, family_gift_email_sent_at, family_gift_email_attempts, family_gift_email_last_error")
       .eq("user_id", userId)
       .order("purchased_at", { ascending: false }),
     supabase
