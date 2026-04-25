@@ -36,7 +36,7 @@ export default async function AdminDashboard() {
   // + extensions Sprint 4 : LM perf, alumni, quiz distribution, Chatel upcoming.
   const [
     statsRes, recentContactsRes, recentEnrollmentsRes, auditRes,
-    lmPerfRes, alumniRes, chatelRes, quizRes,
+    lmPerfRes, alumniRes, chatelRes, quizRes, welcomeFailedRes,
   ] = await Promise.all([
     supabase.rpc("dashboard_stats", { month_start: monthStart, today_start: todayStart }),
     supabase
@@ -65,7 +65,9 @@ export default async function AdminDashboard() {
       .from("quiz_responses")
       .select("result_category")
       .gte("completed_at", new Date(Date.now() - 30 * 24 * 3600 * 1000).toISOString()),
+    supabase.rpc("academy_welcome_email_failed_count"),
   ]);
+  const welcomeFailedCount = (welcomeFailedRes?.data as number | null) || 0;
 
   const stats: DashboardStats = (statsRes.data as DashboardStats) || {
     total_profiles: 0, total_contacts: 0, today_contacts: 0,
@@ -137,6 +139,22 @@ export default async function AdminDashboard() {
           <Button variant="primary" size="sm" href="/admin/emails/new">Nouvelle campagne</Button>
         </div>
       </div>
+
+      {welcomeFailedCount > 0 && (
+        <div className="mb-6 rounded-lg border border-red-300 bg-red-50 p-4">
+          <div className="flex items-start gap-3">
+            <div className="text-red-600 text-xl shrink-0">⚠️</div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-bold text-red-700">
+                {welcomeFailedCount} mail{welcomeFailedCount > 1 ? "s" : ""} de bienvenue Academy non envoyé{welcomeFailedCount > 1 ? "s" : ""} après 3 tentatives
+              </p>
+              <p className="text-xs text-red-600 mt-1">
+                Ces élèves ont payé mais n&apos;ont pas reçu leur code cadeau ES Family. Vérifie SES (DKIM, sandbox, domaine vérifié), puis remets le compteur à zéro côté DB pour relancer le retry automatique : <code className="bg-red-100 px-1 rounded">UPDATE enrollments SET family_gift_email_attempts = 0 WHERE family_gift_email_attempts &gt;= 3 AND family_gift_email_sent_at IS NULL</code>
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Stats grid */}
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-8">

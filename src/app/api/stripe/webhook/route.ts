@@ -2,11 +2,8 @@ import { NextResponse } from "next/server";
 import { getStripe } from "@/lib/stripe/client";
 import { createServiceClient } from "@/lib/supabase/server";
 import { createFamilyGiftPromotionCode } from "@/lib/stripe/family-gift-code";
-import { renderEmailTemplate } from "@/lib/email/render-template";
-import { sendEmail } from "@/lib/ses/client";
+import { sendAcademyWelcomeEmail } from "@/lib/email/welcome-academy";
 import Stripe from "stripe";
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3001";
 
 export async function POST(request: Request) {
   const body = await request.text();
@@ -137,12 +134,16 @@ async function handleAcademyPurchase(session: Stripe.Checkout.Session) {
   if (!reusedExisting) {
     enrollmentRow.family_gift_generated_at = new Date().toISOString();
   }
-  const { error: enrollError } = await supabase
+  const { data: enrolled, error: enrollError } = await supabase
     .from("enrollments")
-    .upsert(enrollmentRow, { onConflict: "user_id,course_id" });
+    .upsert(enrollmentRow, { onConflict: "user_id,course_id" })
+    .select("id, family_gift_email_sent_at")
+    .single();
   if (enrollError) {
     console.error("[webhook] Enrollment upsert error:", enrollError.message);
   }
+  const enrollmentId = enrolled?.id as string | undefined;
+  const alreadySentAt = enrolled?.family_gift_email_sent_at as string | null;
 
   // 5. Upsert contact CRM. On préserve le status existant (RGPD : un contact
   //    "unsubscribed" ne doit JAMAIS être réactivé en "active" automatiquement).
@@ -158,8 +159,15 @@ async function handleAcademyPurchase(session: Stripe.Checkout.Session) {
     addTags: ["client", "academy"],
   });
 
-  // 6. Envoyer le mail de bienvenue avec le code
+  // 6. Envoyer le mail de bienvenue avec le code.
+  //    Idempotence : si Stripe retry le webhook après un envoi déjà réussi, on
+  //    ne renvoie pas (sinon le client reçoit le mail Family en double).
+  if (alreadySentAt) {
+    return;
+  }
   await sendAcademyWelcomeEmail({
+    supabase,
+    enrollmentId,
     to: email,
     firstName,
     giftCode: gift.code,
@@ -340,48 +348,3 @@ async function capSubscriptionAtInstallments(
   });
 }
 
-async function sendAcademyWelcomeEmail(params: {
-  to: string;
-  firstName: string;
-  giftCode: string;
-  installments: number;
-}) {
-  const familyActivationUrl = `${SITE_URL}/family?code=${encodeURIComponent(params.giftCode)}`;
-  const paymentLabel =
-    params.installments === 1
-      ? "998€ en une fois"
-      : `${params.installments}x paiement mensuel`;
-
-  const rendered = await renderEmailTemplate("academy_welcome_with_family_gift", {
-    prenom: params.firstName,
-    email: params.to,
-    family_gift_code: params.giftCode,
-    family_activation_url: familyActivationUrl,
-    payment_label: paymentLabel,
-    site_url: SITE_URL,
-  });
-
-  if (!rendered) {
-    console.error(
-      "[webhook] Template 'academy_welcome_with_family_gift' introuvable en DB"
-    );
-    return;
-  }
-
-  const result = await sendEmail({
-    to: params.to,
-    subject: rendered.subject,
-    html: rendered.html,
-    from: `${rendered.from_name} <${rendered.from_email}>`,
-    replyTo: rendered.reply_to ?? undefined,
-  });
-
-  // TODO Phase 3 : si l'envoi SES fail (rate limit, DKIM, sandbox), le client
-  // a payé mais ne reçoit pas son code Family. Ajouter :
-  //   - colonne enrollments.family_gift_email_sent_at
-  //   - cron retry toutes les 10min si sent_at IS NULL AND generated_at < now()-5min
-  //   - alerte admin si échec répété (>3 tentatives)
-  if (!result.success) {
-    console.error("[webhook] Envoi mail bienvenue Academy échoué:", result.error);
-  }
-}
