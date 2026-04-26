@@ -191,74 +191,46 @@ export async function POST(request: Request) {
     });
   }
 
-  // Upsert en batchs de 500
+  // Boucle d'import via RPC atomique import_contact_with_consent (migration 034).
+  // 1 round-trip par contact, mais merge tags + préservation primary_source +
+  // log consent_log dans la même transaction. Pour 1900 alumni : ~20s, OK pour
+  // un import admin one-shot. Si volume plus large à l'avenir, batch via UNNEST.
   const now = new Date().toISOString();
-  const contactsToUpsert = unique.map((v) => ({
-    email: v.email,
-    first_name: v.first_name,
-    last_name: v.last_name,
-    phone: v.phone,
-    tags: extraTags,
-    status: "active",
-    source: source || "import",
-    primary_source: source || "import",
-    primary_source_detail: source_detail || null,
-    is_alumni_evermind: !!set_alumni_evermind,
-    alumni_migrated_at: set_alumni_evermind ? now : null,
-    rgpd_cohort: typeof rgpd_cohort === "number" ? rgpd_cohort : null,
-    subscribed_at: now,
-    last_activity_at: now,
-  }));
+  const consentProof = {
+    import_source: source || "csv",
+    import_source_detail: source_detail || null,
+    imported_by: auth.userId,
+    imported_at: now,
+  };
 
   let upserted = 0;
   let errors = 0;
-  const BATCH = 500;
   const upsertedIds: string[] = [];
-  for (let i = 0; i < contactsToUpsert.length; i += BATCH) {
-    const batch = contactsToUpsert.slice(i, i + BATCH);
-    const { data, error } = await supabase
-      .from("contacts")
-      .upsert(batch, { onConflict: "email" })
-      .select("id");
-    if (error) {
-      errors += batch.length;
-      console.error("[import-contacts] batch error:", error);
-    } else {
-      upserted += data?.length || 0;
-      for (const row of data || []) {
-        upsertedIds.push(row.id);
+  for (const v of unique) {
+    const { data: contactId, error: rpcErr } = await supabase.rpc(
+      "import_contact_with_consent",
+      {
+        p_email: v.email,
+        p_first_name: v.first_name,
+        p_last_name: v.last_name,
+        p_phone: v.phone || "",
+        p_add_tags: extraTags,
+        p_source: source || "import",
+        p_primary_source: source || "import",
+        p_primary_source_detail: source_detail || "",
+        p_is_alumni: !!set_alumni_evermind,
+        p_rgpd_cohort: typeof rgpd_cohort === "number" ? rgpd_cohort : null,
+        p_consent_type: consent_type,
+        p_consent_basis: consent_basis || "",
+        p_consent_proof: consentProof,
       }
-    }
-  }
-
-  // Pour les contacts existants qui ont déjà des tags, on veut MERGER (pas overwrite)
-  // L'upsert vient d'overwrite → on re-merge les tags existants pour ceux qui existaient déjà.
-  // Approche simple : pour chaque email importé, on fetch les tags, on merge avec extraTags, on update.
-  // Pour gros volumes : mieux vaut un SQL batch, mais pour <10K contacts l'approche simple suffit.
-  if (upsertedIds.length > 0 && extraTags.length > 0) {
-    // Fetch tags actuels (qui ont déjà été écrasés, donc = extraTags)
-    // Note : ici la "merge" ne récupère pas les tags pré-import pour les gros volumes, c'est un trade-off.
-    // Pour garantir la préservation des tags existants, il faudrait fetch AVANT upsert et merger en app.
-    // C'est acceptable pour les imports "frais" (alumni, Brevo) où les contacts n'existent pas encore.
-  }
-
-  // Insérer un log de consentement par contact importé
-  const consentRows = upsertedIds.map((contactId) => ({
-    contact_id: contactId,
-    consent_type,
-    consent_basis: consent_basis || null,
-    consent_proof: {
-      import_source: source || "csv",
-      import_source_detail: source_detail || null,
-      imported_by: auth.userId,
-      imported_at: now,
-    },
-  }));
-
-  if (consentRows.length > 0) {
-    // Batch insertion
-    for (let i = 0; i < consentRows.length; i += BATCH) {
-      await supabase.from("consent_log").insert(consentRows.slice(i, i + BATCH));
+    );
+    if (rpcErr || !contactId) {
+      errors++;
+      console.error("[import-contacts] rpc error for", v.email, ":", rpcErr?.message);
+    } else {
+      upserted++;
+      upsertedIds.push(contactId as string);
     }
   }
 
@@ -301,7 +273,7 @@ export async function POST(request: Request) {
     invalid_samples: invalid.slice(0, 10),
     duplicates_in_csv: validated.length - unique.length,
     tags_applied: extraTags,
-    consent_logs_created: consentRows.length,
+    consent_logs_created: upserted,
     auto_enrolled: totalEnrolled,
   });
 }
