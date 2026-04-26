@@ -107,8 +107,23 @@ async function handleAcademyPaymentFailed(invoice: Stripe.Invoice) {
     return;
   }
 
+  // Idempotence : si on a déjà envoyé le mail dunning pour cette invoice,
+  // on skip (Stripe peut retry le webhook sur 5xx → doublon évité).
+  const supabaseDedup = await createServiceClient();
+  if (invoice.id) {
+    const { data: alreadySent } = await supabaseDedup
+      .from("processed_dunning_invoices")
+      .select("stripe_invoice_id")
+      .eq("stripe_invoice_id", invoice.id)
+      .maybeSingle();
+    if (alreadySent) {
+      console.log(`[dunning] invoice ${invoice.id} deja traite, skip`);
+      return;
+    }
+  }
+
   // Récupère le prénom via profiles si dispo, sinon parse customer_name.
-  const supabase = await createServiceClient();
+  const supabase = supabaseDedup;
   const { data: profile } = await supabase
     .from("profiles")
     .select("full_name")
@@ -160,6 +175,21 @@ async function handleAcademyPaymentFailed(invoice: Stripe.Invoice) {
       ses_error: result.success ? null : result.error || "unknown",
     },
   });
+
+  // Marqueur idempotence : insert APRES traitement reussi pour eviter doublon
+  // sur retry Stripe. On insert meme si SES a fail : le retry a peu de chance
+  // de mieux marcher dans la fenetre courte du retry, et si fail systeme on
+  // ne veut pas spammer le client.
+  if (invoice.id) {
+    await supabase.from("processed_dunning_invoices").insert({
+      stripe_invoice_id: invoice.id,
+      email,
+      attempt_count: invoice.attempt_count || 1,
+      amount_due_cents: invoice.amount_due || 0,
+      ses_success: result.success,
+      ses_error: result.success ? null : result.error || "unknown",
+    });
+  }
 
   if (!result.success) {
     console.error("[dunning] SES fail:", result.error);
