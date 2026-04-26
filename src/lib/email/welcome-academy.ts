@@ -1,6 +1,7 @@
 import type { createServiceClient } from "@/lib/supabase/server";
 import { renderEmailTemplate } from "@/lib/email/render-template";
 import { sendEmail } from "@/lib/ses/client";
+import { getPaymentLabel } from "@/lib/config/app-config";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3001";
 
@@ -25,10 +26,9 @@ export interface SendAcademyWelcomeArgs {
  */
 export async function sendAcademyWelcomeEmail(args: SendAcademyWelcomeArgs): Promise<{ success: boolean; error?: string }> {
   const familyActivationUrl = `${SITE_URL}/family?code=${encodeURIComponent(args.giftCode)}`;
-  const paymentLabel =
-    args.installments === 1
-      ? "998€ en une fois"
-      : `${args.installments}x paiement mensuel`;
+  // Wording paiement lu depuis app_config (editable admin sans deploiement).
+  // Fallback hardcodé si la table est inaccessible ou la clé manquante.
+  const paymentLabel = await getPaymentLabel(args.supabase, args.installments);
 
   // magic_link est toujours fourni au template :
   //   - new user (action_link signé via type=invite/magiclink) : active la session sans password
