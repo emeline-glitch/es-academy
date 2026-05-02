@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { getArticleBySlug, getArticleBlocks, getPublishedArticles } from "@/lib/notion/blog";
+import { getBlogImage, getBlogImageMap } from "@/lib/notion/blog-images";
 import { renderBlocks } from "@/lib/notion/renderer";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { ArticleContent } from "@/components/blog/ArticleContent";
@@ -34,7 +35,7 @@ export async function generateMetadata({
     title: article.seoTitle || article.title,
     description: article.seoDescription || article.excerpt,
     path: `/blog/${article.slug}`,
-    image: article.featuredImage || undefined,
+    image: await getBlogImage(article),
     type: "article",
     publishedTime: article.publishDate,
   });
@@ -59,6 +60,8 @@ export default async function ArticlePage({
   if (!article) notFound();
 
   const blocks = await getArticleBlocks(article.id);
+  const imageMap = await getBlogImageMap();
+  const articleImage = imageMap.get(article.slug) || article.featuredImage || "";
 
   // Get related articles
   const allArticles = await getPublishedArticles(10);
@@ -104,16 +107,14 @@ export default async function ArticlePage({
         </div>
       </section>
 
-      {/* Featured image */}
-      {article.featuredImage && (
-        <div className="max-w-4xl mx-auto px-6 -mt-6">
-          <img
-            src={article.featuredImage}
-            alt={article.title}
-            className="w-full rounded-xl shadow-lg"
-          />
-        </div>
-      )}
+      {/* Featured image (Notion FeaturedImage si dispo, sinon photo Unsplash thématique) */}
+      <div className="max-w-4xl mx-auto px-6 -mt-6">
+        <img
+          src={articleImage}
+          alt={article.title}
+          className="w-full rounded-xl shadow-lg"
+        />
+      </div>
 
       {/* Article content */}
       <article className="max-w-3xl mx-auto px-6 py-12">
@@ -162,13 +163,12 @@ export default async function ArticlePage({
                   className="bg-white rounded-xl overflow-hidden border border-es-cream-dark card-hover group"
                 >
                   <div className="aspect-[16/9] bg-es-cream-dark">
-                    {a.featuredImage ? (
-                      <img src={a.featuredImage} alt={a.title} className="w-full h-full object-cover" loading="lazy" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <span className="font-serif text-xl text-es-text-muted/30">ES</span>
-                      </div>
-                    )}
+                    <img
+                      src={imageMap.get(a.slug) || a.featuredImage || ""}
+                      alt={a.title}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
                   </div>
                   <div className="p-4">
                     <h3 className="font-serif font-bold text-es-text group-hover:text-es-green transition-colors leading-snug">

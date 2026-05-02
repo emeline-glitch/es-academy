@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { getPublishedArticles } from "@/lib/notion/blog";
+import { getBlogImageMap } from "@/lib/notion/blog-images";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbSchema } from "@/lib/seo/schemas";
@@ -26,7 +27,10 @@ function formatDate(dateStr: string) {
 }
 
 export default async function BlogPage() {
-  const articles = await getPublishedArticles();
+  const [articles, imageMap] = await Promise.all([
+    getPublishedArticles(),
+    getBlogImageMap(),
+  ]);
 
   return (
     <div className="min-h-screen bg-es-cream">
@@ -74,20 +78,14 @@ export default async function BlogPage() {
                   href={`/blog/${article.slug}`}
                   className="bg-white rounded-xl overflow-hidden border border-es-cream-dark card-hover group"
                 >
-                  {/* Image */}
+                  {/* Image (Notion FeaturedImage si dispo, sinon photo Unsplash thématique selon la catégorie) */}
                   <div className="aspect-[16/9] bg-es-cream-dark relative overflow-hidden">
-                    {article.featuredImage ? (
-                      <img
-                        src={article.featuredImage}
-                        alt={article.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <span className="font-serif text-2xl text-es-text-muted/30">ES</span>
-                      </div>
-                    )}
+                    <img
+                      src={imageMap.get(article.slug) || article.featuredImage || ""}
+                      alt={article.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      loading="lazy"
+                    />
                     {article.category && (
                       <span className="absolute top-3 left-3 bg-es-green text-white text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-full">
                         {article.category}

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { getArticlesByCategory } from "@/lib/notion/blog";
+import { getBlogImageMap } from "@/lib/notion/blog-images";
 import { buildMetadata } from "@/lib/seo/metadata";
 
 const CATEGORIES: Record<string, { label: string; description: string }> = {
@@ -48,7 +49,10 @@ export default async function CategoryPage({
 
   // Capitalize first letter for Notion query
   const notionCategory = categoryName.charAt(0).toUpperCase() + categoryName.slice(1).toLowerCase();
-  const articles = await getArticlesByCategory(notionCategory);
+  const [articles, imageMap] = await Promise.all([
+    getArticlesByCategory(notionCategory),
+    getBlogImageMap(),
+  ]);
 
   return (
     <div className="min-h-screen bg-es-cream">
@@ -106,13 +110,12 @@ export default async function CategoryPage({
                   className="bg-white rounded-xl overflow-hidden border border-es-cream-dark card-hover group"
                 >
                   <div className="aspect-[16/9] bg-es-cream-dark">
-                    {article.featuredImage ? (
-                      <img src={article.featuredImage} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <span className="font-serif text-2xl text-es-text-muted/30">ES</span>
-                      </div>
-                    )}
+                    <img
+                      src={imageMap.get(article.slug) || article.featuredImage || ""}
+                      alt={article.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      loading="lazy"
+                    />
                   </div>
                   <div className="p-5">
                     <h2 className="font-serif text-lg font-bold text-es-text group-hover:text-es-green transition-colors leading-snug mb-2">
