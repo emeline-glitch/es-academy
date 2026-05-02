@@ -8,9 +8,20 @@
   --color-es-cream: #F5F0E8;
   --color-es-cream-light: #FAF8F4;
   --color-es-cream-dark: #EDE8DC;
-  --color-es-terracotta: #C4724A;
-  --color-es-terracotta-dark: #A85A35;
-  --color-es-terracotta-light: #D4896A;
+  /* ES Family - Mint Mercury (rebrand 2026 : terracotta du site → mint global) */
+  /* Les variables --color-es-terracotta* pointent maintenant vers du mint pour
+     que toutes les classes existantes (bg-es-terracotta, text-es-terracotta...)
+     basculent automatiquement en mint sans toucher au reste du code. */
+  --color-es-terracotta: #006B58;        /* etait #C4724A, devenu mint-dark */
+  --color-es-terracotta-dark: #00543F;   /* etait #A85A35, devenu mint-deep */
+  --color-es-terracotta-light: #B8EBDD;  /* etait #D4896A, devenu mint-pastel */
+  /* Aliases nominatifs mint (pour utilisation explicite dans nouveaux composants) */
+  --color-es-mint: #00B894;
+  --color-es-mint-dark: #006B58;
+  --color-es-mint-deep: #00543F;
+  --color-es-mint-light: #D7F5ED;
+  --color-es-mint-soft: #E8FAF4;
+  --color-es-mint-pastel: #B8EBDD;
   --color-es-gold: #C9A96E;
   --color-es-gold-light: #D4B87E;
   --color-es-gold-dark: #B0924E;

@@ -41,7 +41,7 @@ const tunnels: Tunnel[] = [
     productName: "family",
     steps: [
       { name: "Page de vente", url: "/family", type: "vente" },
-      { name: "Checkout Skool", url: "https://www.skool.com/es-family", type: "paiement" },
+      { name: "Checkout Stripe", url: "/api/stripe/checkout-family?plan=fondateur", type: "paiement" },
     ],
   },
 ];

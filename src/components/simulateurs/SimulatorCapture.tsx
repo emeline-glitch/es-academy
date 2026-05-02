@@ -180,7 +180,7 @@ export function SimulatorCapture({
 
       {/* Next Step contextuel */}
       {hasCalculated && (
-        <div className="mt-12 rounded-2xl overflow-hidden" style={{ backgroundColor: "#C4724A" }}>
+        <div className="mt-12 rounded-2xl overflow-hidden" style={{ backgroundColor: "#006B58" }}>
           <div className="relative p-8 md:p-10 text-white">
             <div className="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
             <div className="relative">

@@ -202,7 +202,7 @@ export default function SimulateursPage() {
       </section>
 
       {/* CTA final — appel découverte */}
-      <section className="py-20 relative overflow-hidden" style={{ backgroundColor: "#C4724A" }}>
+      <section className="py-20 relative overflow-hidden" style={{ backgroundColor: "#006B58" }}>
         <div className="absolute inset-0 bg-gradient-to-br from-es-terracotta-dark/20 via-transparent to-black/10" />
         <div className="relative max-w-6xl mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center text-white">

@@ -171,7 +171,7 @@ function EditTemplateModal({
         activation_url: "https://emeline-siron.fr/connexion?token=EXEMPLE",
         reset_url: "https://emeline-siron.fr/reset-password?token=EXEMPLE",
         dashboard_url: "https://emeline-siron.fr/dashboard",
-        skool_url: "https://www.skool.com/es-family",
+        skool_url: "https://emeline-siron.fr/family",
         coaching_credits: "3",
         coaching_date: "Mardi 22 avril",
         coaching_time: "14h00",

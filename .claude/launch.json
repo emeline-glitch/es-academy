@@ -8,6 +8,14 @@
       "port": 3001,
       "autoPort": true,
       "cwd": "/Users/emeline/es-academy"
+    },
+    {
+      "name": "es-academy-preview",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 3005,
+      "autoPort": true,
+      "cwd": "/Users/emeline/es-academy"
     }
   ]
 }

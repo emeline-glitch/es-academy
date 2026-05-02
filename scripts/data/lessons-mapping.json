@@ -1,0 +1,593 @@
+{
+  "_doc": "Mapping vidéos formation Evermind/Learnybox vers la nouvelle structure ES Academy/Notion. Source: https://evermind.learnybox.com/formation/formation/66081/. Construit le 2026-04-30. Les noms de leçons sont ceux d'Evermind (à valider/réécrire si besoin avant injection Notion).",
+  "course": {
+    "name": "La Méthode Emeline Siron",
+    "slug": "methode-emeline-siron",
+    "evermind_id": 66081
+  },
+  "modules": [
+    {
+      "order": 1,
+      "evermind_id": 689681,
+      "evermind_name": "1 - Immobilier",
+      "notion_slug": "mindset",
+      "notion_name": "Module 1 — Mindset",
+      "lessons": [
+        {
+          "letter": "A",
+          "order": 1,
+          "name": "Améliorer son mindset pour réussir",
+          "evermind_idpage": 3907067,
+          "bunny_video_id": "b5bb4911-57fa-4b58-9f83-97d2c18405ae",
+          "bunny_uploaded_at": "2026-04-30T12:50:00.000Z",
+          "bunny_thumbnail_uploaded_at": "2026-04-30T14:19:30.078Z",
+          "notion_lesson_id": "352c679c-c075-8192-bd83-fac4809b7dfd"
+        },
+        {
+          "letter": "B",
+          "order": 2,
+          "name": "Mettre en place les pré-requis financiers",
+          "evermind_idpage": 3907068,
+          "bunny_video_id": "fea7c213-38c2-407b-a7cd-f3d57cfb96a0",
+          "bunny_uploaded_at": "2026-04-30T21:15:00.000Z",
+          "bunny_thumbnail_uploaded_at": "2026-04-30T19:18:43.792Z",
+          "notion_lesson_id": "352c679c-c075-8171-83cb-ccf34832723e"
+        },
+        {
+          "letter": "C",
+          "order": 3,
+          "name": "Comprendre les étapes d'un investissement",
+          "evermind_idpage": 3907069,
+          "bunny_video_id": "4d6ed28e-bcbd-4a0f-8030-714a94d951ae",
+          "bunny_uploaded_at": "2026-04-30T21:15:30.000Z",
+          "bunny_thumbnail_uploaded_at": "2026-04-30T19:18:48.511Z",
+          "notion_lesson_id": "352c679c-c075-81c2-b5db-ed7a8af4de66"
+        },
+        {
+          "letter": "D",
+          "order": 4,
+          "name": "Définir son projet en fonction de ses objectifs",
+          "evermind_idpage": 3907070,
+          "bunny_video_id": "5898c7bb-4979-4100-958a-1c2bfbadaf18",
+          "bunny_uploaded_at": "2026-04-30T21:16:00.000Z",
+          "bunny_thumbnail_uploaded_at": "2026-04-30T19:18:51.531Z",
+          "notion_lesson_id": "352c679c-c075-8160-9367-da6bede477c3"
+        }
+      ]
+    },
+    {
+      "order": 2,
+      "evermind_id": 689682,
+      "evermind_name": "2 - Types de location",
+      "notion_slug": "types-location",
+      "notion_name": "Module 2 — Types de location",
+      "lessons": [
+        {
+          "letter": "A",
+          "order": 1,
+          "name": "La colocation à très haut rendement",
+          "evermind_idpage": 3907071,
+          "bunny_video_id": "ed7deb11-4bf4-49e6-bdb7-11b78e992010",
+          "bunny_uploaded_at": "2026-05-01T06:17:28.104Z",
+          "bunny_thumbnail_uploaded_at": "2026-05-01T06:17:29.710Z",
+          "notion_lesson_id": "353c679c-c075-814f-a7cc-d8e8896efc4d"
+        },
+        {
+          "letter": "B",
+          "order": 2,
+          "name": "L'immeuble de rapport comme outil multiplicateur",
+          "evermind_idpage": 3907072,
+          "bunny_video_id": "f937e057-b13e-4a05-8b61-d31ac22baebb",
+          "bunny_uploaded_at": "2026-05-01T06:17:46.608Z",
+          "bunny_thumbnail_uploaded_at": "2026-05-01T06:17:47.996Z",
+          "notion_lesson_id": "353c679c-c075-81ec-b71d-cf387260b644"
+        },
+        {
+          "letter": "C",
+          "order": 3,
+          "name": "Location courte durée pour booster sa renta",
+          "evermind_idpage": 3907073,
+          "bunny_video_id": "2a7cdaf2-3559-4982-bd79-2a7b7b753477",
+          "bunny_uploaded_at": "2026-05-01T06:18:03.381Z",
+          "bunny_thumbnail_uploaded_at": "2026-05-01T06:18:08.240Z",
+          "notion_lesson_id": "353c679c-c075-8151-9456-d7044287e202"
+        },
+        {
+          "letter": "D",
+          "order": 4,
+          "name": "Les locaux commerciaux et les parkings",
+          "evermind_idpage": 3907074,
+          "bunny_video_id": "0312ed6c-9da4-4400-bc85-e66d360dbbfa",
+          "bunny_uploaded_at": "2026-05-01T06:18:25.939Z",
+          "bunny_thumbnail_uploaded_at": "2026-05-01T06:18:27.389Z",
+          "notion_lesson_id": "353c679c-c075-81a4-9a2c-efedeb74d0c3"
+        },
+        {
+          "letter": "E",
+          "order": 5,
+          "name": "La division pour encaisser plus de loyers",
+          "evermind_idpage": 3907075
+        },
+        {
+          "letter": "F",
+          "order": 6,
+          "name": "Utiliser l'achat-revente en résidence principale",
+          "evermind_idpage": 3907076,
+          "bunny_video_id": "05737754-ca55-44b3-a2cc-ef0f332ebdac",
+          "bunny_uploaded_at": "2026-05-01T06:18:41.633Z",
+          "bunny_thumbnail_uploaded_at": "2026-05-01T06:18:43.048Z",
+          "notion_lesson_id": "353c679c-c075-8122-a2cd-e1c7db68bdba"
+        },
+        {
+          "letter": "G",
+          "order": 7,
+          "name": "La sous-location professionnelle",
+          "evermind_idpage": 4028090,
+          "bunny_video_id": "21900d54-f98f-46fa-8437-5744f0cea112",
+          "bunny_uploaded_at": "2026-05-01T06:18:59.344Z",
+          "bunny_thumbnail_uploaded_at": "2026-05-01T06:19:00.773Z",
+          "notion_lesson_id": "353c679c-c075-81bb-ad0a-ef226274cc1b"
+        }
+      ]
+    },
+    {
+      "order": 3,
+      "evermind_id": 689683,
+      "evermind_name": "3 - Recherche de biens",
+      "notion_slug": "recherches",
+      "notion_name": "Module 3 — Recherches",
+      "lessons": [
+        {
+          "letter": "A",
+          "order": 1,
+          "name": "Définir son budget et son secteur de recherche",
+          "evermind_idpage": 3907077,
+          "bunny_video_id": "3d4b6fcb-eb3a-4aac-8863-6443b156d940",
+          "bunny_uploaded_at": "2026-05-01T08:59:15.729Z",
+          "bunny_thumbnail_uploaded_at": "2026-05-01T08:59:17.423Z",
+          "notion_lesson_id": "353c679c-c075-81e8-b215-cbfebebd160a"
+        },
+        {
+          "letter": "B",
+          "order": 2,
+          "name": "Traquer les bonnes affaires immobilières",
+          "evermind_idpage": 3907078,
+          "bunny_video_id": "0213ba46-e037-42f9-b3cd-ff700d7f93af",
+          "bunny_uploaded_at": "2026-05-01T09:02:57.175Z",
+          "bunny_thumbnail_uploaded_at": "2026-05-01T09:02:59.068Z",
+          "notion_lesson_id": "353c679c-c075-8141-acc1-cd401cb4896a"
+        },
+        {
+          "letter": "C",
+          "order": 3,
+          "name": "Définir ses critères de recherche",
+          "evermind_idpage": 3907079,
+          "bunny_video_id": "e74b2557-f085-495d-a2ed-7bdd3e2ac5a1",
+          "bunny_uploaded_at": "2026-05-01T09:07:22.151Z",
+          "bunny_thumbnail_uploaded_at": "2026-05-01T09:07:24.037Z",
+          "notion_lesson_id": "353c679c-c075-8178-8040-f3dd58fe0ecd"
+        },
+        {
+          "letter": "D",
+          "order": 4,
+          "name": "L'analyse de marché avec exemple",
+          "evermind_idpage": 3907080,
+          "bunny_video_id": "6e93b683-bf56-4972-b253-69e895cffc39",
+          "bunny_uploaded_at": "2026-05-01T09:14:42.077Z",
+          "bunny_thumbnail_uploaded_at": "2026-05-01T09:14:43.763Z",
+          "notion_lesson_id": "353c679c-c075-8182-bb8c-f8f94d1630cf"
+        }
+      ]
+    },
+    {
+      "order": 4,
+      "evermind_id": 689684,
+      "evermind_name": "4 - Critères financiers",
+      "notion_slug": "criteres-financiers",
+      "notion_name": "Module 4 — Critères financiers",
+      "lessons": [
+        {
+          "letter": "A",
+          "order": 1,
+          "name": "Définir les principaux indicateurs financiers",
+          "evermind_idpage": 3907081
+        },
+        {
+          "letter": "B",
+          "order": 2,
+          "name": "Établir un business plan rigoureux et structuré",
+          "evermind_idpage": 3907082
+        },
+        {
+          "letter": "C",
+          "order": 3,
+          "name": "Valider ses critères de Go et No Go",
+          "evermind_idpage": 3907083
+        }
+      ]
+    },
+    {
+      "order": 5,
+      "evermind_id": 689685,
+      "evermind_name": "5 - Analyse technique",
+      "notion_slug": "analyse-technique",
+      "notion_name": "Module 5 — Analyse technique",
+      "lessons": [
+        {
+          "letter": "A",
+          "order": 1,
+          "name": "Déroulé d'une visite immobilière et check-list",
+          "evermind_idpage": 3907084
+        },
+        {
+          "letter": "B",
+          "order": 2,
+          "name": "Exemple de visite sur le terrain",
+          "evermind_idpage": 3907085
+        },
+        {
+          "letter": "C",
+          "order": 3,
+          "name": "Utiliser les diagnostics immobiliers à son avantage",
+          "evermind_idpage": 3907086
+        },
+        {
+          "letter": "D",
+          "order": 4,
+          "name": "Les techniques puissantes pour négocier",
+          "evermind_idpage": 3907087
+        },
+        {
+          "letter": "E",
+          "order": 5,
+          "name": "Comprendre le notaire et les formalités foncières",
+          "evermind_idpage": 3907088
+        }
+      ]
+    },
+    {
+      "order": 6,
+      "evermind_id": 689686,
+      "evermind_name": "6 - Financement",
+      "notion_slug": "financement",
+      "notion_name": "Module 6 — Financement",
+      "lessons": [
+        {
+          "letter": "A",
+          "order": 1,
+          "name": "Les différents crédits bancaires",
+          "evermind_idpage": 3907089
+        },
+        {
+          "letter": "B",
+          "order": 2,
+          "name": "Les caractéristiques d'un prêt immobilier",
+          "evermind_idpage": 3907090
+        },
+        {
+          "letter": "C",
+          "order": 3,
+          "name": "Faire une demande de crédit comme un pro",
+          "evermind_idpage": 3907091
+        },
+        {
+          "letter": "D",
+          "order": 4,
+          "name": "Améliorer son dossier et enchainer les crédits",
+          "evermind_idpage": 3907092
+        },
+        {
+          "letter": "E",
+          "order": 5,
+          "name": "Le financement participatif Crowdfunding",
+          "evermind_idpage": 4600028
+        }
+      ]
+    },
+    {
+      "order": 7,
+      "evermind_id": 689687,
+      "evermind_name": "7 - Travaux",
+      "notion_slug": "travaux",
+      "notion_name": "Module 7 — Travaux",
+      "lessons": [
+        {
+          "letter": "A",
+          "order": 1,
+          "name": "Choisir la bonne entreprise de rénovation",
+          "evermind_idpage": 3907093
+        },
+        {
+          "letter": "B",
+          "order": 2,
+          "name": "Confronter les devis et diminuer son budget travaux",
+          "evermind_idpage": 3907094
+        },
+        {
+          "letter": "C",
+          "order": 3,
+          "name": "Comprendre tous les travaux sans être artisan",
+          "evermind_idpage": 3907095
+        },
+        {
+          "letter": "D",
+          "order": 4,
+          "name": "Exemple sur le terrain de suivi de chantier",
+          "evermind_idpage": 3907096
+        },
+        {
+          "letter": "E",
+          "order": 5,
+          "name": "Le détail de chaque pièce d'un bien",
+          "evermind_idpage": 3907097
+        },
+        {
+          "letter": "F",
+          "order": 6,
+          "name": "La réception du chantier et les garanties",
+          "evermind_idpage": 3907098
+        },
+        {
+          "letter": "G",
+          "order": 7,
+          "name": "Maîtriser l'urbanisme et les déclarations associées",
+          "evermind_idpage": 3907099
+        }
+      ]
+    },
+    {
+      "order": 8,
+      "evermind_id": 689688,
+      "evermind_name": "8 - Gestion locative",
+      "notion_slug": "gestion-locative",
+      "notion_name": "Module 8 — Gestion locative",
+      "lessons": [
+        {
+          "letter": "A",
+          "order": 1,
+          "name": "Publication de l'annonce idéale",
+          "evermind_idpage": 3907100
+        },
+        {
+          "letter": "B",
+          "order": 2,
+          "name": "Trouver un locataire de qualité pour son logement",
+          "evermind_idpage": 3907101
+        },
+        {
+          "letter": "C",
+          "order": 3,
+          "name": "Les baux et la gestion locative",
+          "evermind_idpage": 3907102
+        },
+        {
+          "letter": "D",
+          "order": 4,
+          "name": "Se protéger contre les impayés",
+          "evermind_idpage": 3907103
+        },
+        {
+          "letter": "E",
+          "order": 5,
+          "name": "Les assurances indispensables",
+          "evermind_idpage": 4607998
+        },
+        {
+          "letter": "F",
+          "order": 6,
+          "name": "Fonctionnement de la copropriété",
+          "evermind_idpage": 4607999
+        }
+      ]
+    },
+    {
+      "order": 9,
+      "evermind_id": 689689,
+      "evermind_name": "9 - Imposition",
+      "notion_slug": "imposition",
+      "notion_name": "Module 9 — Imposition",
+      "lessons": [
+        {
+          "letter": "A",
+          "order": 1,
+          "name": "Les bases de l'imposition des particuliers",
+          "evermind_idpage": 3907104
+        },
+        {
+          "letter": "B",
+          "order": 2,
+          "name": "L'imposition des revenus locatifs",
+          "evermind_idpage": 3907105
+        },
+        {
+          "letter": "C",
+          "order": 3,
+          "name": "Les taxes et impositions locales",
+          "evermind_idpage": 3907106
+        },
+        {
+          "letter": "D",
+          "order": 4,
+          "name": "Fiscalité du patrimoine",
+          "evermind_idpage": 3907107
+        },
+        {
+          "letter": "E",
+          "order": 5,
+          "name": "Obligation déclarative pour les propriétaires",
+          "evermind_idpage": 4028091
+        }
+      ]
+    },
+    {
+      "order": 10,
+      "evermind_id": 689690,
+      "evermind_name": "10 - Création de société",
+      "notion_slug": "societe",
+      "notion_name": "Module 10 — Société",
+      "lessons": [
+        {
+          "letter": "A",
+          "order": 1,
+          "name": "Les différentes sociétés immobilières",
+          "evermind_idpage": 3907108
+        },
+        {
+          "letter": "B",
+          "order": 2,
+          "name": "Les étapes de la création d'entreprise",
+          "evermind_idpage": 3907109
+        },
+        {
+          "letter": "C",
+          "order": 3,
+          "name": "Se rémunérer en tant que dirigeant",
+          "evermind_idpage": 3907110
+        },
+        {
+          "letter": "D",
+          "order": 4,
+          "name": "La comptabilité, le bilan et les résultats",
+          "evermind_idpage": 3907111
+        },
+        {
+          "letter": "E",
+          "order": 5,
+          "name": "L'imposition avantageuse en société",
+          "evermind_idpage": 3907112
+        },
+        {
+          "letter": "F",
+          "order": 6,
+          "name": "Salaire ou dividende : le match ultime !",
+          "evermind_idpage": 3907113
+        }
+      ]
+    },
+    {
+      "order": 11,
+      "evermind_id": 689691,
+      "evermind_name": "11 - Montages avancés",
+      "notion_slug": "montage-avance",
+      "notion_name": "Module 11 — Montage avancé",
+      "lessons": [
+        {
+          "letter": "A",
+          "order": 1,
+          "name": "Les circulations d'argent à travers la holding",
+          "evermind_idpage": 3907114
+        },
+        {
+          "letter": "B",
+          "order": 2,
+          "name": "Le démembrement pour faciliter la transmission",
+          "evermind_idpage": 3907115
+        },
+        {
+          "letter": "C",
+          "order": 3,
+          "name": "Droit des successions et donations",
+          "evermind_idpage": 3907116
+        },
+        {
+          "letter": "D",
+          "order": 4,
+          "name": "Régimes matrimoniaux au coeur de l'entreprise",
+          "evermind_idpage": 3907117
+        }
+      ]
+    },
+    {
+      "order": 12,
+      "evermind_id": 689692,
+      "evermind_name": "12 - Astuces d'Emeline",
+      "notion_slug": "astuces",
+      "notion_name": "Module 12 — Astuces",
+      "lessons": [
+        {
+          "letter": "A",
+          "order": 1,
+          "name": "Aller plus loin dans la recherche de biens",
+          "evermind_idpage": 3907118
+        },
+        {
+          "letter": "B",
+          "order": 2,
+          "name": "Une gestion 100% déléguée",
+          "evermind_idpage": 3907119
+        },
+        {
+          "letter": "C",
+          "order": 3,
+          "name": "Adapter sa fiscalité en fonction de sa stratégie",
+          "evermind_idpage": 3907120
+        },
+        {
+          "letter": "D",
+          "order": 4,
+          "name": "Les outils et leurs fonctionnement",
+          "evermind_idpage": 4608000
+        }
+      ]
+    },
+    {
+      "order": 13,
+      "evermind_id": 689693,
+      "evermind_name": "13 - FAQ immobilière",
+      "notion_slug": "faq-immobiliere",
+      "notion_name": "Module 13 — FAQ immobilière",
+      "lessons": [
+        {
+          "letter": "A",
+          "order": 1,
+          "name": "Les réponses sur le financement et la banque",
+          "evermind_idpage": 3907121
+        },
+        {
+          "letter": "B",
+          "order": 2,
+          "name": "Plus de doutes sur les travaux et la location",
+          "evermind_idpage": 3907122
+        },
+        {
+          "letter": "C",
+          "order": 3,
+          "name": "Maîtriser parfaitement la fiscalité et les sociétés",
+          "evermind_idpage": 3907123
+        }
+      ]
+    },
+    {
+      "order": 14,
+      "evermind_id": 689694,
+      "evermind_name": "14 - Bonus",
+      "notion_slug": "bonus",
+      "notion_name": "Module 14 — Bonus",
+      "lessons": [
+        {
+          "letter": "A",
+          "order": 1,
+          "name": "Trouver un associé pour enchainer en immo",
+          "evermind_idpage": 3907124
+        },
+        {
+          "letter": "B",
+          "order": 2,
+          "name": "Vivre de la SCI à l'IS : mythe ou réalité ?",
+          "evermind_idpage": 3907125
+        },
+        {
+          "letter": "C",
+          "order": 3,
+          "name": "Exemple de recherche de biens en LIVE",
+          "evermind_idpage": 3907126
+        }
+      ]
+    }
+  ],
+  "_exclus": {
+    "_doc": "Sections Evermind explicitement EXCLUES du nouveau cours.",
+    "interviews": "Trop datées, pas réutilisées (décision Emeline 2026-04-30)",
+    "intro_conclusion": "À décider plus tard si on les refait, pas dans le scope V1"
+  }
+}

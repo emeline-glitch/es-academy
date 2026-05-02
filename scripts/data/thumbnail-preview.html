@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Thumbnail preview ES Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --es-green: #1B4332;
+    --es-green-light: #2D6A4F;
+    --es-green-dark: #0F2B1E;
+    --es-cream: #F5F0E8;
+    --es-cream-light: #FAF8F4;
+    --es-cream-dark: #EDE8DC;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #1a1a1a; min-height: 100vh; display: flex; flex-direction: column; align-items: center; gap: 32px; padding: 32px; }
+  .label { color: #888; font-family: Inter, system-ui; font-size: 14px; }
+  .thumb {
+    width: 1280px; height: 720px;
+    background: var(--es-green);
+    color: var(--es-cream);
+    font-family: Inter, system-ui, sans-serif;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    padding: 80px 96px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .top {
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+  }
+  .module-num {
+    font-family: Inter;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--es-cream);
+    opacity: 0.6;
+  }
+  .rule {
+    flex: 1;
+    height: 1px;
+    background: var(--es-cream);
+    opacity: 0.2;
+    align-self: center;
+  }
+
+  .module-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 116px;
+    line-height: 1;
+    font-weight: 700;
+    color: var(--es-cream);
+    max-width: 800px;
+    margin-top: 24px;
+    letter-spacing: -0.01em;
+  }
+
+  .lesson-letter {
+    font-family: 'Playfair Display', serif;
+    font-size: 320px;
+    line-height: 0.8;
+    font-weight: 400;
+    color: var(--es-cream);
+    opacity: 0.07;
+    position: absolute;
+    right: 80px;
+    top: -40px;
+    user-select: none;
+  }
+
+  .play-overlay {
+    position: absolute;
+    right: 110px;
+    top: 50%;
+    transform: translateY(-30%);
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    background: var(--es-cream);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+  }
+  .play-overlay::before {
+    content: '';
+    width: 0; height: 0;
+    border-left: 36px solid var(--es-green);
+    border-top: 24px solid transparent;
+    border-bottom: 24px solid transparent;
+    margin-left: 10px;
+  }
+
+  .bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--es-cream);
+    opacity: 0.85;
+  }
+  .brand strong {
+    font-style: normal;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+</style>
+</head>
+<body>
+  <div class="label">Module 03 — Recherches — leçon B — 1280×720</div>
+  <div class="thumb">
+    <div class="lesson-letter">B</div>
+    <div class="top">
+      <span class="module-num">Module 03</span>
+      <span class="rule"></span>
+    </div>
+    <div>
+      <h1 class="module-title">Recherches</h1>
+    </div>
+    <div class="play-overlay"></div>
+    <div class="bottom">
+      <span class="brand">La méthode <strong>Emeline SIRON</strong></span>
+    </div>
+  </div>
+</body>
+</html>
