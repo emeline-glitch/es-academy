@@ -14,7 +14,12 @@ export const metadata: Metadata = {
   description: "Immobilier, bourse, fiscalité, actifs alternatifs : la communauté des investisseurs qui construisent leur patrimoine. 1 900 investisseurs, tarif fondateur 19€/mois.",
 };
 
-const SKOOL_URL = "https://www.skool.com/es-family";
+// Skool abandonne avril 2026 (cf. memory feedback_no_skool).
+// Le CTA fait scroll vers la section tarifs ; le checkout Stripe sera branche
+// sur la card Fondateur via STRIPE_PRICE_FAMILY_FONDATEUR.
+// Pointe vers la route GET checkout-family qui cree une session Stripe puis
+// redirige (303) vers la page Stripe Checkout. Utilise STRIPE_PRICE_FAMILY_FONDATEUR.
+const FAMILY_CTA_HREF = "/api/stripe/checkout-family?plan=fondateur";
 
 const faqItems = [
   { question: "Qu'est-ce qu'ES Family exactement ?", answer: "ES Family est une communauté patrimoniale pour investisseurs ambitieux. Tu accèdes à des analyses flash, des lives mensuels, des opportunités exclusives et un réseau de membres qui partagent les mêmes objectifs." },
@@ -34,55 +39,53 @@ export default function FamilyPage() {
       <JsonLd data={faqSchema(faqItems)} />
 
       {/* Hero — L'école t'a appris à travailler */}
-      <section className="relative py-20 lg:py-28 overflow-hidden" style={{ backgroundColor: "#C4724A" }}>
-        <div className="absolute inset-0 bg-gradient-to-br from-es-terracotta-dark/20 via-transparent to-black/10" />
-        <div className="absolute inset-0 opacity-[0.04]" style={{
-          backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
+      <section className="relative py-20 lg:py-28 overflow-hidden" style={{ backgroundColor: "#B8EBDD" }}>
+        <div className="absolute inset-0 bg-gradient-to-br from-es-mint/15 via-transparent to-es-mint-dark/10" />
+        <div className="absolute inset-0 opacity-[0.06]" style={{
+          backgroundImage: "radial-gradient(circle at 1px 1px, #006B58 1px, transparent 0)",
           backgroundSize: "40px 40px",
         }} />
         <div className="relative max-w-6xl mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
             <div className="text-center lg:text-left">
-              <p className="font-serif italic text-white/70 text-sm sm:text-base mb-6 tracking-wide">
+              <p className="font-serif italic text-es-mint-dark/80 text-sm sm:text-base mb-6 tracking-wide">
                 Patrimoine, fiscalité, investissement : tout ce qu&apos;on ne t&apos;a jamais appris à l&apos;école
               </p>
-              <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-[1.1] mb-6">
+              <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-es-text leading-[1.1] mb-6">
                 L&apos;école t&apos;a appris à travailler.{" "}
-                <span className="block mt-2 text-white" style={{ textShadow: "2px 2px 0 rgba(0,0,0,0.15)" }}>
+                <span className="block mt-2 text-es-mint-dark">
                   Pas à t&apos;enrichir.
                 </span>
               </h1>
-              <p className="text-lg text-white/90 mb-4 leading-relaxed font-medium">
+              <p className="text-lg text-es-text mb-4 leading-relaxed font-medium">
                 Pas juste un groupe immo. Un écosystème patrimoine complet — immo, bourse, fiscalité, entrepreneuriat, mindset — dans ta poche, 7j/7.
               </p>
-              <p className="text-base text-white/80 mb-4 leading-relaxed">
-                ES Family, c&apos;est la communauté qui prend le relais là où l&apos;école s&apos;est arrêtée. <strong className="text-white">1 800 membres déjà actifs. Encore 500 places au tarif fondateur.</strong>
+              <p className="text-base text-es-text-light mb-4 leading-relaxed">
+                ES Family, c&apos;est la communauté qui prend le relais là où l&apos;école s&apos;est arrêtée. <strong className="text-es-mint-dark">1 800 membres déjà actifs. Encore 500 places au tarif fondateur.</strong>
               </p>
-              <p className="text-sm text-white/60 mb-10 leading-relaxed italic">
+              <p className="text-sm text-es-text-muted mb-10 leading-relaxed italic">
                 Plateforme mobile conçue et développée en interne par Emeline.
               </p>
 
               <a
-                href={SKOOL_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center font-semibold rounded-lg px-10 py-5 text-lg bg-white text-es-terracotta hover:bg-es-cream transition-all shadow-lg hover:shadow-xl"
+                href={FAMILY_CTA_HREF}
+                className="inline-flex items-center justify-center font-semibold rounded-lg px-10 py-5 text-lg bg-es-mint-dark text-white hover:bg-es-mint-deep transition-all shadow-lg hover:shadow-xl"
               >
                 Rejoindre ES Family à 19€/mois
               </a>
-              <p className="text-xs text-white/50 mt-4">
+              <p className="text-xs text-es-text-muted mt-4">
                 Pour le prix d&apos;un forfait téléphonique · Sans engagement
               </p>
             </div>
 
             {/* Placeholder visuel app ES Family — à remplacer par screenshot ou mockup app */}
-            <div className="relative rounded-2xl overflow-hidden shadow-2xl aspect-[4/5] max-w-md mx-auto lg:max-w-none w-full bg-white/10 border-2 border-dashed border-white/30 flex items-center justify-center p-8">
+            <div className="relative rounded-2xl overflow-hidden shadow-2xl aspect-[4/5] max-w-md mx-auto lg:max-w-none w-full bg-white/40 border-2 border-dashed border-es-mint-dark/30 flex items-center justify-center p-8">
               <div className="text-center">
-                <svg className="w-16 h-16 mx-auto text-white/40 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <svg className="w-16 h-16 mx-auto text-es-mint-dark/40 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
                 </svg>
-                <p className="text-white/70 text-sm font-medium">Visuel de l&apos;app</p>
-                <p className="text-white/50 text-xs italic mt-2">[TODO_SCREENSHOT_APP_FAMILY]</p>
+                <p className="text-es-mint-dark/70 text-sm font-medium">Visuel de l&apos;app</p>
+                <p className="text-es-mint-dark/50 text-xs italic mt-2">[TODO_SCREENSHOT_APP_FAMILY]</p>
               </div>
             </div>
           </div>
@@ -121,7 +124,7 @@ export default function FamilyPage() {
               },
             ].map((item) => (
               <div key={item.num} className="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm">
-                <div className="font-serif text-5xl font-bold text-es-terracotta mb-4 leading-none">{item.num}</div>
+                <div className="font-serif text-5xl font-bold text-es-mint-dark mb-4 leading-none">{item.num}</div>
                 <h3 className="font-serif text-xl font-bold text-es-text mb-3">{item.title}</h3>
                 <p className="text-es-text-muted leading-relaxed">{item.body}</p>
               </div>
@@ -130,7 +133,7 @@ export default function FamilyPage() {
           <div className="mt-12 text-center">
             <p className="font-serif text-xl text-es-text max-w-3xl mx-auto leading-relaxed">
               ES Family répond à ces quatre problèmes. Une communauté active, des partenaires vérifiés, des échanges quotidiens.
-              <strong className="block mt-2 text-es-terracotta">Tu arrêtes de stagner.</strong>
+              <strong className="block mt-2 text-es-mint-dark">Tu arrêtes de stagner.</strong>
             </p>
           </div>
         </div>
@@ -140,7 +143,7 @@ export default function FamilyPage() {
       <section className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-14">
-            <span className="text-xs text-es-terracotta uppercase tracking-widest font-medium">L&apos;application</span>
+            <span className="text-xs text-es-mint-dark uppercase tracking-widest font-medium">L&apos;application</span>
             <h2 className="font-serif text-3xl sm:text-4xl font-bold text-es-text mt-3 mb-4">Un seul abonnement, 12 usages dans ta poche</h2>
             <p className="text-es-text-muted max-w-2xl mx-auto leading-relaxed">
               Formation, communauté, outils, coaching, bons plans, partenaires : tout est centralisé dans une app mobile pensée pour être consultée au quotidien.
@@ -214,8 +217,8 @@ export default function FamilyPage() {
               },
             ].map((block, i) => (
               <div key={i} className="bg-es-cream rounded-2xl p-6">
-                <div className="w-12 h-12 rounded-xl bg-es-terracotta/10 flex items-center justify-center mb-4">
-                  <svg className="w-6 h-6 text-es-terracotta" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <div className="w-12 h-12 rounded-xl bg-es-mint-pastel flex items-center justify-center mb-4">
+                  <svg className="w-6 h-6 text-es-mint-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     {block.icon}
                   </svg>
                 </div>
@@ -226,9 +229,9 @@ export default function FamilyPage() {
           </div>
 
           {/* Callout — patrimoine large */}
-          <div className="mt-14 max-w-3xl mx-auto bg-gradient-to-br from-es-terracotta/10 to-es-green/5 border border-es-terracotta/30 rounded-2xl p-8 text-center">
+          <div className="mt-14 max-w-3xl mx-auto bg-es-mint-soft border border-es-mint-light rounded-2xl p-8 text-center">
             <p className="font-serif text-xl sm:text-2xl text-es-text leading-relaxed">
-              Pas juste de l&apos;immo. <strong className="text-es-terracotta">Tout ce qui fait une vraie indépendance financière</strong> : bourse, fiscalité, actifs alternatifs, transmission, entrepreneuriat, mindset.
+              Pas juste de l&apos;immo. <strong className="text-es-mint-dark">Tout ce qui fait une vraie indépendance financière</strong> : bourse, fiscalité, actifs alternatifs, transmission, entrepreneuriat, mindset.
             </p>
           </div>
         </div>
@@ -238,17 +241,17 @@ export default function FamilyPage() {
       <section className="py-20 bg-es-cream">
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-12">
-            <span className="text-xs text-es-terracotta uppercase tracking-widest font-medium">Visite guidée</span>
+            <span className="text-xs text-es-mint-dark uppercase tracking-widest font-medium">Visite guidée</span>
             <h2 className="font-serif text-3xl font-bold text-es-text mt-3">Tu veux voir l&apos;intérieur avant de t&apos;engager ?</h2>
           </div>
 
           {/* Vidéo démo principale */}
           <div className="max-w-3xl mx-auto">
             {/* TODO: Remplacer par Loom embed [VIDEO_DEMO_URL] avec thumbnail [VIDEO_THUMBNAIL] */}
-            <div className="relative w-full aspect-video rounded-2xl overflow-hidden bg-gradient-to-br from-es-terracotta via-es-terracotta-dark to-es-terracotta/80 shadow-xl cursor-pointer group">
+            <div className="relative w-full aspect-video rounded-2xl overflow-hidden bg-gradient-to-br from-es-mint-dark via-es-mint-deep to-es-mint-dark/85 shadow-xl cursor-pointer group">
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
                 <div className="w-20 h-20 rounded-full bg-white/95 flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
-                  <svg className="w-8 h-8 text-es-terracotta ml-1" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-8 h-8 text-es-mint-dark ml-1" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
                   </svg>
                 </div>
@@ -275,7 +278,7 @@ export default function FamilyPage() {
                 <div key={label} className="relative aspect-[3/4] rounded-xl overflow-hidden bg-gradient-to-br from-es-cream-dark to-es-cream border border-es-cream-dark/50">
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-center px-2">
-                      <svg className="w-8 h-8 mx-auto text-es-terracotta/40 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <svg className="w-8 h-8 mx-auto text-es-mint-dark/40 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                       </svg>
                       <p className="text-xs text-es-text-muted font-medium">{label}</p>
@@ -292,7 +295,7 @@ export default function FamilyPage() {
       <section className="py-20 bg-es-cream">
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-12">
-            <span className="text-xs text-es-terracotta uppercase tracking-widest font-medium">Tarif fondateur</span>
+            <span className="text-xs text-es-mint-dark uppercase tracking-widest font-medium">Tarif fondateur</span>
             <h2 className="font-serif text-3xl sm:text-4xl font-bold text-es-text mt-3 mb-3">
               Réservé aux 500 premiers membres
             </h2>
@@ -302,23 +305,21 @@ export default function FamilyPage() {
           </div>
           <div className="grid md:grid-cols-5 gap-6">
             {/* Carte Fondateur — 60% */}
-            <div className="md:col-span-3 bg-es-terracotta rounded-2xl p-8 text-white relative overflow-hidden shadow-xl">
-              <div className="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
-              <div className="absolute bottom-0 left-0 w-32 h-32 bg-black/5 rounded-full translate-y-1/2 -translate-x-1/4" />
-              <span className="relative inline-flex items-center bg-es-gold text-white text-xs font-bold px-3 py-1 rounded-full mb-4">
+            <div className="md:col-span-3 bg-es-mint-pastel rounded-2xl p-8 text-es-text relative overflow-hidden shadow-xl">
+              <div className="absolute top-0 right-0 w-48 h-48 bg-white/30 rounded-full -translate-y-1/2 translate-x-1/2" />
+              <div className="absolute bottom-0 left-0 w-32 h-32 bg-es-mint-dark/5 rounded-full translate-y-1/2 -translate-x-1/4" />
+              <span className="relative inline-flex items-center bg-es-mint-dark text-white text-xs font-bold px-3 py-1 rounded-full mb-4">
                 RECOMMANDÉ
               </span>
-              <h3 className="font-serif text-3xl font-bold mb-1 relative">FONDATEUR</h3>
-              <p className="text-white/70 text-sm mb-6 relative">Les 500 premiers membres</p>
-              <div className="text-5xl font-bold my-5 relative">
-                19€<span className="text-lg font-normal text-white/60">/mois TTC</span>
+              <h3 className="font-serif text-3xl font-bold mb-1 relative text-es-text">FONDATEUR</h3>
+              <p className="text-es-text-muted text-sm mb-6 relative">Les 500 premiers membres</p>
+              <div className="text-5xl font-bold my-5 relative text-es-text">
+                19€<span className="text-lg font-normal text-es-text-muted">/mois TTC</span>
               </div>
-              <p className="text-white/70 text-sm mb-6 relative">Tarif bloqué tant que l&apos;abonnement reste actif*</p>
+              <p className="text-es-text-muted text-sm mb-6 relative">Tarif bloqué tant que l&apos;abonnement reste actif*</p>
               <a
-                href={SKOOL_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="relative block w-full text-center font-semibold rounded-lg px-8 py-4 bg-white text-es-terracotta hover:bg-es-cream transition-all mb-8 shadow-md"
+                href={FAMILY_CTA_HREF}
+                className="relative block w-full text-center font-semibold rounded-lg px-8 py-4 bg-es-mint-dark text-white hover:bg-es-mint-deep transition-all mb-8 shadow-md"
               >
                 Rejoindre à 19€/mois
               </a>
@@ -330,15 +331,15 @@ export default function FamilyPage() {
                   "Accès immédiat à la plateforme",
                   "Tarif conservé tant que ton abonnement reste actif",
                 ].map((item, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm text-white/90">
-                    <svg className="w-5 h-5 text-es-gold mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <li key={i} className="flex items-start gap-2 text-sm text-es-text">
+                    <svg className="w-5 h-5 text-es-mint-dark mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
                     </svg>
                     {item}
                   </li>
                 ))}
               </ul>
-              <p className="text-[10px] text-white/50 mt-6 relative">*Sous réserve d&apos;abonnement continu</p>
+              <p className="text-[10px] text-es-text-muted mt-6 relative">*Sous réserve d&apos;abonnement continu</p>
             </div>
 
             {/* Carte Standard — 40%, grisée */}
@@ -420,16 +421,16 @@ export default function FamilyPage() {
       <section className="py-20 bg-es-cream">
         <div className="max-w-3xl mx-auto px-6">
           <div className="text-center mb-12">
-            <span className="text-xs text-es-terracotta uppercase tracking-widest font-medium">FAQ</span>
+            <span className="text-xs text-es-mint-dark uppercase tracking-widest font-medium">FAQ</span>
             <h2 className="font-serif text-3xl font-bold text-es-text mt-3">Questions fréquentes</h2>
           </div>
           <Accordion items={faqItems} />
         </div>
       </section>
 
-      <BottomBanner />
+      <BottomBanner accent="mint" />
       <Footer />
-      <MobileCta text="Rejoindre ES Family" href={SKOOL_URL} variant="terracotta" />
+      <MobileCta text="Rejoindre ES Family" href={FAMILY_CTA_HREF} variant="mint" />
     </div>
   );
 }

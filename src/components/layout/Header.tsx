@@ -49,13 +49,13 @@ export function Header({ activePage = "home" }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const ctaHref = activePage === "family"
-    ? "https://www.skool.com/es-family"
+    ? "/api/stripe/checkout-family?plan=fondateur"
     : "/academy";
   const ctaText = activePage === "family"
     ? "Rejoindre ES Family"
     : "Rejoindre la formation";
   const ctaClass = activePage === "family"
-    ? "bg-es-terracotta hover:bg-es-terracotta-dark"
+    ? "bg-es-mint-dark hover:bg-es-mint-deep"
     : "bg-es-green hover:bg-es-green-light";
 
   return (
@@ -83,11 +83,11 @@ export function Header({ activePage = "home" }: HeaderProps) {
             href="/family"
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
               activePage === "family"
-                ? "bg-es-terracotta text-white"
-                : "text-es-terracotta hover:bg-es-terracotta/10"
+                ? "bg-es-mint-dark text-white"
+                : "text-es-mint-dark hover:bg-es-mint-dark/10"
             }`}
           >
-            <span className={`w-2 h-2 rounded-full ${activePage === "family" ? "bg-white" : "bg-es-terracotta"}`} />
+            <span className={`w-2 h-2 rounded-full ${activePage === "family" ? "bg-white" : "bg-es-mint-dark"}`} />
             ES Family
           </Link>
           <span className="w-px h-5 bg-gray-200 mx-2" />
@@ -111,8 +111,6 @@ export function Header({ activePage = "home" }: HeaderProps) {
           </Link>
           <a
             href={ctaHref}
-            target={activePage === "family" ? "_blank" : undefined}
-            rel={activePage === "family" ? "noopener noreferrer" : undefined}
             className={`inline-flex items-center justify-center font-medium rounded-full px-5 py-2 text-sm text-white transition-all shadow-sm hover:shadow-md ${ctaClass}`}
           >
             {ctaText}
@@ -145,8 +143,8 @@ export function Header({ activePage = "home" }: HeaderProps) {
               <span className="w-2 h-2 rounded-full bg-es-green" />
               ES Academy
             </Link>
-            <Link href="/family" className="flex items-center gap-2 text-sm text-es-terracotta font-medium py-2.5 px-3 rounded-lg hover:bg-es-terracotta/5" onClick={() => setMobileOpen(false)}>
-              <span className="w-2 h-2 rounded-full bg-es-terracotta" />
+            <Link href="/family" className="flex items-center gap-2 text-sm text-es-mint-dark font-medium py-2.5 px-3 rounded-lg hover:bg-es-mint-dark/5" onClick={() => setMobileOpen(false)}>
+              <span className="w-2 h-2 rounded-full bg-es-mint-dark" />
               ES Family
             </Link>
             <Link href="/simulateurs" className="text-sm text-gray-600 py-2.5 px-3 rounded-lg hover:bg-gray-50" onClick={() => setMobileOpen(false)}>

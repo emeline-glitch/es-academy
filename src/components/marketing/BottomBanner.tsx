@@ -1,11 +1,21 @@
 import { NewsletterForm } from "./NewsletterForm";
 
-export function BottomBanner() {
+interface BottomBannerProps {
+  accent?: "terracotta" | "mint" | "green";
+}
+
+export function BottomBanner({ accent = "terracotta" }: BottomBannerProps) {
+  const accentClass =
+    accent === "mint"
+      ? "text-es-mint-dark"
+      : accent === "green"
+      ? "text-es-green"
+      : "text-es-terracotta";
   return (
     <section id="newsletter" className="py-16 bg-es-cream border-t border-es-cream-dark">
       <div className="max-w-3xl mx-auto px-6 text-center">
         {/* Réseaux sociaux */}
-        <span className="text-xs text-es-terracotta uppercase tracking-widest font-medium">Restons connectés</span>
+        <span className={`text-xs ${accentClass} uppercase tracking-widest font-medium`}>Restons connectés</span>
         <h2 className="font-serif text-2xl font-bold text-es-text mt-3 mb-4">
           Suivez-moi au quotidien
         </h2>

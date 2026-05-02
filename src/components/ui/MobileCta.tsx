@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 interface MobileCtaProps {
   text?: string;
   href?: string;
-  variant?: "green" | "terracotta";
+  variant?: "green" | "terracotta" | "mint";
 }
 
 export function MobileCta({
@@ -27,6 +27,8 @@ export function MobileCta({
 
   const bgClass = variant === "terracotta"
     ? "bg-es-terracotta hover:bg-es-terracotta-dark"
+    : variant === "mint"
+    ? "bg-es-mint hover:bg-es-mint-dark"
     : "bg-es-green hover:bg-es-green-light";
 
   return (
