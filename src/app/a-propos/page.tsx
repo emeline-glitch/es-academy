@@ -345,7 +345,7 @@ export default function QuiEstEmeline() {
             <Link
               href="/family"
               className="group rounded-2xl p-8 text-white hover:shadow-2xl transition-all hover:-translate-y-1 relative overflow-hidden"
-              style={{ backgroundColor: "#C4724A" }}
+              style={{ backgroundColor: "#006B58" }}
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
               <span className="text-xs uppercase tracking-widest text-white/50 font-medium relative">Communauté</span>
@@ -445,7 +445,7 @@ export default function QuiEstEmeline() {
       </section>
 
       {/* CTA final — appel découverte */}
-      <section className="relative py-20 overflow-hidden" style={{ backgroundColor: "#C4724A" }}>
+      <section className="relative py-20 overflow-hidden" style={{ backgroundColor: "#006B58" }}>
         <div className="absolute inset-0 bg-gradient-to-br from-es-terracotta-dark/20 via-transparent to-black/10" />
         <div className="relative max-w-5xl mx-auto px-6">
           <div className="grid md:grid-cols-[auto_1fr] gap-8 items-center">
