@@ -30,7 +30,7 @@ export default function MerciMasterclass() {
         </div>
 
         <p className="text-xs text-gray-500 mb-6">
-          Si tu ne reçois rien dans 5 minutes, vérifie ton dossier "Spam" ou "Promotions". Le mail vient de <strong>emeline@es-academy.fr</strong>.
+          Si tu ne reçois rien dans 5 minutes, vérifie ton dossier "Spam" ou "Promotions". Le mail vient de <strong>emeline@emeline-siron.fr</strong>.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center">

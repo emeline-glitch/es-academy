@@ -90,7 +90,7 @@ ${events && events.length > 0
     to: antonyEmail,
     subject: `[Lead ${level.toUpperCase()}] ${name}`,
     html,
-    from: "ES Academy CRM <emeline@es-academy.fr>",
+    from: "ES Academy CRM <emeline@emeline-siron.fr>",
     replyTo: contact.email,
   });
 

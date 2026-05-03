@@ -910,7 +910,7 @@ function FormulaireOptIn() {
           Le 1er decembre au matin, tu recevras la 1ere case du calendrier dans ta boite mail.
         </p>
         <p className="text-xs mt-3 opacity-80">
-          D&apos;ici la, ajoute <strong>emeline@es-academy.fr</strong> a tes contacts pour ne rien rater.
+          D&apos;ici la, ajoute <strong>emeline@emeline-siron.fr</strong> a tes contacts pour ne rien rater.
         </p>
       </div>
     );

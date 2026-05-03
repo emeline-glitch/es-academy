@@ -23,7 +23,7 @@ export default function ThankYouSeasonal({ emoji, title, body, backLabel = "Reto
           <p className="text-sm font-semibold text-es-text mb-1">Et maintenant ?</p>
           <ul className="text-sm text-es-text-muted space-y-1.5 list-disc list-inside">
             <li>Verifie tes spams si tu ne vois pas le 1er mail dans 5 min.</li>
-            <li>Ajoute <strong>emeline@es-academy.fr</strong> a tes contacts.</li>
+            <li>Ajoute <strong>emeline@emeline-siron.fr</strong> a tes contacts.</li>
             <li>Reponds au 1er mail si tu as une question, j&apos;y reponds personnellement.</li>
           </ul>
         </div>

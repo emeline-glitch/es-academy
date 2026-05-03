@@ -26,7 +26,7 @@ interface CampaignState {
 }
 
 const DEFAULT_FROM_NAME = "Emeline Siron";
-const DEFAULT_FROM_EMAIL = "emeline@es-academy.fr";
+const DEFAULT_FROM_EMAIL = "emeline@emeline-siron.fr";
 
 export default function NewEmailCampaign() {
   const toast = useToast();
@@ -469,7 +469,7 @@ function SenderModal({
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-3 border border-gray-200 rounded-lg text-sm bg-white"
             >
-              <option value="emeline@es-academy.fr">emeline@es-academy.fr</option>
+              <option value="emeline@emeline-siron.fr">emeline@emeline-siron.fr</option>
               <option value="contact@evermind.group">contact@evermind.group</option>
               <option value="contact@emelinesiron.com">contact@emelinesiron.com</option>
             </select>
