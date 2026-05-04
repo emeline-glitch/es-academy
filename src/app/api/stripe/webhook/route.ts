@@ -3,6 +3,7 @@ import { getStripe } from "@/lib/stripe/client";
 import { createServiceClient } from "@/lib/supabase/server";
 import { createFamilyGiftPromotionCode } from "@/lib/stripe/family-gift-code";
 import { sendAcademyWelcomeEmail } from "@/lib/email/welcome-academy";
+import { sendFamilyWelcomeEmail } from "@/lib/email/welcome-family";
 import { renderEmailTemplate } from "@/lib/email/render-template";
 import { sendEmail } from "@/lib/ses/client";
 import Stripe from "stripe";
@@ -46,6 +47,29 @@ export async function POST(request: Request) {
           { status: 500 }
         );
       }
+    } else if (scope === "family") {
+      try {
+        await handleFamilyPurchase(session);
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : "unknown";
+        console.error("[webhook] Family handler failed:", msg);
+        return NextResponse.json(
+          { error: "Processing failed" },
+          { status: 500 }
+        );
+      }
+    }
+  }
+
+  if (event.type === "customer.subscription.deleted") {
+    const sub = event.data.object as Stripe.Subscription;
+    try {
+      await handleFamilySubscriptionDeleted(sub);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "unknown";
+      console.error("[webhook] Family subscription delete failed:", msg);
+      // 200 quand même : la résiliation côté Stripe est faite, on ne veut pas
+      // que Stripe retry sur un fail interne (idempotence DB déjà gérée).
     }
   }
 
@@ -411,6 +435,146 @@ async function findOrCreateUserIdByEmail(params: {
   throw new Error(
     `findOrCreateUserIdByEmail a échoué pour ${email}: ${createError?.message || "unknown"}`
   );
+}
+
+/**
+ * Handler checkout.session.completed pour scope=family (abonnement ES Family).
+ *
+ * Crée/met à jour la row family_subscriptions, pose les tags CRM, envoie le
+ * mail de bienvenue. Idempotent : si même stripe_session_id arrive à nouveau
+ * (retry Stripe), on ne renvoie pas le welcome (skip via welcome_email_sent_at).
+ */
+async function handleFamilyPurchase(session: Stripe.Checkout.Session) {
+  const email = session.customer_details?.email || session.customer_email;
+  const plan = session.metadata?.plan as "fondateur" | "standard" | undefined;
+  const stripeCustomerId = (session.customer as string | null) || null;
+  const stripeSubscriptionId = (session.subscription as string | null) || null;
+
+  if (!email) {
+    throw new Error(`Missing email in Family session ${session.id}`);
+  }
+  if (plan !== "fondateur" && plan !== "standard") {
+    throw new Error(`Invalid plan '${plan}' in Family session ${session.id}`);
+  }
+  if (!stripeSubscriptionId) {
+    throw new Error(`Missing subscription id in Family session ${session.id}`);
+  }
+
+  const supabase = await createServiceClient();
+  const emailLower = email.toLowerCase();
+
+  // Récupère current_period_end + status réel depuis Stripe (la session
+  // n'expose pas ces champs, ils sont sur la subscription).
+  const stripe = getStripe();
+  const sub = await stripe.subscriptions.retrieve(stripeSubscriptionId);
+  // Stripe API dahlia : current_period_end n'est plus directement sur la sub
+  // mais sur items.data[0].current_period_end (par item de subscription).
+  const periodEndUnix =
+    sub.items?.data?.[0]?.current_period_end ?? null;
+  const currentPeriodEnd = periodEndUnix
+    ? new Date(periodEndUnix * 1000).toISOString()
+    : null;
+  const cancelAtPeriodEnd = Boolean(sub.cancel_at_period_end);
+  const status = sub.status; // active, trialing, past_due, etc.
+
+  // Création/lookup user (réutilise le helper Academy, qui gère aussi le magic link).
+  const { userId } = await findOrCreateUserIdByEmail({
+    supabase,
+    email,
+    emailLower,
+    fullName: session.customer_details?.name || "",
+  });
+
+  // Idempotence : check si subscription déjà persistée (retry Stripe).
+  const { data: existing } = await supabase
+    .from("family_subscriptions")
+    .select("id, welcome_email_sent_at")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  // Upsert sur user_id (UNIQUE index garantit 1 abo par user, re-souscription
+  // après résiliation = update du même row).
+  const subscriptionRow: Record<string, unknown> = {
+    user_id: userId,
+    stripe_customer_id: stripeCustomerId,
+    stripe_subscription_id: stripeSubscriptionId,
+    stripe_session_id: session.id,
+    plan,
+    status,
+    current_period_end: currentPeriodEnd,
+    cancel_at_period_end: cancelAtPeriodEnd,
+  };
+
+  const { data: upserted, error: upsertError } = await supabase
+    .from("family_subscriptions")
+    .upsert(subscriptionRow, { onConflict: "user_id" })
+    .select("id")
+    .single();
+
+  if (upsertError) {
+    console.error("[webhook] family_subscriptions upsert error:", upsertError.message);
+    throw upsertError;
+  }
+  const subscriptionId = upserted?.id as string | undefined;
+
+  // Tags CRM : merge atomique via RPC (préserve unsubscribed status etc).
+  const firstName = session.customer_details?.name?.split(" ")[0] || "";
+  const lastName =
+    session.customer_details?.name?.split(" ").slice(1).join(" ") || "";
+  const { error: contactErr } = await supabase.rpc("upsert_contact_with_tags", {
+    p_email: email,
+    p_first_name: firstName,
+    p_last_name: lastName,
+    p_add_tags: ["client", "family", `family:${plan}`],
+    p_source: "stripe",
+  });
+  if (contactErr) {
+    console.error("[webhook] Family contact upsert RPC error:", contactErr.message);
+  }
+
+  // Mail welcome : idempotent (skip si déjà envoyé sur ce subscription).
+  if (existing?.welcome_email_sent_at) {
+    return;
+  }
+  await sendFamilyWelcomeEmail({
+    supabase,
+    subscriptionId,
+    to: email,
+    firstName,
+    plan,
+  });
+}
+
+/**
+ * Handler customer.subscription.deleted : marque la row family_subscriptions
+ * comme canceled. On garde la row (historique + tag CRM "family" préservé pour
+ * remarketing potentiel) et on garde aussi le tag (un user qui a été abonné
+ * Family est une info utile pour la segmentation, à différencier d'un cold
+ * lead). À reconsidérer plus tard si volume.
+ */
+async function handleFamilySubscriptionDeleted(sub: Stripe.Subscription) {
+  const supabase = await createServiceClient();
+
+  const { data: row, error } = await supabase
+    .from("family_subscriptions")
+    .update({
+      status: "canceled",
+      cancel_at_period_end: false,
+    })
+    .eq("stripe_subscription_id", sub.id)
+    .select("id, user_id")
+    .maybeSingle();
+
+  if (error) {
+    console.error("[webhook] family_subscriptions cancel update error:", error.message);
+    return;
+  }
+  if (!row) {
+    // Sub inconnue : event reçu pour un abo qui n'a jamais été persisté
+    // (ex : webhook activé après création de la sub côté Stripe). On ignore.
+    console.warn(`[webhook] subscription.deleted for unknown sub ${sub.id}`);
+    return;
+  }
 }
 
 async function capSubscriptionAtInstallments(

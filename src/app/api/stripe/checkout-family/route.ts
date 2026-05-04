@@ -19,7 +19,7 @@ export async function GET(request: Request) {
 
     const session = await createFamilyCheckoutSession({
       plan,
-      successUrl: `${SITE_URL}/connexion?checkout=family-success&plan=${plan}`,
+      successUrl: `${SITE_URL}/family/bienvenue?plan=${plan}`,
       cancelUrl: `${SITE_URL}/family?checkout=cancelled`,
     });
 
@@ -50,7 +50,7 @@ export async function POST(request: Request) {
     const session = await createFamilyCheckoutSession({
       plan,
       customerEmail: email,
-      successUrl: `${SITE_URL}/connexion?checkout=family-success&plan=${plan}`,
+      successUrl: `${SITE_URL}/family/bienvenue?plan=${plan}`,
       cancelUrl: `${SITE_URL}/family?checkout=cancelled`,
     });
 
