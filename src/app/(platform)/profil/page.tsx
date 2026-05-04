@@ -12,6 +12,8 @@ export default function ProfilPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
+  const [portalLoading, setPortalLoading] = useState(false);
+  const [portalError, setPortalError] = useState("");
 
   useEffect(() => {
     const supabase = createClient();
@@ -40,6 +42,24 @@ export default function ProfilPage() {
       setMessage("Profil mis à jour !");
     }
     setSaving(false);
+  }
+
+  async function handleOpenPortal() {
+    setPortalLoading(true);
+    setPortalError("");
+    try {
+      const res = await fetch("/api/stripe/portal", { method: "POST" });
+      const data = await res.json();
+      if (!res.ok || !data.url) {
+        setPortalError(data.error || "Impossible d'ouvrir le portail.");
+        setPortalLoading(false);
+        return;
+      }
+      window.location.href = data.url;
+    } catch {
+      setPortalError("Erreur réseau. Réessaye.");
+      setPortalLoading(false);
+    }
   }
 
   if (loading) {
@@ -89,6 +109,23 @@ export default function ProfilPage() {
               {saving ? "Enregistrement..." : "Enregistrer"}
             </Button>
           </form>
+        </Card>
+
+        {/* Paiements et abonnements (Stripe Customer Portal) */}
+        <Card className="mt-6">
+          <h3 className="font-medium text-gray-900 mb-2">Paiements et abonnements</h3>
+          <p className="text-sm text-gray-500 mb-4">
+            Consulte tes factures, mets à jour ta carte de paiement, gère ton abonnement
+            Family (résiliation possible à tout moment).
+          </p>
+          {portalError && (
+            <div className="text-sm rounded-lg p-3 bg-red-50 text-red-800 mb-3">
+              {portalError}
+            </div>
+          )}
+          <Button onClick={handleOpenPortal} disabled={portalLoading} variant="primary">
+            {portalLoading ? "Ouverture..." : "Gérer mes paiements et abonnements"}
+          </Button>
         </Card>
 
         {/* Danger zone */}

@@ -15,6 +15,10 @@ export const metadata: Metadata = {
 const APP_STORE_URL = "https://apps.apple.com/X";
 const PLAY_STORE_URL = "https://play.google.com/store/apps/X";
 
+// Domain Family indépendant (Supabase Family séparé de Academy, pas de SSO).
+// Le user clique "Me connecter" → arrive sur l'app esfamily.fr (Vercel séparé).
+const FAMILY_LOGIN_URL = "https://esfamily.fr/connexion";
+
 interface SearchParams {
   plan?: string;
 }
@@ -61,15 +65,15 @@ export default async function FamilyBienvenuePage(props: {
                 Connecte-toi à ton espace
               </h2>
               <p className="text-es-text-muted mb-4">
-                Ton compte a été créé automatiquement avec l'email que tu as utilisé pour le paiement.
+                Ton compte Family a été créé automatiquement avec l'email que tu as utilisé pour le paiement.
                 Si c'est ta première inscription, tu vas recevoir un mail séparé pour définir ton mot de passe.
               </p>
-              <Link
-                href="/connexion"
+              <a
+                href={FAMILY_LOGIN_URL}
                 className="inline-block bg-es-green text-white px-6 py-3 rounded-lg font-semibold hover:bg-es-green-dark transition"
               >
-                Me connecter à mon espace
-              </Link>
+                Me connecter à Family
+              </a>
             </div>
           </div>
         </section>

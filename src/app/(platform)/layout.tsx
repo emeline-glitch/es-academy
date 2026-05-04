@@ -1,4 +1,4 @@
-import { getCachedUser } from "@/lib/supabase/server";
+import { getCachedUser, createServiceClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 
@@ -18,6 +18,27 @@ export default async function PlatformLayout({
 }) {
   const user = await getCachedUser();
   if (!user) redirect("/connexion");
+
+  // Gating produit : la plateforme (cours, ressources, évaluation, coaching)
+  // est réservée aux acheteurs Academy. Si l'user a uniquement Family (ou rien),
+  // on redirige vers /family avec un message qui explique où aller. Évite qu'un
+  // abonné Family-only accède gratuitement aux modules de formation à 998 €.
+  //
+  // Service client pour bypass RLS : pas besoin que l'user puisse lire
+  // enrollments lui-même, on check juste l'existence côté serveur.
+  const supabaseAdmin = await createServiceClient();
+  const { data: academyEnrollment } = await supabaseAdmin
+    .from("enrollments")
+    .select("id")
+    .eq("user_id", user.id)
+    .eq("status", "active")
+    .ilike("product_name", "academy%")
+    .limit(1)
+    .maybeSingle();
+
+  if (!academyEnrollment) {
+    redirect("/family?from=academy-blocked");
+  }
 
   const displayName =
     user.user_metadata?.full_name || user.email?.split("@")[0] || "Élève";

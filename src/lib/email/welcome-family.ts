@@ -35,10 +35,14 @@ export async function sendFamilyWelcomeEmail(
   const APP_STORE_URL = "https://apps.apple.com/X";
   const PLAY_STORE_URL = "https://play.google.com/store/apps/X";
 
+  // Domain Family indépendant (Supabase Family séparé de Academy, pas de SSO).
+  // Le user clique "Me connecter" → arrive sur l'app esfamily.fr (Vercel séparé).
+  const FAMILY_LOGIN_URL = "https://esfamily.fr/connexion";
+
   const rendered = await renderEmailTemplate("welcome_purchase_family", {
     prenom: args.firstName,
     email: args.to,
-    login_url: `${SITE_URL}/connexion`,
+    login_url: FAMILY_LOGIN_URL,
     app_store_url: APP_STORE_URL,
     play_store_url: PLAY_STORE_URL,
   });

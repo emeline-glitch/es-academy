@@ -32,11 +32,40 @@ const faqItems = [
   { question: "Est-ce que je peux annuler si ça ne me plaît pas ?", answer: "Oui, tu peux annuler à tout moment sans engagement. Attention : si tu es au tarif fondateur et que tu te désabonnes, tu perds le tarif à 19€/mois et repasseras à 29€/mois si tu veux revenir." },
 ];
 
-export default function FamilyPage() {
+export default async function FamilyPage(props: {
+  searchParams: Promise<{ from?: string }>;
+}) {
+  const { from } = await props.searchParams;
+  const isAcademyBlocked = from === "academy-blocked";
+
   return (
     <div className="min-h-screen">
       <Header activePage="family" />
       <JsonLd data={faqSchema(faqItems)} />
+
+      {/* Bandeau quand un user Family-only tente d'accéder à la plateforme Academy.
+          Cf gating dans src/app/(platform)/layout.tsx. */}
+      {isAcademyBlocked && (
+        <section className="bg-amber-50 border-b border-amber-200">
+          <div className="max-w-4xl mx-auto px-6 py-4 flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
+            <div className="flex-1">
+              <p className="text-sm text-amber-900 font-semibold mb-1">
+                Tu as ES Family, pas ES Academy.
+              </p>
+              <p className="text-sm text-amber-800">
+                La plateforme de formation (cours, modules, examens) est réservée aux acheteurs d&apos;ES Academy.
+                Pour accéder à ton espace Family (lives, communauté, ressources), connecte-toi sur l&apos;app dédiée.
+              </p>
+            </div>
+            <a
+              href="https://esfamily.fr/connexion"
+              className="flex-shrink-0 inline-block bg-es-mint-dark text-white px-5 py-2.5 rounded-lg font-semibold text-sm hover:bg-es-mint-deep transition whitespace-nowrap"
+            >
+              Aller sur Family
+            </a>
+          </div>
+        </section>
+      )}
 
       {/* Hero — L'école t'a appris à travailler */}
       <section className="relative py-20 lg:py-28 overflow-hidden" style={{ backgroundColor: "#B8EBDD" }}>
