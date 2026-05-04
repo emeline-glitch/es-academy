@@ -104,6 +104,19 @@ export async function POST(request: Request) {
     }
   }
 
+  if (event.type === "customer.subscription.updated") {
+    const sub = event.data.object as Stripe.Subscription;
+    try {
+      await handleSubscriptionUpdated(sub);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "unknown";
+      console.error("[webhook] subscription.updated failed:", msg);
+      // 200 quand même : on ne veut pas que Stripe retry indéfiniment sur un
+      // fail interne. La DB sera resync au prochain event ou par un cron de
+      // réconciliation (à implémenter plus tard si besoin).
+    }
+  }
+
   if (event.type === "invoice.payment_failed") {
     const invoice = event.data.object as Stripe.Invoice;
     try {
@@ -641,6 +654,83 @@ async function handleFamilySubscriptionDeleted(sub: Stripe.Subscription) {
     // (ex : webhook activé après création de la sub côté Stripe). On ignore.
     console.warn(`[webhook] subscription.deleted for unknown sub ${sub.id}`);
     return;
+  }
+}
+
+/**
+ * Handler customer.subscription.updated : déclenché à chaque changement de
+ * statut Stripe sur une subscription (active → past_due → unpaid → canceled,
+ * ou cancel_at_period_end qui passe à true, ou changement de plan).
+ *
+ * Met à jour family_subscriptions (Academy DB) + sync vers Family DB. Si la
+ * sub n'est pas une Family connue, on ignore (peut être une Academy 3x/4x
+ * tracked dans enrollments mais sans status detail nécessaire pour ce MVP).
+ *
+ * Cas critiques traités :
+ *  - past_due : 1ère tentative paiement échouée. Stripe va smart-retry pendant
+ *    ~7 jours. L'user doit être averti pour mettre à jour sa carte.
+ *  - unpaid : tentatives épuisées. Selon config Stripe, l'abo est annulé ou
+ *    laissé en "unpaid" (gel). Pour MVP on update le status mais pas plus.
+ *  - cancel_at_period_end true : l'user a demandé la résiliation depuis le
+ *    Customer Portal. La sub reste active jusqu'à la fin de la période payée.
+ */
+async function handleSubscriptionUpdated(sub: Stripe.Subscription) {
+  const supabase = await createServiceClient();
+
+  // Stripe API dahlia : current_period_end est sur items[0], pas sur sub.
+  const periodEndUnix = sub.items?.data?.[0]?.current_period_end ?? null;
+  const currentPeriodEnd = periodEndUnix
+    ? new Date(periodEndUnix * 1000).toISOString()
+    : null;
+
+  // Update family_subscriptions (Academy DB) si la sub est une Family connue.
+  const { data: famRow, error: famErr } = await supabase
+    .from("family_subscriptions")
+    .update({
+      status: sub.status,
+      cancel_at_period_end: Boolean(sub.cancel_at_period_end),
+      current_period_end: currentPeriodEnd,
+    })
+    .eq("stripe_subscription_id", sub.id)
+    .select("id, user_id, plan")
+    .maybeSingle();
+
+  if (famErr) {
+    console.error("[webhook] family_subscriptions update error:", famErr.message);
+  }
+
+  if (!famRow) {
+    // Pas une Family connue : peut-être Academy 3x/4x. Pour Academy on ne
+    // tracke pas le status détaillé de la sub Stripe (c'est l'invoice.payment_failed
+    // qui déclenche le mail dunning custom existant). On ignore proprement.
+    console.log(
+      `[webhook] subscription.updated ${sub.id} status=${sub.status}, pas une Family connue (probablement Academy 3x/4x)`
+    );
+    return;
+  }
+
+  // Sync vers Supabase Family : update subscriptions.status pour que l'app
+  // Family connaisse l'état (et puisse afficher son propre bandeau warning).
+  // Best-effort : si Family down, on log mais on n'échoue pas le handler.
+  try {
+    const { createFamilyAdminClient } = await import("@/lib/supabase/family-admin");
+    const supaFamily = createFamilyAdminClient();
+    const { error: famSyncErr } = await supaFamily
+      .from("subscriptions")
+      .update({
+        status: sub.status,
+        current_period_end: currentPeriodEnd,
+      })
+      .eq("stripe_subscription_id", sub.id);
+    if (famSyncErr) {
+      console.error(
+        "[webhook] sync subscriptions.status to Family failed:",
+        famSyncErr.message
+      );
+    }
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : "unknown";
+    console.error("[webhook] family-admin client init failed:", msg);
   }
 }
 

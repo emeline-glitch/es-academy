@@ -1,6 +1,7 @@
 import { getCachedUser, createServiceClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { PastDueBanner } from "@/components/platform/PastDueBanner";
 
 const platformNav = [
   { label: "Dashboard", href: "/dashboard", icon: "🏠" },
@@ -40,6 +41,18 @@ export default async function PlatformLayout({
     redirect("/family?from=academy-blocked");
   }
 
+  // Gestion paiement en échec : si l'user a aussi un abonnement Family avec
+  // status past_due ou unpaid, on affiche un bandeau warning en haut du layout
+  // avec un bouton vers le Customer Portal Stripe pour mettre à jour la carte.
+  // Pas de redirect : on laisse passer l'user (l'objectif est qu'il agisse,
+  // pas qu'il soit bloqué).
+  const { data: pastDueFamily } = await supabaseAdmin
+    .from("family_subscriptions")
+    .select("status, current_period_end")
+    .eq("user_id", user.id)
+    .in("status", ["past_due", "unpaid"])
+    .maybeSingle();
+
   const displayName =
     user.user_metadata?.full_name || user.email?.split("@")[0] || "Élève";
   const initials = displayName
@@ -51,6 +64,16 @@ export default async function PlatformLayout({
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Bandeau paiement Family en échec (past_due / unpaid). Affiché au-dessus
+          de tout le reste pour maximiser la visibilité + conversion vers le
+          Customer Portal Stripe. */}
+      {pastDueFamily && (
+        <PastDueBanner
+          status={pastDueFamily.status as "past_due" | "unpaid"}
+          currentPeriodEnd={pastDueFamily.current_period_end as string | null}
+        />
+      )}
+
       {/* Top bar */}
       <header className="sticky top-0 z-50 bg-white border-b border-gray-200">
         <div className="max-w-[1400px] mx-auto px-6 h-16 flex items-center justify-between">
