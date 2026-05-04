@@ -6,6 +6,10 @@ import { sendAcademyWelcomeEmail } from "@/lib/email/welcome-academy";
 import { sendFamilyWelcomeEmail } from "@/lib/email/welcome-family";
 import { renderEmailTemplate } from "@/lib/email/render-template";
 import { sendEmail } from "@/lib/ses/client";
+import {
+  syncAcademyGiftToFamily,
+  syncFamilySubscription,
+} from "@/lib/sync/family-sync";
 import Stripe from "stripe";
 
 export async function POST(request: Request) {
@@ -30,6 +34,33 @@ export async function POST(request: Request) {
     const msg = err instanceof Error ? err.message : "unknown";
     console.error("[webhook] signature verification failed:", msg);
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
+  }
+
+  // Tracking idempotence Academy : on note l'event dans processed_stripe_events
+  // pour pouvoir auditer les retries et debugger les patterns Stripe pathologiques.
+  //
+  // En cas de retry (PK conflict 23505), on NE SKIP PAS : on continue le
+  // processing parce que :
+  //  1. Les upserts (enrollments, family_subscriptions) sont idempotents par
+  //     construction grâce aux UNIQUE constraints.
+  //  2. L'envoi de mail welcome est protégé par check welcome_email_sent_at
+  //     en début du sender (pas de doublon mail).
+  //  3. Si on skip, on perd la chance de re-sync vers Family si la 1ère tentative
+  //     avait fail entre les écritures Academy et Family.
+  const supabaseDedup = await createServiceClient();
+  const { error: dedupErr } = await supabaseDedup
+    .from("processed_stripe_events")
+    .insert({
+      stripe_event_id: event.id,
+      event_type: event.type,
+      scope: (event.data.object as { metadata?: { scope?: string } })?.metadata?.scope || null,
+      meta: { livemode: event.livemode, created: event.created },
+    });
+  const isRetry = Boolean(dedupErr && dedupErr.code === "23505");
+  if (isRetry) {
+    console.log(`[webhook] event ${event.id} déjà tracké (retry Stripe), processing idempotent continue`);
+  } else if (dedupErr) {
+    console.error("[webhook] dedup insert error:", dedupErr.message);
   }
 
   if (event.type === "checkout.session.completed") {
@@ -283,7 +314,6 @@ async function handleAcademyPurchase(session: Stripe.Checkout.Session) {
     };
   } else {
     gift = await createFamilyGiftPromotionCode({
-      stripeCustomerId,
       email,
       sourceSessionId: session.id,
     });
@@ -335,7 +365,25 @@ async function handleAcademyPurchase(session: Stripe.Checkout.Session) {
     console.error("[webhook] Contact upsert RPC error:", contactErr.message);
   }
 
-  // 6. Envoyer le mail de bienvenue avec le code.
+  // 6. Sync vers Supabase Family : pré-créer l'user Family + écrire le gift_code
+  //    sur profiles. Permet à l'user de venir s'abonner Family plus tard avec
+  //    le code déjà reconnu sur son compte Family.
+  //    Best-effort : si la sync Family échoue (Supabase Family down etc), on
+  //    log mais on n'échoue pas le handler (le code est déjà dans Stripe + le
+  //    mail welcome va l'envoyer au client).
+  try {
+    await syncAcademyGiftToFamily({
+      email,
+      fullName: session.customer_details?.name || "",
+      giftCode: gift.code,
+      giftPromoId: gift.promoId,
+    });
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : "unknown";
+    console.error("[webhook] syncAcademyGiftToFamily failed:", msg);
+  }
+
+  // 7. Envoyer le mail de bienvenue avec le code.
   //    Idempotence : si Stripe retry le webhook après un envoi déjà réussi, on
   //    ne renvoie pas (sinon le client reçoit le mail Family en double).
   if (alreadySentAt) {
@@ -530,6 +578,25 @@ async function handleFamilyPurchase(session: Stripe.Checkout.Session) {
   });
   if (contactErr) {
     console.error("[webhook] Family contact upsert RPC error:", contactErr.message);
+  }
+
+  // Sync vers Supabase Family : créer le user auth Family + upsert dans la
+  // table subscriptions Family. Permet à l'user de se connecter sur esfamily.fr.
+  // Best-effort : si la sync Family échoue, on log mais on continue (le mail
+  // welcome partira quand même, et le user pourra recliquer le magic link).
+  try {
+    await syncFamilySubscription({
+      email,
+      fullName: session.customer_details?.name || "",
+      stripeCustomerId: stripeCustomerId || "",
+      stripeSubscriptionId,
+      plan,
+      status,
+      currentPeriodEnd,
+    });
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : "unknown";
+    console.error("[webhook] syncFamilySubscription failed:", msg);
   }
 
   // Mail welcome : idempotent (skip si déjà envoyé sur ce subscription).

@@ -1,8 +1,7 @@
 import type { createServiceClient } from "@/lib/supabase/server";
 import { renderEmailTemplate } from "@/lib/email/render-template";
 import { sendEmail } from "@/lib/ses/client";
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+import { generateFamilyMagicLink } from "@/lib/sync/family-sync";
 
 type SupabaseService = Awaited<ReturnType<typeof createServiceClient>>;
 
@@ -29,20 +28,25 @@ export interface SendFamilyWelcomeArgs {
 export async function sendFamilyWelcomeEmail(
   args: SendFamilyWelcomeArgs
 ): Promise<{ success: boolean; error?: string }> {
-  // PLACEHOLDERS app stores : URLs d'app Family pas encore connues au 2026-05-04.
+  // PLACEHOLDERS app stores : URLs d'app Family pas encore connues au 2026-05-04
+  // (Apple Developer enroll en cours, publication prévue pour le 3 juin 2026).
   // Mêmes valeurs que dans src/app/family/bienvenue/page.tsx (à updater en
   // parallèle quand les vraies URLs seront disponibles).
   const APP_STORE_URL = "https://apps.apple.com/X";
   const PLAY_STORE_URL = "https://play.google.com/store/apps/X";
 
-  // Domain Family indépendant (Supabase Family séparé de Academy, pas de SSO).
-  // Le user clique "Me connecter" → arrive sur l'app esfamily.fr (Vercel séparé).
-  const FAMILY_LOGIN_URL = "https://esfamily.fr/connexion";
+  // Magic link Supabase Family : auto-login l'user sur esfamily.fr sans qu'il
+  // ait à inventer un mot de passe (le compte vient d'être créé par le webhook
+  // avec email_confirm=true, donc pas de password set). Si génération fail
+  // (network blip), on fallback sur l'URL de connexion classique.
+  const magicLink =
+    (await generateFamilyMagicLink(args.to, "https://esfamily.fr/feed")) ||
+    "https://esfamily.fr/connexion";
 
   const rendered = await renderEmailTemplate("welcome_purchase_family", {
     prenom: args.firstName,
     email: args.to,
-    login_url: FAMILY_LOGIN_URL,
+    login_url: magicLink,
     app_store_url: APP_STORE_URL,
     play_store_url: PLAY_STORE_URL,
   });

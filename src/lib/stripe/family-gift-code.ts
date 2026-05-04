@@ -17,17 +17,27 @@ function randomSuffix(): string {
  * Génère un Promotion Code Stripe unique enfant du coupon parent
  * ACADEMY_3_MOIS_FAMILY, lisible par un humain (ex: FAMILY7K2P).
  *
- * max_redemptions=1 garantit que le code est utilisable une seule fois.
- * En cas de collision (très rare vu l'entropie), on retente 5x.
+ * - `max_redemptions=1` garantit que le code est utilisable une seule fois
+ *   (suffit pour empêcher le partage entre clients).
+ * - `expires_at` à 90 jours : pousse l'utilisation rapide tout en laissant une
+ *   fenêtre confortable. Sans expiration, des codes traînent indéfiniment dans
+ *   les inbox.
+ * - PAS de binding `customer` : risque trop élevé qu'un client utilise un email
+ *   différent entre l'achat Academy et l'abonnement Family (perso vs pro etc).
+ *   Le `max_redemptions=1` reste le garde-fou anti-partage.
+ *
+ * En cas de collision sur le code random (très rare vu l'entropie), on retente 5x.
  */
 export async function createFamilyGiftPromotionCode(params: {
-  stripeCustomerId: string | null;
   email: string;
   sourceSessionId: string;
 }): Promise<{ code: string; promoId: string }> {
   const stripe = getStripe();
   const parentCoupon =
     process.env.STRIPE_COUPON_ACADEMY_GIFT || "ACADEMY_3_MOIS_FAMILY";
+
+  // Expiration à J+90 (timestamp Unix en secondes, format Stripe).
+  const expiresAt = Math.floor(Date.now() / 1000) + 90 * 24 * 60 * 60;
 
   let lastError: unknown = null;
   for (let attempt = 0; attempt < 5; attempt++) {
@@ -37,9 +47,7 @@ export async function createFamilyGiftPromotionCode(params: {
         promotion: { type: "coupon", coupon: parentCoupon },
         code,
         max_redemptions: 1,
-        ...(params.stripeCustomerId
-          ? { customer: params.stripeCustomerId }
-          : {}),
+        expires_at: expiresAt,
         metadata: {
           scope: "family",
           trigger: "academy_purchase",
