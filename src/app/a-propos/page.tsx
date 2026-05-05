@@ -20,7 +20,7 @@ import bebeMicroPodcast from "../../../public/images/site/05-incarnation-actuell
 import deuxTrousseauxCles from "../../../public/images/site/02-patrimoine-cles/patrimoine-01-deux-trousseaux-cles.jpg";
 
 export const metadata: Metadata = buildMetadata({
-  title: "Qui est Emeline Siron ? De fille de garagiste à investisseuse avec 55 locataires",
+  title: "Qui est Emeline Siron ? Fille de garagiste, 55 locataires",
   description: "Parcours, échecs, victoires. De l'enfance dans un garage auto à la construction d'un patrimoine de 12 biens immobiliers et d'un écosystème d'accompagnement à l'investissement.",
   path: "/a-propos",
   // TODO: remplacer par image OG dédiée [TODO_OG_IMAGE_A_PROPOS] quand dispo

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/Button";
 import { buildMetadata } from "@/lib/seo/metadata";
 
 export const metadata: Metadata = buildMetadata({
-  title: "Podcast Out of the Box — Emeline Siron",
+  title: "Podcast Out of the Box : par Emeline Siron",
   description: "Chaque mardi, un épisode de 30 minutes pour repenser ton rapport à l'argent, l'investissement et l'entrepreneuriat.",
   path: "/podcast",
 });

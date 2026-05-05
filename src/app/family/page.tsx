@@ -7,12 +7,14 @@ import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { MobileCta } from "@/components/ui/MobileCta";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { faqSchema } from "@/lib/seo/schemas";
+import { buildMetadata } from "@/lib/seo/metadata";
 import { BottomBanner } from "@/components/marketing/BottomBanner";
 
-export const metadata: Metadata = {
-  title: "ES Family | La communauté patrimoniale d'Emeline Siron",
-  description: "Immobilier, bourse, fiscalité, actifs alternatifs : la communauté des investisseurs qui construisent leur patrimoine. 1 900 investisseurs, tarif fondateur 19€/mois.",
-};
+export const metadata: Metadata = buildMetadata({
+  title: "ES Family : la communauté patrimoniale d'Emeline Siron",
+  description: "Immobilier, bourse, fiscalité, actifs alternatifs : la communauté des investisseurs qui construisent leur patrimoine. Tarif fondateur 19€/mois.",
+  path: "/family",
+});
 
 // Skool abandonne avril 2026 (cf. memory feedback_no_skool).
 // Le CTA fait scroll vers la section tarifs ; le checkout Stripe sera branche

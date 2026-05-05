@@ -11,12 +11,14 @@ import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
 import { MobileCta } from "@/components/ui/MobileCta";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { courseSchema, faqSchema } from "@/lib/seo/schemas";
+import { buildMetadata } from "@/lib/seo/metadata";
 import { STATS, PRICING, MODULES_PROGRAMME } from "@/lib/utils/constants";
 
-export const metadata: Metadata = {
-  title: "ES Academy — La Méthode Emeline Siron",
-  description: "Apprends la meilleure stratégie pour te lancer dans l'immobilier locatif, générer des revenus et bâtir ton patrimoine.",
-};
+export const metadata: Metadata = buildMetadata({
+  title: "ES Academy : la méthode Emeline Siron pour investir",
+  description: "La formation pour investir en immobilier locatif et viser l'autofinancement. 30h de cours, 60 outils, communauté ES Family incluse 3 mois.",
+  path: "/academy",
+});
 
 const faqItems = [
   { question: "Que se passe-t-il après l'inscription ?", answer: "Tu reçois immédiatement tes identifiants par email. Tu accèdes à l'intégralité de la formation, des outils et de la communauté ES Family pendant 3 mois." },

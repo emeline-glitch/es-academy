@@ -10,7 +10,7 @@ import { breadcrumbSchema } from "@/lib/seo/schemas";
 import { SITE_URL } from "@/lib/utils/constants";
 
 export const metadata: Metadata = buildMetadata({
-  title: "Blog — Investissement immobilier & patrimoine",
+  title: "Blog : investissement immobilier et patrimoine",
   description: "Articles, guides et conseils sur l'investissement immobilier locatif, la fiscalité, la gestion de patrimoine et les stratégies rentables.",
   path: "/blog",
 });

@@ -4,7 +4,7 @@ import { Footer } from "@/components/layout/Footer";
 import { buildMetadata } from "@/lib/seo/metadata";
 
 export const metadata: Metadata = buildMetadata({
-  title: "Glossaire immobilier — Tous les termes à connaître",
+  title: "Glossaire immobilier : tous les termes à connaître",
   description: "Définitions simples de tous les termes de l'investissement immobilier : LMNP, SCI, cash-flow, rendement, DPE, et plus.",
   path: "/glossaire",
 });

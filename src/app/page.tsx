@@ -11,13 +11,14 @@ import { LazyIframe } from "@/components/ui/LazyIframe";
 import { BottomBanner } from "@/components/marketing/BottomBanner";
 import { SocialStats } from "@/components/marketing/SocialStats";
 import { TestimonialsGrid } from "@/components/marketing/TestimonialsGrid";
+import { buildMetadata } from "@/lib/seo/metadata";
 import { STATS } from "@/lib/utils/constants";
 
-export const metadata: Metadata = {
-  title: "Emeline Siron | Formation investissement immobilier et autonomie financière",
-  description:
-    "De 0 à 55 locataires en 9 ans. Méthode, outils et communauté pour bâtir ton patrimoine immobilier. 1 900 investisseurs formés. Cashflow, rentabilité, SCI, LMNP.",
-};
+export const metadata: Metadata = buildMetadata({
+  title: "Emeline Siron : formation investissement immobilier et autofinancement",
+  description: "De 0 à 55 locataires en 9 ans. La méthode pour viser l'autofinancement de ton patrimoine immobilier. 1 900 investisseurs formés à la rentabilité locative.",
+  path: "/",
+});
 
 export default function Home() {
   return (
