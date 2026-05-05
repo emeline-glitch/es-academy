@@ -158,7 +158,7 @@ export default function SimulateursPage() {
         </div>
       </section>
 
-      {/* Grille simulateurs — cards cliquables avec question directe */}
+      {/* Grille simulateurs : cards cliquables avec question directe */}
       <section className="py-12 sm:py-16">
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -201,7 +201,7 @@ export default function SimulateursPage() {
         </div>
       </section>
 
-      {/* CTA final — appel découverte */}
+      {/* CTA final : appel découverte */}
       <section className="py-20 relative overflow-hidden" style={{ backgroundColor: "#006B58" }}>
         <div className="absolute inset-0 bg-gradient-to-br from-es-terracotta-dark/20 via-transparent to-black/10" />
         <div className="relative max-w-6xl mx-auto px-6">

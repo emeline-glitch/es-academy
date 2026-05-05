@@ -126,7 +126,7 @@ export default async function RessourcesPage() {
       <div className="mb-8">
         <h1 className="font-serif text-3xl font-bold text-gray-900">Ressources</h1>
         <p className="text-gray-500 mt-1">
-          {totalResources} outils classes par thematique — telecharge ceux dont tu as besoin.
+          {totalResources} outils classes par thematique : telecharge ceux dont tu as besoin.
         </p>
       </div>
 
@@ -167,7 +167,7 @@ export default async function RessourcesPage() {
         ))}
       </div>
 
-      {/* Notion resources — grouped by type */}
+      {/* Notion resources : grouped by type */}
       {Object.entries(notionByType).length > 0 && (
         <div className="mt-8">
           <h2 className="font-serif text-xl font-bold text-gray-900 mb-4">Ressources supplementaires</h2>

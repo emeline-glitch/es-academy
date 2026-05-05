@@ -158,7 +158,7 @@ export async function POST(
       .eq("id", authUser.id);
   }
 
-  // 6. Créer l'enrollment — si ça échoue, on rollback le user créé pour ne pas laisser d'orphelin
+  // 6. Créer l'enrollment : si ça échoue, on rollback le user créé pour ne pas laisser d'orphelin
   const { data: enrollment, error: eErr } = await supabase
     .from("enrollments")
     .insert({
@@ -235,7 +235,7 @@ export async function POST(
         console.error("[promote] email send failed:", res.error);
       }
     } else {
-      emailError = "Template 'invite_student' introuvable — configure-le dans /admin/emails/templates";
+      emailError = "Template 'invite_student' introuvable : configure-le dans /admin/emails/templates";
     }
   }
 

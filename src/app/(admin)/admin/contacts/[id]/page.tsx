@@ -311,7 +311,7 @@ export default function ContactDetailPage() {
     if (res.ok) {
       setShowPromote(false);
       fetchAll();
-      toast.success("Contact basculé en élève — invitation envoyée par email");
+      toast.success("Contact basculé en élève : invitation envoyée par email");
     } else {
       const body = await res.json().catch(() => ({}));
       setPromoteError(body.error || "Erreur serveur");
@@ -662,7 +662,7 @@ export default function ContactDetailPage() {
                     disabled={saving}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-es-green/30 focus:border-es-green"
                   >
-                    <option value="">— Pas dans ce pipeline —</option>
+                    <option value="">- Pas dans ce pipeline -</option>
                     {cfg.stages.map((s) => (
                       <option key={s.key} value={s.key}>{s.label}</option>
                     ))}
@@ -736,11 +736,11 @@ export default function ContactDetailPage() {
               <dl className="text-sm space-y-2">
                 <div>
                   <dt className="text-xs text-gray-400">Prénom</dt>
-                  <dd className="text-gray-900">{contact.first_name || "—"}</dd>
+                  <dd className="text-gray-900">{contact.first_name || "-"}</dd>
                 </div>
                 <div>
                   <dt className="text-xs text-gray-400">Nom</dt>
-                  <dd className="text-gray-900">{contact.last_name || "—"}</dd>
+                  <dd className="text-gray-900">{contact.last_name || "-"}</dd>
                 </div>
                 <div>
                   <dt className="text-xs text-gray-400">Email</dt>
@@ -756,13 +756,13 @@ export default function ContactDetailPage() {
                     {contact.phone ? (
                       <a href={`tel:${contact.phone}`} className="hover:text-es-green">{contact.phone}</a>
                     ) : (
-                      <span className="text-gray-400">—</span>
+                      <span className="text-gray-400">-</span>
                     )}
                   </dd>
                 </div>
                 <div>
                   <dt className="text-xs text-gray-400">Source</dt>
-                  <dd className="text-gray-900">{contact.source || "—"}</dd>
+                  <dd className="text-gray-900">{contact.source || "-"}</dd>
                 </div>
                 <div>
                   <dt className="text-xs text-gray-400">Inscrit le</dt>

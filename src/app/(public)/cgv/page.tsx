@@ -213,7 +213,7 @@ export default function CGV() {
           paiement.
         </p>
 
-        <h3>6.1 Academy — paiement en 1, 3 ou 4 fois</h3>
+        <h3>6.1 Academy : paiement en 1, 3 ou 4 fois</h3>
         <p>Tu as le choix entre trois modalités&nbsp;:</p>
         <ul>
           <li>
@@ -307,7 +307,7 @@ export default function CGV() {
         </p>
 
         <h2>
-          Article 10. Abonnement ES Family — souscription, reconduction et
+          Article 10. Abonnement ES Family : souscription, reconduction et
           résiliation
         </h2>
 

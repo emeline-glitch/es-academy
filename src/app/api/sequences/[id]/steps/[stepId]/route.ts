@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 
-// GET — Fetch un step complet (avec html_content) à la demande
+// GET : Fetch un step complet (avec html_content) à la demande
 // Permet à la liste /admin/sequences de ne charger que les métas, et fetcher le HTML uniquement
 // au clic sur "Modifier" → divise par 10 le payload initial de la page.
 export async function GET(
@@ -25,7 +25,7 @@ export async function GET(
   return NextResponse.json(data);
 }
 
-// PATCH — Update a step
+// PATCH : Update a step
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string; stepId: string }> }
@@ -58,7 +58,7 @@ export async function PATCH(
   return NextResponse.json(data);
 }
 
-// DELETE — Delete a step
+// DELETE : Delete a step
 export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string; stepId: string }> }

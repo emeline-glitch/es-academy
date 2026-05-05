@@ -23,7 +23,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: `${SITE_NAME} — Formation investissement immobilier`,
+    default: `${SITE_NAME} : Formation investissement immobilier`,
     template: `%s | ${SITE_NAME}`,
   },
   description: SITE_DESCRIPTION,

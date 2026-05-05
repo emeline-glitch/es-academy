@@ -53,7 +53,7 @@ export default async function Dashboard() {
         </Card>
       </div>
 
-      {/* ES Family CTA — terracotta */}
+      {/* ES Family CTA : terracotta */}
       <div className="mt-12">
         <div className="relative overflow-hidden rounded-2xl" style={{ backgroundColor: "#c4663a" }}>
           <div className="absolute top-0 right-0 w-80 h-80 bg-white/5 rounded-full -translate-y-1/3 translate-x-1/3" />
@@ -65,7 +65,7 @@ export default async function Dashboard() {
             </div>
             <h2 className="font-serif text-2xl md:text-3xl font-bold text-white mb-3">Rejoins ES Family</h2>
             <p className="text-white/85 text-sm md:text-base mb-5 max-w-2xl leading-relaxed">
-              Pas juste un groupe immo. Un écosystème patrimoine complet — immo, bourse, fiscalité, entrepreneuriat, mindset — dans ta poche, 7j/7.
+              Pas juste un groupe immo. Un écosystème patrimoine complet : immo, bourse, fiscalité, entrepreneuriat, mindset : dans ta poche, 7j/7.
               <strong className="block mt-1 text-white">1 800 membres déjà actifs.</strong>
             </p>
 
@@ -100,7 +100,7 @@ export default async function Dashboard() {
                 {
                   icon: "🤝",
                   title: "Partenaires exclusifs",
-                  desc: "Fiscaliste, expert-comptable, décoratrice, artisan travaux, chasseur immo — codes promo réservés aux membres.",
+                  desc: "Fiscaliste, expert-comptable, décoratrice, artisan travaux, chasseur immo : codes promo réservés aux membres.",
                 },
                 {
                   icon: "🏆",
@@ -128,7 +128,7 @@ export default async function Dashboard() {
                 href="/family"
                 className="inline-flex items-center justify-center font-semibold rounded-lg px-6 py-3 bg-white text-es-terracotta hover:bg-es-cream transition-all text-sm"
               >
-                Découvrir ES Family — 19€/mois fondateurs →
+                Découvrir ES Family : 19€/mois fondateurs →
               </a>
               <div className="flex items-center gap-4 text-white/60 text-xs">
                 <span>Sans engagement</span>

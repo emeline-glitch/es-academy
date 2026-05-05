@@ -25,7 +25,7 @@ const baseTemplate = (content: string) => `
       ${content}
     </div>
     <div class="footer">
-      <p>Emeline Siron — Aix-en-Provence</p>
+      <p>Emeline Siron : Aix-en-Provence</p>
       <p><a href="{{unsubscribe_url}}">Se desabonner</a></p>
     </div>
   </div>

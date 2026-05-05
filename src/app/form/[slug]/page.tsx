@@ -91,7 +91,7 @@ export default function PublicFormPage() {
         setSubmitted(true);
       }
     } catch {
-      setError("Erreur serveur — réessaie plus tard.");
+      setError("Erreur serveur : réessaie plus tard.");
     } finally {
       setSubmitting(false);
     }

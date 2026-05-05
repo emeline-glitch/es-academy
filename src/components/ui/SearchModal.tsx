@@ -10,10 +10,10 @@ interface SearchResult {
 }
 
 const staticPages: SearchResult[] = [
-  { title: "ES Academy — Formation immobilier", url: "/academy", type: "Page" },
-  { title: "ES Family — Communauté", url: "/family", type: "Page" },
+  { title: "ES Academy : Formation immobilier", url: "/academy", type: "Page" },
+  { title: "ES Family : Communauté", url: "/family", type: "Page" },
   { title: "Blog", url: "/blog", type: "Page" },
-  { title: "À propos — Emeline Siron", url: "/a-propos", type: "Page" },
+  { title: "À propos : Emeline Siron", url: "/a-propos", type: "Page" },
   { title: "Outils gratuits", url: "/outils-gratuits", type: "Page" },
   { title: "Connexion", url: "/connexion", type: "Page" },
   { title: "Contact", url: "/#contact", type: "Page" },

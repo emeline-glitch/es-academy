@@ -53,7 +53,7 @@ export async function GET(request: Request) {
     }
   }
 
-  // Always return the pixel (even on error — don't break the email display)
+  // Always return the pixel (even on error : don't break the email display)
   return new NextResponse(PIXEL, {
     headers: {
       "Content-Type": "image/gif",

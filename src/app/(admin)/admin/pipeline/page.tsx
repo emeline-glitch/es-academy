@@ -352,7 +352,7 @@ export default function PipelinePage() {
             className="text-sm text-gray-900 bg-white rounded px-2 py-1"
             defaultValue=""
           >
-            <option value="">— Choisir une étape —</option>
+            <option value="">- Choisir une étape -</option>
             {pipelineConfig.stages.map((s) => (
               <option key={s.key} value={s.key}>{s.label}</option>
             ))}
@@ -420,7 +420,7 @@ export default function PipelinePage() {
                       />
                     ))}
                     {items.length === 0 && (
-                      <p className="text-xs text-gray-400 italic text-center py-4">—</p>
+                      <p className="text-xs text-gray-400 italic text-center py-4">-</p>
                     )}
                   </div>
                 </div>

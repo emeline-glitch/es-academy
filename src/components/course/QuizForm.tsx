@@ -65,7 +65,7 @@ export function QuizForm({ quizId, lessonId, questions, passScore }: QuizFormPro
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-6">
       <h3 className="font-serif text-lg font-bold text-gray-900 mb-6">
-        Quiz — Teste tes connaissances
+        Quiz : Teste tes connaissances
       </h3>
 
       {submitted ? (

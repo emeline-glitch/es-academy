@@ -71,7 +71,7 @@ const rows = [
     href: "#newsletter",
     external: false,
     value: "26 000",
-    label: "lecteurs — L'Immo Sans Prise de Tête",
+    label: "lecteurs : L'Immo Sans Prise de Tête",
     icon: <MailLogo />,
   },
 ];

@@ -14,7 +14,7 @@ export async function GET(request: Request) {
 
   const supabase = await createServiceClient();
 
-  // 1. Charger enrollments (pas de join avec profiles — la FK pointe vers auth.users)
+  // 1. Charger enrollments (pas de join avec profiles : la FK pointe vers auth.users)
   let enrollQuery = supabase
     .from("enrollments")
     .select("id, user_id, product_name, amount_paid, purchased_at, status, course_id", { count: "exact" })

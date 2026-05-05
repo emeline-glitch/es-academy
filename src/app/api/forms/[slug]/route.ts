@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase/server";
 
 /**
- * GET public /api/forms/[slug] — retourne la config d'un formulaire publié.
+ * GET public /api/forms/[slug] : retourne la config d'un formulaire publié.
  * Utilisé par la page publique /form/[slug].
  */
 export async function GET(

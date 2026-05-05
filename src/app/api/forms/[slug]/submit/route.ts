@@ -6,7 +6,7 @@ import { autoEnrollByTags, tagsAdded } from "@/lib/sequences/auto-enroll";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /**
- * POST public /api/forms/[slug]/submit — soumission publique du formulaire.
+ * POST public /api/forms/[slug]/submit : soumission publique du formulaire.
  * - Rate limit strict par IP + email
  * - Upsert du contact dans contacts
  * - Ajoute le tag de la liste associée (si list_id set)

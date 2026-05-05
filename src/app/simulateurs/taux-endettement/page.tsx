@@ -66,7 +66,7 @@ export default function TauxEndettement() {
                   <div className="text-white/70 text-sm mt-2">après ton nouveau projet</div>
                 </div>
                 <div className="text-center px-4 py-3 rounded-xl text-sm font-semibold bg-white/20 text-white">
-                  {ok ? "Tu es dans les clous (max 35%)" : "Au-dessus de 35% — refus probable"}
+                  {ok ? "Tu es dans les clous (max 35%)" : "Au-dessus de 35% : refus probable"}
                 </div>
               </Card>
               <Card>

@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 const VALID_TRIGGERS = ["tag_added", "form_submit", "manual", "product_purchase"] as const;
 type TriggerType = (typeof VALID_TRIGGERS)[number];
 
-// GET — List all sequences with their steps + enrollment counts (1 seul RPC pour les compteurs)
+// GET : List all sequences with their steps + enrollment counts (1 seul RPC pour les compteurs)
 export async function GET() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -49,7 +49,7 @@ export async function GET() {
   return NextResponse.json(sorted);
 }
 
-// POST — Create a new sequence
+// POST : Create a new sequence
 export async function POST(request: Request) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();

@@ -11,7 +11,7 @@ export interface AuditEntry {
 }
 
 /**
- * Écrit une entrée dans la table audit_log. Ne throw jamais — si la table
+ * Écrit une entrée dans la table audit_log. Ne throw jamais : si la table
  * n'existe pas encore (migration 005 non appliquée), on log sans planter.
  */
 export async function writeAuditLog(supabase: SupabaseClient, entry: AuditEntry): Promise<void> {

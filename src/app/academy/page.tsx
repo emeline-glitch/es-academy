@@ -40,7 +40,7 @@ export default function AcademyPage() {
       <Header activePage="academy" />
       <JsonLd data={[courseSchema(), faqSchema(faqItems)]} />
 
-      {/* 1. Hero — Style B Dark */}
+      {/* 1. Hero : Style B Dark */}
       <section className="relative py-24 lg:py-32 bg-es-green-dark overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-es-green-dark via-es-green to-es-green-light/20" />
         <div className="absolute inset-0 opacity-[0.03]" style={{
@@ -59,7 +59,7 @@ export default function AcademyPage() {
             Apprends la meilleure stratégie pour te lancer dans l&apos;immobilier locatif, générer des revenus et bâtir ton patrimoine
           </p>
           <Button variant="cta" size="lg" className="btn-gold-shimmer font-semibold" href="#offre">
-            Rejoindre le programme — {PRICING.academy.priceDisplay}€
+            Rejoindre le programme : {PRICING.academy.priceDisplay}€
           </Button>
           {/* Stats */}
           <div className="mt-14 grid grid-cols-2 md:grid-cols-4 gap-6 border-t border-white/10 pt-8">
@@ -202,7 +202,7 @@ export default function AcademyPage() {
               <Accordion
                 key={mod.number}
                 items={[{
-                  question: `Module ${mod.number} — ${mod.title}`,
+                  question: `Module ${mod.number} : ${mod.title}`,
                   answer: mod.items.join(" · "),
                 }]}
               />
@@ -244,7 +244,7 @@ export default function AcademyPage() {
 
           {/* 3. Grille 2 colonnes */}
           <div className="grid md:grid-cols-2 gap-6 md:gap-6 lg:gap-12 mb-12 lg:mb-16">
-            {/* Colonne gauche — La formation */}
+            {/* Colonne gauche : La formation */}
             <ScrollReveal delay={100}>
               <div className="h-full bg-es-cream/[0.08] backdrop-blur-sm rounded-2xl p-6 sm:p-8 border border-es-cream/25 shadow-2xl shadow-es-green-dark/50">
                 <div className="flex items-center gap-3 mb-6 pb-5 border-b border-white/10">
@@ -273,7 +273,7 @@ export default function AcademyPage() {
               </div>
             </ScrollReveal>
 
-            {/* Colonne droite — ES Family (offert 3 mois) */}
+            {/* Colonne droite : ES Family (offert 3 mois) */}
             <ScrollReveal delay={200}>
               <div className="h-full bg-gradient-to-br from-es-terracotta/20 to-es-terracotta/10 backdrop-blur-sm rounded-2xl p-6 sm:p-8 border-2 border-es-terracotta/60 shadow-2xl shadow-es-green-dark/50 ring-1 ring-es-gold/20 relative">
                 <div className="flex items-center gap-3 mb-4 pb-5 border-b border-es-terracotta/20">
@@ -449,14 +449,14 @@ export default function AcademyPage() {
         <div className="max-w-3xl mx-auto px-6">
           <h2 className="font-serif text-2xl font-bold text-white mb-4">Prêt(e) à transformer ton avenir ?</h2>
           <Button variant="cta" size="lg" className="btn-gold-shimmer" href="#offre">
-            Rejoindre la formation — {PRICING.academy.priceDisplay}€
+            Rejoindre la formation : {PRICING.academy.priceDisplay}€
           </Button>
         </div>
       </section>
 
       <BottomBanner />
       <Footer />
-      <MobileCta text="Rejoindre — 998€" href="#offre" />
+      <MobileCta text="Rejoindre : 998€" href="#offre" />
     </div>
   );
 }

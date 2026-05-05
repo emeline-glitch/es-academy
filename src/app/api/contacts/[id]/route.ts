@@ -38,7 +38,7 @@ export async function GET(
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   if (!data) return NextResponse.json({ error: "Contact introuvable" }, { status: 404 });
 
-  // Lookup profil via profiles.email (indexé, scalable) — avec fallback listUsers si colonne pas encore présente
+  // Lookup profil via profiles.email (indexé, scalable) : avec fallback listUsers si colonne pas encore présente
   let profile: unknown = null;
   let enrollments: unknown[] = [];
   if (data.email) {
@@ -76,7 +76,7 @@ export async function GET(
     }
   }
 
-  // Notes — inclus directement dans la réponse (évite un 2e round-trip)
+  // Notes : inclus directement dans la réponse (évite un 2e round-trip)
   const { data: notes } = await supabase
     .from("contact_notes")
     .select("id, content, kind, created_at, author_id")

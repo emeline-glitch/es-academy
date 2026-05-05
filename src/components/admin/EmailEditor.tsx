@@ -85,7 +85,7 @@ export function EmailEditor({ value, onChange }: EmailEditorProps) {
     setImageUrl("");
   }
 
-  // Image resize — gestion du click sur une image et du menu flottant
+  // Image resize : gestion du click sur une image et du menu flottant
   function handleEditorClick(e: React.MouseEvent<HTMLDivElement>) {
     const target = e.target as HTMLElement;
     if (target.tagName === "IMG" && editorRef.current) {
@@ -440,7 +440,7 @@ export function EmailEditor({ value, onChange }: EmailEditorProps) {
         </ToolbarButton>
       </div>
 
-      {/* Editable area — NO dangerouslySetInnerHTML (set via effect instead to
+      {/* Editable area : NO dangerouslySetInnerHTML (set via effect instead to
           avoid re-applying innerHTML on every onChange, which would reset the cursor). */}
       <div className="relative">
         <div

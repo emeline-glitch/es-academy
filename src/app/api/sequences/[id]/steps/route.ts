@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 
-// POST — Add a step to a sequence
+// POST : Add a step to a sequence
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> }

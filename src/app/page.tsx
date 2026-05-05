@@ -25,7 +25,7 @@ export default function Home() {
     <div className="min-h-screen bg-es-cream">
       <Header activePage="home" />
 
-      {/* Hero — Split dark/photo */}
+      {/* Hero : Split dark/photo */}
       <section className="relative bg-es-green-dark overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-es-green-dark via-es-green-dark to-es-green/80" />
         <div className="absolute inset-0 opacity-[0.03]" style={{
@@ -35,7 +35,7 @@ export default function Home() {
 
         <div className="relative max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 min-h-[85vh]">
-            {/* Left — content */}
+            {/* Left : content */}
             <div className="flex flex-col justify-center px-6 lg:px-12 py-20 lg:py-28">
               <p className="font-serif italic text-es-gold text-sm sm:text-base mb-6 tracking-wide">
                 Mon histoire en une ligne
@@ -102,12 +102,12 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Right — photo */}
+            {/* Right : photo */}
             <div className="relative hidden lg:block">
               <div className="absolute inset-0">
                 <Image
                   src="/images/emeline-siron.png"
-                  alt="Emeline Siron — Formatrice en investissement immobilier"
+                  alt="Emeline Siron : Formatrice en investissement immobilier"
                   width={1024}
                   height={1536}
                   className="w-full h-full object-cover object-top"
@@ -163,7 +163,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Réseaux sociaux — preuve sociale */}
+      {/* Réseaux sociaux : preuve sociale */}
       <section className="py-16 bg-es-cream/40">
         <div className="max-w-6xl mx-auto px-6">
           <p className="text-xs text-es-text-muted uppercase tracking-widest mb-10 text-center">Ils me suivent déjà</p>
@@ -171,7 +171,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Ta formatrice — Emeline Siron */}
+      {/* Ta formatrice : Emeline Siron */}
       <section className="py-20 bg-es-cream">
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -373,7 +373,7 @@ export default function Home() {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/images/logo-otb.png"
-                  alt="Out of the Box — Podcast Emeline Siron"
+                  alt="Out of the Box : Podcast Emeline Siron"
                   className="h-16 sm:h-20 mx-auto md:mx-0 mb-4"
                 />
                 <p className="text-es-text-muted">

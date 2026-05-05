@@ -238,14 +238,14 @@ export default function CampaignDetailPage() {
                           {s.opened_at ? (
                             <span className="text-xs text-green-600">{new Date(s.opened_at).toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })}</span>
                           ) : (
-                            <span className="text-xs text-gray-300">—</span>
+                            <span className="text-xs text-gray-300">-</span>
                           )}
                         </td>
                         <td className="px-5 py-3">
                           {s.clicked_at ? (
                             <span className="text-xs text-blue-600">{new Date(s.clicked_at).toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })}</span>
                           ) : (
-                            <span className="text-xs text-gray-300">—</span>
+                            <span className="text-xs text-gray-300">-</span>
                           )}
                         </td>
                       </tr>
@@ -270,7 +270,7 @@ export default function CampaignDetailPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-gray-900 truncate">{link.url}</p>
-                    <p className="text-xs text-gray-500 mt-1">{link.clicks} clic(s) — {link.clickers.length} personne(s)</p>
+                    <p className="text-xs text-gray-500 mt-1">{link.clicks} clic(s) : {link.clickers.length} personne(s)</p>
                   </div>
                   <div className="flex items-center gap-3 ml-4">
                     <div className="text-right">

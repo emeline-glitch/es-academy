@@ -70,7 +70,7 @@ export default function FormEditor() {
       setLists(d.lists || []);
       setFolders(d.folders || []);
     } catch {
-      // silencieux — on affichera juste "aucune liste"
+      // silencieux : on affichera juste "aucune liste"
     } finally {
       setListsLoading(false);
     }
@@ -240,7 +240,7 @@ export default function FormEditor() {
                 <input
                   value={form.background_image_url || ""}
                   onChange={(e) => patch({ background_image_url: e.target.value })}
-                  placeholder="https://…/image.jpg — laisser vide pour fond crème"
+                  placeholder="https://…/image.jpg : laisser vide pour fond crème"
                   className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm"
                 />
               </div>
@@ -340,7 +340,7 @@ export default function FormEditor() {
                   onChange={(e) => patch({ list_id: e.target.value || null })}
                   className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white"
                 >
-                  <option value="">— Aucune liste (tag form_signup par défaut) —</option>
+                  <option value="">- Aucune liste (tag form_signup par défaut) -</option>
                   {(() => {
                     // Render lists grouped by folder. Lists without a matching folder
                     // all go in "Autres" (même si folder_id est non-null mais inconnu).

@@ -3,7 +3,7 @@ import { createServerClient } from "@supabase/ssr";
 import { sendEmail } from "@/lib/ses/client";
 import { applyTracking } from "@/lib/email/tracking";
 
-// CRON endpoint — processes pending sequence emails
+// CRON endpoint : processes pending sequence emails
 // Call this every 15 minutes via Vercel Cron or external cron
 // GET /api/cron/sequences?key=YOUR_CRON_SECRET
 export async function GET(request: Request) {

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
-// POST — Enroll contacts in a sequence
+// POST : Enroll contacts in a sequence
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> }

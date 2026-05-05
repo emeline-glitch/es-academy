@@ -177,7 +177,7 @@ export default function AdminSequences() {
       setEditStepContent(step.html_content);
     } else {
       setEditStepContent("");
-      // On a besoin du sequenceId — on le récupère depuis le step via la séquence parente
+      // On a besoin du sequenceId : on le récupère depuis le step via la séquence parente
       const seq = sequences.find((s) => s.steps.some((st) => st.id === step.id));
       if (!seq) return;
       try {
@@ -335,7 +335,7 @@ export default function AdminSequences() {
         <div>
           <h1 className="font-serif text-2xl font-bold text-gray-900">Séquences automatiques</h1>
           <p className="text-sm text-gray-500 mt-1">
-            Crée des tunnels d&apos;emails automatiques — comme sur Brevo, mais chez toi.
+            Crée des tunnels d&apos;emails automatiques : comme sur Brevo, mais chez toi.
           </p>
         </div>
         <Button variant="primary" size="sm" onClick={() => setShowCreate(!showCreate)}>
@@ -594,7 +594,7 @@ export default function AdminSequences() {
                     onChange={setEnrollTags}
                     label=""
                     singleSelect
-                    helpText="Sélectionne une seule liste — les contacts y appartenant seront inscrits"
+                    helpText="Sélectionne une seule liste : les contacts y appartenant seront inscrits"
                   />
                   <div className="flex gap-2">
                     <Button variant="primary" size="sm" onClick={() => handleEnroll(seq.id)} disabled={enrollTags.length === 0}>

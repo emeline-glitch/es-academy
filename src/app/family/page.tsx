@@ -69,7 +69,7 @@ export default async function FamilyPage(props: {
         </section>
       )}
 
-      {/* Hero — L'école t'a appris à travailler */}
+      {/* Hero : L'école t'a appris à travailler */}
       <section className="relative py-20 lg:py-28 overflow-hidden" style={{ backgroundColor: "#B8EBDD" }}>
         <div className="absolute inset-0 bg-gradient-to-br from-es-mint/15 via-transparent to-es-mint-dark/10" />
         <div className="absolute inset-0 opacity-[0.06]" style={{
@@ -89,7 +89,7 @@ export default async function FamilyPage(props: {
                 </span>
               </h1>
               <p className="text-lg text-es-text mb-4 leading-relaxed font-medium">
-                Pas juste un groupe immo. Un écosystème patrimoine complet — immo, bourse, fiscalité, entrepreneuriat, mindset — dans ta poche, 7j/7.
+                Pas juste un groupe immo. Un écosystème patrimoine complet : immo, bourse, fiscalité, entrepreneuriat, mindset : dans ta poche, 7j/7.
               </p>
               <p className="text-base text-es-text-light mb-4 leading-relaxed">
                 ES Family, c&apos;est la communauté qui prend le relais là où l&apos;école s&apos;est arrêtée. <strong className="text-es-mint-dark">1 800 membres déjà actifs. Encore 500 places au tarif fondateur.</strong>
@@ -109,7 +109,7 @@ export default async function FamilyPage(props: {
               </p>
             </div>
 
-            {/* Placeholder visuel app ES Family — à remplacer par screenshot ou mockup app */}
+            {/* Placeholder visuel app ES Family : à remplacer par screenshot ou mockup app */}
             <div className="relative rounded-2xl overflow-hidden shadow-2xl aspect-[4/5] max-w-md mx-auto lg:max-w-none w-full bg-white/40 border-2 border-dashed border-es-mint-dark/30 flex items-center justify-center p-8">
               <div className="text-center">
                 <svg className="w-16 h-16 mx-auto text-es-mint-dark/40 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -123,7 +123,7 @@ export default async function FamilyPage(props: {
         </div>
       </section>
 
-      {/* Pain points — Les 4 raisons pour lesquelles tu stagnes */}
+      {/* Pain points : Les 4 raisons pour lesquelles tu stagnes */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-14">
@@ -170,7 +170,7 @@ export default async function FamilyPage(props: {
         </div>
       </section>
 
-      {/* Features — Tout ce dont tu as besoin */}
+      {/* Features : Tout ce dont tu as besoin */}
       <section className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-14">
@@ -259,7 +259,7 @@ export default async function FamilyPage(props: {
             ))}
           </div>
 
-          {/* Callout — patrimoine large */}
+          {/* Callout : patrimoine large */}
           <div className="mt-14 max-w-3xl mx-auto bg-es-mint-soft border border-es-mint-light rounded-2xl p-8 text-center">
             <p className="font-serif text-xl sm:text-2xl text-es-text leading-relaxed">
               Pas juste de l&apos;immo. <strong className="text-es-mint-dark">Tout ce qui fait une vraie indépendance financière</strong> : bourse, fiscalité, actifs alternatifs, transmission, entrepreneuriat, mindset.
@@ -268,7 +268,7 @@ export default async function FamilyPage(props: {
         </div>
       </section>
 
-      {/* Dans la plateforme — vidéo démo */}
+      {/* Dans la plateforme : vidéo démo */}
       <section className="py-20 bg-es-cream">
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-12">
@@ -322,7 +322,7 @@ export default async function FamilyPage(props: {
         </div>
       </section>
 
-      {/* Cartes tarifaires — Fondateur + Standard */}
+      {/* Cartes tarifaires : Fondateur + Standard */}
       <section className="py-20 bg-es-cream">
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-12">
@@ -335,7 +335,7 @@ export default async function FamilyPage(props: {
             </p>
           </div>
           <div className="grid md:grid-cols-5 gap-6">
-            {/* Carte Fondateur — 60% */}
+            {/* Carte Fondateur : 60% */}
             <div className="md:col-span-3 bg-es-mint-pastel rounded-2xl p-8 text-es-text relative overflow-hidden shadow-xl">
               <div className="absolute top-0 right-0 w-48 h-48 bg-white/30 rounded-full -translate-y-1/2 translate-x-1/2" />
               <div className="absolute bottom-0 left-0 w-32 h-32 bg-es-mint-dark/5 rounded-full translate-y-1/2 -translate-x-1/4" />
@@ -373,7 +373,7 @@ export default async function FamilyPage(props: {
               <p className="text-[10px] text-es-text-muted mt-6 relative">*Sous réserve d&apos;abonnement continu</p>
             </div>
 
-            {/* Carte Standard — 40%, grisée */}
+            {/* Carte Standard : 40%, grisée */}
             <div className="md:col-span-2 bg-gray-100 rounded-2xl p-8 opacity-70 relative">
               <span className="inline-flex items-center bg-gray-300 text-gray-600 text-xs font-bold px-3 py-1 rounded-full mb-4">
                 STANDARD
@@ -405,7 +405,7 @@ export default async function FamilyPage(props: {
         </div>
       </section>
 
-      {/* Bridge Academy — Tu veux les deux ? (split image/texte) */}
+      {/* Bridge Academy : Tu veux les deux ? (split image/texte) */}
       <section className="py-20 relative overflow-hidden" style={{ backgroundColor: "#2D6A4F" }}>
         <div className="absolute inset-0 opacity-[0.03]" style={{
           backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",

@@ -119,7 +119,7 @@ export default async function AdminDashboard() {
     { label: "Contacts CRM", value: totalContacts || 0, sub: `${todayContacts || 0} aujourd'hui`, icon: "👥", color: "text-purple-600 bg-purple-50", href: "/admin/contacts" },
     { label: "Élèves inscrits", value: totalProfiles || 0, icon: "🎓", color: "text-amber-600 bg-amber-50", href: "/admin/eleves" },
     { label: "Campagnes email", value: totalCampaigns || 0, icon: "📧", color: "text-red-600 bg-red-50", href: "/admin/emails" },
-    { label: "Pipeline — deals gagnés", value: stageCounts.gagne, icon: "🏆", color: "text-es-green bg-es-green/10", href: "/admin/pipeline" },
+    { label: "Pipeline : deals gagnés", value: stageCounts.gagne, icon: "🏆", color: "text-es-green bg-es-green/10", href: "/admin/pipeline" },
   ];
 
   return (
@@ -362,7 +362,7 @@ export default async function AdminDashboard() {
                       {e.product_name}
                     </Badge>
                     <span className="text-xs text-gray-400">
-                      {e.purchased_at ? new Date(e.purchased_at).toLocaleDateString("fr-FR") : "—"}
+                      {e.purchased_at ? new Date(e.purchased_at).toLocaleDateString("fr-FR") : "-"}
                     </span>
                   </div>
                   <span className="font-bold text-gray-900 text-sm">

@@ -4,7 +4,7 @@ export function organizationSchema() {
   return {
     "@context": "https://schema.org",
     "@type": "EducationalOrganization",
-    name: "ES Academy — Emeline Siron",
+    name: "ES Academy : Emeline Siron",
     url: SITE_URL,
     logo: `${SITE_URL}/images/logo.svg`,
     description: "Formation en investissement immobilier locatif. La méthode complète pour bâtir ton patrimoine.",
@@ -35,7 +35,7 @@ export function courseSchema() {
     description: "Formation complète en investissement immobilier locatif : 14 modules, 30h de vidéo, 60 outils pratiques.",
     provider: {
       "@type": "Organization",
-      name: "ES Academy — Emeline Siron",
+      name: "ES Academy : Emeline Siron",
       url: SITE_URL,
     },
     offers: {
@@ -81,7 +81,7 @@ export function articleSchema(article: {
     },
     publisher: {
       "@type": "Organization",
-      name: "ES Academy — Emeline Siron",
+      name: "ES Academy : Emeline Siron",
       logo: {
         "@type": "ImageObject",
         url: `${SITE_URL}/images/logo.svg`,

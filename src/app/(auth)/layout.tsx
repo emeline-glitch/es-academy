@@ -7,7 +7,7 @@ export default function AuthLayout({
 }) {
   return (
     <div className="min-h-screen flex">
-      {/* Left — branding */}
+      {/* Left : branding */}
       <div className="hidden lg:flex lg:w-1/2 bg-es-green-dark relative overflow-hidden flex-col justify-between p-12">
         <div className="absolute inset-0 bg-gradient-to-br from-es-green-dark via-es-green to-es-green-light/20" />
         <div className="absolute inset-0 opacity-[0.03]" style={{
@@ -40,7 +40,7 @@ export default function AuthLayout({
         </div>
       </div>
 
-      {/* Right — form */}
+      {/* Right : form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-6 bg-es-cream">
         <div className="w-full max-w-md">
           <div className="lg:hidden text-center mb-8">

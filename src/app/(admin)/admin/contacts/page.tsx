@@ -443,7 +443,7 @@ export default function AdminContacts() {
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4 overflow-y-auto">
           <Card className="w-full max-w-lg my-8">
             <h3 className="font-serif text-lg font-bold text-gray-900 mb-1">Ajouter un contact</h3>
-            <p className="text-xs text-gray-500 mb-4">Saisie manuelle — le contact ira directement dans ton CRM.</p>
+            <p className="text-xs text-gray-500 mb-4">Saisie manuelle : le contact ira directement dans ton CRM.</p>
             <div className="space-y-3">
               <div className="grid grid-cols-2 gap-2">
                 <div>
@@ -504,7 +504,7 @@ export default function AdminContacts() {
                     onChange={(e) => setNewContact({ ...newContact, list_tag_key: e.target.value })}
                     className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white text-sm text-gray-700"
                   >
-                    <option value="">— Aucune liste —</option>
+                    <option value="">- Aucune liste -</option>
                     {listFolders.map((f) => {
                       const folderLists = availableLists.filter((l) => l.folder_id === f.id);
                       if (folderLists.length === 0) return null;
@@ -579,7 +579,7 @@ export default function AdminContacts() {
         <Card className="mb-6">
           <h3 className="font-medium text-gray-900 mb-2">Importer des contacts</h3>
           <p className="text-xs text-gray-500 mb-3">
-            Format : email, prénom, nom, source, tags (séparés par ;) — un contact par ligne
+            Format : email, prénom, nom, source, tags (séparés par ;) : un contact par ligne
           </p>
 
           <div className="mb-3">
@@ -589,7 +589,7 @@ export default function AdminContacts() {
               onChange={(e) => setImportListTagKey(e.target.value)}
               className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-white text-sm"
             >
-              <option value="">— Pas de liste —</option>
+              <option value="">- Pas de liste -</option>
               {listFolders.map((f) => {
                 const folderLists = availableLists.filter((l) => l.folder_id === f.id);
                 if (folderLists.length === 0) return null;
@@ -889,7 +889,7 @@ export default function AdminContacts() {
                         {c.phone ? (
                           <a href={`tel:${c.phone}`} className="text-es-green hover:underline">{c.phone}</a>
                         ) : (
-                          <span className="text-gray-300">—</span>
+                          <span className="text-gray-300">-</span>
                         )}
                       </td>
                       <td className="px-5 py-3">{getTypeBadge(type)}</td>
@@ -907,7 +907,7 @@ export default function AdminContacts() {
                         <Badge variant={c.status === "active" ? "success" : "error"}>{c.status}</Badge>
                       </td>
                       <td className="px-5 py-3 text-xs text-gray-400">
-                        {c.subscribed_at ? new Date(c.subscribed_at).toLocaleDateString("fr-FR") : "—"}
+                        {c.subscribed_at ? new Date(c.subscribed_at).toLocaleDateString("fr-FR") : "-"}
                       </td>
                     </tr>
                   );

@@ -28,7 +28,7 @@ function getClient(): SESv2Client {
 /**
  * Envoie un email via AWS SES v2.
  *
- * Anciennement un stub (console.log puis return success=true sans envoi réel) — c'est pour ça
+ * Anciennement un stub (console.log puis return success=true sans envoi réel) : c'est pour ça
  * qu'aucun mail n'était envoyé en vrai malgré des logs "sent". Corrigé ici avec @aws-sdk/client-sesv2.
  */
 export async function sendEmail({

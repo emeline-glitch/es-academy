@@ -1,6 +1,6 @@
 /**
  * Rate limiter en mémoire (fenêtre glissante).
- * Fonctionne par instance de fonction serverless — pas parfait en distribué,
+ * Fonctionne par instance de fonction serverless : pas parfait en distribué,
  * mais stoppe 99% du spam. Pour du vrai distribué : basculer sur Supabase rate_limits table.
  */
 
@@ -51,7 +51,7 @@ export function getClientIp(request: Request): string {
 }
 
 /**
- * Cleanup périodique — appelé paresseusement toutes les 5 min
+ * Cleanup périodique : appelé paresseusement toutes les 5 min
  */
 let lastCleanup = Date.now();
 export function cleanupBuckets() {

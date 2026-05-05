@@ -13,7 +13,7 @@ const tools = [
   },
   {
     icon: "✅",
-    title: "Checklist visite — 47 points de contrôle",
+    title: "Checklist visite : 47 points de contrôle",
     desc: "Ne ratez plus rien lors d'une visite. Toiture, électricité, humidité, copropriété...",
   },
   {
@@ -61,7 +61,7 @@ export default function OutilsGratuits() {
       <section className="py-16 lg:py-24">
         <div className="max-w-5xl mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left — value proposition */}
+            {/* Left : value proposition */}
             <div>
               <span className="text-xs text-es-terracotta uppercase tracking-widest font-medium">Gratuit</span>
               <h1 className="font-serif text-3xl sm:text-4xl font-bold text-es-text mt-3 mb-4 leading-tight">
@@ -86,7 +86,7 @@ export default function OutilsGratuits() {
               </div>
             </div>
 
-            {/* Right — form */}
+            {/* Right : form */}
             <div className="bg-white rounded-2xl p-8 shadow-lg border border-es-cream-dark">
               <h2 className="font-serif text-xl font-bold text-es-text mb-2">
                 Reçois tes outils gratuits

@@ -196,7 +196,7 @@ export default function StudentDetailPage() {
         <Card>
           <p className="text-[10px] uppercase text-gray-500 tracking-wider">Activité globale</p>
           <p className={`text-sm font-semibold mt-1 ${lastActivity ? "text-amber-600" : "text-gray-400 italic"}`}>
-            {lastActivity ? formatRelative(lastActivity) : "—"}
+            {lastActivity ? formatRelative(lastActivity) : "-"}
           </p>
         </Card>
       </div>

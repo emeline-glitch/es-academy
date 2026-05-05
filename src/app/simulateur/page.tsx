@@ -101,7 +101,7 @@ export default function SimulateurPage() {
 
             {/* Results */}
             <div className="space-y-5">
-              {/* Rendement brut — visible */}
+              {/* Rendement brut : visible */}
               <div className="rounded-xl p-6 border-0" style={{ backgroundColor: "#2c6e55" }}>
                 <h3 className="text-white/60 text-sm mb-4">Résultats</h3>
                 <div className="rounded-xl p-4 text-center" style={{ backgroundColor: "rgba(255,255,255,0.1)" }}>
@@ -110,7 +110,7 @@ export default function SimulateurPage() {
                 </div>
               </div>
 
-              {/* Cadenas Family — résultats détaillés verrouillés */}
+              {/* Cadenas Family : résultats détaillés verrouillés */}
               <div className="relative rounded-2xl overflow-hidden" style={{ minHeight: "340px" }}>
                 {/* Contenu flouté derrière */}
                 <div className="blur-[6px] select-none pointer-events-none opacity-60 space-y-4" aria-hidden="true">

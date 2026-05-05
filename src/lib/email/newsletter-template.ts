@@ -28,7 +28,7 @@ export function defaultNewsletterHtml(opts?: { editionNumber?: number; edition?:
     L'IMMO SANS PRISE DE TÊTE !
   </h1>
   <p style="margin:8px 0 0; color:${TEXT}; font-size:13px; font-weight:600;">
-    ${edition.charAt(0).toUpperCase() + edition.slice(1)} — #${num}
+    ${edition.charAt(0).toUpperCase() + edition.slice(1)} : #${num}
   </p>
 </div>
 
@@ -138,9 +138,9 @@ export function defaultNewsletterHtml(opts?: { editionNumber?: number; edition?:
   <h3 style="margin:24px 0 12px; color:${TEXT}; font-size:18px; font-weight:700;">
     Les erreurs des investisseurs (même avancés)
   </h3>
-  <p style="margin:4px 0;">❌ <strong>[Erreur 1]</strong> — [explication courte]</p>
-  <p style="margin:4px 0;">❌ <strong>[Erreur 2]</strong> — [explication courte]</p>
-  <p style="margin:4px 0;">❌ <strong>[Erreur 3]</strong> — [explication courte]</p>
+  <p style="margin:4px 0;">❌ <strong>[Erreur 1]</strong> : [explication courte]</p>
+  <p style="margin:4px 0;">❌ <strong>[Erreur 2]</strong> : [explication courte]</p>
+  <p style="margin:4px 0;">❌ <strong>[Erreur 3]</strong> : [explication courte]</p>
 
   <!-- En résumé -->
   <h3 style="margin:24px 0 12px; color:${TEXT}; font-size:18px; font-weight:700;">En résumé</h3>
@@ -173,7 +173,7 @@ export function defaultNewsletterHtml(opts?: { editionNumber?: number; edition?:
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <div style="padding:16px 24px;">
   <h2 style="margin:16px 0 8px; color:${TEXT}; font-size:22px; font-weight:800; text-align:center; line-height:1.3;">
-    <span style="color:${GREEN};">Actualité immo</span> — [Titre de l'actu]
+    <span style="color:${GREEN};">Actualité immo</span> : [Titre de l'actu]
   </h2>
   <p style="margin:12px 0; color:${TEXT}; font-size:15px; line-height:1.7;">
     [Intro de l'actualité, 2-3 lignes pour poser le contexte]

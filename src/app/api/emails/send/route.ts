@@ -72,7 +72,7 @@ export async function POST(request: Request) {
     });
   }
 
-  // Envoi batché parallèle — retourne une liste d'erreurs détaillée pour débogage
+  // Envoi batché parallèle : retourne une liste d'erreurs détaillée pour débogage
   let sentCount = 0;
   let failedCount = 0;
   const failures: Array<{ email: string; reason: string }> = [];

@@ -124,14 +124,14 @@ export default function AdminForms() {
             </div>
             <div>
               <label className="text-sm font-medium text-gray-900 mb-1.5 block">
-                Liste de destination {lists.length === 0 && <span className="italic text-gray-400 font-normal">— crée-en une d&apos;abord dans /admin/lists</span>}
+                Liste de destination {lists.length === 0 && <span className="italic text-gray-400 font-normal">- crée-en une d&apos;abord dans /admin/lists</span>}
               </label>
               <select
                 value={newListId}
                 onChange={(e) => setNewListId(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white"
               >
-                <option value="">— Aucune —</option>
+                <option value="">- Aucune -</option>
                 {folders.map((f) => {
                   const fl = lists.filter((l) => l.folder_id === f.id);
                   if (fl.length === 0) return null;

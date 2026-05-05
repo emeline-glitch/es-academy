@@ -24,7 +24,7 @@ import { getPublishedArticles } from "./blog";
 const UNSPLASH = (id: string, width = 1200) =>
   `https://images.unsplash.com/photo-${id}?w=${width}&q=85&auto=format&fit=crop`;
 
-// Pool ARCHITECTURE / IMMOBILIER / VILLES — pour categorie "Investissement"
+// Pool ARCHITECTURE / IMMOBILIER / VILLES : pour categorie "Investissement"
 const POOL_ARCHITECTURE: string[] = [
   UNSPLASH("1560518883-ce09059eeffa"),
   UNSPLASH("1564013799919-ab600027ffc6"),
@@ -65,7 +65,7 @@ const POOL_ARCHITECTURE: string[] = [
   UNSPLASH("1503387837-b154d5074bd2"),
 ];
 
-// Pool FINANCE / CALCUL / PAPIERS / GRAPHIQUES / DESK — pour "Fiscalite", "Financement", "Patrimoine"
+// Pool FINANCE / CALCUL / PAPIERS / GRAPHIQUES / DESK : pour "Fiscalite", "Financement", "Patrimoine"
 // Agrandi a 14 photos (13 articles partagent ce pool : 1 Patrimoine + 5 Fiscalite + 7 Financement)
 const POOL_FINANCE: string[] = [
   UNSPLASH("1554224155-6726b3ff858f"),
@@ -85,7 +85,7 @@ const POOL_FINANCE: string[] = [
   UNSPLASH("1521791136064-7986c2920216"),
 ];
 
-// Pool COSY / LAPTOP / LIVRES / WORK — pour "Strategie" (15 photos pour 6 articles)
+// Pool COSY / LAPTOP / LIVRES / WORK : pour "Strategie" (15 photos pour 6 articles)
 const POOL_STRATEGIE: string[] = [
   UNSPLASH("1505691938895-1758d7feb511"),
   UNSPLASH("1556761175-5973dc0f32e7"),

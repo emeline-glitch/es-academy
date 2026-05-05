@@ -3,9 +3,9 @@
  */
 
 export function formatRelative(input: string | Date | null | undefined): string {
-  if (!input) return "—";
+  if (!input) return "-";
   const date = typeof input === "string" ? new Date(input) : input;
-  if (isNaN(date.getTime())) return "—";
+  if (isNaN(date.getTime())) return "-";
   const diffMs = Date.now() - date.getTime();
   const diffSec = Math.round(diffMs / 1000);
   const diffMin = Math.round(diffSec / 60);
@@ -23,16 +23,16 @@ export function formatRelative(input: string | Date | null | undefined): string 
 }
 
 export function formatDate(input: string | Date | null | undefined): string {
-  if (!input) return "—";
+  if (!input) return "-";
   const d = typeof input === "string" ? new Date(input) : input;
-  if (isNaN(d.getTime())) return "—";
+  if (isNaN(d.getTime())) return "-";
   return d.toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" });
 }
 
 export function formatDateTime(input: string | Date | null | undefined): string {
-  if (!input) return "—";
+  if (!input) return "-";
   const d = typeof input === "string" ? new Date(input) : input;
-  if (isNaN(d.getTime())) return "—";
+  if (isNaN(d.getTime())) return "-";
   return d.toLocaleDateString("fr-FR", {
     day: "numeric",
     month: "short",

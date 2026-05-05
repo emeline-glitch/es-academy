@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 const VALID_STATUSES = ["draft", "active", "paused", "archived"] as const;
 const VALID_TRIGGERS = ["tag_added", "form_submit", "manual", "product_purchase"] as const;
 
-// GET — Get a single sequence with steps
+// GET : Get a single sequence with steps
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -29,7 +29,7 @@ export async function GET(
   return NextResponse.json(data);
 }
 
-// PATCH — Update a sequence
+// PATCH : Update a sequence
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -70,7 +70,7 @@ export async function PATCH(
   return NextResponse.json(data);
 }
 
-// DELETE — Delete a sequence (cascades to steps and enrollments)
+// DELETE : Delete a sequence (cascades to steps and enrollments)
 export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> }

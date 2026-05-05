@@ -179,7 +179,7 @@ export default async function AdminEmails({
                             <span className="text-xs text-gray-500">{openRate}%</span>
                           </div>
                         ) : (
-                          <span className="text-xs text-gray-300">—</span>
+                          <span className="text-xs text-gray-300">-</span>
                         )}
                       </td>
                       <td className="px-6 py-4 text-xs text-gray-500">

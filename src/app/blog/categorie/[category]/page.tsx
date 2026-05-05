@@ -27,7 +27,7 @@ export async function generateMetadata({
   const cat = CATEGORIES[category.toLowerCase()];
   if (!cat) return {};
   return buildMetadata({
-    title: `${cat.label} — Blog`,
+    title: `${cat.label} : Blog`,
     description: cat.description,
     path: `/blog/categorie/${category}`,
   });

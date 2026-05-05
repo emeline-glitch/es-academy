@@ -111,10 +111,10 @@ export default function FraisNotaire() {
                     />
                     <p className="text-[10px] text-gray-400 mt-1">
                       {isReduit
-                        ? "🏝️ Département d'outre-mer — taux réduit (5.11%)"
+                        ? "🏝️ Département d'outre-mer : taux réduit (5.11%)"
                         : type === "ancien"
-                          ? "📍 Métropole — taux standard (5.81%)"
-                          : "🏗️ Neuf — droits réduits (0.71%)"}
+                          ? "📍 Métropole : taux standard (5.81%)"
+                          : "🏗️ Neuf : droits réduits (0.71%)"}
                     </p>
                   </div>
                 </div>

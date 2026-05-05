@@ -3,7 +3,7 @@ export const SITE_DESCRIPTION =
   "Construisons ta réussite financière et humaine. ES Academy : formation immobilier locatif. ES Family : communauté patrimoniale.";
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://emeline-siron.fr";
 
-// Taux de crédit moyen — à mettre à jour chaque mois
+// Taux de crédit moyen : à mettre à jour chaque mois
 // Source : observatoire-credit-logement.fr
 export const TAUX_CREDIT_MOYEN = {
   "10ans": 3.10,
@@ -26,7 +26,7 @@ export const PRICING = {
       "60 outils de l'investisseur (calculateurs, modèles, checklists)",
       "3 mois ES Family offerts",
       "Accès illimité si formation terminée en 3 mois",
-      "Module bonus — interviews de professionnels",
+      "Module bonus : interviews de professionnels",
       "Session mentorat collective mensuelle",
       "Mises à jour et replays des lives",
       "Fichier de partenaires immobiliers",

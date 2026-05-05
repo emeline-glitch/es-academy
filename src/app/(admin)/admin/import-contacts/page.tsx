@@ -397,7 +397,7 @@ export default function ImportContactsPage() {
                       <div className="mt-2 max-h-40 overflow-y-auto text-[11px] space-y-1">
                         {preview.invalid_samples.map((s, i) => (
                           <p key={i} className="text-red-600">
-                            Ligne {s.row} : {s.email || "—"} ({s.reason})
+                            Ligne {s.row} : {s.email || "-"} ({s.reason})
                           </p>
                         ))}
                       </div>

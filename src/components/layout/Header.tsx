@@ -66,7 +66,7 @@ export function Header({ activePage = "home" }: HeaderProps) {
           Emeline Siron
         </Link>
 
-        {/* Nav desktop — Academy et Family avec badges couleur */}
+        {/* Nav desktop : Academy et Family avec badges couleur */}
         <nav className="hidden md:flex items-center gap-1">
           <Link
             href="/academy"

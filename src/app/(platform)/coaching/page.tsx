@@ -38,7 +38,7 @@ export default async function CoachingPage() {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-xs text-es-green font-semibold uppercase tracking-widest">
-                {hasIncluded ? "Inclus" : "Inclus — épuisé"}
+                {hasIncluded ? "Inclus" : "Inclus : épuisé"}
               </p>
               <h2 className="font-serif text-lg font-bold text-gray-900">Coaching dans ton offre</h2>
             </div>

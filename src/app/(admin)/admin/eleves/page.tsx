@@ -164,7 +164,7 @@ export default function AdminEleves() {
               ) : (
                 enrollments.map((e) => {
                   const p = e.profiles;
-                  const name = p?.full_name || p?.email || "—";
+                  const name = p?.full_name || p?.email || "-";
                   const progressPct = Math.round((e.progress_count / TOTAL_LESSONS) * 100);
                   return (
                     <tr key={e.id} className="hover:bg-gray-50">

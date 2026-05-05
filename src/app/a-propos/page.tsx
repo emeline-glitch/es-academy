@@ -178,7 +178,7 @@ export default function QuiEstEmeline() {
         </div>
       </section>
 
-      {/* Stats — Patrimoine immobilier */}
+      {/* Stats : Patrimoine immobilier */}
       <section className="py-16 bg-es-green">
         <div className="max-w-6xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center text-white">
           {[
@@ -312,7 +312,7 @@ export default function QuiEstEmeline() {
         </div>
       </section>
 
-      {/* 2026 — L'écosystème */}
+      {/* 2026 : L'écosystème */}
       <section className="py-20 bg-white">
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-14">
@@ -440,11 +440,11 @@ export default function QuiEstEmeline() {
           <p className="font-serif italic text-es-text text-2xl leading-relaxed">
             &ldquo; Si j&apos;ai pu le faire, tu peux le faire aussi. &rdquo;
           </p>
-          <p className="text-sm text-es-text-muted mt-4 font-medium">— Emeline</p>
+          <p className="text-sm text-es-text-muted mt-4 font-medium">- Emeline</p>
         </div>
       </section>
 
-      {/* CTA final — appel découverte */}
+      {/* CTA final : appel découverte */}
       <section className="relative py-20 overflow-hidden" style={{ backgroundColor: "#006B58" }}>
         <div className="absolute inset-0 bg-gradient-to-br from-es-terracotta-dark/20 via-transparent to-black/10" />
         <div className="relative max-w-5xl mx-auto px-6">
