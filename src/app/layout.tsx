@@ -5,6 +5,8 @@ import { SocialProof } from "@/components/ui/SocialProof";
 import { SearchModal } from "@/components/ui/SearchModal";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { PageViewTracker } from "@/components/seo/PageViewTracker";
+import { GoogleTagManagerHead, GoogleTagManagerNoScript } from "@/components/seo/GoogleTagManager";
+import { GtmPageViewTracker } from "@/components/seo/GtmPageViewTracker";
 import { organizationSchema } from "@/lib/seo/schemas";
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from "@/lib/utils/constants";
 import "./globals.css";
@@ -63,15 +65,21 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const gtmId = process.env.NEXT_PUBLIC_GTM_ID;
   return (
     <html
       lang="fr"
       className={`${playfair.variable} ${inter.variable} h-full antialiased`}
     >
+      <head>
+        {gtmId && <GoogleTagManagerHead gtmId={gtmId} />}
+      </head>
       <body className="min-h-full flex flex-col">
+        {gtmId && <GoogleTagManagerNoScript gtmId={gtmId} />}
         <JsonLd data={organizationSchema()} />
         {children}
         <PageViewTracker />
+        {gtmId && <GtmPageViewTracker />}
         <CookieConsent />
         <SocialProof />
         <SearchModal />
