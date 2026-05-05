@@ -31,11 +31,22 @@ export async function generateMetadata({
   const article = await getArticleBySlug(slug);
   if (!article) return {};
 
+  // Pour OG image, on utilise /api/og (titre overlay + branding ES) plutot que
+  // la featuredImage Notion (URLs S3 temporaires qui expirent en 1h, ce qui
+  // casserait les partages sociaux apres quelques heures).
+  const ogTitle = article.seoTitle || article.title;
+  const ogParams = new URLSearchParams({
+    title: ogTitle,
+    category: article.category || "",
+    author: article.author || "Emeline Siron",
+  });
+  const ogImage = `${SITE_URL}/api/og?${ogParams.toString()}`;
+
   return buildMetadata({
-    title: article.seoTitle || article.title,
+    title: ogTitle,
     description: article.seoDescription || article.excerpt,
     path: `/blog/${article.slug}`,
-    image: await getBlogImage(article),
+    image: ogImage,
     type: "article",
     publishedTime: article.publishDate,
   });

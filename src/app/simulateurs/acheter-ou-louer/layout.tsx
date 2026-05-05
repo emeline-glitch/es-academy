@@ -3,7 +3,7 @@ import { buildMetadata } from "@/lib/seo/metadata";
 
 export const metadata: Metadata = buildMetadata({
   title: "Acheter ou louer en 2026 ? Simulateur | Emeline Siron",
-  description: "Acheter ou continuer à louer en 2026 ? Simulateur gratuit qui calcule à partir de combien d'années l'achat devient rentable vs la location, selon ton taux, ton apport et la valorisation du bien.",
+  description: "Acheter ou louer en 2026 ? Simulateur gratuit qui calcule à partir de combien d'années l'achat devient rentable selon ton taux, ton apport et la valorisation.",
   path: "/simulateurs/acheter-ou-louer",
 });
 

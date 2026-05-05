@@ -3,7 +3,7 @@ import { buildMetadata } from "@/lib/seo/metadata";
 
 export const metadata: Metadata = buildMetadata({
   title: "Simulateur rentabilité locative 2026 (brut, net, cash-flow) | Emeline Siron",
-  description: "Calcule en 2 minutes la rentabilité brute, nette et le cash-flow mensuel de ton bien immobilier. Simulateur gratuit par une investisseuse qui gère 55 locataires.",
+  description: "Calcule en 2 minutes la rentabilité brute, nette et le cash-flow mensuel de ton bien. Simulateur gratuit par Emeline Siron (55 locataires).",
   path: "/simulateurs/rentabilite-locative",
 });
 

@@ -282,6 +282,133 @@ function auditArticles(articles) {
   return drafts;
 }
 
+// ===================================================================
+// Audit pages statiques (lit les fichiers source et regex-parse les
+// metadata). Permet de catch les longueurs hors normes sur /academy,
+// /family, /simulateurs/*, etc. qui ne sont pas dans Notion.
+// ===================================================================
+const STATIC_PAGES_TO_SCAN = [
+  { path: "/", file: "src/app/page.tsx" },
+  { path: "/academy", file: "src/app/academy/page.tsx" },
+  { path: "/family", file: "src/app/family/page.tsx" },
+  { path: "/podcast", file: "src/app/podcast/page.tsx" },
+  { path: "/a-propos", file: "src/app/a-propos/page.tsx" },
+  { path: "/blog", file: "src/app/blog/page.tsx" },
+  { path: "/glossaire", file: "src/app/glossaire/page.tsx" },
+  { path: "/cahier-preview", file: "src/app/cahier-preview/layout.tsx" },
+  { path: "/simulateurs", file: "src/app/simulateurs/layout.tsx" },
+  { path: "/simulateurs/acheter-ou-louer", file: "src/app/simulateurs/acheter-ou-louer/layout.tsx" },
+  { path: "/simulateurs/appel-decouverte", file: "src/app/simulateurs/appel-decouverte/layout.tsx" },
+  { path: "/simulateurs/capacite-emprunt", file: "src/app/simulateurs/capacite-emprunt/layout.tsx" },
+  { path: "/simulateurs/frais-de-notaire", file: "src/app/simulateurs/frais-de-notaire/layout.tsx" },
+  { path: "/simulateurs/impots-location", file: "src/app/simulateurs/impots-location/layout.tsx" },
+  { path: "/simulateurs/mensualite-credit", file: "src/app/simulateurs/mensualite-credit/layout.tsx" },
+  { path: "/simulateurs/plus-value", file: "src/app/simulateurs/plus-value/layout.tsx" },
+  { path: "/simulateurs/rentabilite-locative", file: "src/app/simulateurs/rentabilite-locative/layout.tsx" },
+  { path: "/simulateurs/taux-endettement", file: "src/app/simulateurs/taux-endettement/layout.tsx" },
+];
+
+function extractMeta(content) {
+  // Trouve title: "..." ou title: `...` (1er match dans buildMetadata({...}) ou metadata = {...})
+  const titleMatch = content.match(/title:\s*(?:"([^"]+)"|`([^`]+)`)/);
+  const descMatch = content.match(/description:\s*(?:"([^"]+)"|`([^`]+)`)/);
+  return {
+    title: titleMatch ? (titleMatch[1] || titleMatch[2]) : null,
+    description: descMatch ? (descMatch[1] || descMatch[2]) : null,
+  };
+}
+
+function auditStaticPages() {
+  const drafts = [];
+  for (const { path: p, file } of STATIC_PAGES_TO_SCAN) {
+    const fullPath = path.join(ROOT, file);
+    if (!fs.existsSync(fullPath)) {
+      drafts.push({
+        type: "missing_meta_description",
+        severity: "high",
+        page_path: p,
+        title: `Page statique introuvable : ${p}`,
+        description: `Le fichier ${file} n'existe pas. Verifie la liste STATIC_PAGES_TO_SCAN dans run-seo-audit.mjs.`,
+        fix_action: "Mettre a jour la liste des pages a auditer ou recreer le fichier.",
+      });
+      continue;
+    }
+    const content = fs.readFileSync(fullPath, "utf8");
+    const { title, description } = extractMeta(content);
+
+    if (!title) {
+      drafts.push({
+        type: "missing_seo_title",
+        severity: "high",
+        page_path: p,
+        title: `Pas de title SEO sur ${p}`,
+        description: "Cette page n'a pas de title declare via metadata ou buildMetadata. Google va inferer depuis le H1.",
+        fix_action: `Ajouter export const metadata avec title dans ${file}.`,
+      });
+    } else if (title.length > TITLE_MAX) {
+      drafts.push({
+        type: "seo_title_too_long",
+        severity: "medium",
+        page_path: p,
+        title: `Title trop long sur ${p} (${title.length} car.)`,
+        description: `Google tronque au-dela de ${TITLE_MAX} caracteres : "${title}".`,
+        fix_action: `Raccourcir le title dans ${file} sous 60 caracteres.`,
+      });
+    } else if (title.length < TITLE_MIN) {
+      drafts.push({
+        type: "seo_title_too_short",
+        severity: "low",
+        page_path: p,
+        title: `Title court sur ${p} (${title.length} car.)`,
+        description: `Sous-exploite. Actuel : "${title}".`,
+        fix_action: `Etoffer le title dans ${file} (cible : 30-60 caracteres).`,
+      });
+    }
+
+    if (!description) {
+      drafts.push({
+        type: "missing_meta_description",
+        severity: "high",
+        page_path: p,
+        title: `Pas de meta description sur ${p}`,
+        description: "Sans meta description Google va inventer un snippet rarement optimal.",
+        fix_action: `Ajouter description dans le metadata de ${file}.`,
+      });
+    } else if (description.length > DESC_MAX) {
+      drafts.push({
+        type: "meta_description_too_long",
+        severity: "medium",
+        page_path: p,
+        title: `Meta description trop longue sur ${p} (${description.length} car.)`,
+        description: `Google tronque au-dela de ${DESC_MAX} caracteres.`,
+        fix_action: `Raccourcir la description dans ${file} sous 160 caracteres.`,
+      });
+    } else if (description.length < DESC_MIN) {
+      drafts.push({
+        type: "meta_description_too_short",
+        severity: "low",
+        page_path: p,
+        title: `Meta description courte sur ${p} (${description.length} car.)`,
+        description: "Espace SERP gaspille.",
+        fix_action: `Etoffer la description dans ${file} (cible : 70-160 caracteres).`,
+      });
+    }
+
+    // Em dash check (interdit selon charte)
+    if ((title && title.includes("—")) || (description && description.includes("—"))) {
+      drafts.push({
+        type: "missing_meta_description",
+        severity: "high",
+        page_path: p,
+        title: `Em dash interdit dans metadata de ${p}`,
+        description: "Le caractere em dash (—) est interdit par la charte. Remplace par : virgule, deux-points ou tiret simple.",
+        fix_action: `Editer ${file} et remplacer les em dashes.`,
+      });
+    }
+  }
+  return drafts;
+}
+
 async function auditKeywords() {
   const drafts = [];
   const result = await execSql(
@@ -336,6 +463,7 @@ async function main() {
     console.log("→ Execution auditeurs...");
     const drafts = [
       ...auditGlobalSetup(),
+      ...auditStaticPages(),
       ...auditArticles(articles),
       ...(await auditKeywords()),
     ];
