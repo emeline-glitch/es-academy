@@ -6,6 +6,7 @@ import { SearchModal } from "@/components/ui/SearchModal";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { PageViewTracker } from "@/components/seo/PageViewTracker";
 import { GoogleTagManagerHead, GoogleTagManagerNoScript } from "@/components/seo/GoogleTagManager";
+import { GoogleAnalytics } from "@/components/seo/GoogleAnalytics";
 import { GtmPageViewTracker } from "@/components/seo/GtmPageViewTracker";
 import { organizationSchema } from "@/lib/seo/schemas";
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from "@/lib/utils/constants";
@@ -66,6 +67,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const gtmId = process.env.NEXT_PUBLIC_GTM_ID;
+  const gaMeasurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
   return (
     <html
       lang="fr"
@@ -73,6 +75,7 @@ export default function RootLayout({
     >
       <head>
         {gtmId && <GoogleTagManagerHead gtmId={gtmId} />}
+        {gaMeasurementId && <GoogleAnalytics measurementId={gaMeasurementId} />}
       </head>
       <body className="min-h-full flex flex-col">
         {gtmId && <GoogleTagManagerNoScript gtmId={gtmId} />}

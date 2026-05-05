@@ -21,12 +21,26 @@ declare global {
 
 export function trackEvent(name: string, params: Record<string, unknown> = {}): void {
   if (typeof window === "undefined") return;
-  if (!window.dataLayer) return;
-  window.dataLayer.push({ event: name, ...params });
+  // Push pour GTM (utilise par les triggers Custom Event configurables dans GTM
+  // pour Meta Pixel, Google Ads conversion, LinkedIn Insight, etc.)
+  if (window.dataLayer) {
+    window.dataLayer.push({ event: name, ...params });
+  }
+  // Send direct vers GA4 via gtag.js (GA4 ignore les dataLayer.push au format
+  // {event:...}, il faut explicitement gtag('event', name, params))
+  if (typeof window.gtag === "function") {
+    window.gtag("event", name, params);
+  }
 }
 
 export function trackPageView(path: string): void {
-  trackEvent("page_view", { page_path: path });
+  if (typeof window === "undefined") return;
+  if (window.dataLayer) {
+    window.dataLayer.push({ event: "page_view", page_path: path });
+  }
+  if (typeof window.gtag === "function") {
+    window.gtag("event", "page_view", { page_path: path });
+  }
 }
 
 export function updateAnalyticsConsent(granted: boolean): void {
