@@ -4,6 +4,7 @@ import { CookieConsent } from "@/components/ui/CookieConsent";
 import { SocialProof } from "@/components/ui/SocialProof";
 import { SearchModal } from "@/components/ui/SearchModal";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { PageViewTracker } from "@/components/seo/PageViewTracker";
 import { organizationSchema } from "@/lib/seo/schemas";
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from "@/lib/utils/constants";
 import "./globals.css";
@@ -48,6 +49,13 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  ...(process.env.GOOGLE_SITE_VERIFICATION
+    ? {
+        verification: {
+          google: process.env.GOOGLE_SITE_VERIFICATION,
+        },
+      }
+    : {}),
 };
 
 export default function RootLayout({
@@ -63,6 +71,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <JsonLd data={organizationSchema()} />
         {children}
+        <PageViewTracker />
         <CookieConsent />
         <SocialProof />
         <SearchModal />
