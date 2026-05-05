@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { trackEvent, ConversionEvents } from "@/lib/analytics/gtm";
 
 type Plan = "1x" | "3x" | "4x";
 
@@ -10,6 +11,8 @@ const PLANS: Array<{ id: Plan; label: string; sublabel: string }> = [
   { id: "4x", label: "4 x 249,50€", sublabel: "En 4 mensualités" },
 ];
 
+const PLAN_VALUE: Record<Plan, number> = { "1x": 998, "3x": 998, "4x": 998 };
+
 export function AcademyCheckoutButtons() {
   const [selected, setSelected] = useState<Plan>("1x");
   const [loading, setLoading] = useState(false);
@@ -18,6 +21,11 @@ export function AcademyCheckoutButtons() {
   async function handleCheckout() {
     setLoading(true);
     setError(null);
+    trackEvent(ConversionEvents.CTA_ACADEMY, {
+      plan: selected,
+      value: PLAN_VALUE[selected],
+      currency: "EUR",
+    });
     try {
       const res = await fetch("/api/stripe/checkout", {
         method: "POST",
@@ -30,6 +38,12 @@ export function AcademyCheckoutButtons() {
         setLoading(false);
         return;
       }
+      trackEvent(ConversionEvents.CHECKOUT_INITIATED, {
+        plan: selected,
+        value: PLAN_VALUE[selected],
+        currency: "EUR",
+        product: "academy",
+      });
       window.location.href = data.url;
     } catch (err) {
       const message = err instanceof Error ? err.message : "Erreur réseau";

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { trackEvent, ConversionEvents } from "@/lib/analytics/gtm";
 
 interface CaptureFormProps {
   title?: string;
@@ -34,6 +35,7 @@ export function CaptureForm({
         body: JSON.stringify({ email, source: "capture_form" }),
       });
       if (res.ok) {
+        trackEvent(ConversionEvents.LEAD_MAGNET_OPTIN, { source: "capture_form" });
         setStatus("success");
         setEmail("");
       } else {

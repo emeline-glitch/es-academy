@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { trackEvent, ConversionEvents } from "@/lib/analytics/gtm";
 
 export function NewsletterForm() {
   const [email, setEmail] = useState("");
@@ -19,7 +20,10 @@ export function NewsletterForm() {
     });
 
     setStatus(res.ok ? "success" : "error");
-    if (res.ok) setEmail("");
+    if (res.ok) {
+      trackEvent(ConversionEvents.NEWSLETTER_SUBSCRIBE, { source: "newsletter" });
+      setEmail("");
+    }
   }
 
   if (status === "success") {

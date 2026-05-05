@@ -1,10 +1,23 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/Button";
+import { PurchaseTracker } from "@/components/analytics/PurchaseTracker";
 
-export default function Merci() {
+export default async function Merci({
+  searchParams,
+}: {
+  searchParams: Promise<{ session_id?: string; plan?: string }>;
+}) {
+  const sp = await searchParams;
   return (
     <div className="min-h-screen bg-es-cream">
+      <PurchaseTracker
+        product="academy"
+        value={998}
+        currency="EUR"
+        transactionId={sp.session_id}
+        plan={sp.plan}
+      />
       <Header />
 
       <section className="py-20 lg:py-28">

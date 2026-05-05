@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { PurchaseTracker } from "@/components/analytics/PurchaseTracker";
 
 export const metadata: Metadata = {
   title: "Bienvenue dans ES Family | Emeline Siron",
@@ -29,10 +30,12 @@ export default async function FamilyBienvenuePage(props: {
   // plan disponible en query (pour analytics) mais NON affiché à l'écran :
   // l'expérience après paiement doit être identique pour fondateur et standard
   // (zéro différenciation cosmétique, ce qui change c'est le tarif Stripe).
-  await props.searchParams;
+  const sp = await props.searchParams;
+  const planValue = sp.plan === "fondateur" ? 19 : sp.plan === "standard" ? 29 : undefined;
 
   return (
     <div className="min-h-screen bg-es-cream">
+      <PurchaseTracker product="family" value={planValue} currency="EUR" plan={sp.plan} />
       <Header activePage="family" />
 
       <main className="max-w-3xl mx-auto px-6 py-12 md:py-20">

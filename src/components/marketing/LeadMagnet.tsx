@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { trackEvent, ConversionEvents } from "@/lib/analytics/gtm";
 
 export function LeadMagnet() {
   const [email, setEmail] = useState("");
@@ -19,7 +20,10 @@ export function LeadMagnet() {
         body: JSON.stringify({ email, source: "lead_magnet", tags: ["lead_magnet"] }),
       });
       setStatus(res.ok ? "success" : "error");
-      if (res.ok) setEmail("");
+      if (res.ok) {
+        trackEvent(ConversionEvents.LEAD_MAGNET_OPTIN, { source: "lead_magnet", tag: "lead_magnet" });
+        setEmail("");
+      }
     } catch {
       setStatus("error");
     }
