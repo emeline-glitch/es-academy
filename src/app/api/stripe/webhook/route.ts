@@ -6,6 +6,7 @@ import { sendAcademyWelcomeEmail } from "@/lib/email/welcome-academy";
 import { sendFamilyWelcomeEmail } from "@/lib/email/welcome-family";
 import { renderEmailTemplate } from "@/lib/email/render-template";
 import { sendEmail } from "@/lib/ses/client";
+import { trackServerPurchase } from "@/lib/analytics/ga4-server";
 import {
   syncAcademyGiftToFamily,
   syncFamilySubscription,
@@ -411,6 +412,38 @@ async function handleAcademyPurchase(session: Stripe.Checkout.Session) {
     installments,
     magicLink,
   });
+
+  // 8. Server-side GA4 conversion (fiable meme si client a un adblocker).
+  //    Le client_id est genere stable a partir de l'email pour deduplique avec
+  //    le purchase event cote client (PurchaseTracker sur /merci) si dispo.
+  await trackServerPurchase({
+    clientId: clientIdFromEmail(email),
+    userId,
+    transactionId: session.id,
+    value: amountPaid / 100, // Stripe = cents, GA4 = unit
+    currency: (session.currency || "eur").toUpperCase(),
+    product: "academy",
+    plan: installments > 1 ? `${installments}x` : "1x",
+    email: emailLower,
+  });
+}
+
+/**
+ * Genere un client_id GA4 stable a partir de l'email.
+ * Format GA4 : nombre.timestamp_unix.
+ *
+ * Stable = meme client_id pour le meme email = pas de duplicate users dans GA4
+ * meme si l'achat se fait depuis un appareil different du browsing.
+ */
+function clientIdFromEmail(email: string): string {
+  let hash = 0;
+  const lower = email.toLowerCase().trim();
+  for (let i = 0; i < lower.length; i++) {
+    hash = ((hash << 5) - hash) + lower.charCodeAt(i);
+    hash |= 0;
+  }
+  const positive = Math.abs(hash);
+  return `${positive}.0`;
 }
 
 async function findOrCreateUserIdByEmail(params: {
@@ -623,6 +656,21 @@ async function handleFamilyPurchase(session: Stripe.Checkout.Session) {
     firstName,
     plan,
   });
+
+  // Server-side GA4 conversion (idempotent : Stripe replay webhook protege par
+  // welcome_email_sent_at au-dessus, on n'arrive ici qu'une fois par sub).
+  if (subscriptionId) {
+    const planValue = plan === "fondateur" ? 19 : 29;
+    await trackServerPurchase({
+      clientId: clientIdFromEmail(email),
+      transactionId: subscriptionId,
+      value: planValue,
+      currency: "EUR",
+      product: "family",
+      plan,
+      email: email.toLowerCase(),
+    });
+  }
 }
 
 /**

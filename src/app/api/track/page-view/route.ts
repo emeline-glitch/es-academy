@@ -18,6 +18,19 @@ interface TrackPayload {
   path?: unknown;
   referrer?: unknown;
   session_id?: unknown;
+  utm_source?: unknown;
+  utm_medium?: unknown;
+  utm_campaign?: unknown;
+  utm_term?: unknown;
+  utm_content?: unknown;
+  gclid?: unknown;
+  fbclid?: unknown;
+  landing_path?: unknown;
+}
+
+function pickString(v: unknown, max = 200): string | null {
+  if (typeof v !== "string" || v.length === 0) return null;
+  return v.slice(0, max);
 }
 
 export async function POST(request: Request) {
@@ -72,6 +85,14 @@ export async function POST(request: Request) {
       country,
       is_bot: isBot,
       session_id: sessionId?.slice(0, 100) || null,
+      utm_source: pickString(body.utm_source),
+      utm_medium: pickString(body.utm_medium),
+      utm_campaign: pickString(body.utm_campaign),
+      utm_term: pickString(body.utm_term),
+      utm_content: pickString(body.utm_content),
+      gclid: pickString(body.gclid),
+      fbclid: pickString(body.fbclid),
+      landing_path: pickString(body.landing_path),
     });
   } catch (e) {
     console.error("[track/page-view] insert error:", e);

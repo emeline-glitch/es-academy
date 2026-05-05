@@ -10,6 +10,7 @@ import { faqSchema } from "@/lib/seo/schemas";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { BottomBanner } from "@/components/marketing/BottomBanner";
 import { TrackedLink } from "@/components/analytics/TrackedLink";
+import { ViewItemTracker } from "@/components/analytics/ViewItemTracker";
 
 export const metadata: Metadata = buildMetadata({
   title: "ES Family : la communauté patrimoniale d'Emeline Siron",
@@ -45,6 +46,12 @@ export default async function FamilyPage(props: {
     <div className="min-h-screen">
       <Header activePage="family" />
       <JsonLd data={faqSchema(faqItems)} />
+      <ViewItemTracker
+        itemId="family-fondateur"
+        itemName="ES Family Fondateur"
+        itemCategory="abonnement"
+        value={19}
+      />
 
       {/* Bandeau quand un user Family-only tente d'accéder à la plateforme Academy.
           Cf gating dans src/app/(platform)/layout.tsx. */}

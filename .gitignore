@@ -48,3 +48,4 @@ public/images/site/_originals/
 .agents/
 .claude/skills/
 skills-lock.json
+.gtm-service-account.json

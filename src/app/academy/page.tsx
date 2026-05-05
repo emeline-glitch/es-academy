@@ -12,6 +12,7 @@ import { MobileCta } from "@/components/ui/MobileCta";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { courseSchema, faqSchema } from "@/lib/seo/schemas";
 import { buildMetadata } from "@/lib/seo/metadata";
+import { ViewItemTracker } from "@/components/analytics/ViewItemTracker";
 import { STATS, PRICING, MODULES_PROGRAMME } from "@/lib/utils/constants";
 
 export const metadata: Metadata = buildMetadata({
@@ -39,6 +40,12 @@ export default function AcademyPage() {
     <div className="min-h-screen">
       <Header activePage="academy" />
       <JsonLd data={[courseSchema(), faqSchema(faqItems)]} />
+      <ViewItemTracker
+        itemId="academy"
+        itemName="ES Academy"
+        itemCategory="formation"
+        value={998}
+      />
 
       {/* 1. Hero : Style B Dark */}
       <section className="relative py-24 lg:py-32 bg-es-green-dark overflow-hidden">

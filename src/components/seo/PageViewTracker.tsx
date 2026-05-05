@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
+import { captureAttribution } from "@/lib/analytics/utm";
 
 const SKIP_PATH_PREFIXES = [
   "/admin",
@@ -38,8 +39,8 @@ export function PageViewTracker() {
     if (SKIP_PATH_PREFIXES.some((p) => pathname.startsWith(p))) return;
     lastPath.current = pathname;
 
-    const referrer =
-      lastPath.current === pathname && document.referrer ? document.referrer : document.referrer || null;
+    const referrer = document.referrer || null;
+    const attribution = captureAttribution();
 
     fetch("/api/track/page-view", {
       method: "POST",
@@ -48,6 +49,7 @@ export function PageViewTracker() {
         path: pathname,
         referrer,
         session_id: getOrCreateSessionId(),
+        ...attribution,
       }),
       keepalive: true,
     }).catch(() => {});

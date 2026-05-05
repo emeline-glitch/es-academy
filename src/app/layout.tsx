@@ -8,7 +8,8 @@ import { PageViewTracker } from "@/components/seo/PageViewTracker";
 import { GoogleTagManagerHead, GoogleTagManagerNoScript } from "@/components/seo/GoogleTagManager";
 import { GoogleAnalytics } from "@/components/seo/GoogleAnalytics";
 import { GtmPageViewTracker } from "@/components/seo/GtmPageViewTracker";
-import { organizationSchema } from "@/lib/seo/schemas";
+import { EngagementTracker } from "@/components/seo/EngagementTracker";
+import { organizationSchema, websiteSchema, personSchema } from "@/lib/seo/schemas";
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from "@/lib/utils/constants";
 import "./globals.css";
 
@@ -79,10 +80,11 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col">
         {gtmId && <GoogleTagManagerNoScript gtmId={gtmId} />}
-        <JsonLd data={organizationSchema()} />
+        <JsonLd data={[organizationSchema(), websiteSchema(), personSchema()]} />
         {children}
         <PageViewTracker />
         {gtmId && <GtmPageViewTracker />}
+        <EngagementTracker />
         <CookieConsent />
         <SocialProof />
         <SearchModal />
