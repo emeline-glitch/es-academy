@@ -171,6 +171,8 @@ function EditTemplateModal({
         activation_url: "https://emeline-siron.fr/connexion?token=EXEMPLE",
         reset_url: "https://emeline-siron.fr/reset-password?token=EXEMPLE",
         dashboard_url: "https://emeline-siron.fr/dashboard",
+        family_url: "https://emeline-siron.fr/family",
+        // Legacy : Skool abandonne avril 2026, garde pour retrocompat des anciens templates DB
         skool_url: "https://emeline-siron.fr/family",
         coaching_credits: "3",
         coaching_date: "Mardi 22 avril",

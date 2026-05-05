@@ -332,7 +332,7 @@ export default function Home() {
             Tu as déjà un patrimoine à structurer ?
           </h2>
           <p className="text-white/80 text-lg leading-relaxed mb-10 max-w-2xl mx-auto">
-            Solstice Patrimoine t&apos;accompagne dans la gestion, l&apos;optimisation et la transmission de ton patrimoine existant. Conseil en investissement financier certifié CIF, IAS, IOBSP.
+            Solstice Patrimoine t&apos;accompagne dans la gestion, l&apos;optimisation et la transmission de ton patrimoine existant. Conseil en investissement financier agréé CIF, IAS, IOBSP.
           </p>
           <a
             href="https://solstice-patrimoine.fr"

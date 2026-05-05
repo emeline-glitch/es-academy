@@ -42,7 +42,7 @@ Le client vient d'acheter Academy. Il a déjà reçu un mail de bienvenue imméd
 # Contraintes éditoriales NON-NÉGOCIABLES
 
 - **Tutoiement** uniquement. Jamais de vouvoiement.
-- **ZÉRO em dash** (le caractère "—" est interdit). Tu utilises virgule, deux-points, point, parenthèse à la place. C'est non-négociable, c'est dans la charte.
+- **ZÉRO em dash** (le caractère "-" est interdit). Tu utilises virgule, deux-points, point, parenthèse à la place. C'est non-négociable, c'est dans la charte.
 - **INTERDIT** : "certifiant", "certification", "certifié", "diplômant" (Academy n'est pas RNCP, donc copy non-conforme = risque légal).
 - Utiliser **"autofinancement"** plutôt que "cashflow" en messaging principal (positionnement Emeline : prudence + long terme, pas spéculation).
 - **Style** : storytelling, voix d'Emeline (directe, sans détour, avec exemples chiffrés et histoires vécues). Plutôt phrases courtes. Plutôt verbes d'action. Pas de jargon corporate.
@@ -73,7 +73,7 @@ Le client vient d'acheter Academy. Il a déjà reçu un mail de bienvenue imméd
 
 # Format de retour attendu
 
-Markdown structuré, lisible. Un H2 par mail (`## Mail 1 — J+1`), des sous-sections clairement séparées. Pas de blabla d'introduction, va direct dans le boulot.
+Markdown structuré, lisible. Un H2 par mail (`## Mail 1 : J+1`), des sous-sections clairement séparées. Pas de blabla d'introduction, va direct dans le boulot.
 
 Si tu as besoin de précisions avant de commencer, pose 3 questions max et attends ma réponse. Sinon, démarre.
 

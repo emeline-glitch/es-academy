@@ -1,4 +1,4 @@
-# SEQ_PA_ACADEMY — Version 2 (validée)
+# SEQ_PA_ACADEMY : Version 2 (validée)
 
 > Version expertisée par Claude (chat) le 2026-05-04. Source de vérité pour le seed Supabase.
 
@@ -36,7 +36,7 @@
 
 ---
 
-## Mail 1 — J+1
+## Mail 1 : J+1
 
 **Sujet** : `{{prenom}}, c'est officiel`
 
@@ -78,7 +78,7 @@ Emeline
 
 ---
 
-## Mail 2 — J+3
+## Mail 2 : J+3
 
 **Sujet** : `8 locataires sans chauffage, en plein hiver. Ma 1ère vraie leçon.`
 
@@ -120,7 +120,7 @@ PS : Cet immeuble rapporte aujourd'hui 3250€ de loyers mensuels pour 1250€ d
 
 ---
 
-## Mail 3 — J+7
+## Mail 3 : J+7
 
 **Sujet** : `{{prenom}}, tu as 4 trucs en main ?`
 
@@ -155,7 +155,7 @@ Emeline
 
 ---
 
-## Mail 4 — J+14
+## Mail 4 : J+14
 
 **Sujet** : `Elle a osé proposer 80% du prix. Le vendeur a dit oui.`
 
@@ -195,7 +195,7 @@ PS : Sandra avait peur. Elle a fait quand même. C'est ça qui change tout.
 
 ---
 
-## Mail 5 — J+21
+## Mail 5 : J+21
 
 **Sujet** : `Ton cerveau veut te garder en sécurité. Ne le laisse pas faire.`
 
@@ -244,7 +244,7 @@ PS : La différence entre les élèves d'Evermind qui ont signé leur 1er bien e
 
 ---
 
-## Mail 6 — J+30
+## Mail 6 : J+30
 
 **Sujet** : `Si tu sens qu'il te manque un truc, lis ça`
 

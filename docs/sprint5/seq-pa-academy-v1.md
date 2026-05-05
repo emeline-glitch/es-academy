@@ -1,4 +1,4 @@
-# SEQ_PA_ACADEMY — Draft v1 (à expertiser)
+# SEQ_PA_ACADEMY : Draft v1 (à expertiser)
 
 **Trigger** : `tag_added` sur `academy` (posé par le webhook Stripe après achat)
 **Status seed** : `draft` (à activer manuellement après expertise + seed)
@@ -7,7 +7,7 @@
 
 ---
 
-## Mail 1 — J+1 — Sujet : "Par où commencer (la vraie réponse)"
+## Mail 1 : J+1 : Sujet : "Par où commencer (la vraie réponse)"
 
 Salut {{prenom}},
 
@@ -33,7 +33,7 @@ Emeline
 
 ---
 
-## Mail 2 — J+3 — Sujet : "L'erreur que j'ai faite sur mon premier bien (Châtenay, 2014)"
+## Mail 2 : J+3 : Sujet : "L'erreur que j'ai faite sur mon premier bien (Châtenay, 2014)"
 
 {{prenom}},
 
@@ -57,7 +57,7 @@ Emeline
 
 ---
 
-## Mail 3 — J+7 — Sujet : "Check-in semaine 1 : ce que tu dois avoir en main"
+## Mail 3 : J+7 : Sujet : "Check-in semaine 1 : ce que tu dois avoir en main"
 
 {{prenom}},
 
@@ -84,7 +84,7 @@ Emeline
 
 ---
 
-## Mail 4 — J+14 — Sujet : "Sandra, 30 ans, 1er bien en 90 jours (le détail qui change tout)"
+## Mail 4 : J+14 : Sujet : "Sandra, 30 ans, 1er bien en 90 jours (le détail qui change tout)"
 
 {{prenom}},
 
@@ -112,7 +112,7 @@ PS : Sandra n'avait jamais négocié de sa vie. Si elle a pu le faire, tu peux a
 
 ---
 
-## Mail 5 — J+21 — Sujet : "Tes 30 prochains jours (le cap mental)"
+## Mail 5 : J+21 : Sujet : "Tes 30 prochains jours (le cap mental)"
 
 {{prenom}},
 
@@ -146,7 +146,7 @@ Emeline
 
 ---
 
-## Mail 6 — J+30 — Sujet : "1 mois dans Academy. Le vrai bilan."
+## Mail 6 : J+30 : Sujet : "1 mois dans Academy. Le vrai bilan."
 
 {{prenom}},
 

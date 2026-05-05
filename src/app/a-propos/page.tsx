@@ -370,7 +370,7 @@ export default function QuiEstEmeline() {
               <span className="text-xs uppercase tracking-widest text-white/50 font-medium relative">Conseil patrimonial</span>
               <h3 className="font-serif text-2xl font-bold mt-2 mb-3 relative">Solstice Patrimoine</h3>
               <p className="text-white/80 text-sm leading-relaxed mb-6 relative">
-                Pour ceux qui veulent structurer un patrimoine existant. Accompagnement régulé : certifications CIF, IAS, IOBSP.
+                Pour ceux qui veulent structurer un patrimoine existant. Accompagnement régulé : statuts CIF, IAS, IOBSP.
               </p>
               <span className="inline-flex items-center gap-1 text-sm font-medium text-es-gold group-hover:gap-2 transition-all relative">
                 Découvrir →
