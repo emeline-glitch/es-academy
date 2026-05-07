@@ -1,6 +1,26 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/utils/constants";
 import { getPublishedArticles } from "@/lib/notion/blog";
+import { getActiveSeasonalSlugs } from "@/lib/seo/seasonal";
+
+// Mapping slug DB -> path public (slugs DB ne matchent pas toujours l'URL).
+const SEASONAL_SLUG_TO_PATH: Record<string, string> = {
+  "cahier-vacances": "/cahier-preview",
+  "calendrier-avent": "/calendrier-avent",
+  "chasse-oeufs": "/chasse-oeufs",
+};
+
+const SIMULATEUR_PATHS = [
+  "/simulateurs",
+  "/simulateurs/rentabilite-locative",
+  "/simulateurs/capacite-emprunt",
+  "/simulateurs/frais-de-notaire",
+  "/simulateurs/mensualite-credit",
+  "/simulateurs/taux-endettement",
+  "/simulateurs/plus-value",
+  "/simulateurs/impots-location",
+  "/simulateurs/acheter-ou-louer",
+];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Static pages
@@ -79,6 +99,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
+  // Simulateurs (calculatrices, mots-cles a fort volume SEO)
+  const simulateurPages: MetadataRoute.Sitemap = SIMULATEUR_PATHS.map((path) => ({
+    url: `${SITE_URL}${path}`,
+    lastModified: new Date(),
+    changeFrequency: "monthly" as const,
+    priority: 0.7,
+  }));
+
+  // Pages saisonnieres : incluses UNIQUEMENT si actives (cron seasonal-toggle)
+  let seasonalPages: MetadataRoute.Sitemap = [];
+  try {
+    const activeSlugs = await getActiveSeasonalSlugs();
+    seasonalPages = activeSlugs
+      .map((slug) => SEASONAL_SLUG_TO_PATH[slug])
+      .filter(Boolean)
+      .map((path) => ({
+        url: `${SITE_URL}${path}`,
+        lastModified: new Date(),
+        changeFrequency: "weekly" as const,
+        priority: 0.8,
+      }));
+  } catch {
+    // Si DB inaccessible : on n'inclut pas les saisonnieres (mieux que de les exposer hors saison)
+  }
+
   // Dynamic blog articles
   let blogPages: MetadataRoute.Sitemap = [];
   try {
@@ -95,5 +140,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Blog not configured yet
   }
 
-  return [...staticPages, ...blogPages];
+  return [...staticPages, ...simulateurPages, ...seasonalPages, ...blogPages];
 }
