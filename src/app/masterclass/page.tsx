@@ -123,7 +123,7 @@ export default function MasterclassLanding() {
                 />
                 <span>
                   J&apos;accepte de recevoir la masterclass et les emails d&apos;Emeline. J&apos;ai pris connaissance de la{" "}
-                  <a href="/politique-confidentialite" target="_blank" className="text-es-green hover:underline">
+                  <a href="/politique-confidentialite" target="_blank" rel="noopener" className="text-es-green hover:underline">
                     politique de confidentialité
                   </a>
                   . Désinscription en 1 clic à tout moment. *

@@ -210,7 +210,7 @@ export default function PublicFormPage() {
             />
             <span>
               J&apos;accepte de recevoir les emails et j&apos;ai pris connaissance de la{" "}
-              <a href="/politique-confidentialite" target="_blank" className="text-es-green hover:underline">politique de confidentialité</a>. *
+              <a href="/politique-confidentialite" target="_blank" rel="noopener" className="text-es-green hover:underline">politique de confidentialité</a>. *
             </span>
           </label>
 
