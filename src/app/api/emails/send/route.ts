@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { createClient, createServiceClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/utils/admin-auth";
 import { sendEmail } from "@/lib/ses/client";
 import { applyTracking } from "@/lib/email/tracking";
 
@@ -16,12 +17,11 @@ interface SendableContact {
 }
 
 export async function POST(request: Request) {
-  // Auth via cookies (createServiceClient bypasse RLS mais n'a plus de cookies)
-  const authClient = await createClient();
-  const { data: { user } } = await authClient.auth.getUser();
-  if (!user) {
-    return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
-  }
+  // Admin only : envoyer un mass email est une operation a haut risque
+  // (spam, abus, deliverabilite SES). Anciennement AUTH_USER, durci en
+  // AUTH_ADMIN dans l'audit du 2026-05-08.
+  const auth = await requireAdmin();
+  if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: auth.status });
 
   const supabase = await createServiceClient();
 
