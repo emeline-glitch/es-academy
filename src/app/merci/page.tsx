@@ -2,6 +2,29 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/Button";
 import { PurchaseTracker } from "@/components/analytics/PurchaseTracker";
+import { FamilyGiftCard } from "@/components/marketing/FamilyGiftCard";
+import { createServiceClient } from "@/lib/supabase/server";
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://emeline-siron.fr";
+
+// Cherche le code Family genere par le webhook Stripe pour cette session.
+// Au redirect post-paiement, le webhook a peut-etre deja traite l'event
+// (et mis family_gift_code sur l'enrollment), ou pas (latence webhook
+// Stripe vs redirect client). Best-effort, retourne null si pas encore.
+async function getFamilyGiftCode(sessionId: string | undefined): Promise<string | null> {
+  if (!sessionId) return null;
+  try {
+    const supabase = await createServiceClient();
+    const { data } = await supabase
+      .from("enrollments")
+      .select("family_gift_code")
+      .eq("stripe_session_id", sessionId)
+      .maybeSingle();
+    return (data?.family_gift_code as string | null) || null;
+  } catch {
+    return null;
+  }
+}
 
 export default async function Merci({
   searchParams,
@@ -9,6 +32,11 @@ export default async function Merci({
   searchParams: Promise<{ session_id?: string; plan?: string }>;
 }) {
   const sp = await searchParams;
+  const giftCode = await getFamilyGiftCode(sp.session_id);
+  const activationUrl = giftCode
+    ? `${SITE_URL}/family?code=${encodeURIComponent(giftCode)}`
+    : `${SITE_URL}/family`;
+
   return (
     <div className="min-h-screen bg-es-cream">
       <PurchaseTracker
@@ -35,6 +63,22 @@ export default async function Merci({
             Ton paiement a été confirmé. Tu vas recevoir tes identifiants de connexion par email dans les prochaines minutes.
           </p>
 
+          {giftCode ? (
+            <FamilyGiftCard code={giftCode} activationUrl={activationUrl} />
+          ) : (
+            <div className="bg-white rounded-2xl p-6 border border-es-cream-dark mb-8 text-left">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-xl">🎁</span>
+                <h2 className="font-serif text-base font-bold text-es-text">
+                  Ton code cadeau ES Family arrive
+                </h2>
+              </div>
+              <p className="text-sm text-es-text-muted">
+                Il est en cours de génération et sera dans ton email de bienvenue d&apos;ici quelques minutes. Vérifie aussi ton dossier indésirable.
+              </p>
+            </div>
+          )}
+
           <div className="bg-white rounded-2xl p-8 border border-es-cream-dark text-left mb-8">
             <h2 className="font-serif text-lg font-bold text-es-text mb-4">Tes prochaines étapes :</h2>
             <div className="space-y-4">
@@ -42,7 +86,7 @@ export default async function Merci({
                 { step: "1", title: "Vérifie ton email", desc: "Tes identifiants de connexion arrivent dans quelques minutes." },
                 { step: "2", title: "Connecte-toi", desc: "Accède à ton espace de formation avec tes identifiants." },
                 { step: "3", title: "Commence le Module 1", desc: "Démarre avec \"Être un investisseur intelligent et rentable\"." },
-                { step: "4", title: "Rejoins ES Family", desc: "Ton accès 3 mois gratuit à la communauté est activé." },
+                { step: "4", title: "Rejoins ES Family", desc: giftCode ? "Utilise ton code ci-dessus pour activer tes 3 mois offerts." : "Ton accès 3 mois gratuit à la communauté est activé." },
               ].map((item, i) => (
                 <div key={i} className="flex gap-4">
                   <div className="w-8 h-8 rounded-full bg-es-green flex items-center justify-center shrink-0">
