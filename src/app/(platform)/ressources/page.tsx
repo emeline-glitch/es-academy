@@ -1,6 +1,7 @@
 import { getCachedUser } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { Card } from "@/components/ui/Card";
+import { getDriveFolderUrl } from "@/lib/drive/resources-mapping";
 
 interface Resource {
   name: string;
@@ -64,6 +65,8 @@ const NOTION_API_KEY = process.env.NOTION_API_KEY || "";
 interface NotionResource {
   name: string;
   type: string;
+  sousModule: string;
+  driveUrl: string;
 }
 
 async function getNotionResources(): Promise<NotionResource[]> {
@@ -92,9 +95,13 @@ async function getNotionResources(): Promise<NotionResource[]> {
       const props = page.properties as Record<string, Record<string, unknown>>;
       const title = props?.Name?.title as Array<{ plain_text: string }> | undefined;
       const typeSelect = props?.Type?.select as { name: string } | null;
+      const sousModuleRt = props?.["Sous-module"]?.rich_text as Array<{ plain_text: string }> | undefined;
+      const sousModule = sousModuleRt?.[0]?.plain_text || "";
       return {
         name: title?.[0]?.plain_text || "",
         type: typeSelect?.name || "Autre",
+        sousModule,
+        driveUrl: getDriveFolderUrl(sousModule),
       };
     });
   } catch {
@@ -126,7 +133,7 @@ export default async function RessourcesPage() {
       <div className="mb-8">
         <h1 className="font-serif text-3xl font-bold text-gray-900">Ressources</h1>
         <p className="text-gray-500 mt-1">
-          {totalResources} outils classes par thematique : telecharge ceux dont tu as besoin.
+          {totalResources + notionResources.length} outils a ta disposition. Les calculateurs sont telechargeables directement, les autres ressources s&apos;ouvrent sur Drive.
         </p>
       </div>
 
@@ -169,8 +176,13 @@ export default async function RessourcesPage() {
 
       {/* Notion resources : grouped by type */}
       {Object.entries(notionByType).length > 0 && (
-        <div className="mt-8">
-          <h2 className="font-serif text-xl font-bold text-gray-900 mb-4">Ressources supplementaires</h2>
+        <div className="mt-12">
+          <div className="flex items-baseline justify-between mb-4 flex-wrap gap-2">
+            <h2 className="font-serif text-xl font-bold text-gray-900">Templates, guides et checklists</h2>
+            <p className="text-xs text-gray-400">
+              Hebergees sur Drive. Click pour ouvrir le dossier de la ressource.
+            </p>
+          </div>
           <div className="grid md:grid-cols-2 gap-6">
             {Object.entries(notionByType).map(([type, items]) => (
               <Card key={type}>
@@ -183,18 +195,28 @@ export default async function RessourcesPage() {
                 </div>
                 <div className="space-y-2">
                   {items.map((item, j) => (
-                    <div
+                    <a
                       key={j}
-                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                      href={item.driveUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-es-green/5 transition-colors group"
                     >
                       <div className="flex items-center gap-3 flex-1 min-w-0">
-                        <svg className="w-5 h-5 text-gray-300 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="w-5 h-5 text-es-green shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
-                        <span className="text-sm text-gray-500 truncate">{item.name}</span>
+                        <div className="flex-1 min-w-0">
+                          <span className="text-sm text-gray-700 group-hover:text-es-green transition-colors block truncate">{item.name}</span>
+                          {item.sousModule && (
+                            <span className="text-[10px] text-gray-400">Module {item.sousModule}</span>
+                          )}
+                        </div>
                       </div>
-                      <span className="text-[10px] text-gray-400 shrink-0 ml-2">Bientot</span>
-                    </div>
+                      <span className="text-[10px] font-medium uppercase px-2 py-0.5 rounded-full text-blue-600 bg-blue-50 shrink-0 ml-2">
+                        Drive ↗
+                      </span>
+                    </a>
                   ))}
                 </div>
               </Card>
