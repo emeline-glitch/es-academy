@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createFamilyCheckoutSession } from "@/lib/stripe/checkout";
+import { FAMILY_LAUNCH_PENDING } from "@/lib/utils/constants";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3001";
 
@@ -7,8 +8,14 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3001";
  * GET /api/stripe/checkout-family?plan=fondateur
  * Cree une session Stripe et redirige (303) vers la page Stripe Checkout.
  * Utilisable directement dans un <a href="..."> ou MobileCta.
+ *
+ * Guard : si FAMILY_LAUNCH_PENDING (App iOS en validation Apple),
+ * on bloque le checkout et on redirige vers /family.
  */
 export async function GET(request: Request) {
+  if (FAMILY_LAUNCH_PENDING) {
+    return NextResponse.redirect(`${SITE_URL}/family?status=launch-pending`, { status: 303 });
+  }
   try {
     const url = new URL(request.url);
     const plan = (url.searchParams.get("plan") || "fondateur") as "fondateur" | "standard";
@@ -35,6 +42,12 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  if (FAMILY_LAUNCH_PENDING) {
+    return NextResponse.json(
+      { error: "Family launch pending (Apple iOS validation in progress)" },
+      { status: 503 }
+    );
+  }
   try {
     const body = await request.json().catch(() => ({}));
     const plan = body?.plan || "fondateur";

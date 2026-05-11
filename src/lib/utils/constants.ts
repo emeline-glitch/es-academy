@@ -15,6 +15,12 @@ export const TAUX_CREDIT_MOYEN = {
 
 export const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "contact@emelinesiron.com";
 
+// ES Family : mode "lancement en attente" (App iOS en validation Apple).
+// Tant que true : le CTA d'achat est lock, un bandeau remplace les boutons
+// checkout sur /family, et l'endpoint /api/stripe/checkout-family redirige.
+// Passer a false (ou retirer cette ligne) quand Apple a valide l'app.
+export const FAMILY_LAUNCH_PENDING = true;
+
 export const PRICING = {
   academy: {
     name: "La Méthode Emeline Siron",

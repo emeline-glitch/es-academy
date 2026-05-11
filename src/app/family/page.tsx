@@ -11,6 +11,8 @@ import { buildMetadata } from "@/lib/seo/metadata";
 import { BottomBanner } from "@/components/marketing/BottomBanner";
 import { TrackedLink } from "@/components/analytics/TrackedLink";
 import { ViewItemTracker } from "@/components/analytics/ViewItemTracker";
+import { FamilyLaunchPendingBanner, FamilyLaunchPendingButton } from "@/components/marketing/FamilyLaunchPendingButton";
+import { FAMILY_LAUNCH_PENDING } from "@/lib/utils/constants";
 
 export const metadata: Metadata = buildMetadata({
   title: "ES Family : la communauté patrimoniale d'Emeline Siron",
@@ -52,6 +54,8 @@ export default async function FamilyPage(props: {
         itemCategory="abonnement"
         value={19}
       />
+
+      {FAMILY_LAUNCH_PENDING && <FamilyLaunchPendingBanner />}
 
       {/* Bandeau quand un user Family-only tente d'accéder à la plateforme Academy.
           Cf gating dans src/app/(platform)/layout.tsx. */}
@@ -106,14 +110,21 @@ export default async function FamilyPage(props: {
                 Plateforme mobile conçue et développée en interne par Emeline.
               </p>
 
-              <TrackedLink
-                href={FAMILY_CTA_HREF}
-                event="cta_family_click"
-                eventParams={{ plan: "fondateur", value: 19, currency: "EUR" }}
-                className="inline-flex items-center justify-center font-semibold rounded-lg px-10 py-5 text-lg bg-es-mint-dark text-white hover:bg-es-mint-deep transition-all shadow-lg hover:shadow-xl"
-              >
-                Rejoindre ES Family à 19€/mois
-              </TrackedLink>
+              {FAMILY_LAUNCH_PENDING ? (
+                <FamilyLaunchPendingButton
+                  label="Rejoindre ES Family à 19€/mois"
+                  className="inline-flex flex-col items-center justify-center font-semibold rounded-lg px-10 py-5 text-lg bg-es-mint-dark text-white hover:bg-es-mint-deep transition-all shadow-lg hover:shadow-xl"
+                />
+              ) : (
+                <TrackedLink
+                  href={FAMILY_CTA_HREF}
+                  event="cta_family_click"
+                  eventParams={{ plan: "fondateur", value: 19, currency: "EUR" }}
+                  className="inline-flex items-center justify-center font-semibold rounded-lg px-10 py-5 text-lg bg-es-mint-dark text-white hover:bg-es-mint-deep transition-all shadow-lg hover:shadow-xl"
+                >
+                  Rejoindre ES Family à 19€/mois
+                </TrackedLink>
+              )}
               <p className="text-xs text-es-text-muted mt-4">
                 Pour le prix d&apos;un forfait téléphonique · Sans engagement
               </p>
@@ -358,14 +369,21 @@ export default async function FamilyPage(props: {
                 19€<span className="text-lg font-normal text-es-text-muted">/mois TTC</span>
               </div>
               <p className="text-es-text-muted text-sm mb-6 relative">Tarif bloqué tant que l&apos;abonnement reste actif*</p>
-              <TrackedLink
-                href={FAMILY_CTA_HREF}
-                event="cta_family_click"
-                eventParams={{ plan: "fondateur", value: 19, currency: "EUR", placement: "pricing_card" }}
-                className="relative block w-full text-center font-semibold rounded-lg px-8 py-4 bg-es-mint-dark text-white hover:bg-es-mint-deep transition-all mb-8 shadow-md"
-              >
-                Rejoindre à 19€/mois
-              </TrackedLink>
+              {FAMILY_LAUNCH_PENDING ? (
+                <FamilyLaunchPendingButton
+                  label="Rejoindre à 19€/mois"
+                  className="relative block w-full text-center font-semibold rounded-lg px-8 py-4 bg-es-mint-dark text-white hover:bg-es-mint-deep transition-all mb-8 shadow-md"
+                />
+              ) : (
+                <TrackedLink
+                  href={FAMILY_CTA_HREF}
+                  event="cta_family_click"
+                  eventParams={{ plan: "fondateur", value: 19, currency: "EUR", placement: "pricing_card" }}
+                  className="relative block w-full text-center font-semibold rounded-lg px-8 py-4 bg-es-mint-dark text-white hover:bg-es-mint-deep transition-all mb-8 shadow-md"
+                >
+                  Rejoindre à 19€/mois
+                </TrackedLink>
+              )}
               <ul className="space-y-3 relative">
                 {[
                   "Tout le contenu ES Family (analyses, lives, ebooks, groupes, partenaires, simulateurs, fichiers)",
@@ -470,7 +488,9 @@ export default async function FamilyPage(props: {
 
       <BottomBanner accent="mint" />
       <Footer />
-      <MobileCta text="Rejoindre ES Family" href={FAMILY_CTA_HREF} variant="mint" />
+      {!FAMILY_LAUNCH_PENDING && (
+        <MobileCta text="Rejoindre ES Family" href={FAMILY_CTA_HREF} variant="mint" />
+      )}
     </div>
   );
 }
