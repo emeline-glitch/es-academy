@@ -1,0 +1,160 @@
+/* Style commun aux visuels formation ES Academy. Pensé pour print A4 (Cmd+P > Save as PDF). */
+@page { size: A4; margin: 1.5cm; }
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --green: #1F4133;
+  --green-dark: #0E2B22;
+  --green-light: #3A6650;
+  --gold: #C9A86A;
+  --cream: #F7F1E5;
+  --cream-dark: #EDE3CB;
+  --text: #1F2A24;
+  --text-muted: #5C6B62;
+  --warning-bg: #FFF8E5;
+  --warning-border: #E6B800;
+  --info-bg: #E8F2EE;
+}
+
+body {
+  font-family: Georgia, "Times New Roman", serif;
+  color: var(--text);
+  background: white;
+  line-height: 1.55;
+  max-width: 21cm;
+  margin: 0 auto;
+  padding: 2cm 1.5cm;
+  font-size: 11pt;
+}
+
+.brand-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 4px solid var(--gold);
+  border-bottom: 2px solid var(--green);
+  padding: 8px 0;
+  margin-bottom: 24px;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 9pt;
+  color: var(--green);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+.brand-bar .module { font-weight: 700; }
+.brand-bar .brand { color: var(--text-muted); }
+
+h1 {
+  font-size: 28pt;
+  color: var(--green);
+  line-height: 1.15;
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+.subtitle {
+  font-size: 13pt;
+  color: var(--text-muted);
+  font-style: italic;
+  margin-bottom: 30px;
+  font-family: Georgia, serif;
+}
+
+h2 {
+  font-size: 16pt;
+  color: var(--green);
+  margin: 28px 0 10px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--cream-dark);
+}
+h3 {
+  font-size: 12pt;
+  color: var(--green-dark);
+  margin: 16px 0 6px;
+  font-family: Helvetica, Arial, sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+p { margin-bottom: 10px; }
+strong { color: var(--green-dark); }
+
+ul, ol { margin: 8px 0 12px 22px; }
+li { margin-bottom: 4px; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 10pt;
+}
+th, td {
+  border: 1px solid var(--cream-dark);
+  padding: 8px 10px;
+  text-align: left;
+}
+th {
+  background: var(--green);
+  color: white;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 9pt;
+}
+tr:nth-child(even) td { background: var(--cream); }
+
+.callout {
+  background: var(--info-bg);
+  border-left: 4px solid var(--green);
+  padding: 14px 18px;
+  margin: 16px 0;
+  border-radius: 0 6px 6px 0;
+}
+.callout.warning {
+  background: var(--warning-bg);
+  border-left-color: var(--warning-border);
+}
+.callout strong { display: block; margin-bottom: 4px; }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 14px 0; }
+.card {
+  background: var(--cream);
+  border-radius: 8px;
+  padding: 14px 16px;
+  border: 1px solid var(--cream-dark);
+}
+.card h3 { margin-top: 0; }
+
+.footer {
+  margin-top: 40px;
+  padding-top: 12px;
+  border-top: 1px solid var(--cream-dark);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 9pt;
+  color: var(--text-muted);
+}
+.footer .signature {
+  font-family: Georgia, serif;
+  font-style: italic;
+  color: var(--green);
+  font-size: 11pt;
+}
+
+.print-hint {
+  background: #f0f0f0;
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin-bottom: 20px;
+  font-family: Helvetica, sans-serif;
+  font-size: 10pt;
+  color: #555;
+}
+@media print {
+  .print-hint { display: none; }
+  body { padding: 0; }
+}

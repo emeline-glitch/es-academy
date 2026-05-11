@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Visuels formation — Index</title>
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+<div class="brand-bar">
+  <span class="module">Index visuels formation</span>
+  <span class="brand">Emeline Siron</span>
+</div>
+
+<h1>Visuels à transformer en PDF</h1>
+<p class="subtitle">7 ressources image du Drive ont ete remplacees par ces visuels HTML structures. Ouvre chacun, fais Cmd+P (Mac) ou Ctrl+P (Windows) → "Enregistrer au format PDF" → place le PDF dans /public/ressources-formation/[module]/[sm]/.</p>
+
+<div class="grid-2">
+  <div class="card">
+    <h3>Module 2 — Types de location (2.D)</h3>
+    <ul>
+      <li><a href="prix-d-achat-des-parkings-en-ile-de-france.html">Prix d'achat des parkings IDF</a></li>
+      <li><a href="prix-de-location-des-parkings-en-ile-de-france.html">Prix de location des parkings IDF</a></li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Module 5 — Analyse technique (5.D)</h3>
+    <ul>
+      <li><a href="guide-de-la-negociation.html">Guide de la négociation</a></li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Module 8 — Gestion locative (8.B)</h3>
+    <ul>
+      <li><a href="honoraires-d-agence.html">Honoraires d'agence</a></li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Module 8 — Gestion locative (8.C)</h3>
+    <ul>
+      <li><a href="charges-recuperables.html">Charges récupérables</a></li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Module 8 — Gestion locative (8.E)</h3>
+    <ul>
+      <li><a href="assurance-loyers-impayes.html">Assurance loyers impayés (GLI)</a></li>
+      <li><a href="assurance-protection-juridique.html">Assurance protection juridique</a></li>
+    </ul>
+  </div>
+</div>
+
+<div class="callout">
+  <strong>Workflow recommande</strong>
+  <ol>
+    <li>Ouvre chaque visuel (lien ci-dessus)</li>
+    <li>Cmd+P (Mac) / Ctrl+P (Windows)</li>
+    <li>Destination : "Enregistrer au format PDF"</li>
+    <li>Nomme le PDF avec le slug correspondant (ex: <code>honoraires-d-agence.pdf</code>)</li>
+    <li>Place le PDF dans <code>/public/ressources-formation/[module]/[sm]/</code></li>
+    <li>Met a jour <code>src/lib/ressources-manifest.ts</code> avec le path .pdf au lieu de .jpg/.png</li>
+    <li>Commit + push</li>
+  </ol>
+</div>
+
+<div class="callout warning">
+  <strong>A relire avant export</strong>
+  J'ai mis des donnees factuelles (loi ALUR, decret 1987, prix moyens 2026 parkings IDF) mais <strong>relis-les avant de publier</strong>. Adapte ce qui ne correspond pas a ton experience / ta methode. Les fourchettes de prix parkings sont indicatives, base sur des moyennes publiques 2024-2026.
+</div>
+
+<div class="footer">
+  <span>La Méthode Emeline Siron · Visuels formation</span>
+  <span class="signature">Emeline Siron</span>
+</div>
+
+</body>
+</html>
