@@ -25,20 +25,38 @@ export default async function PlatformLayout({
   // on redirige vers /family avec un message qui explique où aller. Évite qu'un
   // abonné Family-only accède gratuitement aux modules de formation à 998 €.
   //
+  // Exception : Emeline (ADMIN_EMAIL) et les admins/editors secondaires
+  // (Tiffany, etc.) doivent pouvoir consulter l'espace eleve pour tester et
+  // valider le contenu sans avoir achete la formation.
+  //
   // Service client pour bypass RLS : pas besoin que l'user puisse lire
   // enrollments lui-même, on check juste l'existence côté serveur.
   const supabaseAdmin = await createServiceClient();
-  const { data: academyEnrollment } = await supabaseAdmin
-    .from("enrollments")
-    .select("id")
-    .eq("user_id", user.id)
-    .eq("status", "active")
-    .ilike("product_name", "academy%")
-    .limit(1)
-    .maybeSingle();
+  const adminEmail = (process.env.ADMIN_EMAIL || "").toLowerCase();
+  const userEmail = (user.email || "").toLowerCase();
+  let isStaff = Boolean(adminEmail && userEmail === adminEmail);
+  if (!isStaff) {
+    const { data: profile } = await supabaseAdmin
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .maybeSingle();
+    isStaff = profile?.role === "admin";
+  }
 
-  if (!academyEnrollment) {
-    redirect("/family?from=academy-blocked");
+  if (!isStaff) {
+    const { data: academyEnrollment } = await supabaseAdmin
+      .from("enrollments")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("status", "active")
+      .ilike("product_name", "academy%")
+      .limit(1)
+      .maybeSingle();
+
+    if (!academyEnrollment) {
+      redirect("/family?from=academy-blocked");
+    }
   }
 
   // Gestion paiement en échec : si l'user a aussi un abonnement Family avec
