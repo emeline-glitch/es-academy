@@ -349,8 +349,8 @@ export default async function FamilyPage(props: {
             <div className="md:col-span-3 bg-es-mint-pastel rounded-2xl p-8 text-es-text relative overflow-hidden shadow-xl">
               <div className="absolute top-0 right-0 w-48 h-48 bg-white/30 rounded-full -translate-y-1/2 translate-x-1/2" />
               <div className="absolute bottom-0 left-0 w-32 h-32 bg-es-mint-dark/5 rounded-full translate-y-1/2 -translate-x-1/4" />
-              <span className="relative inline-flex items-center bg-es-mint-dark text-white text-xs font-bold px-3 py-1 rounded-full mb-4">
-                RECOMMANDÉ
+              <span className="relative inline-flex items-center bg-red-800 text-white text-xs font-bold px-3 py-1 rounded-full mb-4 uppercase tracking-wider">
+                Offre lancement
               </span>
               <h3 className="font-serif text-3xl font-bold mb-1 relative text-es-text">FONDATEUR</h3>
               <p className="text-es-text-muted text-sm mb-6 relative">Les 500 premiers membres</p>
@@ -387,10 +387,7 @@ export default async function FamilyPage(props: {
 
             {/* Carte Standard : 40%, grisée */}
             <div className="md:col-span-2 bg-gray-100 rounded-2xl p-8 opacity-70 relative">
-              <span className="inline-flex items-center bg-gray-300 text-gray-600 text-xs font-bold px-3 py-1 rounded-full mb-4">
-                STANDARD
-              </span>
-              <h3 className="font-serif text-2xl font-bold text-gray-500 mb-1">STANDARD</h3>
+              <h3 className="font-serif text-2xl font-bold text-gray-500 mb-1 mt-9">STANDARD</h3>
               <p className="text-gray-400 text-sm mb-6">Après les 500 fondateurs</p>
               <div className="text-4xl font-bold text-gray-400 my-5">
                 29€<span className="text-base font-normal text-gray-300">/mois TTC</span>
