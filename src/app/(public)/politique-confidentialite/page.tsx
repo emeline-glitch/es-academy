@@ -59,7 +59,7 @@ export default function PolitiqueConfidentialite() {
         <p>
           Conformement au RGPD, tu disposes des droits suivants : acces, rectification,
           effacement, portabilite, limitation et opposition au traitement. Pour exercer
-          ces droits : contact@emelinesiron.com
+          ces droits : contact@emeline-siron.fr
         </p>
 
         <h2>Cookies</h2>
@@ -79,7 +79,7 @@ export default function PolitiqueConfidentialite() {
 
         <h2>Contact</h2>
         <p>
-          Pour toute question : contact@emelinesiron.com
+          Pour toute question : contact@emeline-siron.fr
         </p>
       </main>
     </div>

@@ -132,7 +132,7 @@ export default function ProfilPage() {
         <Card className="mt-6 border-red-200">
           <h3 className="font-medium text-gray-900 mb-2">Zone de danger</h3>
           <p className="text-sm text-gray-500 mb-4">
-            Pour supprimer ton compte et tes données, contacte-nous à contact@emelinesiron.com
+            Pour supprimer ton compte et tes données, contacte-nous à contact@emeline-siron.fr
           </p>
         </Card>
       </div>

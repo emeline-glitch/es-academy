@@ -137,7 +137,7 @@ export default async function CoachingPage() {
 
       <p className="text-xs text-gray-400 italic mt-8 text-center max-w-2xl mx-auto">
         Une question avant de réserver ? Écris-moi à{" "}
-        <a href="mailto:contact@emelinesiron.com" className="text-es-green hover:underline">contact@emelinesiron.com</a>
+        <a href="mailto:contact@emeline-siron.fr" className="text-es-green hover:underline">contact@emeline-siron.fr</a>
       </p>
     </div>
   );

@@ -471,7 +471,7 @@ function SenderModal({
             >
               <option value="emeline@emeline-siron.fr">emeline@emeline-siron.fr</option>
               <option value="contact@evermind.group">contact@evermind.group</option>
-              <option value="contact@emelinesiron.com">contact@emelinesiron.com</option>
+              <option value="contact@emeline-siron.fr">contact@emeline-siron.fr</option>
             </select>
             <p className="text-[11px] text-gray-400 mt-1">Seules les adresses vérifiées dans Amazon SES sont utilisables en envoi réel.</p>
           </div>
@@ -735,7 +735,7 @@ function SettingsModal({
             type="email"
             value={rt}
             onChange={(e) => setRt(e.target.value)}
-            placeholder="contact@emelinesiron.com"
+            placeholder="contact@emeline-siron.fr"
             className="w-full px-4 py-3 border border-gray-200 rounded-lg text-sm"
           />
           <p className="text-[11px] text-gray-400 mt-1">Si un destinataire répond à l&apos;email, sa réponse ira à cette adresse (si différente de l&apos;expéditeur).</p>

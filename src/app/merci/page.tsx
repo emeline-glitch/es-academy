@@ -106,7 +106,7 @@ export default async function Merci({
           </Button>
 
           <p className="text-xs text-es-text-muted mt-4">
-            Un problème ? Contacte-nous à contact@emelinesiron.com
+            Un problème ? Contacte-nous à contact@emeline-siron.fr
           </p>
         </div>
       </section>

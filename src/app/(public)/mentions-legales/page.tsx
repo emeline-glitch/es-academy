@@ -45,12 +45,12 @@ export default function MentionsLegales() {
         <p>
           Conformement au RGPD, tu disposes d&apos;un droit d&apos;acces, de rectification et de
           suppression de tes donnees personnelles. Pour exercer ces droits, contacte-nous a :
-          contact@emelinesiron.com
+          contact@emeline-siron.fr
         </p>
 
         <h2>Contact</h2>
         <p>
-          Email : contact@emelinesiron.com
+          Email : contact@emeline-siron.fr
         </p>
       </main>
     </div>

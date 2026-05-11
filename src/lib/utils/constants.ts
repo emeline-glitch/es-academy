@@ -13,7 +13,7 @@ export const TAUX_CREDIT_MOYEN = {
   miseAJour: "Avril 2026",
 } as const;
 
-export const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "contact@emelinesiron.com";
+export const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "contact@emeline-siron.fr";
 
 // ES Family : mode "lancement en attente" (App iOS en validation Apple).
 // Tant que true : le CTA d'achat est lock, un bandeau remplace les boutons

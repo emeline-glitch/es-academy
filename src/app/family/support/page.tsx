@@ -15,7 +15,7 @@ const faqItems = [
   {
     question: "Je n'arrive pas a me connecter dans l'app",
     answer:
-      "Verifie que tu utilises bien l'email associe a ton abonnement. Sur la page de connexion, choisis Sign in with Apple, le lien magique recu par email, ou ton mot de passe. Si tu as oublie ton mot de passe, utilise la page Reinitialiser. Si rien ne marche, ecris-nous a contact@emelinesiron.com avec ton email d'inscription.",
+      "Verifie que tu utilises bien l'email associe a ton abonnement. Sur la page de connexion, choisis Sign in with Apple, le lien magique recu par email, ou ton mot de passe. Si tu as oublie ton mot de passe, utilise la page Reinitialiser. Si rien ne marche, ecris-nous a contact@emeline-siron.fr avec ton email d'inscription.",
   },
   {
     question: "Comment souscrire a ES Family ?",
@@ -30,12 +30,12 @@ const faqItems = [
   {
     question: "Comment supprimer mon compte et mes donnees ?",
     answer:
-      "Dans l'app, va dans Profil puis Parametres puis Supprimer mon compte. Tu peux aussi nous ecrire a contact@emelinesiron.com avec ton email d'inscription. La suppression est definitive et concerne toutes tes donnees (profil, posts, commentaires, messages). Conformement au RGPD, le traitement est effectue sous 30 jours.",
+      "Dans l'app, va dans Profil puis Parametres puis Supprimer mon compte. Tu peux aussi nous ecrire a contact@emeline-siron.fr avec ton email d'inscription. La suppression est definitive et concerne toutes tes donnees (profil, posts, commentaires, messages). Conformement au RGPD, le traitement est effectue sous 30 jours.",
   },
   {
     question: "Je n'ai pas recu mon email de bienvenue apres paiement",
     answer:
-      "L'email de bienvenue arrive sous 5 minutes apres le paiement Stripe. Verifie d'abord tes spams. Si rien sous 1 heure, ecris-nous a contact@emelinesiron.com avec ton email Stripe et l'heure approximative du paiement.",
+      "L'email de bienvenue arrive sous 5 minutes apres le paiement Stripe. Verifie d'abord tes spams. Si rien sous 1 heure, ecris-nous a contact@emeline-siron.fr avec ton email Stripe et l'heure approximative du paiement.",
   },
   {
     question: "Le contenu de l'app est protege par mot de passe, c'est normal ?",
@@ -89,10 +89,10 @@ export default function FamilySupportPage() {
             On repond sous 48h ouvrees.
           </p>
           <a
-            href="mailto:contact@emelinesiron.com"
+            href="mailto:contact@emeline-siron.fr"
             className="inline-block bg-es-mint-dark text-white px-6 py-3 rounded-lg font-semibold hover:bg-es-mint-deep transition"
           >
-            contact@emelinesiron.com
+            contact@emeline-siron.fr
           </a>
           <div className="mt-8 pt-8 border-t border-es-cream-dark">
             <h3 className="font-semibold text-es-text mb-3">Pages utiles</h3>
