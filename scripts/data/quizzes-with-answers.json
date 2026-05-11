@@ -1,0 +1,1592 @@
+{
+  "_meta": {
+    "source": "PDF Emeline 'Quiz ES Academy 2026 — Bonnes réponses marquées (v2 corrigée)' + lessons-mapping.csv",
+    "version": "v2",
+    "stats": {
+      "lessons_with_quiz": 58,
+      "lessons_without_quiz": 8,
+      "total_questions": 117
+    },
+    "corrections_v2": [
+      "M5-LC-Q01 : Diagnostic électrique location = 6 ans (au lieu de 3 ans)",
+      "M9-LB-Q01 : Meublé de tourisme NON classé → 30% microBIC (clarifié vs 'classique')",
+      "M10-LA-Q01 : SCI IR vers IS révocable 5 ans puis irrévocable (loi de finances 2019)",
+      "M12-LC-Q01 : Plafond exonération impôt 2026 = 213 €/m²/an IDF (au lieu de 206)",
+      "M13-LA-Q01 : Banques 27 ans en VEFA/CCMI/travaux >10%, sinon 25 ans max"
+    ],
+    "lessons_no_quiz": [
+      "M2-LG : Sous-location professionnelle",
+      "M5-LB : Exemple visite terrain",
+      "M6-LE : Crowdfunding",
+      "M7-LD : Exemple suivi chantier",
+      "M8-LE : Assurances",
+      "M8-LF : Copropriété",
+      "M9-LE : Obligation déclarative",
+      "M12-LD : Outils"
+    ]
+  },
+  "modules": [
+    {
+      "module": "M1",
+      "name": "Mindset",
+      "lessons": [
+        {
+          "code": "M1-LA",
+          "name": "Améliorer son mindset pour réussir",
+          "questions": [
+            {
+              "code": "M1-LA-Q01",
+              "text": "Quels sont les piliers d'un bon mindset d'investisseur ?",
+              "type": "multi_select",
+              "options": [
+                { "text": "Trouver son pourquoi", "is_correct": true },
+                { "text": "Se libérer des croyances limitantes", "is_correct": true },
+                { "text": "Rester motivé au quotidien", "is_correct": true }
+              ]
+            },
+            {
+              "code": "M1-LA-Q02",
+              "text": "Qu'est-ce qui peut m'aider à accélérer ma réussite ?",
+              "type": "multi_select",
+              "options": [
+                { "text": "Participer à des rencontres d'investisseurs", "is_correct": true },
+                { "text": "Créer un réseau dynamique", "is_correct": true },
+                { "text": "Rester seul et avancer en autodidacte total", "is_correct": false }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M1-LB",
+          "name": "Mettre en place les pré-requis financiers",
+          "questions": [
+            {
+              "code": "M1-LB-Q01",
+              "text": "Qu'est-ce qu'un actif au sens patrimonial ?",
+              "type": "single_select",
+              "options": [
+                { "text": "Quelque chose qui retire de l'argent de ma poche", "is_correct": false },
+                { "text": "Quelque chose dont la valeur stagne dans le temps", "is_correct": false },
+                { "text": "Quelque chose qui met de l'argent dans ma poche", "is_correct": true }
+              ]
+            },
+            {
+              "code": "M1-LB-Q02",
+              "text": "Quelles sont les bonnes pratiques financières avant d'investir ?",
+              "type": "multi_select",
+              "options": [
+                { "text": "Payer en liquide tout le temps pour éviter les traces", "is_correct": false },
+                { "text": "Épargner tous les mois de façon automatisée", "is_correct": true },
+                { "text": "Ne jamais être à découvert sur les 3 derniers mois", "is_correct": true }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M1-LC",
+          "name": "Comprendre les étapes d'un investissement",
+          "questions": [
+            {
+              "code": "M1-LC-Q01",
+              "text": "La signature du compromis se fait avant le démarrage des travaux :",
+              "type": "single_select",
+              "options": [
+                { "text": "Vrai", "is_correct": true },
+                { "text": "Faux", "is_correct": false }
+              ]
+            },
+            {
+              "code": "M1-LC-Q02",
+              "text": "Je deviens réellement propriétaire à la signature de l'acte authentique :",
+              "type": "single_select",
+              "options": [
+                { "text": "Vrai", "is_correct": true },
+                { "text": "Faux", "is_correct": false }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M1-LD",
+          "name": "Définir son projet en fonction de ses objectifs",
+          "questions": [
+            {
+              "code": "M1-LD-Q01",
+              "text": "Le taux d'endettement se définit par :",
+              "type": "single_select",
+              "options": [
+                { "text": "Les revenus divisés par les dépenses", "is_correct": false },
+                { "text": "Le restant à vivre divisé par les crédits", "is_correct": false },
+                { "text": "Les charges de crédit divisées par les revenus nets", "is_correct": true }
+              ]
+            },
+            {
+              "code": "M1-LD-Q02",
+              "text": "De quoi dépend ma stratégie d'investissement ?",
+              "type": "multi_select",
+              "options": [
+                { "text": "Mes priorités personnelles", "is_correct": true },
+                { "text": "Le temps que je peux y consacrer", "is_correct": true },
+                { "text": "Mon profil de risque", "is_correct": true }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "module": "M2",
+      "name": "Types de location",
+      "lessons": [
+        {
+          "code": "M2-LA",
+          "name": "La colocation à très haut rendement",
+          "questions": [
+            {
+              "code": "M2-LA-Q01",
+              "text": "La stratégie de colocation permet :",
+              "type": "single_select",
+              "options": [
+                { "text": "De louer chaque chambre moins cher que la concurrence", "is_correct": false },
+                { "text": "D'acheter un bien plus gros à un prix au m² plus faible", "is_correct": false },
+                { "text": "D'avoir une rentabilité plus élevée que la location classique", "is_correct": true }
+              ]
+            },
+            {
+              "code": "M2-LA-Q02",
+              "text": "Quelles sont les bonnes pratiques en colocation ?",
+              "type": "multi_select",
+              "options": [
+                { "text": "Rédiger un règlement intérieur clair", "is_correct": true },
+                { "text": "Installer des caméras dans les parties privatives", "is_correct": false },
+                { "text": "Soigner les parties communes pour réduire la vacance", "is_correct": true }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M2-LB",
+          "name": "L'immeuble de rapport comme outil multiplicateur",
+          "questions": [
+            {
+              "code": "M2-LB-Q01",
+              "text": "Quels sont les avantages de l'immeuble de rapport ?",
+              "type": "multi_select",
+              "options": [
+                { "text": "Prix au m² plus bas qu'à l'unité (effet de gros)", "is_correct": true },
+                { "text": "Gestion facilitée car concentrée sur un seul site", "is_correct": true },
+                { "text": "Diversification interne des typologies de logements", "is_correct": true }
+              ]
+            },
+            {
+              "code": "M2-LB-Q02",
+              "text": "Quels sont les inconvénients d'un immeuble de rapport ?",
+              "type": "multi_select",
+              "options": [
+                { "text": "Charges de copropriété élevées", "is_correct": false },
+                { "text": "Poids des responsabilités intégral (toiture, façade, parties communes)", "is_correct": true },
+                { "text": "Entretien à gérer seul sans syndic", "is_correct": true }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M2-LC",
+          "name": "Location courte durée pour booster sa renta",
+          "questions": [
+            {
+              "code": "M2-LC-Q01",
+              "text": "Quelles sont les obligations de la location courte durée en 2026 ?",
+              "type": "multi_select",
+              "options": [
+                { "text": "Déclaration en mairie et numéro d'enregistrement (généralisé via Declaloc au 20 mai 2026, loi Le Meur)", "is_correct": true },
+                { "text": "Vérification du règlement de copropriété", "is_correct": true },
+                { "text": "Aucune obligation tant que le bien fait moins de 30 m²", "is_correct": false }
+              ]
+            },
+            {
+              "code": "M2-LC-Q02",
+              "text": "Quelle gestion me prendra le moins de temps en courte durée ?",
+              "type": "single_select",
+              "options": [
+                { "text": "Personnelle (autogérée de A à Z)", "is_correct": false },
+                { "text": "Semi-déléguée (ménage seul délégué)", "is_correct": false },
+                { "text": "100% déléguée à une conciergerie", "is_correct": true }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M2-LD",
+          "name": "Les locaux commerciaux et les parkings",
+          "questions": [
+            {
+              "code": "M2-LD-Q01",
+              "text": "Les locaux commerciaux sont une stratégie adaptée aux débutants :",
+              "type": "single_select",
+              "options": [
+                { "text": "Vrai", "is_correct": false },
+                { "text": "Faux", "is_correct": true }
+              ]
+            },
+            {
+              "code": "M2-LD-Q02",
+              "text": "L'investissement en parking se caractérise par :",
+              "type": "single_select",
+              "options": [
+                { "text": "Une rentabilité systématiquement faible", "is_correct": false },
+                { "text": "Une gestion lourde et chronophage", "is_correct": false },
+                { "text": "De faibles charges et une gestion simplifiée", "is_correct": true }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M2-LE",
+          "name": "La division pour encaisser plus de loyers",
+          "questions": [
+            {
+              "code": "M2-LE-Q01",
+              "text": "Quels sont les points techniques à vérifier lors d'une division ?",
+              "type": "multi_select",
+              "options": [
+                { "text": "Évacuation des eaux usées", "is_correct": true },
+                { "text": "Compteurs électriques individuels", "is_correct": true },
+                { "text": "Problématique des places de stationnement", "is_correct": true }
+              ]
+            },
+            {
+              "code": "M2-LE-Q02",
+              "text": "Puis-je revendre par lot sans compteur électrique individuel ?",
+              "type": "single_select",
+              "options": [
+                { "text": "Oui", "is_correct": false },
+                { "text": "Non", "is_correct": true }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M2-LF",
+          "name": "Utiliser l'achat-revente en résidence principale",
+          "questions": [
+            {
+              "code": "M2-LF-Q01",
+              "text": "Quels sont les avantages d'un achat-revente en résidence principale ?",
+              "type": "multi_select",
+              "options": [
+                { "text": "Exonération totale de la taxe sur la plus-value", "is_correct": true },
+                { "text": "Risque de requalification systématique", "is_correct": false },
+                { "text": "Récupération de cash rapidement et défiscalisée", "is_correct": true }
+              ]
+            },
+            {
+              "code": "M2-LF-Q02",
+              "text": "Comment éviter la requalification en marchand de biens ?",
+              "type": "multi_select",
+              "options": [
+                { "text": "Habiter réellement dans le logement", "is_correct": true },
+                { "text": "Revendre dans les 2 mois suivant l'achat", "is_correct": false },
+                { "text": "Souscrire les contrats d'énergie à son nom", "is_correct": true }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "module": "M3",
+      "name": "Recherches",
+      "lessons": [
+        {
+          "code": "M3-LA",
+          "name": "Définir son budget et son secteur de recherche",
+          "questions": [
+            {
+              "code": "M3-LA-Q01",
+              "text": "Il est déconseillé d'investir à plus de 2h de son domicile :",
+              "type": "single_select",
+              "options": [
+                { "text": "Vrai", "is_correct": false },
+                { "text": "Faux", "is_correct": true }
+              ]
+            },
+            {
+              "code": "M3-LA-Q02",
+              "text": "Investir dans une petite ville permet d'avoir :",
+              "type": "multi_select",
+              "options": [
+                { "text": "Une forte liquidité de revente", "is_correct": false },
+                { "text": "Une rentabilité brute plus élevée", "is_correct": true },
+                { "text": "Un prix d'achat plus faible", "is_correct": true }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M3-LB",
+          "name": "Traquer les bonnes affaires immobilières",
+          "questions": [
+            {
+              "code": "M3-LB-Q01",
+              "text": "Pour être efficace dans mes recherches je dois :",
+              "type": "multi_select",
+              "options": [
+                { "text": "Me montrer sur le terrain", "is_correct": true },
+                { "text": "Aller discuter avec les commerçants du quartier", "is_correct": true },
+                { "text": "Utiliser des cartes de visite professionnelles", "is_correct": true }
+              ]
+            },
+            {
+              "code": "M3-LB-Q02",
+              "text": "Le réseau d'apporteurs d'affaires ne sert à rien :",
+              "type": "single_select",
+              "options": [
+                { "text": "Vrai", "is_correct": false },
+                { "text": "Faux", "is_correct": true }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M3-LC",
+          "name": "Définir ses critères de recherche",
+          "questions": [
+            {
+              "code": "M3-LC-Q01",
+              "text": "Quels sont les critères que je dois définir pour mes recherches ?",
+              "type": "multi_select",
+              "options": [
+                { "text": "Secteur géographique", "is_correct": true },
+                { "text": "Année de construction", "is_correct": true },
+                { "text": "Fourchette de prix", "is_correct": true }
+              ]
+            },
+            {
+              "code": "M3-LC-Q02",
+              "text": "Quelles sont les pistes de recherche moins évidentes ?",
+              "type": "multi_select",
+              "options": [
+                { "text": "Mairie et services urbanisme", "is_correct": true },
+                { "text": "Artisans locaux (chauffagistes, plombiers)", "is_correct": true },
+                { "text": "Concierges et gardiens d'immeuble", "is_correct": true }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M3-LD",
+          "name": "L'analyse de marché avec exemple",
+          "questions": [
+            {
+              "code": "M3-LD-Q01",
+              "text": "Il est inutile d'étudier la géographie dans une analyse de marché :",
+              "type": "single_select",
+              "options": [
+                { "text": "Vrai", "is_correct": false },
+                { "text": "Faux", "is_correct": true }
+              ]
+            },
+            {
+              "code": "M3-LD-Q02",
+              "text": "Quels sont les outils indispensables pour une bonne analyse ?",
+              "type": "multi_select",
+              "options": [
+                { "text": "DVF ETALAB (base des transactions immobilières)", "is_correct": true },
+                { "text": "Facebook (commentaires de groupes locaux)", "is_correct": false },
+                { "text": "INSEE (démographie, emploi, revenus médians)", "is_correct": true }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "module": "M4",
+      "name": "Critères financiers",
+      "lessons": [
+        {
+          "code": "M4-LA",
+          "name": "Définir les principaux indicateurs financiers",
+          "questions": [
+            {
+              "code": "M4-LA-Q01",
+              "text": "Comment se définit la rentabilité brute ?",
+              "type": "single_select",
+              "options": [
+                { "text": "Les revenus moins toutes les charges", "is_correct": false },
+                { "text": "Les loyers annuels divisés par le prix d'acquisition", "is_correct": true },
+                { "text": "Les flux entrants divisés par les flux sortants", "is_correct": false }
+              ]
+            },
+            {
+              "code": "M4-LA-Q02",
+              "text": "Quelle rentabilité dois-je viser ?",
+              "type": "single_select",
+              "options": [
+                { "text": "La plus importante possible, quel que soit le risque", "is_correct": false },
+                { "text": "Celle qui correspond à mes objectifs et à mon profil", "is_correct": true },
+                { "text": "Une rentabilité inférieure à 6% pour limiter le risque", "is_correct": false }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M4-LB",
+          "name": "Établir un business plan rigoureux et structuré",
+          "questions": [
+            {
+              "code": "M4-LB-Q01",
+              "text": "Le business plan est indispensable avant chaque investissement :",
+              "type": "single_select",
+              "options": [
+                { "text": "Vrai", "is_correct": true },
+                { "text": "Faux", "is_correct": false }
+              ]
+            },
+            {
+              "code": "M4-LB-Q02",
+              "text": "Pour être plus précis dans mon business plan, je dois prendre en compte :",
+              "type": "multi_select",
+              "options": [
+                { "text": "L'évolution du cours du Bitcoin", "is_correct": false },
+                { "text": "La vacance locative prévisionnelle", "is_correct": true },
+                { "text": "L'indexation annuelle des loyers (IRL)", "is_correct": true }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M4-LC",
+          "name": "Valider ses critères de Go et No Go",
+          "questions": [
+            {
+              "code": "M4-LC-Q01",
+              "text": "Quels sont des critères de No Go d'un investissement ?",
+              "type": "multi_select",
+              "options": [
+                { "text": "Rentabilité et autofinancement élevés", "is_correct": false },
+                { "text": "Stress important et logement trop loin", "is_correct": true },
+                { "text": "Projet trop gros par rapport à mes capacités", "is_correct": true }
+              ]
+            },
+            {
+              "code": "M4-LC-Q02",
+              "text": "Une fiscalité mal adaptée et peu de travaux constituent un critère de Go :",
+              "type": "single_select",
+              "options": [
+                { "text": "Vrai", "is_correct": false },
+                { "text": "Faux", "is_correct": true }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "module": "M5",
+      "name": "Analyse technique",
+      "lessons": [
+        {
+          "code": "M5-LA",
+          "name": "Déroulé d'une visite immobilière et check-list",
+          "questions": [
+            {
+              "code": "M5-LA-Q01",
+              "text": "Lors d'un appel avant visite, je dois demander des informations sur :",
+              "type": "multi_select",
+              "options": [
+                { "text": "Le bien immobilier (état, surface, charges)", "is_correct": true },
+                { "text": "Les habitudes de la voisine du propriétaire", "is_correct": false },
+                { "text": "Le vendeur et le contexte de la vente", "is_correct": true }
+              ]
+            },
+            {
+              "code": "M5-LA-Q02",
+              "text": "Avant de terminer une visite, que ne dois-je pas oublier ?",
+              "type": "multi_select",
+              "options": [
+                { "text": "Aller aux toilettes dans le bien pour tester", "is_correct": false },
+                { "text": "Prendre toutes les mesures utiles", "is_correct": true },
+                { "text": "Rédiger des notes pendant la visite", "is_correct": true }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M5-LC",
+          "name": "Utiliser les diagnostics immobiliers à son avantage",
+          "questions": [
+            {
+              "code": "M5-LC-Q01",
+              "text": "Quelle est la durée de validité du diagnostic électrique pour la mise en location ?",
+              "type": "single_select",
+              "options": [
+                { "text": "3 ans (durée applicable à la vente)", "is_correct": false },
+                { "text": "6 ans", "is_correct": true },
+                { "text": "10 ans", "is_correct": false }
+              ]
+            },
+            {
+              "code": "M5-LC-Q02",
+              "text": "En quelle année les DPE classés F seront-ils interdits à la location ?",
+              "type": "single_select",
+              "options": [
+                { "text": "2025 (déjà appliqué pour les G)", "is_correct": false },
+                { "text": "2028", "is_correct": true },
+                { "text": "2034 (échéance pour les E)", "is_correct": false }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M5-LD",
+          "name": "Les techniques puissantes pour négocier",
+          "questions": [
+            {
+              "code": "M5-LD-Q01",
+              "text": "Tout se négocie en immobilier :",
+              "type": "single_select",
+              "options": [
+                { "text": "Vrai", "is_correct": true },
+                { "text": "Faux", "is_correct": false }
+              ]
+            },
+            {
+              "code": "M5-LD-Q02",
+              "text": "Quelles sont des techniques de négociation efficaces ?",
+              "type": "multi_select",
+              "options": [
+                { "text": "Faire jouer la puissance supérieure (banque, conjoint, comptable)", "is_correct": true },
+                { "text": "Faire systématiquement des offres à -80% du prix affiché", "is_correct": false },
+                { "text": "Préparer un argumentaire chiffré basé sur des comparables", "is_correct": true }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M5-LE",
+          "name": "Comprendre le notaire et les formalités foncières",
+          "questions": [
+            {
+              "code": "M5-LE-Q01",
+              "text": "Le dépôt de garantie au compromis est obligatoire pour l'acheteur :",
+              "type": "single_select",
+              "options": [
+                { "text": "Vrai", "is_correct": false },
+                { "text": "Faux", "is_correct": true }
+              ]
+            },
+            {
+              "code": "M5-LE-Q02",
+              "text": "Quel est mon délai de rétractation après signature du compromis en tant que particulier ?",
+              "type": "single_select",
+              "options": [
+                { "text": "5 jours", "is_correct": false },
+                { "text": "8 jours", "is_correct": false },
+                { "text": "10 jours", "is_correct": true }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "module": "M6",
+      "name": "Financement",
+      "lessons": [
+        {
+          "code": "M6-LA",
+          "name": "Les différents crédits bancaires",
+          "questions": [
+            {
+              "code": "M6-LA-Q01",
+              "text": "Comment s'appelle le crédit où l'on ne rembourse le capital qu'à la fin ?",
+              "type": "single_select",
+              "options": [
+                { "text": "Prêt amortissable", "is_correct": false },
+                { "text": "Prêt relais", "is_correct": false },
+                { "text": "Prêt in fine", "is_correct": true }
+              ]
+            },
+            {
+              "code": "M6-LA-Q02",
+              "text": "Puis-je augmenter la durée de mon crédit après un rachat de prêt ?",
+              "type": "single_select",
+              "options": [
+                { "text": "Oui", "is_correct": true },
+                { "text": "Non", "is_correct": false }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M6-LB",
+          "name": "Les caractéristiques d'un prêt immobilier",
+          "questions": [
+            {
+              "code": "M6-LB-Q01",
+              "text": "Je dois négocier le taux pour 0,2% de gain sur les intérêts :",
+              "type": "single_select",
+              "options": [
+                { "text": "Oui", "is_correct": true },
+                { "text": "Non", "is_correct": false }
+              ]
+            },
+            {
+              "code": "M6-LB-Q02",
+              "text": "Au-delà du taux et de la durée, à quoi faut-il aussi penser ?",
+              "type": "multi_select",
+              "options": [
+                { "text": "À l'assurance emprunteur", "is_correct": true },
+                { "text": "Au différé d'amortissement", "is_correct": true },
+                { "text": "Aux IRA (indemnités de remboursement anticipé)", "is_correct": true }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M6-LC",
+          "name": "Faire une demande de crédit comme un pro",
+          "questions": [
+            {
+              "code": "M6-LC-Q01",
+              "text": "Quels sont les points importants pour ma demande de financement ?",
+              "type": "multi_select",
+              "options": [
+                { "text": "Tenue propre et professionnelle au rendez-vous", "is_correct": true },
+                { "text": "Dossier complet et structuré", "is_correct": true },
+                { "text": "Investissement présenté avec un autofinancement négatif", "is_correct": false }
+              ]
+            },
+            {
+              "code": "M6-LC-Q02",
+              "text": "Entre la demande de financement et le déblocage des fonds, il se passe généralement :",
+              "type": "single_select",
+              "options": [
+                { "text": "30 jours", "is_correct": false },
+                { "text": "70 jours", "is_correct": true },
+                { "text": "120 jours", "is_correct": false }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M6-LD",
+          "name": "Améliorer son dossier et enchaîner les crédits",
+          "questions": [
+            {
+              "code": "M6-LD-Q01",
+              "text": "Quels critères permettent d'améliorer mon dossier bancaire ?",
+              "type": "multi_select",
+              "options": [
+                { "text": "Une perte d'emploi récente", "is_correct": false },
+                { "text": "Une épargne régulière et visible", "is_correct": true },
+                { "text": "Une expérience démontrée en immobilier", "is_correct": true }
+              ]
+            },
+            {
+              "code": "M6-LD-Q02",
+              "text": "Un accord de principe engage juridiquement le banquier :",
+              "type": "single_select",
+              "options": [
+                { "text": "Vrai", "is_correct": false },
+                { "text": "Faux", "is_correct": true }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "module": "M7",
+      "name": "Travaux",
+      "lessons": [
+        {
+          "code": "M7-LA",
+          "name": "Choisir la bonne entreprise de rénovation",
+          "questions": [
+            {
+              "code": "M7-LA-Q01",
+              "text": "Que dois-je vérifier avant de choisir mon entreprise travaux ?",
+              "type": "multi_select",
+              "options": [
+                { "text": "Kbis et numéro SIRET", "is_correct": true },
+                { "text": "Garantie décennale en cours de validité", "is_correct": true },
+                { "text": "Les avis clients et références de chantiers", "is_correct": true }
+              ]
+            },
+            {
+              "code": "M7-LA-Q02",
+              "text": "Mon artisan est mon meilleur partenaire dans la durée :",
+              "type": "single_select",
+              "options": [
+                { "text": "Vrai", "is_correct": true },
+                { "text": "Faux", "is_correct": false }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M7-LB",
+          "name": "Confronter les devis et diminuer son budget travaux",
+          "questions": [
+            {
+              "code": "M7-LB-Q01",
+              "text": "Il me faut au minimum 3 devis pour comparer les tarifs de rénovation :",
+              "type": "single_select",
+              "options": [
+                { "text": "Vrai", "is_correct": true },
+                { "text": "Faux", "is_correct": false }
+              ]
+            },
+            {
+              "code": "M7-LB-Q02",
+              "text": "Je dois mettre des pénalités de retard même pour une rénovation simple :",
+              "type": "single_select",
+              "options": [
+                { "text": "Vrai", "is_correct": true },
+                { "text": "Faux", "is_correct": false }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M7-LC",
+          "name": "Comprendre tous les travaux sans être artisan",
+          "questions": [
+            {
+              "code": "M7-LC-Q01",
+              "text": "Comment s'appellent les plaques de BA13 spéciales pour les pièces humides ?",
+              "type": "single_select",
+              "options": [
+                { "text": "Thermiques", "is_correct": false },
+                { "text": "Acoustiques", "is_correct": false },
+                { "text": "Hydrofuges", "is_correct": true }
+              ]
+            },
+            {
+              "code": "M7-LC-Q02",
+              "text": "La peinture est un poste de rénovation qui coûte très cher :",
+              "type": "single_select",
+              "options": [
+                { "text": "Vrai", "is_correct": false },
+                { "text": "Faux", "is_correct": true }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M7-LE",
+          "name": "Le détail de chaque pièce d'un bien",
+          "questions": [
+            {
+              "code": "M7-LE-Q01",
+              "text": "Dans un studio, installer une kitchenette plutôt qu'une cuisine équipée complète est :",
+              "type": "single_select",
+              "options": [
+                { "text": "Une bonne idée pour optimiser l'espace", "is_correct": true },
+                { "text": "Une mauvaise idée car ça déprécie le bien", "is_correct": false }
+              ]
+            },
+            {
+              "code": "M7-LE-Q02",
+              "text": "Quelles sont les bonnes recommandations dans une salle de bain ?",
+              "type": "multi_select",
+              "options": [
+                { "text": "Mettre du parquet stratifié au sol", "is_correct": false },
+                { "text": "Installer une VMC (obligatoire)", "is_correct": true },
+                { "text": "Privilégier un chauffe-eau extra-plat ou thermodynamique", "is_correct": true }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M7-LF",
+          "name": "La réception du chantier et les garanties",
+          "questions": [
+            {
+              "code": "M7-LF-Q01",
+              "text": "Il n'y a pas besoin de signer de document pour la réception d'un chantier :",
+              "type": "single_select",
+              "options": [
+                { "text": "Vrai", "is_correct": false },
+                { "text": "Faux", "is_correct": true }
+              ]
+            },
+            {
+              "code": "M7-LF-Q02",
+              "text": "Quelle garantie protège le bon fonctionnement des équipements dissociables ?",
+              "type": "single_select",
+              "options": [
+                { "text": "Garantie de Parfait Achèvement (1 an)", "is_correct": false },
+                { "text": "Garantie Biennale (2 ans)", "is_correct": true },
+                { "text": "Garantie Décennale (10 ans)", "is_correct": false }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M7-LG",
+          "name": "Maîtriser l'urbanisme et les déclarations associées",
+          "questions": [
+            {
+              "code": "M7-LG-Q01",
+              "text": "Que veut dire PLU ?",
+              "type": "single_select",
+              "options": [
+                { "text": "Plan Local Urbain", "is_correct": false },
+                { "text": "Permis Local d'Urbanisme", "is_correct": false },
+                { "text": "Plan Local d'Urbanisme", "is_correct": true }
+              ]
+            },
+            {
+              "code": "M7-LG-Q02",
+              "text": "Quelle autorisation nécessite un ravalement de façade modifiant l'aspect extérieur ?",
+              "type": "single_select",
+              "options": [
+                { "text": "Déclaration préalable de travaux", "is_correct": true },
+                { "text": "Permis de construire", "is_correct": false },
+                { "text": "Permis d'aménager", "is_correct": false }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "module": "M8",
+      "name": "Gestion locative",
+      "lessons": [
+        {
+          "code": "M8-LA",
+          "name": "Publication de l'annonce idéale",
+          "questions": [
+            {
+              "code": "M8-LA-Q01",
+              "text": "90% des annonces en ligne n'ont pas de belles photos, je fais pareil ?",
+              "type": "single_select",
+              "options": [
+                { "text": "Oui", "is_correct": false },
+                { "text": "Non", "is_correct": true }
+              ]
+            },
+            {
+              "code": "M8-LA-Q02",
+              "text": "Qu'est-ce qui va m'aider à différencier mon annonce ?",
+              "type": "multi_select",
+              "options": [
+                { "text": "Le texte (titre accrocheur, description précise)", "is_correct": true },
+                { "text": "Les photos professionnelles", "is_correct": true },
+                { "text": "Le rapport du géomètre expert", "is_correct": false }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M8-LB",
+          "name": "Trouver un locataire de qualité pour son logement",
+          "questions": [
+            {
+              "code": "M8-LB-Q01",
+              "text": "Quels documents puis-je demander à un locataire candidat ?",
+              "type": "multi_select",
+              "options": [
+                { "text": "Fiches de salaire (3 derniers mois)", "is_correct": true },
+                { "text": "Numéro de sécurité sociale", "is_correct": false },
+                { "text": "Avis d'imposition", "is_correct": true }
+              ]
+            },
+            {
+              "code": "M8-LB-Q02",
+              "text": "Le locataire a fait des dégâts mais je n'ai rien noté sur l'état des lieux de sortie, puis-je quand même retenir la caution ?",
+              "type": "single_select",
+              "options": [
+                { "text": "Oui", "is_correct": false },
+                { "text": "Non", "is_correct": true }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M8-LC",
+          "name": "Les baux et la gestion locative",
+          "questions": [
+            {
+              "code": "M8-LC-Q01",
+              "text": "Quelle est la durée minimale d'un bail de location vide à un particulier ?",
+              "type": "single_select",
+              "options": [
+                { "text": "9 mois", "is_correct": false },
+                { "text": "1 an", "is_correct": false },
+                { "text": "3 ans", "is_correct": true }
+              ]
+            },
+            {
+              "code": "M8-LC-Q02",
+              "text": "Quelles sont les charges récupérables auprès du locataire ?",
+              "type": "multi_select",
+              "options": [
+                { "text": "Entretien courant de l'immeuble", "is_correct": true },
+                { "text": "Taxe des ordures ménagères", "is_correct": true },
+                { "text": "Réparation de la toiture", "is_correct": false }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M8-LD",
+          "name": "Se protéger contre les impayés",
+          "questions": [
+            {
+              "code": "M8-LD-Q01",
+              "text": "La garantie Visale est payante pour le bailleur :",
+              "type": "single_select",
+              "options": [
+                { "text": "Vrai", "is_correct": false },
+                { "text": "Faux (gratuite pour bailleur et locataire, financée par Action Logement)", "is_correct": true }
+              ]
+            },
+            {
+              "code": "M8-LD-Q02",
+              "text": "La procédure d'expulsion suite à des impayés est longue et coûteuse :",
+              "type": "single_select",
+              "options": [
+                { "text": "Vrai", "is_correct": true },
+                { "text": "Faux", "is_correct": false }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "module": "M9",
+      "name": "Imposition",
+      "lessons": [
+        {
+          "code": "M9-LA",
+          "name": "Les bases de l'imposition des particuliers",
+          "questions": [
+            {
+              "code": "M9-LA-Q01",
+              "text": "Les loyers de location meublée sont des revenus :",
+              "type": "single_select",
+              "options": [
+                { "text": "Fonciers", "is_correct": false },
+                { "text": "BNC (bénéfices non commerciaux)", "is_correct": false },
+                { "text": "BIC (bénéfices industriels et commerciaux)", "is_correct": true }
+              ]
+            },
+            {
+              "code": "M9-LA-Q02",
+              "text": "Si je suis marié·e avec un enfant à charge, mon quotient familial est de :",
+              "type": "single_select",
+              "options": [
+                { "text": "2 parts", "is_correct": false },
+                { "text": "2,5 parts", "is_correct": true },
+                { "text": "3 parts", "is_correct": false }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M9-LB",
+          "name": "L'imposition des revenus locatifs",
+          "questions": [
+            {
+              "code": "M9-LB-Q01",
+              "text": "Depuis la loi Le Meur (novembre 2024), quel est l'abattement du régime microBIC pour un meublé de tourisme NON classé ?",
+              "type": "single_select",
+              "options": [
+                { "text": "30%", "is_correct": true },
+                { "text": "50%", "is_correct": false },
+                { "text": "71%", "is_correct": false }
+              ]
+            },
+            {
+              "code": "M9-LB-Q02",
+              "text": "Quel est l'intérêt de l'amortissement en régime réel LMNP ?",
+              "type": "multi_select",
+              "options": [
+                { "text": "Diminuer son résultat fiscal imposable", "is_correct": true },
+                { "text": "Décomposer le prix du bien pour le déduire chaque année", "is_correct": true },
+                { "text": "Aucun intérêt fiscal", "is_correct": false }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M9-LC",
+          "name": "Les taxes et impositions locales",
+          "questions": [
+            {
+              "code": "M9-LC-Q01",
+              "text": "Qui paye au final la TVA ?",
+              "type": "single_select",
+              "options": [
+                { "text": "Le producteur", "is_correct": false },
+                { "text": "Le consommateur final", "is_correct": true },
+                { "text": "L'intermédiaire (grossiste)", "is_correct": false }
+              ]
+            },
+            {
+              "code": "M9-LC-Q02",
+              "text": "La taxe d'habitation a été supprimée pour les résidences principales :",
+              "type": "single_select",
+              "options": [
+                { "text": "Vrai", "is_correct": true },
+                { "text": "Faux", "is_correct": false }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M9-LD",
+          "name": "Fiscalité du patrimoine",
+          "questions": [
+            {
+              "code": "M9-LD-Q01",
+              "text": "Je revends une résidence secondaire avant 5 ans de détention, quel est le taux global de taxation de la plus-value (hors surtaxe) ?",
+              "type": "single_select",
+              "options": [
+                { "text": "17,2% (correspond aux prélèvements sociaux seuls)", "is_correct": false },
+                { "text": "36,2% (19% IR + 17,2% prélèvements sociaux)", "is_correct": true },
+                { "text": "50%", "is_correct": false }
+              ]
+            },
+            {
+              "code": "M9-LD-Q02",
+              "text": "À partir de quel montant de plus-value nette imposable suis-je assujetti à la surtaxe ?",
+              "type": "single_select",
+              "options": [
+                { "text": "30 000 €", "is_correct": false },
+                { "text": "40 000 €", "is_correct": false },
+                { "text": "50 000 €", "is_correct": true }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "module": "M10",
+      "name": "Société",
+      "lessons": [
+        {
+          "code": "M10-LA",
+          "name": "Les différentes sociétés immobilières",
+          "questions": [
+            {
+              "code": "M10-LA-Q01",
+              "text": "Depuis la loi de finances 2019, l'option SCI IR vers IS est :",
+              "type": "single_select",
+              "options": [
+                { "text": "Toujours totalement irrévocable", "is_correct": false },
+                { "text": "Révocable pendant 5 ans, puis devient définitivement irrévocable", "is_correct": true },
+                { "text": "Toujours librement révocable à tout moment", "is_correct": false }
+              ]
+            },
+            {
+              "code": "M10-LA-Q02",
+              "text": "Dans quelle société puis-je faire exclusivement de la location meublée sans risquer la requalification fiscale ?",
+              "type": "single_select",
+              "options": [
+                { "text": "SCI à l'IR", "is_correct": false },
+                { "text": "SCI à l'IS", "is_correct": false },
+                { "text": "SARL de famille", "is_correct": true }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M10-LB",
+          "name": "Les étapes de la création d'entreprise",
+          "questions": [
+            {
+              "code": "M10-LB-Q01",
+              "text": "Comment me protéger dans une société à plusieurs associés ?",
+              "type": "single_select",
+              "options": [
+                { "text": "Mettre un fort capital social", "is_correct": false },
+                { "text": "Rédiger un pacte d'associés", "is_correct": true },
+                { "text": "Ouvrir un compte commun personnel", "is_correct": false }
+              ]
+            },
+            {
+              "code": "M10-LB-Q02",
+              "text": "Ma société peut me prêter de l'argent en nom propre :",
+              "type": "single_select",
+              "options": [
+                { "text": "Vrai", "is_correct": false },
+                { "text": "Faux (interdit, qualifié d'abus de bien social en SARL/SAS)", "is_correct": true }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M10-LC",
+          "name": "Se rémunérer en tant que dirigeant",
+          "questions": [
+            {
+              "code": "M10-LC-Q01",
+              "text": "Quel statut social du dirigeant est le moins coûteux pour les finances de l'entreprise ?",
+              "type": "single_select",
+              "options": [
+                { "text": "Assimilé salarié (régime général)", "is_correct": false },
+                { "text": "Travailleur non salarié (TNS / SSI)", "is_correct": true },
+                { "text": "Profession libérale", "is_correct": false }
+              ]
+            },
+            {
+              "code": "M10-LC-Q02",
+              "text": "Le versement de dividendes est le plus avantageux fiscalement en :",
+              "type": "single_select",
+              "options": [
+                { "text": "SCI à l'IR", "is_correct": false },
+                { "text": "SARL (cotisations sociales TNS au-delà de 10%)", "is_correct": false },
+                { "text": "SAS (uniquement la flat tax 30%)", "is_correct": true }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M10-LD",
+          "name": "La comptabilité, le bilan et les résultats",
+          "questions": [
+            {
+              "code": "M10-LD-Q01",
+              "text": "Ma SCI achète un bien immobilier, dans quelle colonne se situe-t-il au bilan ?",
+              "type": "single_select",
+              "options": [
+                { "text": "L'actif", "is_correct": true },
+                { "text": "Le passif", "is_correct": false }
+              ]
+            },
+            {
+              "code": "M10-LD-Q02",
+              "text": "À qui appartient juridiquement la dette d'une entreprise ?",
+              "type": "single_select",
+              "options": [
+                { "text": "Aux associés (personnellement)", "is_correct": false },
+                { "text": "À l'entreprise elle-même (envers ses créanciers)", "is_correct": true },
+                { "text": "Aux actionnaires (personnellement)", "is_correct": false }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M10-LE",
+          "name": "L'imposition avantageuse en société",
+          "questions": [
+            {
+              "code": "M10-LE-Q01",
+              "text": "Quel est le taux de l'IS pour un bénéfice de 20 000 € (sous conditions de chiffre d'affaires) ?",
+              "type": "single_select",
+              "options": [
+                { "text": "15% (taux réduit jusqu'à 42 500 € de bénéfice)", "is_correct": true },
+                { "text": "25%", "is_correct": false },
+                { "text": "33%", "is_correct": false }
+              ]
+            },
+            {
+              "code": "M10-LE-Q02",
+              "text": "Comment s'appelle la taxe forfaitaire de 30% sur les dividendes ?",
+              "type": "single_select",
+              "options": [
+                { "text": "La Flat Tax", "is_correct": true },
+                { "text": "Le PFU (Prélèvement Forfaitaire Unique)", "is_correct": true },
+                { "text": "Le PFI", "is_correct": false }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M10-LF",
+          "name": "Salaire ou dividende : le match ultime !",
+          "questions": [
+            {
+              "code": "M10-LF-Q01",
+              "text": "Il vaut mieux se verser de gros salaires en SARL :",
+              "type": "single_select",
+              "options": [
+                { "text": "Vrai (les dividendes au-delà de 10% du capital sont soumis aux cotisations TNS)", "is_correct": true },
+                { "text": "Faux", "is_correct": false }
+              ]
+            },
+            {
+              "code": "M10-LF-Q02",
+              "text": "Il vaut mieux se verser de gros dividendes en SARL :",
+              "type": "single_select",
+              "options": [
+                { "text": "Vrai", "is_correct": false },
+                { "text": "Faux (cotisations TNS au-delà de 10% du capital)", "is_correct": true }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "module": "M11",
+      "name": "Montage avancé",
+      "lessons": [
+        {
+          "code": "M11-LA",
+          "name": "Les circulations d'argent à travers la holding",
+          "questions": [
+            {
+              "code": "M11-LA-Q01",
+              "text": "Quels sont les types de holding ?",
+              "type": "multi_select",
+              "options": [
+                { "text": "Animatrice", "is_correct": true },
+                { "text": "Passive (pure)", "is_correct": true },
+                { "text": "Communautaire", "is_correct": false }
+              ]
+            },
+            {
+              "code": "M11-LA-Q02",
+              "text": "Quels sont les intérêts d'une holding ?",
+              "type": "multi_select",
+              "options": [
+                { "text": "Faire circuler la trésorerie entre filiales", "is_correct": true },
+                { "text": "Réinvestir dans le groupe avec une fiscalité optimisée (régime mère-fille)", "is_correct": true },
+                { "text": "Optimiser la fiscalité globale du groupe", "is_correct": true }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M11-LB",
+          "name": "Le démembrement pour faciliter la transmission",
+          "questions": [
+            {
+              "code": "M11-LB-Q01",
+              "text": "De quoi est composée la pleine propriété ?",
+              "type": "multi_select",
+              "options": [
+                { "text": "Usus (droit d'usage)", "is_correct": true },
+                { "text": "Abusus (droit de disposer)", "is_correct": true },
+                { "text": "Fructus (droit aux fruits)", "is_correct": true }
+              ]
+            },
+            {
+              "code": "M11-LB-Q02",
+              "text": "Selon le barème fiscal (art. 669 CGI), quelle est la valeur de l'usufruit pour un usufruitier entre 41 et 50 ans révolus ?",
+              "type": "single_select",
+              "options": [
+                { "text": "20%", "is_correct": false },
+                { "text": "40%", "is_correct": false },
+                { "text": "60%", "is_correct": true }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M11-LC",
+          "name": "Droit des successions et donations",
+          "questions": [
+            {
+              "code": "M11-LC-Q01",
+              "text": "Quel est l'abattement maximal pour une donation à un enfant tous les 15 ans ?",
+              "type": "single_select",
+              "options": [
+                { "text": "50 000 €", "is_correct": false },
+                { "text": "80 000 €", "is_correct": false },
+                { "text": "100 000 €", "is_correct": true }
+              ]
+            },
+            {
+              "code": "M11-LC-Q02",
+              "text": "Un enfant ne peut pas être totalement déshérité :",
+              "type": "single_select",
+              "options": [
+                { "text": "Vrai (réserve héréditaire)", "is_correct": true },
+                { "text": "Faux", "is_correct": false }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M11-LD",
+          "name": "Régimes matrimoniaux au coeur de l'entreprise",
+          "questions": [
+            {
+              "code": "M11-LD-Q01",
+              "text": "Comment s'appelle le régime standard du mariage en France (à défaut de contrat) ?",
+              "type": "single_select",
+              "options": [
+                { "text": "Séparation de biens", "is_correct": false },
+                { "text": "Communauté universelle", "is_correct": false },
+                { "text": "Communauté réduite aux acquêts", "is_correct": true }
+              ]
+            },
+            {
+              "code": "M11-LD-Q02",
+              "text": "Le PACS s'apparente par défaut à quel régime matrimonial ?",
+              "type": "single_select",
+              "options": [
+                { "text": "Communauté réduite aux acquêts", "is_correct": false },
+                { "text": "Séparation de biens", "is_correct": true },
+                { "text": "Communauté universelle", "is_correct": false }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "module": "M12",
+      "name": "Astuces",
+      "lessons": [
+        {
+          "code": "M12-LA",
+          "name": "Aller plus loin dans la recherche de biens",
+          "questions": [
+            {
+              "code": "M12-LA-Q01",
+              "text": "Comment être le plus rapide pendant la recherche ?",
+              "type": "multi_select",
+              "options": [
+                { "text": "Contacter les mairies (préemptions, biens vacants)", "is_correct": true },
+                { "text": "Trouver les propriétaires en ligne (cadastre, registres)", "is_correct": true },
+                { "text": "Avoir une offre d'achat prête à dégainer", "is_correct": true }
+              ]
+            },
+            {
+              "code": "M12-LA-Q02",
+              "text": "Comment visiter sans se déplacer ?",
+              "type": "multi_select",
+              "options": [
+                { "text": "Demander une visite virtuelle en visio", "is_correct": true },
+                { "text": "Demander à un membre de l'équipe (ou un chasseur) de se déplacer", "is_correct": true },
+                { "text": "Refuser de visiter et acheter sur photos", "is_correct": false }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M12-LB",
+          "name": "Une gestion 100% déléguée",
+          "questions": [
+            {
+              "code": "M12-LB-Q01",
+              "text": "On évite les joints blancs pour le carrelage (ils jaunissent) :",
+              "type": "single_select",
+              "options": [
+                { "text": "Vrai", "is_correct": true },
+                { "text": "Faux", "is_correct": false }
+              ]
+            },
+            {
+              "code": "M12-LB-Q02",
+              "text": "On optimise son temps en supprimant les intermédiaires :",
+              "type": "single_select",
+              "options": [
+                { "text": "Vrai", "is_correct": true },
+                { "text": "Faux", "is_correct": false }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M12-LC",
+          "name": "Adapter sa fiscalité en fonction de sa stratégie",
+          "questions": [
+            {
+              "code": "M12-LC-Q01",
+              "text": "Quel est le plafond d'exonération d'impôt en 2026 (article 35 bis CGI) pour la location meublée d'une partie de sa résidence principale en Île-de-France ?",
+              "type": "single_select",
+              "options": [
+                { "text": "157 €/m²/an (plafond province)", "is_correct": false },
+                { "text": "213 €/m²/an hors charges", "is_correct": true },
+                { "text": "300 €/m²/an", "is_correct": false }
+              ]
+            },
+            {
+              "code": "M12-LC-Q02",
+              "text": "Quel pourcentage de la valeur d'un bien entièrement payé peut être emprunté en l'hypothéquant ?",
+              "type": "single_select",
+              "options": [
+                { "text": "50%", "is_correct": false },
+                { "text": "70%", "is_correct": true },
+                { "text": "90%", "is_correct": false }
+              ]
+            },
+            {
+              "code": "M12-LC-Q03",
+              "text": "Quelle stratégie peut permettre d'éviter ou réduire l'Impôt sur la Fortune Immobilière (IFI) ?",
+              "type": "single_select",
+              "options": [
+                { "text": "Louer sa résidence principale en LCD", "is_correct": false },
+                { "text": "Revendre un bien net de crédit et réinvestir à crédit", "is_correct": true },
+                { "text": "Domicilier fictivement ses revenus locatifs à l'étranger", "is_correct": false }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "module": "M13",
+      "name": "FAQ immobilière",
+      "lessons": [
+        {
+          "code": "M13-LA",
+          "name": "Les réponses sur le financement et la banque",
+          "questions": [
+            {
+              "code": "M13-LA-Q01",
+              "text": "Les banques peuvent-elles prêter jusqu'à 27 ans en 2026 ?",
+              "type": "single_select",
+              "options": [
+                { "text": "Oui (uniquement en VEFA, CCMI ou achat dans l'ancien avec travaux > 10% du montant emprunté, sinon 25 ans max)", "is_correct": true },
+                { "text": "Non (25 ans est un plafond strict sans exception)", "is_correct": false }
+              ]
+            },
+            {
+              "code": "M13-LA-Q02",
+              "text": "Dois-je attendre d'avoir signé un compromis pour aller voir mon banquier ?",
+              "type": "single_select",
+              "options": [
+                { "text": "Oui", "is_correct": false },
+                { "text": "Non (faire valider sa capacité d'emprunt avant)", "is_correct": true }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M13-LB",
+          "name": "Plus de doutes sur les travaux et la location",
+          "questions": [
+            {
+              "code": "M13-LB-Q01",
+              "text": "Est-ce une bonne idée de signer un mandat de recherche exclusif avec un chasseur ?",
+              "type": "single_select",
+              "options": [
+                { "text": "Oui (si le chasseur est sérieux et que tu manques de temps)", "is_correct": true },
+                { "text": "Non", "is_correct": false }
+              ]
+            },
+            {
+              "code": "M13-LB-Q02",
+              "text": "Dois-je souscrire à une assurance Dommage-ouvrage pour une rénovation simple ?",
+              "type": "single_select",
+              "options": [
+                { "text": "Oui (toujours obligatoire)", "is_correct": false },
+                { "text": "Non (uniquement obligatoire pour les travaux affectant la solidité de l'ouvrage ou un élément d'équipement indissociable)", "is_correct": true }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M13-LC",
+          "name": "Maîtriser parfaitement la fiscalité et les sociétés",
+          "questions": [
+            {
+              "code": "M13-LC-Q01",
+              "text": "Puis-je passer du régime microBIC au régime réel LMNP en cours d'année ?",
+              "type": "single_select",
+              "options": [
+                { "text": "Oui (option à formuler avant la date limite de dépôt de la déclaration des revenus de l'année concernée)", "is_correct": true },
+                { "text": "Non (uniquement à la création de l'activité)", "is_correct": false }
+              ]
+            },
+            {
+              "code": "M13-LC-Q02",
+              "text": "Mes parts de SCI sont-elles intégrées dans l'assiette de l'IFI ?",
+              "type": "single_select",
+              "options": [
+                { "text": "Oui (à hauteur de la valeur des actifs immobiliers détenus, nette des dettes)", "is_correct": true },
+                { "text": "Non (les parts de société sont exclues de l'IFI)", "is_correct": false }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "module": "M14",
+      "name": "Bonus",
+      "lessons": [
+        {
+          "code": "M14-LA",
+          "name": "Trouver un associé pour enchaîner en immo",
+          "questions": [
+            {
+              "code": "M14-LA-Q01",
+              "text": "Quels sont les points qui peuvent me bloquer pour continuer à investir seul·e ?",
+              "type": "multi_select",
+              "options": [
+                { "text": "Taux d'endettement trop élevé", "is_correct": true },
+                { "text": "Manque d'apport", "is_correct": true },
+                { "text": "Rentabilité insuffisante des projets précédents", "is_correct": true }
+              ]
+            },
+            {
+              "code": "M14-LA-Q02",
+              "text": "Quels sont les critères pour trouver un bon associé ?",
+              "type": "multi_select",
+              "options": [
+                { "text": "Entente et feeling personnel", "is_correct": true },
+                { "text": "Proximité géographique", "is_correct": true },
+                { "text": "Compétences complémentaires et objectifs alignés", "is_correct": true }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M14-LB",
+          "name": "Vivre de la SCI à l'IS : mythe ou réalité ?",
+          "questions": [
+            {
+              "code": "M14-LB-Q01",
+              "text": "Quelles charges puis-je déduire de ma société (sous conditions de lien avec l'activité) ?",
+              "type": "multi_select",
+              "options": [
+                { "text": "Restaurant professionnel (avec justificatif client/partenaire)", "is_correct": true },
+                { "text": "Ticket d'entrée à Disneyland personnel", "is_correct": false },
+                { "text": "Péages liés à un déplacement professionnel", "is_correct": true }
+              ]
+            },
+            {
+              "code": "M14-LB-Q02",
+              "text": "Je peux déclarer des indemnités kilométriques (IK) si ma voiture est achetée par ma société :",
+              "type": "single_select",
+              "options": [
+                { "text": "Vrai", "is_correct": false },
+                { "text": "Faux (les IK concernent uniquement les véhicules personnels)", "is_correct": true }
+              ]
+            }
+          ]
+        },
+        {
+          "code": "M14-LC",
+          "name": "Exemple de recherche de biens en LIVE",
+          "questions": [
+            {
+              "code": "M14-LC-Q01",
+              "text": "Je peux utiliser Google Maps pour cerner la ville :",
+              "type": "single_select",
+              "options": [
+                { "text": "Oui", "is_correct": true },
+                { "text": "Non", "is_correct": false }
+              ]
+            },
+            {
+              "code": "M14-LC-Q02",
+              "text": "L'historique des annonces et des prix peut se trouver sur le site :",
+              "type": "single_select",
+              "options": [
+                { "text": "LeBonCoin", "is_correct": false },
+                { "text": "Kozikaza", "is_correct": false },
+                { "text": "Castorus", "is_correct": true }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

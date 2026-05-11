@@ -1,0 +1,1939 @@
+[
+  {
+    "idpage": 3907067,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Comment avoir un bon mindset ?",
+        "choices": [
+          "Trouver son pourquoi",
+          "Se libérer des croyances limitantes",
+          "Rester motivé au quotidien"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Qu'est-ce qui peut m'aider à réussir ?",
+        "choices": [
+          "Participer à des rencontres",
+          "Créer un réseau dynamique",
+          "Rester seul dans mon lit"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-134758": [
+        "469883",
+        "469884",
+        "469885"
+      ],
+      "reponse-134759": [
+        "469886",
+        "469887",
+        "469888"
+      ]
+    }
+  },
+  {
+    "idpage": 3907068,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Qu'est-ce qu'un actif ?",
+        "choices": [
+          "Quelque chose qui retire de l'argent de ma poche",
+          "Quelque chose qui stagne avec le temps",
+          "Quelque chose qui met de l'argent dans ma poche"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Quelles sont les bonnes pratiques financières ?",
+        "choices": [
+          "Payer en liquide tout le temps",
+          "Épargner tous les mois",
+          "Ne pas être dans le rouge"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-134780": [
+        "469953",
+        "469954",
+        "469955"
+      ],
+      "reponse-134781": [
+        "469956",
+        "469957",
+        "469958"
+      ]
+    }
+  },
+  {
+    "idpage": 3907069,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "La signature du compromis se fait avant les travaux :",
+        "choices": [
+          "Vrai",
+          "Faux"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Je ne deviens réellement propriétaire qu'à la signature de l'acte authentique :",
+        "choices": [
+          "Vrai",
+          "Faux"
+        ]
+      }
+    ],
+    "inputsByQ": {}
+  },
+  {
+    "idpage": 3907070,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Le taux d'endettement se définit par :",
+        "choices": [
+          "Les revenus sur les dépenses",
+          "Le restant à vivre sur les crédits",
+          "Les dépenses sur les revenus"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "De quoi dépendra ma stratégie d'investissement ?",
+        "choices": [
+          "Priorité",
+          "Temps",
+          "Risque"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-134784": [
+        "469967",
+        "469968",
+        "469971"
+      ],
+      "reponse-134785": [
+        "469969",
+        "469970",
+        "469972"
+      ]
+    }
+  },
+  {
+    "idpage": 3907071,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "La stratégie de colocation permet :",
+        "choices": [
+          "De louer moins cher",
+          "D'acheter gros à prix faible",
+          "D'avoir une rentabilité plus élevée"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Quelles sont les astuces en colocation ?",
+        "choices": [
+          "Rédiger un règlement intérieur",
+          "Installer des caméras dans les parties privatives",
+          "Louer en courte durée pour ne pas avoir de vacance"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-134786": [
+        "469973",
+        "469974",
+        "469975"
+      ],
+      "reponse-134787": [
+        "469976",
+        "469977",
+        "469978"
+      ]
+    }
+  },
+  {
+    "idpage": 3907072,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Quels sont les avantages de l'immeuble de rapport ?",
+        "choices": [
+          "Prix de gros donc moins cher",
+          "Gestion facilitée car concentrée",
+          "Diversification des logements"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Quelles sont les inconvénients d'un immeuble de rapport ?",
+        "choices": [
+          "Charges de copropriété élevées",
+          "Poids des responsabilités intégral",
+          "Entretien de façon indépendante"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-134788": [
+        "469981",
+        "469982",
+        "469983"
+      ],
+      "reponse-134789": [
+        "469984",
+        "469985",
+        "469986"
+      ]
+    }
+  },
+  {
+    "idpage": 3907073,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Quelles sont les obligations de la location courte durée ?",
+        "choices": [
+          "Déclaration en mairie",
+          "Autorisation du règlement de copropriété",
+          "Manger des pommes"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Quelle gestion me prendra le moins de temps en courte durée ?",
+        "choices": [
+          "Personnelle",
+          "Semi-déléguée",
+          "100% déléguée"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-134790": [
+        "469987",
+        "469988",
+        "469989"
+      ],
+      "reponse-134791": [
+        "469990",
+        "469991",
+        "469992"
+      ]
+    }
+  },
+  {
+    "idpage": 3907074,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Les locaux commerciaux sont une stratégie d'investissement pour les débutants :",
+        "choices": [
+          "Vrai",
+          "Faux"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Qui dit parking dit ?",
+        "choices": [
+          "Faible rentabilité",
+          "Grosse gestion",
+          "Faibles charges"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-134792": [
+        "469993",
+        "469994"
+      ],
+      "reponse-134793": [
+        "469996",
+        "469997",
+        "469998"
+      ]
+    }
+  },
+  {
+    "idpage": 3907075,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Quels sont les points à regarder lors d'une division ?",
+        "choices": [
+          "Évacuation des eaux",
+          "Compteurs électriques",
+          "Problématique des places de parking"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Puis-je revendre par lot sans compteur électrique individuel ?",
+        "choices": [
+          "Oui",
+          "Non"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-134794": [
+        "470001",
+        "470002",
+        "470006"
+      ]
+    }
+  },
+  {
+    "idpage": 3907076,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Quels sont les avantages de faire un achat-revente en RP ?",
+        "choices": [
+          "Exonération de la taxe sur la plus-value",
+          "Risque de requalification",
+          "Récupération de cash rapidement"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Comment ne pas risquer la requalification marchand de biens en achat-revente RP ?",
+        "choices": [
+          "Habiter réellement dans le logement",
+          "Revendre dans les 2 mois",
+          "Ne pas souscrire aux contrats d'énergie"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-134796": [
+        "470007",
+        "470008",
+        "470009"
+      ],
+      "reponse-134797": [
+        "470010",
+        "470011",
+        "470046"
+      ]
+    }
+  },
+  {
+    "idpage": 3907077,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Il n'est pas conseillé d'aller à plus de 2h de son lieu de domicile pour investir :",
+        "choices": [
+          "Vrai",
+          "Faux"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Investir dans une petite ville permet d'avoir :",
+        "choices": [
+          "Une liquidité de revente importante",
+          "Une rentabilité plus élevée",
+          "Un prix d'achat plus faible"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-134809": [
+        "470050",
+        "470051",
+        "470052"
+      ]
+    }
+  },
+  {
+    "idpage": 3907078,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Pour être efficace dans mes recherches je dois :",
+        "choices": [
+          "Me montrer sur le terrain",
+          "Aller discuter avec les commerçants",
+          "Utiliser des cartes de visite"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Le réseau d'apporteurs d'affaires ne sert à rien :",
+        "choices": [
+          "Vrai",
+          "Faux"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-134810": [
+        "470053",
+        "470054",
+        "470060"
+      ]
+    }
+  },
+  {
+    "idpage": 3907079,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Quels sont les critères que je dois définir pour mes recherches ?",
+        "choices": [
+          "Secteur",
+          "Année de construction",
+          "Prix"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Quels sont les pistes de recherche supplémentaires ?",
+        "choices": [
+          "Mairie",
+          "Artisans",
+          "Concierges"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-134812": [
+        "470063",
+        "470064",
+        "470065"
+      ],
+      "reponse-134813": [
+        "470066",
+        "470067",
+        "470068"
+      ]
+    }
+  },
+  {
+    "idpage": 3907080,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Il est inutile d'étudier la géographie dans une analyse de marché :",
+        "choices": [
+          "Vrai",
+          "Faux"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Quels sont les outils indispensables pour faire une bonne analyse ?",
+        "choices": [
+          "DVF ETALAB",
+          "Facebook",
+          "INSEE"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-134815": [
+        "470072",
+        "470073",
+        "470074"
+      ]
+    }
+  },
+  {
+    "idpage": 3907081,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Comment se définit la rentabilité ?",
+        "choices": [
+          "Les revenus moins toutes les charges",
+          "Les revenus divisés par le prix d'acquisition",
+          "Les flux entrants sur les flux sortants"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Quelle rentabilité dois-je viser ?",
+        "choices": [
+          "La plus importante possible",
+          "Celle qui correspond à mes objectifs",
+          "Inférieure à 6%"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-134816": [
+        "470078",
+        "470079",
+        "470094"
+      ],
+      "reponse-134817": [
+        "470080",
+        "470081",
+        "470082"
+      ]
+    }
+  },
+  {
+    "idpage": 3907082,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Le business plan est indispensable :",
+        "choices": [
+          "Vrai",
+          "Faux"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Pour être plus précis dans mon business plan, que puis-je prendre en compte ?",
+        "choices": [
+          "La production mondiale de cacao",
+          "La vacance locative",
+          "L'indexation des loyers"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-134827": [
+        "470109",
+        "470110",
+        "470111"
+      ]
+    }
+  },
+  {
+    "idpage": 3907083,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Quels sont les critères de No Go d'un investissement ?",
+        "choices": [
+          "Rentabilité et cash-flow élevés",
+          "Stress important et logement loin",
+          "Projet trop gros pour moi"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Une fiscalité mal adaptée et peu de travaux, est un critère de Go :",
+        "choices": [
+          "Vrai",
+          "Faux"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-134829": [
+        "470115",
+        "470116",
+        "470125"
+      ],
+      "reponse-134830": [
+        "470117",
+        "470118"
+      ]
+    }
+  },
+  {
+    "idpage": 3907084,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Lors d'un appel avant visite, je dois demander des informations sur :",
+        "choices": [
+          "Le bien immobilier",
+          "La voisine du propriétaire...",
+          "Le vendeur"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Avant de terminer une visite, que ne dois-je pas oublier ?",
+        "choices": [
+          "Aller au toilette dans le bien",
+          "Prendre toutes les mesures",
+          "Rédiger des notes"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-134835": [
+        "470134",
+        "470135",
+        "470136"
+      ],
+      "reponse-134836": [
+        "470137",
+        "470138",
+        "470148"
+      ]
+    }
+  },
+  {
+    "idpage": 3907085,
+    "ok": false,
+    "reason": "no quiz iframe"
+  },
+  {
+    "idpage": 3907086,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Le diagnostic électrique est valable 3 ans pour de la location :",
+        "choices": [
+          "Vrai",
+          "Faux"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "En quelle année seront interdits de location les DPE F ?",
+        "choices": [
+          "2025",
+          "2028",
+          "2034"
+        ]
+      }
+    ],
+    "inputsByQ": {}
+  },
+  {
+    "idpage": 3907087,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Tout se négocie en immobilier :",
+        "choices": [
+          "Vrai",
+          "Faux"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Quelles sont les techniques de négociation ?",
+        "choices": [
+          "Faire jouer la puissance supérieure",
+          "Faire des offres à -80%",
+          "Ne jamais faire d'offre"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-134844": [
+        "470157",
+        "470158",
+        "470159"
+      ]
+    }
+  },
+  {
+    "idpage": 3907088,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Mettre un dépôt de garantie en tant qu'acheteur lors d'un compromis est obligatoire :",
+        "choices": [
+          "Vrai",
+          "Faux"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Quel est mon délai de rétractation après signature du compromis en tant que particulier ?",
+        "choices": [
+          "5 jours",
+          "8 jours",
+          "10 jours"
+        ]
+      }
+    ],
+    "inputsByQ": {}
+  },
+  {
+    "idpage": 3907089,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Comment s'appelle le crédit bancaire où l'on ne rembourse le capital qu'à la fin ?",
+        "choices": [
+          "Prêt amortissable",
+          "Prêt relais",
+          "Prêt IN FINE"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Puis-je augmenter la durée de mon crédit après un rachat de prêt ?",
+        "choices": [
+          "Oui",
+          "Non"
+        ]
+      }
+    ],
+    "inputsByQ": {}
+  },
+  {
+    "idpage": 3907090,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Je dois négocier le taux pour 0,2% de gain sur les intérêts :",
+        "choices": [
+          "Oui",
+          "Non"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Le taux et la durée d'un crédit c'est bien, mais il faut aussi penser :",
+        "choices": [
+          "À l'assurance emprunteur",
+          "Au différé",
+          "Aux IRA"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-134860": [
+        "470208",
+        "470209",
+        "470215"
+      ]
+    }
+  },
+  {
+    "idpage": 3907091,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Les points importants pour ma demande de financement ?",
+        "choices": [
+          "Tenue propre et correcte",
+          "Dossier complet",
+          "Investissement à cash-flow négatif"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Entre la demande de financement et le déblocage des fonds, il se passe généralement :",
+        "choices": [
+          "30 jours",
+          "70 jours",
+          "120 jours"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-134864": [
+        "470218",
+        "470219",
+        "470228"
+      ]
+    }
+  },
+  {
+    "idpage": 3907092,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Quels sont les critères qui vont me permettre d'améliorer mon dossier bancaire ?",
+        "choices": [
+          "Perte d'emploi",
+          "Épargne",
+          "Expérience en immobilier"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Un accord de principe engage le banquier :",
+        "choices": [
+          "Vrai",
+          "Faux"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-134872": [
+        "470241",
+        "470242",
+        "470243"
+      ]
+    }
+  },
+  {
+    "idpage": 3907093,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Que dois-je vérifier avant de choisir mon entreprise travaux ?",
+        "choices": [
+          "KBIS",
+          "Garantie décennale",
+          "Les avis clients"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Mon artisan est mon meilleur partenaire :",
+        "choices": [
+          "Vrai",
+          "Faux"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-134877": [
+        "470256",
+        "470257",
+        "470258"
+      ]
+    }
+  },
+  {
+    "idpage": 3907094,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Il me faut au minimum 3 devis pour comparer les tarifs de rénovation :",
+        "choices": [
+          "Vrai",
+          "Faux",
+          "J'ai peur"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Je dois mettre des pénalités de retard pour une rénovation simple d'un studio :",
+        "choices": [
+          "Vrai",
+          "Faux"
+        ]
+      }
+    ],
+    "inputsByQ": {}
+  },
+  {
+    "idpage": 3907095,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Comment s'appelle les plaques de BA13 spéciales pour les pièces humides ?",
+        "choices": [
+          "Thermique",
+          "Anti-bruit",
+          "Hydrofuge"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "La peinture est un poste de rénovation qui coûte très cher :",
+        "choices": [
+          "Vrai",
+          "Faux"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-134884": [
+        "470275",
+        "470276",
+        "470277"
+      ]
+    }
+  },
+  {
+    "idpage": 3907096,
+    "ok": false,
+    "reason": "no quiz iframe"
+  },
+  {
+    "idpage": 3907097,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Mettre une petite kitchenette dans la cuisine est une bonne idée :",
+        "choices": [
+          "Vrai",
+          "Faux",
+          "Pain au chocolat"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Quelles sont les bonnes recommandations dans une salle de bain ?",
+        "choices": [
+          "Mettre du parquet stratifié",
+          "VMC obligatoire",
+          "Chauffe eau extra-plat"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-134889": [
+        "470289",
+        "470290",
+        "470297"
+      ]
+    }
+  },
+  {
+    "idpage": 3907098,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Il n'y a pas besoin de signer de document pour la réception d'un chantier :",
+        "choices": [
+          "Vrai",
+          "Faux",
+          "Erreur 404"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Quelle est la garantie qui me protège du bon fonctionnement des équipements dissociables ?",
+        "choices": [
+          "Garantie de Parfait Achèvement",
+          "Garantie Biennale",
+          "Garantie Décennale"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-134894": [
+        "470304",
+        "470305",
+        "470306"
+      ]
+    }
+  },
+  {
+    "idpage": 3907099,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Que veut dire PLU ?",
+        "choices": [
+          "Position du Lotus Uniforme",
+          "Préparer son Local Utilement",
+          "Plan Local d'Urbanisme"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Quelle autorisation nécessite un ravalement de façade ?",
+        "choices": [
+          "Demande préalable",
+          "Permis de construire",
+          "Permis d'aménager"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-134898": [
+        "470316",
+        "470317",
+        "470318"
+      ]
+    }
+  },
+  {
+    "idpage": 3907100,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "90% des annonces en ligne n'ont pas de belles photos, je fais pareil ?",
+        "choices": [
+          "Oui",
+          "Non"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Qu'est-ce qui va m'aider à différencier mon annonce ?",
+        "choices": [
+          "Le texte",
+          "Les photos",
+          "Le géomètre expert"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-134908": [
+        "470342",
+        "470343",
+        "470344"
+      ]
+    }
+  },
+  {
+    "idpage": 3907101,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Quels sont les documents que je peux demander à un locataire candidat ?",
+        "choices": [
+          "Fiches de salaire",
+          "Numéro de sécurité sociale",
+          "Avis d'imposition"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Le locataire a fait des dégâts mais je n'ai rien noté sur l'état des lieux de sortie, puis-je quand même récupérer la caution ?",
+        "choices": [
+          "Oui",
+          "Non",
+          "Cash-flow brut"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-134914": [
+        "470359",
+        "470360",
+        "470369"
+      ]
+    }
+  },
+  {
+    "idpage": 3907102,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Quelle est la durée d'un bail de location vide ?",
+        "choices": [
+          "9 mois",
+          "1 an",
+          "3 ans"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Quelles sont les charges récupérables auprès du locataire ?",
+        "choices": [
+          "Entretien courant de l'immeuble",
+          "Taxe des ordures ménagères",
+          "Réparation de la toiture"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-134927": [
+        "470393",
+        "470394",
+        "470395"
+      ]
+    }
+  },
+  {
+    "idpage": 3907103,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "La garantie Visale est payante pour le bailleur :",
+        "choices": [
+          "Vrai",
+          "Faux",
+          "Je ne sais pas"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "La procédure d'expulsion suite à des impayés est longue et coûteuse :",
+        "choices": [
+          "Vrai",
+          "Faux"
+        ]
+      }
+    ],
+    "inputsByQ": {}
+  },
+  {
+    "idpage": 3907104,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Les loyers de location meublée sont des revenus :",
+        "choices": [
+          "Foncier",
+          "BNC",
+          "BIC"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Si je suis mariée avec un enfant à charge, mon quotient familial est de :",
+        "choices": [
+          "2",
+          "2,5",
+          "3"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-134946": [
+        "470454",
+        "470455",
+        "470456"
+      ],
+      "reponse-134947": [
+        "470457",
+        "470458",
+        "470486"
+      ]
+    }
+  },
+  {
+    "idpage": 3907105,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Quel est l'abattement du régime MICROBIC ?",
+        "choices": [
+          "30%",
+          "40%",
+          "50%"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Quel est l'intérêt de l'amortissement ?",
+        "choices": [
+          "Diminuer son résultat",
+          "Décomposer le prix pour le déduire",
+          "Aucun intérêt"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-134957": [
+        "470487",
+        "470488",
+        "470489"
+      ],
+      "reponse-134958": [
+        "470490",
+        "470491",
+        "470492"
+      ]
+    }
+  },
+  {
+    "idpage": 3907106,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Qui paye au final la TVA ?",
+        "choices": [
+          "Le producteur",
+          "Le consommateur",
+          "Personne"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "La taxe foncière va être supprimée en 2023 pour les résidences principales :",
+        "choices": [
+          "Vrai",
+          "Faux",
+          "Fraise chantilly"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-134959": [
+        "470493",
+        "470494",
+        "470495"
+      ],
+      "reponse-134960": [
+        "470496",
+        "470497",
+        "470498"
+      ]
+    }
+  },
+  {
+    "idpage": 3907107,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Je revends une résidence secondaire avant 5 ans de détention, quelle est la taxe sur la plus-value ?",
+        "choices": [
+          "17,2%",
+          "36,2%",
+          "50%"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "À quel montant suis-je assujetti à la surtaxe de la plus-value ?",
+        "choices": [
+          "30 000 €",
+          "40 000 €",
+          "50 000 €"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-134962": [
+        "470502",
+        "470503",
+        "470504"
+      ],
+      "reponse-134963": [
+        "470505",
+        "470506",
+        "470507"
+      ]
+    }
+  },
+  {
+    "idpage": 3907108,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Passer sa SCI de l'IR à l'IS est irrévocable :",
+        "choices": [
+          "Vrai",
+          "Faux",
+          "À vos souhaits !"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Dans quelle société puis-je faire exclusivement de la location meublée ?",
+        "choices": [
+          "SCI IR",
+          "SCI IS",
+          "SARL de famille"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-134983": [
+        "470559",
+        "470560",
+        "470561"
+      ]
+    }
+  },
+  {
+    "idpage": 3907109,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Comment me protéger dans une société ?",
+        "choices": [
+          "Mettre un fort capital",
+          "Rédiger un pacte d'associés",
+          "Ouvrir un compte commun"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Ma société peut me prêter de l'argent en nom propre :",
+        "choices": [
+          "Vrai",
+          "Faux",
+          "Bitcoin"
+        ]
+      }
+    ],
+    "inputsByQ": {}
+  },
+  {
+    "idpage": 3907110,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Quel statut social du dirigeant est le moins impactant pour les finances de l'entreprise ?",
+        "choices": [
+          "Assimilé salarié",
+          "Travailleur non salarié",
+          "Travailleur non travailleur"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Le versement des dividendes est le plus intéressant en :",
+        "choices": [
+          "SCI IR",
+          "SARL",
+          "SAS"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-134988": [
+        "470573",
+        "470574",
+        "470575"
+      ],
+      "reponse-134989": [
+        "470576",
+        "470577",
+        "470578"
+      ]
+    }
+  },
+  {
+    "idpage": 3907111,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Ma SCI achète un bien immobilier, dans quelle colonne se situe ce bien ?",
+        "choices": [
+          "L'actif",
+          "Le passif"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "À qui appartient la dette d'une entreprise ?",
+        "choices": [
+          "Aux associés",
+          "Aux fournisseurs et créanciers",
+          "Aux actionnaires"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-134995": [
+        "470595",
+        "470596"
+      ],
+      "reponse-134996": [
+        "470598",
+        "470599",
+        "470600"
+      ]
+    }
+  },
+  {
+    "idpage": 3907112,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Quel est le taux de l'IS pour un bénéfice de 20 000 € ?",
+        "choices": [
+          "15%",
+          "25%",
+          "33%"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Comment s'appelle la taxe sur les dividendes ?",
+        "choices": [
+          "La Flat Taxe",
+          "Le PFU",
+          "Le PFI"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-135001": [
+        "470613",
+        "470614",
+        "470620"
+      ],
+      "reponse-135002": [
+        "470615",
+        "470616",
+        "470617"
+      ]
+    }
+  },
+  {
+    "idpage": 3907113,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Il vaut mieux se verser de gros salaires en SARL :",
+        "choices": [
+          "Vrai",
+          "Faux"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Il vaut mieux se verser des gros dividendes en SARL :",
+        "choices": [
+          "Vrai",
+          "Faux"
+        ]
+      }
+    ],
+    "inputsByQ": {}
+  },
+  {
+    "idpage": 3907114,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Quels sont les types de holding ?",
+        "choices": [
+          "Animatrice",
+          "Passive",
+          "Commune"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Quels sont les intérêts d'une holding ?",
+        "choices": [
+          "Faire circuler la trésorerie",
+          "Réinvestir dans un groupe",
+          "Optimiser la fiscalité"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-135012": [
+        "470645",
+        "470646",
+        "470650"
+      ],
+      "reponse-135013": [
+        "470647",
+        "470648",
+        "470652"
+      ]
+    }
+  },
+  {
+    "idpage": 3907115,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "De quoi est composée la pleine propriété ?",
+        "choices": [
+          "Usus",
+          "Abusus",
+          "Fructus"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Quelle est la valeur de l'usufruit pour un parent plein propriétaire de 45 ans ?",
+        "choices": [
+          "20%",
+          "40%",
+          "60%"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-135014": [
+        "470653",
+        "470654",
+        "470655"
+      ],
+      "reponse-135015": [
+        "470656",
+        "470657",
+        "470658"
+      ]
+    }
+  },
+  {
+    "idpage": 3907116,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Quel est le montant maximal que l'on puisse donner à un enfant tous les 15 ans ?",
+        "choices": [
+          "50 000 €",
+          "80 000 €",
+          "100 000 €"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Un enfant ne peut pas être déshérité :",
+        "choices": [
+          "Vrai",
+          "Faux"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-135016": [
+        "470659",
+        "470660",
+        "470661"
+      ]
+    }
+  },
+  {
+    "idpage": 3907117,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Comment s'appelle le régime standard du mariage ?",
+        "choices": [
+          "Séparation de biens",
+          "Communauté universelle",
+          "Communauté réduite aux acquêts"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Le PACS s'apparente à quel régime matrimonial ?",
+        "choices": [
+          "Communauté",
+          "Séparation de biens",
+          "Union sacrée"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-135018": [
+        "470666",
+        "470667",
+        "470668"
+      ],
+      "reponse-135019": [
+        "470669",
+        "470670",
+        "470673"
+      ]
+    }
+  },
+  {
+    "idpage": 3907118,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Comment être le plus rapide pendant la recherche ?",
+        "choices": [
+          "Contacter les mairies",
+          "Trouver les propriétaires en ligne",
+          "Avoir une offre d'achat prête"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Comment faire pour visiter sans se déplacer ?",
+        "choices": [
+          "Faire une visite virtuelle",
+          "Demander à son équipe de se déplacer",
+          "Ne pas se déplacer"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-135020": [
+        "470674",
+        "470675",
+        "470676"
+      ],
+      "reponse-135021": [
+        "470677",
+        "470678",
+        "470679"
+      ]
+    }
+  },
+  {
+    "idpage": 3907119,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "On évite des joints blancs pour le carrelage :",
+        "choices": [
+          "Vrai",
+          "Faux"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "On optimise son temps en supprimant les intermédiaires :",
+        "choices": [
+          "Vrai",
+          "Faux",
+          "Banane flambée"
+        ]
+      }
+    ],
+    "inputsByQ": {}
+  },
+  {
+    "idpage": 3907120,
+    "ok": true,
+    "nbQ": 3,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Quelle est la limite d’exonération d’imposition pour la location courte durée d’une partie de sa résidence principale ?",
+        "choices": [
+          "150 €/m²/an hors charges.",
+          "206 €/m²/an hors charges.",
+          "300 €/m²/an hors charges."
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Quel pourcentage de la valeur d’un bien entièrement payé peut être emprunté en hypothéquant ce bien ?",
+        "choices": [
+          "50 %",
+          "70 %",
+          "90 %"
+        ]
+      },
+      {
+        "num": "03",
+        "question": "Quelle stratégie peut permettre d’éviter l’Impôt sur la Fortune Immobilière (IFI) ?",
+        "choices": [
+          "Louer sa résidence principale en LCD.",
+          "Revendre un bien net de crédit et réinvestir à crédit.",
+          "Domicilier ses revenus locatifs dans un autre pays."
+        ]
+      }
+    ],
+    "inputsByQ": {}
+  },
+  {
+    "idpage": 3907121,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Est-ce que les banques prêtent toujours sur 25 ans ?",
+        "choices": [
+          "Oui",
+          "Non"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Dois-je attendre d'avoir signé un compromis pour aller voir mon banquier ?",
+        "choices": [
+          "Oui",
+          "Non"
+        ]
+      }
+    ],
+    "inputsByQ": {}
+  },
+  {
+    "idpage": 3907122,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Est-ce une bonne idée de signer un mandat de recherche exclusif ?",
+        "choices": [
+          "Oui",
+          "Non"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Dois-je souscrire à une assurance Dommage-ouvrage pour une rénovation simple ?",
+        "choices": [
+          "Oui",
+          "Non"
+        ]
+      }
+    ],
+    "inputsByQ": {}
+  },
+  {
+    "idpage": 3907123,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Est-ce une bonne idée de signer un mandat de recherche exclusif ?",
+        "choices": [
+          "Oui",
+          "Non"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Dois-je souscrire à une assurance Dommage-ouvrage pour une rénovation simple ?",
+        "choices": [
+          "Oui",
+          "Non"
+        ]
+      }
+    ],
+    "inputsByQ": {}
+  },
+  {
+    "idpage": 3907124,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Quels sont les points qui peuvent me bloquer ?",
+        "choices": [
+          "Taux d'endettement",
+          "Manque d'apport",
+          "Rentabilité"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Quels sont les critères pour trouver un bon associé ?",
+        "choices": [
+          "Entente et feeling",
+          "Lieu géographique",
+          "Compétences et objectifs"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-135032": [
+        "470705",
+        "470706",
+        "470710"
+      ],
+      "reponse-135033": [
+        "470707",
+        "470708",
+        "470711"
+      ]
+    }
+  },
+  {
+    "idpage": 3907125,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Quelles sont les charges que je peux déduire de ma société ?",
+        "choices": [
+          "Restaurant",
+          "Ticket d'entrée à Disneyland",
+          "Péage"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Je peux faire des IK si j'achète ma voiture avec ma société :",
+        "choices": [
+          "Vrai",
+          "Faux"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-135034": [
+        "470712",
+        "470713",
+        "470714"
+      ]
+    }
+  },
+  {
+    "idpage": 3907126,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Je peux regarder sur GoogleMaps pour cerner la ville :",
+        "choices": [
+          "Oui",
+          "Non"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "L'historique des annonces peut se trouver sur le site :",
+        "choices": [
+          "LeBonCoin",
+          "Kozikaza",
+          "Castorus"
+        ]
+      }
+    ],
+    "inputsByQ": {}
+  },
+  {
+    "idpage": 3907127,
+    "ok": true,
+    "nbQ": 2,
+    "questions": [
+      {
+        "num": "01",
+        "question": "Comment avoir un bon mindset ?",
+        "choices": [
+          "Trouver son pourquoi",
+          "Se libérer des croyances limitantes",
+          "Rester motivé au quotidien"
+        ]
+      },
+      {
+        "num": "02",
+        "question": "Qu'est-ce qui peut m'aider à réussir ?",
+        "choices": [
+          "Participer à des rencontres",
+          "Créer un réseau dynamique",
+          "Rester seul dans mon lit"
+        ]
+      }
+    ],
+    "inputsByQ": {
+      "reponse-134758": [
+        "469883",
+        "469884",
+        "469885"
+      ],
+      "reponse-134759": [
+        "469886",
+        "469887",
+        "469888"
+      ]
+    }
+  },
+  {
+    "idpage": 3907128,
+    "ok": false,
+    "reason": "no quiz iframe"
+  },
+  {
+    "idpage": 3907129,
+    "ok": false,
+    "reason": "no quiz iframe"
+  },
+  {
+    "idpage": 3907130,
+    "ok": false,
+    "reason": "no quiz iframe"
+  },
+  {
+    "idpage": 3907131,
+    "ok": false,
+    "reason": "no quiz iframe"
+  },
+  {
+    "idpage": 3907132,
+    "ok": false,
+    "reason": "no quiz iframe"
+  }
+]

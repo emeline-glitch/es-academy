@@ -1,11 +1,13 @@
 import { createClient, getCachedUser } from "@/lib/supabase/server";
 import { getLessonBySlug, getLessonBlocks, getResourcesByLesson, getFullCourseStructure } from "@/lib/notion/queries";
 import { generateSignedVideoUrl } from "@/lib/bunny/signed-url";
+import { buildLessonCode, getQuizByLessonCode } from "@/lib/supabase/quiz";
 import { redirect, notFound } from "next/navigation";
 import { VideoPlayer } from "@/components/course/VideoPlayer";
 import { LessonContent } from "@/components/course/LessonContent";
 import { CompletionButton } from "@/components/course/CompletionButton";
 import { Sidebar } from "@/components/course/Sidebar";
+import { QuizForm } from "@/components/course/QuizForm";
 
 export default async function LessonPage({
   params,
@@ -60,6 +62,17 @@ export default async function LessonPage({
   if (currentIndex > 0) prevLesson = allLessons[currentIndex - 1];
   if (currentIndex < allLessons.length - 1) nextLesson = allLessons[currentIndex + 1];
 
+  // Quiz : lookup par lesson_code (M1-LA, M2-LB...) déduit de l'ordre Notion.
+  let quiz: Awaited<ReturnType<typeof getQuizByLessonCode>> = null;
+  for (const { module, lessons } of structure.modules) {
+    const li = lessons.findIndex((l) => l.id === lesson.id);
+    if (li >= 0) {
+      const code = buildLessonCode(module.order, li + 1);
+      quiz = await getQuizByLessonCode(code);
+      break;
+    }
+  }
+
   return (
     <div className="flex -mx-6 -my-8">
       {/* Sidebar */}
@@ -111,6 +124,13 @@ export default async function LessonPage({
                   </a>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* Quiz */}
+          {quiz && quiz.questions.length > 0 && (
+            <div className="mt-10">
+              <QuizForm lessonCode={quiz.lessonCode} questions={quiz.questions} passScore={70} />
             </div>
           )}
 
