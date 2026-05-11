@@ -120,7 +120,7 @@ export default function QuizLanding() {
                 />
                 <span>
                   J&apos;accepte de recevoir mon résultat par email et les emails d&apos;Emeline. J&apos;ai lu la{" "}
-                  <a href="/politique-confidentialite" target="_blank" className="text-es-green hover:underline">
+                  <a href="/politique-confidentialite" target="_blank" rel="noopener" className="text-es-green hover:underline">
                     politique de confidentialité
                   </a>
                   . *

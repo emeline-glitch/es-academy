@@ -1032,21 +1032,21 @@ function FormulaireOptIn({ onStart }: { onStart?: () => void }) {
           type="text"
           placeholder="Ton prénom"
           required
-          className="px-4 py-3 rounded-xl outline-none font-body text-lg"
+          className="px-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 font-body text-lg"
           style={{ background: C.sand, border: `2px solid ${C.ink}30` }}
         />
         <input
           type="email"
           placeholder="Ton email"
           required
-          className="px-4 py-3 rounded-xl outline-none font-body text-lg"
+          className="px-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 font-body text-lg"
           style={{ background: C.sand, border: `2px solid ${C.ink}30` }}
         />
         <input
           type="tel"
           placeholder="Ton numéro de téléphone"
           required
-          className="px-4 py-3 rounded-xl outline-none font-body text-lg"
+          className="px-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 font-body text-lg"
           style={{ background: C.sand, border: `2px solid ${C.ink}30` }}
         />
         <p className="text-xs text-left -mt-1 px-1" style={{ color: C.inkSoft }}>

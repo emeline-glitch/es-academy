@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Netlify Functions output (CommonJS bundle genere par adapter Netlify,
+    // utilise require() : 700+ faux positifs sinon).
+    ".netlify/**",
   ]),
 ]);
 

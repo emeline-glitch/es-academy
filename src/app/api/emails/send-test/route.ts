@@ -1,13 +1,14 @@
 import { NextResponse } from "next/server";
-import { createClient, createServiceClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/utils/admin-auth";
 import { sendEmail } from "@/lib/ses/client";
 import { applyTracking } from "@/lib/email/tracking";
 
 export async function POST(request: Request) {
-  // Auth via le client cookies (createServiceClient bypasse RLS mais n'a plus de cookies)
-  const authClient = await createClient();
-  const { data: { user } } = await authClient.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
+  // Admin only : un test email rentre du HTML libre (parametre html_content)
+  // qui est wrap puis envoye via SES. Hors admin = vecteur d'abus.
+  const auth = await requireAdmin();
+  if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: auth.status });
 
   const supabase = await createServiceClient();
 

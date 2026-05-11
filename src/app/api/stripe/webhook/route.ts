@@ -145,9 +145,9 @@ export async function POST(request: Request) {
  * dans les invoice line items. Si pas de match (paiement Family ou autre),
  * on ignore l'event proprement.
  *
- * Pas d'idempotence Phase 1 : si Stripe retry l'event sur 5xx, le client
- * reçoit potentiellement 2 mails (rare car retries espacés). À durcir avec
- * une table de dédup invoice_id si volume.
+ * Idempotence : la table processed_dunning_invoices dédup sur stripe_invoice_id
+ * (check ligne ~185, insert ligne ~252). Si Stripe retry sur 5xx, le 2e passage
+ * lit la row déjà présente et skip l'envoi.
  */
 async function handleAcademyPaymentFailed(invoice: Stripe.Invoice) {
   // Stripe API récente : invoice.subscription a été déplacé sous parent.subscription_details.
