@@ -251,11 +251,11 @@ export default function AcademyPage() {
 
           {/* 3. Grille 2 colonnes */}
           <div className="grid md:grid-cols-2 gap-6 md:gap-6 lg:gap-12 mb-12 lg:mb-16">
-            {/* Colonne gauche : La formation */}
+            {/* Colonne gauche : La formation (fond dore pour differencier de la carte Family terracotta) */}
             <ScrollReveal delay={100}>
-              <div className="h-full bg-es-cream/[0.08] backdrop-blur-sm rounded-2xl p-6 sm:p-8 border border-es-cream/25 shadow-2xl shadow-es-green-dark/50">
-                <div className="flex items-center gap-3 mb-6 pb-5 border-b border-white/10">
-                  <span className="text-3xl" aria-hidden>🎓</span>
+              <div className="h-full bg-gradient-to-br from-es-gold/20 to-es-gold/10 backdrop-blur-sm rounded-2xl p-6 sm:p-8 border-2 border-es-gold/60 shadow-2xl shadow-es-green-dark/50 ring-1 ring-es-gold/20 relative">
+                <div className="flex items-center gap-3 mb-4 pb-5 border-b border-es-gold/20">
+                  <span className="text-3xl shrink-0" aria-hidden>🎓</span>
                   <h3 className="text-sm uppercase tracking-[0.2em] font-semibold text-es-cream">La formation</h3>
                 </div>
                 <ul className="space-y-5">
@@ -288,7 +288,7 @@ export default function AcademyPage() {
                   <h3 className="text-sm uppercase tracking-[0.2em] font-semibold text-es-cream">+ 3 mois ES Family offerts</h3>
                 </div>
 
-                <p className="italic text-es-cream/80 text-[15px] leading-relaxed mb-6">
+                <p className="italic text-es-cream/80 text-lg leading-relaxed mb-6">
                   ES Family, c&apos;est la communauté privée qui fait passer la théorie à l&apos;action.
                 </p>
 
@@ -304,10 +304,10 @@ export default function AcademyPage() {
                     { strong: "Discussions thématiques", rest: " : 2 piliers (Immobilier et Patrimoine) avec sous-groupes actifs" },
                   ].map((item, i) => (
                     <li key={i} className="flex items-start gap-3">
-                      <svg className="w-5 h-5 text-es-terracotta-light mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <svg className="w-6 h-6 text-es-terracotta-light mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                       </svg>
-                      <span className="text-es-cream/90 text-[15px] leading-relaxed">
+                      <span className="text-es-cream/90 text-lg leading-relaxed">
                         <strong className="text-es-cream font-semibold">{item.strong}</strong>
                         {item.rest}
                       </span>
