@@ -1,4 +1,4 @@
-import { getCachedUser } from "@/lib/supabase/server";
+import { getCachedUser, createServiceClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { ToastProvider } from "@/components/ui/Toast";
 import { AdminNav } from "@/components/admin/AdminNav";
@@ -29,9 +29,25 @@ export default async function AdminLayout({
   const user = await getCachedUser();
   if (!user) redirect("/connexion");
 
-  // Check admin role (email-based for now, peut évoluer vers profile.role)
-  const adminEmail = process.env.ADMIN_EMAIL;
-  if (adminEmail && user.email !== adminEmail) {
+  // Check admin : accepte 2 mecanismes (OR), coherent avec requireAdmin() :
+  //  1. user.email === ADMIN_EMAIL (raccourci pour le compte fondateur)
+  //  2. profiles.role === 'admin' en DB (pour des admins additionnels comme
+  //     Tiffany ajoute au compte admin via /admin/members).
+  // Sans le check role, un admin "secondaire" se ferait rejeter ici malgre
+  // son role en DB. Service client pour bypass RLS sur profiles.
+  const adminEmail = (process.env.ADMIN_EMAIL || "").toLowerCase();
+  const userEmail = (user.email || "").toLowerCase();
+  let isAdmin = Boolean(adminEmail && userEmail === adminEmail);
+  if (!isAdmin) {
+    const supabaseAdmin = await createServiceClient();
+    const { data: profile } = await supabaseAdmin
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .maybeSingle();
+    isAdmin = profile?.role === "admin";
+  }
+  if (!isAdmin) {
     redirect("/dashboard");
   }
 
