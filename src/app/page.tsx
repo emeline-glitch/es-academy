@@ -235,7 +235,7 @@ export default function Home() {
               <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
               <span className="text-xs uppercase tracking-widest text-white/50 font-medium">Formation</span>
               <h3 className="font-serif text-2xl font-bold mt-2 mb-2">
-                <span className="bg-es-gold/80 text-es-text px-2 py-0.5 rounded-sm">ES Academy</span>
+                <span className="bg-es-gold/80 text-white px-2 py-0.5 rounded-sm">ES Academy</span>
               </h3>
               <p className="text-white/60 text-sm font-medium mb-4">Forme-toi &amp; passe à l&apos;action</p>
               <p className="text-white/80 mb-6 leading-relaxed">
