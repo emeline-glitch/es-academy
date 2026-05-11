@@ -5,7 +5,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import Link from "next/link";
 import Image from "next/image";
-import bebeMicroImg from "../../../public/images/site/05-incarnation-actuelle/incarnation-01-bebe-micro-podcast.jpeg";
+import patrimoineClesImg from "../../../public/images/site/02-patrimoine-cles/patrimoine-02-tas-cles-multicolores.jpg";
 
 type SimulatorCategory = "premier-achat" | "locatif" | "revente";
 
@@ -202,14 +202,14 @@ export default function SimulateursPage() {
       </section>
 
       {/* CTA final : appel découverte */}
-      <section className="py-20 relative overflow-hidden" style={{ backgroundColor: "#006B58" }}>
+      <section className="py-20 relative overflow-hidden bg-es-green">
         <div className="absolute inset-0 bg-gradient-to-br from-es-terracotta-dark/20 via-transparent to-black/10" />
         <div className="relative max-w-6xl mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center text-white">
             <div className="rounded-2xl overflow-hidden shadow-lg">
               <Image
-                src={bebeMicroImg}
-                alt="Emeline accueillante, prête pour un appel découverte"
+                src={patrimoineClesImg}
+                alt="Tas de clés représentant les biens immobiliers construits avec la méthode Emeline Siron"
                 width={1200}
                 height={900}
                 quality={85}
