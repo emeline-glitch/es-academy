@@ -50,7 +50,7 @@ export function Header({ activePage = "home" }: HeaderProps) {
 
   const ctaHref = activePage === "family"
     ? "/api/stripe/checkout-family?plan=fondateur"
-    : "/academy";
+    : "/academy#offre";
   const ctaText = activePage === "family"
     ? "Rejoindre ES Family"
     : "Rejoindre la formation";

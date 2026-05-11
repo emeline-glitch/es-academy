@@ -424,19 +424,6 @@ export default function QuiEstEmeline() {
       {/* Citation finale */}
       <section className="py-16 bg-white">
         <div className="max-w-2xl mx-auto px-6 text-center">
-          <div className="flex justify-center mb-6">
-            <div className="rounded-full overflow-hidden shadow-sm" style={{ width: 96, height: 96 }}>
-              <Image
-                src={deuxTrousseauxCles}
-                alt="Emeline souriante tenant les clés de ses biens"
-                width={192}
-                height={192}
-                quality={85}
-                className="w-full h-full object-cover"
-                placeholder="blur"
-              />
-            </div>
-          </div>
           <p className="font-serif italic text-es-text text-2xl leading-relaxed">
             &ldquo; Si j&apos;ai pu le faire, tu peux le faire aussi. &rdquo;
           </p>
@@ -451,8 +438,8 @@ export default function QuiEstEmeline() {
           <div className="grid md:grid-cols-[auto_1fr] gap-8 items-center">
             <div className="relative w-40 h-40 md:w-48 md:h-48 rounded-full overflow-hidden shadow-2xl shrink-0 mx-auto md:mx-0">
               <Image
-                src={bebeMicroPodcast}
-                alt="Emeline prête pour un appel découverte"
+                src={chantierMasque}
+                alt="Emeline en action sur chantier, prête pour un appel découverte"
                 quality={85}
                 className="w-full h-full object-cover"
                 placeholder="blur"
