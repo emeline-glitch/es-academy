@@ -18,6 +18,14 @@ export async function middleware(request: NextRequest) {
       path.startsWith("/api/cron/") || // Endpoints cron protégés par CRON_SECRET
       path.startsWith("/form/") || // Page publique du formulaire, doit être accessible sans mot de passe site
       path.startsWith("/desabonnement") || // Lien de désinscription email doit marcher sans mdp
+      // Pages legal + support exposees publiquement pour la review App Store Apple
+      // (Privacy Policy URL, Support URL, Terms). Indispensables avant submission iOS,
+      // Apple rejette sinon (Guideline 5.1.1 + 1.5). Le reste du site /family marketing
+      // reste protege jusqu'au lancement officiel.
+      path.startsWith("/politique-confidentialite") ||
+      path.startsWith("/mentions-legales") ||
+      path.startsWith("/cgv") ||
+      path.startsWith("/family/support") ||
       path.startsWith("/_next/") ||
       path.startsWith("/favicon") ||
       path === "/site-password"
