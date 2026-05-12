@@ -288,7 +288,7 @@ function auditGlobalSetup(): DraftReco[] {
       page_path: null,
       title: "Google Search Console pas verifie",
       description: "Sans verification, on n'a pas acces aux donnees de trafic Google (impressions, clics, requetes, positions).",
-      fix_action: "Ajouter GOOGLE_SITE_VERIFICATION (code de Search Console > Methode meta tag) dans les variables d'environnement Netlify, puis redeployer.",
+      fix_action: "Ajouter GOOGLE_SITE_VERIFICATION (code de Search Console > Methode meta tag) dans les variables d'environnement Vercel, puis redeployer.",
     });
   }
 
@@ -299,7 +299,7 @@ function auditGlobalSetup(): DraftReco[] {
       page_path: null,
       title: "Site bloque par mot de passe",
       description: "SITE_PASSWORD est defini : Google ne peut pas crawler le site. Aucun ranking possible tant qu'il est actif.",
-      fix_action: "Retirer SITE_PASSWORD des variables d'environnement Netlify quand le site doit etre public.",
+      fix_action: "Retirer SITE_PASSWORD des variables d'environnement Vercel quand le site doit etre public.",
     });
   }
 

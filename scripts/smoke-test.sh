@@ -8,7 +8,7 @@
 # Usage :
 #   ./scripts/smoke-test.sh                          # contre localhost:3000
 #   BASE_URL=https://emeline-siron.fr ./scripts/smoke-test.sh    # contre prod
-#   BASE_URL=https://deploy-preview-X--site.netlify.app ./scripts/smoke-test.sh    # preview Netlify
+#   BASE_URL=https://<deploy>-es-academy.vercel.app ./scripts/smoke-test.sh    # preview Vercel
 #
 # Pas de dependance externe : bash + curl + grep.
 

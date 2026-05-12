@@ -10,9 +10,9 @@
 
 ### 1. Env vars production (25 min)
 
-**Netlify (Academy, `emeline-siron.fr`) :**
+**Vercel (Academy, `emeline-siron.fr`) :**
 
-Variables à pousser dans `Netlify > Site settings > Environment variables` :
+Variables à pousser dans `Vercel > Project Settings > Environment Variables` (team `ES ACADEMY`, projet `es-academy`) :
 
 ```
 STRIPE_SECRET_KEY=sk_live_...
@@ -180,7 +180,7 @@ Si off-by-one, ajuster `interval_count` dans `~/es-academy/src/app/api/stripe/we
 
 Console AWS SES → Verified Identities :
 - `emeline-siron.fr` doit être Verified.
-- Si seul `es-academy.fr` est vérifié, changer `SES_FROM_EMAIL` à `emeline@es-academy.fr` dans Netlify env vars (ou faire vérifier `emeline-siron.fr`).
+- Si seul `es-academy.fr` est vérifié, changer `SES_FROM_EMAIL` à `emeline@es-academy.fr` dans Vercel env vars (ou faire vérifier `emeline-siron.fr`).
 
 **Critère de succès :** `aws ses get-identity-verification-attributes --identities emeline-siron.fr` retourne `VerificationStatus: Success`.
 
@@ -228,7 +228,7 @@ Pour chaque leçon dans Notion :
    - Vérifier qu'on devient `founder_500` (badge dans le profil)
 7. Vérifier la subscription dans Stripe Dashboard mode test.
 
-**Si quelque chose casse :** check les logs Netlify (Academy) ou Vercel (Family) Functions, et le webhook Stripe Dashboard.
+**Si quelque chose casse :** check les logs Vercel (Academy + Family) Functions, et le webhook Stripe Dashboard.
 
 ### 11. Smoke tests prod (5 min) — Emeline
 
@@ -251,7 +251,7 @@ Aller sur `/admin/sequences` et confirmer :
 
 ### 13. Soft launch (matin) — Emeline
 
-- Vérifier que tous les déploiements sont OK (Netlify + Vercel green).
+- Vérifier que tous les déploiements sont OK (Vercel green pour Academy + Family).
 - Lancer le smoke test une dernière fois.
 - Annoncer en interne (Tiffany, Antony, Fita).
 
@@ -268,7 +268,7 @@ Onglets ouverts en permanence :
 - Stripe Dashboard (paiements en temps réel)
 - AWS SES (bounces, complaints)
 - `/admin/dashboard` Academy (nouveaux contacts, enrollments)
-- Console Sentry / logs Netlify (erreurs runtime)
+- Console Sentry / logs Vercel (erreurs runtime)
 
 **Seuils d'alerte :**
 - 3+ bounces SES → vérifier `SES_FROM_EMAIL` et la réputation domaine
@@ -329,7 +329,7 @@ cd ~/es-family && bash scripts/apply-migration.sh supabase/migrations/XXX.sql
 - Supabase Academy : https://supabase.com/dashboard/project/tvkzndkywznaysiqvmsh
 - Supabase Family : https://supabase.com/dashboard/project/hpcoxtpdsydcrwdudhsk
 - AWS SES : https://eu-west-3.console.aws.amazon.com/ses
-- Netlify Academy : https://app.netlify.com/sites/...
+- Vercel Academy : https://vercel.com/es-academy/es-academy
 - Vercel Family : https://vercel.com/...
 - OneSignal : https://app.onesignal.com
 
@@ -338,8 +338,8 @@ cd ~/es-family && bash scripts/apply-migration.sh supabase/migrations/XXX.sql
 1. **Webhook Stripe down** : retry depuis Stripe Dashboard (event > "Resend"). L'idempotence sur `processed_stripe_events` empêche les doublons.
 2. **Mail SES qui ne part pas** : check `audit_log` pour `*_failed_giveup`. Le cron `retry-academy-welcome-mail` retente toutes les 10 min jusqu'à 3 fois. Au-delà : envoi manuel via SES Console ou via `/admin/eleves/[userId] > Renvoyer mail bienvenue`.
 3. **DB Supabase down** : tous les paiements continuent côté Stripe (pas de blocage). Une fois Supabase up, replay manuellement les events Stripe via Dashboard.
-4. **Vercel Family down** : l'app iOS bascule sur sa version cachée dernière (Next.js SSG). Le paywall est sur Academy Netlify, donc les abonnements ne sont pas affectés.
-5. **Netlify Academy down** : tous les paiements + sequences stoppés. Priorité absolue de remettre en route.
+4. **Vercel Family down** : l'app iOS bascule sur sa version cachée dernière (Next.js SSG). Le paywall est sur Academy (Vercel aussi), donc les abonnements ne sont pas affectés tant qu'Academy tient.
+5. **Vercel Academy down** : tous les paiements + sequences stoppés. Priorité absolue de remettre en route.
 
 ---
 

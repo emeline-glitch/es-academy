@@ -5,7 +5,7 @@ import { applyTracking } from "@/lib/email/tracking";
 
 /**
  * Cron /api/cron/process-sequences :
- * À appeler toutes les 5-15 min (pg_cron via pg_net, Netlify scheduled function, ou cron externe).
+ * À appeler toutes les 5-15 min (pg_cron via pg_net, Vercel Cron, ou cron externe).
  *
  * Pour chaque enrollment actif dont next_send_at <= now :
  * 1. Récupère le next_step (step_order > current_step)

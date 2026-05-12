@@ -214,7 +214,7 @@ export default async function AdminSeoPage({
                 <span>
                   Google Search Console pas verifie. Variable d&apos;env{" "}
                   <code className="text-xs bg-es-cream-dark/50 px-1 rounded">GOOGLE_SITE_VERIFICATION</code>{" "}
-                  a ajouter sur Netlify.{" "}
+                  a ajouter sur Vercel.{" "}
                   <a
                     href="https://search.google.com/search-console"
                     target="_blank"

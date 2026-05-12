@@ -89,9 +89,9 @@ export default function CGV() {
           </li>
         </ul>
         <p>
-          <strong>Hébergement</strong>&nbsp;: le site est hébergé par Netlify,
-          Inc., 44 Montgomery Street, Suite 300, San Francisco, California
-          94104, États-Unis. Les données personnelles et de paiement sont
+          <strong>Hébergement</strong>&nbsp;: le site est hébergé par Vercel
+          Inc., 340 S Lemon Ave #4133, Walnut, California 91789, États-Unis.
+          Les données personnelles et de paiement sont
           traitées par des sous-traitants basés dans l&apos;Union européenne
           lorsque cela est techniquement possible (voir la{" "}
           <Link href="/politique-confidentialite">

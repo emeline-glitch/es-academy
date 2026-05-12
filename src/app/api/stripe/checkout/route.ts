@@ -25,7 +25,7 @@ export async function POST(request: Request) {
   } catch (error) {
     // On ne log que le message (pas l'objet complet Stripe qui contient
     // requestId + détails de payload qui peuvent matérialiser des données
-    // clients en clair dans les logs Netlify).
+    // clients en clair dans les logs Vercel).
     const message = error instanceof Error ? error.message : "Erreur inconnue";
     console.error("[stripe/checkout]", message);
     // Debug temporaire : expose le message d'erreur Stripe (a retirer apres prod stable)

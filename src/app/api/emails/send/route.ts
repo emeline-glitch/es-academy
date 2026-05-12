@@ -5,7 +5,7 @@ import { requireAdmin } from "@/lib/utils/admin-auth";
 import { sendEmail } from "@/lib/ses/client";
 import { applyTracking } from "@/lib/email/tracking";
 
-// Parallélise l'envoi par paquets pour éviter le timeout Netlify (~10s)
+// Parallélise l'envoi par paquets pour éviter le timeout Vercel (~10s hobby, 60s pro)
 // sur des campagnes > 50 contacts, tout en respectant les quotas SES (~14/s en sandbox, 50/s en prod).
 const BATCH_SIZE = 10;
 

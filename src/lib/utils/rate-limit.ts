@@ -37,15 +37,15 @@ export function rateLimit(key: string, max: number, windowMs: number) {
 }
 
 /**
- * Extrait l'IP du client à partir des headers (Netlify + fallback).
+ * Extrait l'IP du client à partir des headers (Vercel + fallbacks).
  */
 export function getClientIp(request: Request): string {
   const headers = request.headers;
   return (
-    headers.get("x-nf-client-connection-ip") ||
+    headers.get("x-vercel-forwarded-for")?.split(",")[0]?.trim() ||
+    headers.get("x-real-ip") ||
     headers.get("cf-connecting-ip") ||
     headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    headers.get("x-real-ip") ||
     "unknown"
   );
 }
