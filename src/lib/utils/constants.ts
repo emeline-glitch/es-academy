@@ -16,10 +16,12 @@ export const TAUX_CREDIT_MOYEN = {
 export const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "contact@emeline-siron.fr";
 
 // ES Family : mode "lancement en attente" (App iOS en validation Apple).
-// Tant que true : le CTA d'achat est lock, un bandeau remplace les boutons
-// checkout sur /family, et l'endpoint /api/stripe/checkout-family redirige.
-// Passer a false (ou retirer cette ligne) quand Apple a valide l'app.
-export const FAMILY_LAUNCH_PENDING = true;
+// Toggle via env var FAMILY_LAUNCH_PENDING (Vercel Production env vars).
+//   - Var absente ou !== "true" : checkout ouvert (cas du lancement)
+//   - Var = "true"              : checkout verrouille, bandeau Apple sur /family
+// L'inversion (defaut = ouvert) permet de toggler en urgence depuis Vercel
+// sans redeploy si Apple recale apres lancement.
+export const FAMILY_LAUNCH_PENDING = process.env.FAMILY_LAUNCH_PENDING === "true";
 
 export const PRICING = {
   academy: {
