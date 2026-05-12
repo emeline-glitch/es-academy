@@ -128,17 +128,12 @@ function auditArticles(articles: Article[], thresholds: AuditThresholds): DraftR
       });
     }
 
-    // Featured image (sert pour OG + carte twitter)
-    if (!a.featuredImage) {
-      recos.push({
-        type: "missing_featured_image",
-        severity: "medium",
-        page_path: path,
-        title: `Pas d'image featured : ${a.title}`,
-        description: "Sans image, l'article apparait sans visuel sur les reseaux sociaux et dans Discover.",
-        fix_action: "Ajouter une image featured dans Notion (1200x630 minimum).",
-      });
-    }
+    // Featured image : DESACTIVE - le blog utilise un pool Unsplash (cf.
+    // src/lib/notion/blog-images.ts) en fallback automatique + /api/og pour les
+    // partages sociaux (titre overlay + branding ES). Le champ FeaturedImage
+    // Notion n'est pas utilise en prod, flagger son absence est un faux positif.
+    // Si tu reactives ce check un jour, n'oublie pas que blog-images.ts garantit
+    // deja une image par article via la categorie.
 
     // Article stale (publie il y a longtemps, signal Google de le rafraichir)
     if (a.publishDate) {
