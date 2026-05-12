@@ -162,6 +162,14 @@ function auditTraffic(
 ): DraftReco[] {
   const recos: DraftReco[] = [];
 
+  // Si le site vient de lancer (GA4 pas encore de data significative), skip TOUT
+  // l'audit trafic. Sinon on noie le dashboard de "0 vue sur 30j" qui sont
+  // structurels et pas actionnables. Bascule auto quand trafic depasse le seuil.
+  const totalViews = [...views.values()].reduce((sum, v) => sum + v, 0);
+  if (totalViews < thresholds.traffic_audit_min_total_views_30d) {
+    return recos;
+  }
+
   // Pages cles : peu ou pas de trafic
   for (const lp of landings) {
     if (!lp.monitor) continue;
@@ -249,17 +257,20 @@ async function auditKeywords(): Promise<DraftReco[]> {
   return recos;
 }
 
-function auditGlobalSetup(): DraftReco[] {
+function auditGlobalSetup(thresholds: AuditThresholds): DraftReco[] {
   const recos: DraftReco[] = [];
 
-  if (!process.env.GOOGLE_SITE_VERIFICATION) {
+  // Reco missing_gsc_verification : pertinente UNIQUEMENT si la verif passe par
+  // meta tag. Si l'admin a configure gsc_verified_via=domain (DNS TXT), pas
+  // besoin du GOOGLE_SITE_VERIFICATION env var.
+  if (thresholds.gsc_verified_via === "meta" && !process.env.GOOGLE_SITE_VERIFICATION) {
     recos.push({
       type: "missing_gsc_verification",
       severity: "high",
       page_path: null,
       title: "Google Search Console pas verifie",
       description: "Sans verification, on n'a pas acces aux donnees de trafic Google (impressions, clics, requetes, positions).",
-      fix_action: "Ajouter GOOGLE_SITE_VERIFICATION (code de Search Console > Methode meta tag) dans les variables d'environnement Vercel, puis redeployer.",
+      fix_action: "Ajouter GOOGLE_SITE_VERIFICATION (code de Search Console > Methode meta tag) dans les variables d'environnement Vercel, puis redeployer. Sinon basculer gsc_verified_via=domain si verif via DNS TXT.",
     });
   }
 
@@ -314,7 +325,7 @@ export async function runSeoAudit(): Promise<AuditResult> {
 
     // 3. Lance les auditeurs
     const drafts: DraftReco[] = [
-      ...auditGlobalSetup(),
+      ...auditGlobalSetup(thresholds),
       ...auditArticles(articles, thresholds),
       ...auditTraffic(viewCounts, articles, landings, thresholds),
       ...(await auditKeywords()),

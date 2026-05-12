@@ -29,6 +29,13 @@ export interface AuditThresholds {
   key_landing_min_views_30d: number;
   article_low_views_30d: number;
   publish_recent_days: number;
+  // Site brand-new mode : skip les recos basees sur GA4 tant qu'on n'a pas N
+  // vues cumulees sur 30j. Evite de noyer l'audit en faux positifs au lancement.
+  traffic_audit_min_total_views_30d: number;
+  // Methode de verification Google Search Console : "meta" (defaut) requiert le
+  // GOOGLE_SITE_VERIFICATION env var. "domain" = verifie via DNS TXT, env var
+  // pas necessaire.
+  gsc_verified_via: "meta" | "domain";
 }
 
 // Defaults (fallback si DB indispo, identiques au seed migration 044)
@@ -53,6 +60,8 @@ const DEFAULT_THRESHOLDS: AuditThresholds = {
   key_landing_min_views_30d: 30,
   article_low_views_30d: 5,
   publish_recent_days: 30,
+  traffic_audit_min_total_views_30d: 100,
+  gsc_verified_via: "domain",
 };
 
 export const getKeyLandings = cache(async (): Promise<KeyLanding[]> => {
