@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Donations 2025-2026 · La méthode Emeline SIRON</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --es-green: #1B4332; --es-green-light: #2D6A4F; --es-green-dark: #0F2B1E;
+    --es-cream: #F5F0E8; --es-cream-light: #FAF8F4; --es-cream-dark: #EDE8DC;
+    --es-gold: #C9A96E; --es-gold-light: #E5D5B0;
+    --es-text: #1a1a1a; --es-text-soft: #555;
+    --es-warn-bg: #FFF8F0; --es-warn-border: #E5C9A6; --es-warn-accent: #B8642E; --es-warn-text: #6B3A1A;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; font-family: 'Inter', Georgia, serif; color: var(--es-text); line-height: 1.55; font-size: 10.5pt; }
+  .print-bar { position: sticky; top: 0; background: var(--es-green-dark); color: white; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; z-index: 100; font-family: 'Inter', sans-serif; }
+  .print-bar .brand { font-family: 'Playfair Display', serif; font-weight: 600; font-size: 14pt; letter-spacing: 0.3px; }
+  .print-bar .brand span { color: var(--es-gold); font-style: italic; font-weight: 500; }
+  .print-bar button { background: var(--es-gold); color: var(--es-green-dark); border: none; padding: 10px 22px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 10.5pt; cursor: pointer; border-radius: 2px; letter-spacing: 0.3px; transition: background 0.15s; }
+  .print-bar button:hover { background: white; }
+  @page { size: A4; margin: 18mm 20mm 18mm 20mm; }
+  @media screen { body { background: #e0ddd8; padding: 28px 0 40px; } .fiche { max-width: 170mm; margin: 0 auto; padding: 18mm 20mm; background: white; box-shadow: 0 2px 24px rgba(0,0,0,0.08); } }
+  .fiche-header { border-bottom: 2px solid var(--es-green); padding-bottom: 14px; margin-bottom: 22px; }
+  .fiche-eyebrow { color: var(--es-gold); font-size: 8.5pt; text-transform: uppercase; letter-spacing: 2.5px; font-weight: 600; margin-bottom: 6px; }
+  h1 { font-family: 'Playfair Display', serif; color: var(--es-green); font-size: 26pt; font-weight: 700; margin: 0 0 6px 0; line-height: 1.1; letter-spacing: -0.5px; }
+  .fiche-subtitle { font-style: italic; color: var(--es-text-soft); font-size: 11pt; margin: 0; max-width: 135mm; }
+  .essentiel { background: var(--es-green); color: white; padding: 16px 22px; margin: 20px 0 24px; border-radius: 2px; page-break-inside: avoid; }
+  .essentiel .label { font-family: 'Playfair Display', serif; font-size: 11pt; font-weight: 600; color: var(--es-gold); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1.8px; }
+  .essentiel ul { margin: 0; padding-left: 18px; } .essentiel li { margin-bottom: 4px; line-height: 1.5; } .essentiel strong { color: white; font-weight: 700; }
+  h2 { font-family: 'Playfair Display', serif; color: var(--es-green); font-size: 16pt; font-weight: 600; margin: 24px 0 10px 0; padding-left: 14px; border-left: 4px solid var(--es-green); line-height: 1.25; page-break-after: avoid; }
+  h3 { font-family: 'Inter', sans-serif; color: var(--es-green-dark); font-size: 11pt; font-weight: 700; margin: 16px 0 6px 0; text-transform: uppercase; letter-spacing: 0.6px; page-break-after: avoid; }
+  p { margin: 0 0 9px 0; } ul, ol { padding-left: 20px; margin: 0 0 10px 0; } li { margin-bottom: 3px; } strong { color: var(--es-green-dark); font-weight: 600; }
+  .nouveaute { background: var(--es-cream); border-left: 4px solid var(--es-gold); padding: 14px 20px; margin: 18px 0; border-radius: 0 2px 2px 0; page-break-inside: avoid; }
+  .nouveaute .label { font-family: 'Playfair Display', serif; color: var(--es-green); font-weight: 600; font-size: 10.5pt; text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 6px; }
+  .nouveaute p:last-child { margin-bottom: 0; } .nouveaute ul { margin: 6px 0 0 0; }
+  .table-wrap { margin: 14px 0 18px; page-break-inside: avoid; }
+  table { width: 100%; border-collapse: collapse; font-size: 9.5pt; }
+  th { background: var(--es-green); color: white; text-align: left; padding: 9px 12px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 9pt; text-transform: uppercase; letter-spacing: 0.5px; }
+  td { padding: 9px 12px; border-bottom: 1px solid var(--es-cream-dark); vertical-align: top; }
+  tr:nth-child(even) td { background: var(--es-cream-light); } td strong { color: var(--es-green-dark); }
+  .piege { background: var(--es-warn-bg); border: 1px solid var(--es-warn-border); border-left: 4px solid var(--es-warn-accent); padding: 14px 20px; margin: 18px 0; border-radius: 0 2px 2px 0; page-break-inside: avoid; }
+  .piege .label { font-family: 'Playfair Display', serif; color: var(--es-warn-text); font-weight: 700; font-size: 10.5pt; text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 6px; }
+  .piege p:last-child { margin-bottom: 0; }
+  .sources { margin-top: 22px; padding: 12px 16px; background: var(--es-cream-light); border-top: 1px solid var(--es-cream-dark); border-bottom: 1px solid var(--es-cream-dark); font-size: 8.5pt; color: var(--es-text-soft); page-break-inside: avoid; }
+  .sources .label { font-family: 'Inter', sans-serif; color: var(--es-green); font-weight: 700; font-size: 8.5pt; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .sources ul { margin: 0; padding-left: 16px; } .sources li { margin-bottom: 2px; }
+  .footer { margin-top: 18px; padding-top: 10px; border-top: 1px solid var(--es-cream-dark); display: flex; justify-content: space-between; align-items: center; font-size: 8.5pt; color: var(--es-text-soft); font-family: 'Inter', sans-serif; }
+  .footer .brand { font-family: 'Playfair Display', serif; color: var(--es-green); font-weight: 600; letter-spacing: 0.3px; font-size: 9pt; } .footer .url { font-weight: 500; }
+  @media print { html, body { background: white; } .print-bar { display: none; } .fiche { max-width: none; margin: 0; padding: 0; box-shadow: none; background: white; } }
+</style>
+</head>
+<body>
+<div class="print-bar">
+  <span class="brand">ES Academy <span>· Fiche ressource</span></span>
+  <button onclick="window.print()">Imprimer cette fiche en PDF</button>
+</div>
+<article class="fiche">
+  <header class="fiche-header">
+    <div class="fiche-eyebrow">Module 11 · Montage avancé</div>
+    <h1>Les donations 2025-2026</h1>
+    <p class="fiche-subtitle">Abattements classiques, don Sarkozy et la nouvelle exonération temporaire de 100 000 € par donateur (article 790 A bis CGI), valable jusqu'au 31 décembre 2026.</p>
+  </header>
+  <div class="essentiel">
+    <div class="label">L'essentiel en 30 secondes</div>
+    <ul>
+      <li><strong>Abattement classique parent / enfant</strong> : 100 000 € par parent, renouvelable tous les 15 ans (art. 779 CGI).</li>
+      <li><strong>Don familial de sommes d'argent (don Sarkozy)</strong> : 31 865 € tous les 15 ans, donateur &lt; 80 ans, donataire majeur (art. 790 G).</li>
+      <li><strong>Nouvelle exonération du 15 février 2025 au 31 décembre 2026</strong> : jusqu'à 100 000 € par donateur et 300 000 € par bénéficiaire, pour acheter du neuf ou faire des travaux de rénovation énergétique (art. 790 A bis).</li>
+    </ul>
+  </div>
+
+  <h2>Le régime classique des donations</h2>
+  <p>Toute transmission à titre gratuit du vivant du donateur est soumise aux droits de mutation à titre gratuit (DMTG), sauf exonération ou abattement. L'abattement varie selon le lien de parenté et se renouvelle tous les 15 ans.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th style="width:50%">Lien de parenté</th><th style="width:30%">Abattement</th><th style="width:20%">Renouvellement</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Parent à enfant</strong> (art. 779)</td><td>100 000 €</td><td>15 ans</td></tr>
+        <tr><td><strong>Grand-parent à petit-enfant</strong> (art. 790 B)</td><td>31 865 €</td><td>15 ans</td></tr>
+        <tr><td><strong>Arrière-grand-parent à arrière-petit-enfant</strong></td><td>5 310 €</td><td>15 ans</td></tr>
+        <tr><td><strong>Entre époux ou pacsés</strong></td><td>80 724 €</td><td>15 ans</td></tr>
+        <tr><td><strong>Entre frères et sœurs</strong></td><td>15 932 €</td><td>15 ans</td></tr>
+        <tr><td><strong>Oncle / tante à neveu / nièce</strong></td><td>7 967 €</td><td>15 ans</td></tr>
+        <tr><td><strong>Personne handicapée</strong> (cumul possible)</td><td>+ 159 325 €</td><td>15 ans</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Le don familial de sommes d'argent (don Sarkozy)</h2>
+  <p>Régi par l'<strong>article 790 G du CGI</strong>, ce dispositif permet une exonération supplémentaire de <strong>31 865 €</strong> de dons en argent tous les 15 ans, sous conditions :</p>
+  <ul>
+    <li>Donateur âgé de <strong>moins de 80 ans</strong> au jour de la transmission</li>
+    <li>Donataire <strong>majeur ou mineur émancipé</strong></li>
+    <li>Bénéficiaires : descendants en ligne directe (enfants, petits-enfants, arrière-petits-enfants) ou à défaut neveux et nièces</li>
+    <li>Cumulable avec l'abattement classique de droit commun</li>
+  </ul>
+
+  <div class="nouveaute">
+    <div class="label">Nouveauté 2025-2026 : exonération exceptionnelle (790 A bis)</div>
+    <p>L'article 71 de la loi de finances pour 2025 (loi n° 2025-127 du 14 février 2025) a réintroduit le dispositif de l'<strong>article 790 A bis du CGI</strong>. Conditions :</p>
+    <ul>
+      <li><strong>Don en argent uniquement</strong>, consenti entre le <strong>15 février 2025 et le 31 décembre 2026</strong></li>
+      <li><strong>Plafond</strong> : 100 000 € par donateur à un même donataire, dans la limite globale de 300 000 € par donataire (tous donateurs confondus)</li>
+      <li><strong>Donateurs possibles</strong> : parent, grand-parent, arrière-grand-parent. À défaut de descendance directe, oncle ou tante</li>
+      <li><strong>Utilisation obligatoire dans les 6 mois</strong> qui suivent le versement, pour :
+        <ul>
+          <li>Acquérir un <strong>immeuble neuf ou en VEFA</strong> destiné à la résidence principale (du donataire ou d'un locataire)</li>
+          <li>OU réaliser des <strong>travaux de rénovation énergétique éligibles à MaPrimeRénov'</strong> dans la résidence principale dont le donataire est déjà propriétaire</li>
+        </ul>
+      </li>
+      <li><strong>Engagement de conservation 5 ans</strong> : le bien doit rester la RP du donataire OU être loué en RP (mais pas à un membre du foyer fiscal du donataire)</li>
+    </ul>
+    <p>BOFiP de référence : BOI-ENR-DMTG-20-20-20 du 4 septembre 2025.</p>
+  </div>
+
+  <h2>Empilement des dispositifs : jusqu'à 231 865 € exonérés par parent</h2>
+  <p>L'exonération 790 A bis se cumule avec les abattements existants. Voici l'empilement maximal entre un parent et un enfant majeur :</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th style="width:55%">Dispositif</th><th style="width:25%">Montant</th><th style="width:20%">Condition</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Abattement parent / enfant (art. 779)</td><td>100 000 €</td><td>Tous les 15 ans</td></tr>
+        <tr><td>Don familial sommes d'argent (art. 790 G)</td><td>31 865 €</td><td>Donateur &lt; 80 ans</td></tr>
+        <tr><td>Exonération temporaire (art. 790 A bis)</td><td>100 000 €</td><td>Affecté à un neuf ou travaux RE</td></tr>
+        <tr><td><strong>Total transmissible sans impôt</strong></td><td><strong>231 865 €</strong></td><td>Par parent et par enfant</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>Avec les <strong>deux parents</strong> et les <strong>quatre grands-parents</strong> versant chacun 100 000 € au titre de l'article 790 A bis (dans la limite globale de 300 000 € par bénéficiaire), un enfant peut recevoir jusqu'à <strong>300 000 € exonérés via le seul dispositif 790 A bis</strong>, auxquels s'ajoutent les abattements classiques. Stratégie de transmission patrimoniale très puissante, à condition d'agir avant le 31 décembre 2026.</p>
+
+  <h2>Ce qui n'est PAS éligible au 790 A bis</h2>
+  <p>L'administration fiscale (BOFiP et réponse ministérielle d'avril 2025) a clarifié les exclusions :</p>
+  <ul>
+    <li><strong>L'acquisition d'un logement ancien</strong> : non éligible, seul le neuf ou la VEFA permet l'exonération</li>
+    <li><strong>La construction d'une maison individuelle</strong> hors cadre VEFA strict, même avec un constructeur : non éligible</li>
+    <li><strong>L'achat d'un terrain à bâtir</strong> pour y construire ensuite : non éligible</li>
+    <li><strong>Les travaux non éligibles à MaPrimeRénov'</strong> : exclus</li>
+    <li><strong>Cumul avec MaPrimeRénov'</strong>, le crédit d'impôt art. 199 sexdecies ou la déduction des charges : interdit (anti double-comptage)</li>
+  </ul>
+
+  <h2>Stratégies à activer avant le 31 décembre 2026</h2>
+  <ul>
+    <li><strong>Donation-partage de sommes d'argent</strong> : en présence de plusieurs enfants, ce schéma fige la valeur donnée au jour de l'acte et évite le rapport civil ultérieur. Acte notarié obligatoire mais beaucoup plus sécurisant.</li>
+    <li><strong>Priorité d'utilisation des abattements</strong> : pour optimiser, utiliser d'abord le 790 A bis (non soumis au rappel fiscal des 15 ans), puis le 790 G (idem), puis le 779 (soumis au rappel).</li>
+    <li><strong>Déclaration obligatoire</strong> : formulaire 2735-SD à déposer dans le mois suivant le don. Sans déclaration, pas d'exonération.</li>
+    <li><strong>Conservation des justificatifs 5 ans</strong> : acte de vente du bien neuf, factures MaPrimeRénov', preuves de l'affectation des sommes. À conserver en cas de contrôle.</li>
+  </ul>
+
+  <div class="piege">
+    <div class="label">⚠ Piège à éviter</div>
+    <p>Ne pense pas que le 790 A bis est une simple exonération automatique. C'est un dispositif <strong>conditionnel</strong> avec un engagement de 5 ans. Si tu vends ou cesses de louer en RP avant ce délai, l'administration récupère les droits avec intérêts de retard (0,20 % par mois). Et la construction hors VEFA stricte n'est PAS éligible, même avec un constructeur agréé. Si ton enfant veut faire construire une maison sur un terrain familial, ce n'est pas le bon outil, oriente plutôt vers une donation classique ou un don Sarkozy.</p>
+  </div>
+
+  <div class="sources">
+    <div class="label">Sources et références juridiques</div>
+    <ul>
+      <li>Loi n° 2025-127 du 14 février 2025 de finances pour 2025, article 71</li>
+      <li>Articles 779, 790 A bis, 790 B et 790 G du Code général des impôts</li>
+      <li>BOFiP BOI-ENR-DMTG-20-20-20 du 4 septembre 2025</li>
+      <li>Réponse ministérielle AUREP (février 2026) sur exclusion de la construction</li>
+      <li>Service-Public.fr et impots.gouv.fr (FAQ donations)</li>
+      <li>Formulaire 2735-SD pour la déclaration des dons</li>
+    </ul>
+  </div>
+
+  <footer class="footer">
+    <span class="brand">La méthode Emeline SIRON</span>
+    <span class="url">emeline-siron.fr</span>
+    <span>À jour au 12/05/2026</span>
+  </footer>
+</article>
+</body>
+</html>

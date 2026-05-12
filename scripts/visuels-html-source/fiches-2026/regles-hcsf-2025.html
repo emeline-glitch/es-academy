@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Règles HCSF 2025-2026 · La méthode Emeline SIRON</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --es-green: #1B4332;
+    --es-green-light: #2D6A4F;
+    --es-green-dark: #0F2B1E;
+    --es-cream: #F5F0E8;
+    --es-cream-light: #FAF8F4;
+    --es-cream-dark: #EDE8DC;
+    --es-gold: #C9A96E;
+    --es-gold-light: #E5D5B0;
+    --es-text: #1a1a1a;
+    --es-text-soft: #555;
+    --es-warn-bg: #FFF8F0;
+    --es-warn-border: #E5C9A6;
+    --es-warn-accent: #B8642E;
+    --es-warn-text: #6B3A1A;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', Georgia, serif;
+    color: var(--es-text);
+    line-height: 1.55;
+    font-size: 10.5pt;
+  }
+
+  /* ============ TOOLBAR ============ */
+  .print-bar {
+    position: sticky;
+    top: 0;
+    background: var(--es-green-dark);
+    color: white;
+    padding: 12px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    font-family: 'Inter', sans-serif;
+  }
+  .print-bar .brand {
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+    font-size: 14pt;
+    letter-spacing: 0.3px;
+  }
+  .print-bar .brand span {
+    color: var(--es-gold);
+    font-style: italic;
+    font-weight: 500;
+  }
+  .print-bar button {
+    background: var(--es-gold);
+    color: var(--es-green-dark);
+    border: none;
+    padding: 10px 22px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 10.5pt;
+    cursor: pointer;
+    border-radius: 2px;
+    letter-spacing: 0.3px;
+    transition: background 0.15s;
+  }
+  .print-bar button:hover { background: white; }
+
+  /* ============ PAGE A4 ============ */
+  @page {
+    size: A4;
+    margin: 18mm 20mm 18mm 20mm;
+  }
+
+  @media screen {
+    body {
+      background: #e0ddd8;
+      padding: 28px 0 40px;
+    }
+    .fiche {
+      max-width: 170mm;
+      margin: 0 auto;
+      padding: 18mm 20mm;
+      background: white;
+      box-shadow: 0 2px 24px rgba(0,0,0,0.08);
+    }
+  }
+
+  /* ============ HEADER FICHE ============ */
+  .fiche-header {
+    border-bottom: 2px solid var(--es-green);
+    padding-bottom: 14px;
+    margin-bottom: 22px;
+  }
+  .fiche-eyebrow {
+    color: var(--es-gold);
+    font-size: 8.5pt;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    color: var(--es-green);
+    font-size: 26pt;
+    font-weight: 700;
+    margin: 0 0 6px 0;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+  }
+  .fiche-subtitle {
+    font-style: italic;
+    color: var(--es-text-soft);
+    font-size: 11pt;
+    margin: 0;
+    max-width: 135mm;
+  }
+
+  /* ============ ESSENTIEL ============ */
+  .essentiel {
+    background: var(--es-green);
+    color: white;
+    padding: 16px 22px;
+    margin: 20px 0 24px;
+    border-radius: 2px;
+    page-break-inside: avoid;
+  }
+  .essentiel .label {
+    font-family: 'Playfair Display', serif;
+    font-size: 11pt;
+    font-weight: 600;
+    color: var(--es-gold);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1.8px;
+  }
+  .essentiel ul { margin: 0; padding-left: 18px; }
+  .essentiel li { margin-bottom: 4px; line-height: 1.5; }
+  .essentiel strong { color: white; font-weight: 700; }
+
+  /* ============ TITRES ============ */
+  h2 {
+    font-family: 'Playfair Display', serif;
+    color: var(--es-green);
+    font-size: 16pt;
+    font-weight: 600;
+    margin: 24px 0 10px 0;
+    padding-left: 14px;
+    border-left: 4px solid var(--es-green);
+    line-height: 1.25;
+    page-break-after: avoid;
+  }
+  h3 {
+    font-family: 'Inter', sans-serif;
+    color: var(--es-green-dark);
+    font-size: 11pt;
+    font-weight: 700;
+    margin: 16px 0 6px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    page-break-after: avoid;
+  }
+
+  /* ============ TEXTE ============ */
+  p { margin: 0 0 9px 0; }
+  ul, ol { padding-left: 20px; margin: 0 0 10px 0; }
+  li { margin-bottom: 3px; }
+  strong { color: var(--es-green-dark); font-weight: 600; }
+
+  /* ============ ENCADRÉ NOUVEAUTÉ ============ */
+  .nouveaute {
+    background: var(--es-cream);
+    border-left: 4px solid var(--es-gold);
+    padding: 14px 20px;
+    margin: 18px 0;
+    border-radius: 0 2px 2px 0;
+    page-break-inside: avoid;
+  }
+  .nouveaute .label {
+    font-family: 'Playfair Display', serif;
+    color: var(--es-green);
+    font-weight: 600;
+    font-size: 10.5pt;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin-bottom: 6px;
+  }
+  .nouveaute p:last-child { margin-bottom: 0; }
+  .nouveaute ul { margin: 6px 0 0 0; }
+
+  /* ============ TABLEAU ============ */
+  .table-wrap {
+    margin: 14px 0 18px;
+    page-break-inside: avoid;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9.5pt;
+  }
+  th {
+    background: var(--es-green);
+    color: white;
+    text-align: left;
+    padding: 9px 12px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 9pt;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--es-cream-dark);
+    vertical-align: top;
+  }
+  tr:nth-child(even) td { background: var(--es-cream-light); }
+  td strong { color: var(--es-green-dark); }
+
+  /* ============ PIÈGE ============ */
+  .piege {
+    background: var(--es-warn-bg);
+    border: 1px solid var(--es-warn-border);
+    border-left: 4px solid var(--es-warn-accent);
+    padding: 14px 20px;
+    margin: 18px 0;
+    border-radius: 0 2px 2px 0;
+    page-break-inside: avoid;
+  }
+  .piege .label {
+    font-family: 'Playfair Display', serif;
+    color: var(--es-warn-text);
+    font-weight: 700;
+    font-size: 10.5pt;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin-bottom: 6px;
+  }
+  .piege p:last-child { margin-bottom: 0; }
+
+  /* ============ SOURCES ============ */
+  .sources {
+    margin-top: 22px;
+    padding: 12px 16px;
+    background: var(--es-cream-light);
+    border-top: 1px solid var(--es-cream-dark);
+    border-bottom: 1px solid var(--es-cream-dark);
+    font-size: 8.5pt;
+    color: var(--es-text-soft);
+    page-break-inside: avoid;
+  }
+  .sources .label {
+    font-family: 'Inter', sans-serif;
+    color: var(--es-green);
+    font-weight: 700;
+    font-size: 8.5pt;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .sources ul {
+    margin: 0;
+    padding-left: 16px;
+  }
+  .sources li { margin-bottom: 2px; }
+
+  /* ============ FOOTER ============ */
+  .footer {
+    margin-top: 18px;
+    padding-top: 10px;
+    border-top: 1px solid var(--es-cream-dark);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 8.5pt;
+    color: var(--es-text-soft);
+    font-family: 'Inter', sans-serif;
+  }
+  .footer .brand {
+    font-family: 'Playfair Display', serif;
+    color: var(--es-green);
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    font-size: 9pt;
+  }
+  .footer .url { font-weight: 500; }
+
+  /* ============ PRINT ============ */
+  @media print {
+    html, body { background: white; }
+    .print-bar { display: none; }
+    .fiche {
+      max-width: none;
+      margin: 0;
+      padding: 0;
+      box-shadow: none;
+      background: white;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="print-bar">
+  <span class="brand">ES Academy <span>· Fiche ressource</span></span>
+  <button onclick="window.print()">Imprimer cette fiche en PDF</button>
+</div>
+
+<article class="fiche">
+
+  <header class="fiche-header">
+    <div class="fiche-eyebrow">Module 06 · Financement</div>
+    <h1>Règles HCSF 2025-2026</h1>
+    <p class="fiche-subtitle">Ce que tu dois savoir pour faire passer ton dossier de crédit immobilier en France, et comment investir malgré les contraintes.</p>
+  </header>
+
+  <div class="essentiel">
+    <div class="label">L'essentiel en 30 secondes</div>
+    <ul>
+      <li><strong>35 % de taux d'effort max</strong>, assurance emprunteur comprise.</li>
+      <li><strong>25 ans de durée max</strong>, jusqu'à 27 ans si différé d'amortissement (VEFA ou travaux représentant au moins 10 % du coût de l'opération).</li>
+      <li><strong>20 % de marge de flexibilité</strong> pour les banques chaque trimestre, dont 70 % réservés à la résidence principale et 30 % aux primo-accédants.</li>
+    </ul>
+  </div>
+
+  <h2>Le HCSF, c'est quoi exactement</h2>
+  <p>Le Haut Conseil de Stabilité Financière (HCSF) est l'autorité macroprudentielle française. Il a été créé par la <strong>loi du 26 juillet 2013</strong> dite de séparation et de régulation des activités bancaires. Il est présidé par le ministre de l'Économie et réunit notamment le gouverneur de la Banque de France, le président de l'ACPR, le président de l'AMF et le président de l'Autorité des Normes Comptables.</p>
+  <p>Depuis le 1er janvier 2022, il impose aux banques deux critères stricts pour l'octroi de crédits immobiliers. Ce n'est pas une loi votée par le Parlement, c'est une décision juridiquement contraignante prise sur le fondement du 5° de l'article L.631-2-1 du Code monétaire et financier. Les banques qui ne respectent pas ces règles s'exposent à des sanctions de l'ACPR.</p>
+  <p>Trois décisions structurent le cadre actuel :</p>
+  <ul>
+    <li><strong>D-HCSF-2021-7 du 29 septembre 2021</strong> : décision fondatrice, applicable au 1er janvier 2022.</li>
+    <li><strong>D-HCSF-2023-2 du 29 juin 2023</strong> : passage de 80 % à 70 % pour la résidence principale dans la marge de flexibilité, et exclusion des intérêts intercalaires des crédits relais du calcul du taux d'effort.</li>
+    <li><strong>D-HCSF-2023-6 du 18 décembre 2023</strong> : abaissement du seuil travaux de 25 % à 10 % pour la tolérance des 27 ans.</li>
+  </ul>
+
+  <h2>Les 2 critères stricts</h2>
+
+  <h3>1. Taux d'effort plafonné à 35 %</h3>
+  <p>Tes charges de crédit (mensualité + assurance emprunteur + autres crédits conso ou auto + pensions versées) ne peuvent pas dépasser <strong>35 % de tes revenus nets mensuels</strong>. Petite précision pratique pour les investisseurs : les loyers générés par un projet locatif sont généralement retenus à hauteur de <strong>70 % par les banques</strong> dans le calcul. Cette pondération n'est pas inscrite dans la décision du HCSF, c'est une pratique bancaire qui couvre la vacance locative et les charges.</p>
+
+  <h3>2. Durée maximale de 25 ans</h3>
+  <p>L'horizon de remboursement ne peut pas dépasser <strong>25 ans</strong>. Une tolérance permet d'aller jusqu'à <strong>27 ans</strong> (24 mois de différé d'amortissement) dans deux cas :</p>
+  <ul>
+    <li>Achat dans le neuf en VEFA ou contrat de construction de maison individuelle</li>
+    <li>Achat dans l'ancien avec travaux représentant <strong>au moins 10 %</strong> du coût total de l'opération (seuil abaissé de 25 % à 10 % par la décision du 18 décembre 2023)</li>
+  </ul>
+
+  <h2>La marge de flexibilité de 20 %</h2>
+  <p>Chaque trimestre, chaque banque peut déroger aux deux règles ci-dessus sur <strong>20 % de sa production de crédits immobiliers</strong>. Cette marge n'est pas un cadeau libre, elle est encadrée :</p>
+  <ul>
+    <li><strong>70 % minimum</strong> de cette flexibilité doit aller à l'acquisition d'une résidence principale, soit <strong>14 % de la production totale</strong>.</li>
+    <li><strong>30 % minimum</strong> doit bénéficier aux primo-accédants, soit <strong>6 % de la production totale</strong>.</li>
+    <li>Le solde, environ <strong>6 % de la production totale</strong>, reste libre d'usage pour les autres profils, dont les investisseurs locatifs.</li>
+  </ul>
+
+  <div class="nouveaute">
+    <div class="label">Ce qui change en 2025-2026</div>
+    <p>Le HCSF a confirmé lors de sa réunion du <strong>3 mars 2026</strong> le maintien intégral des règles, sans modification de fond. Trois chiffres à retenir :</p>
+    <ul>
+      <li>Production de crédits immobiliers en hausse de <strong>33 % en 2025 par rapport à 2024</strong> (Banque de France).</li>
+      <li>Marge de flexibilité utilisée à <strong>17,1 % seulement au T4 2025</strong>, près de 3 points sous le plafond de 20 % autorisé. Il reste donc de la place pour les bons dossiers.</li>
+      <li>La proposition de loi du député Lionel Causse, qui visait à assouplir la règle des 35 %, a été <strong>retirée le 29 avril 2026</strong>, pour la deuxième fois (la première en avril 2024).</li>
+    </ul>
+  </div>
+
+  <h2>Tes 4 leviers pour passer malgré le HCSF</h2>
+  <p>Tu n'es pas coincé. La marge de flexibilité existe, et la sous-utilisation actuelle montre que les banques ont du grain à moudre. Voici comment positionner ton dossier selon ton profil.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:30%">Profil</th>
+          <th style="width:35%">Levier principal</th>
+          <th style="width:35%">Effet sur ton dossier</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>CDI, 1er investissement locatif</strong></td>
+          <td>Courtier qui négocie la marge de flexibilité</td>
+          <td>Faisable si épargne solide et stabilité pro</td>
+        </tr>
+        <tr>
+          <td><strong>Freelance, TNS, profession libérale</strong></td>
+          <td>2 à 3 bilans à montrer, 20 à 30 % d'apport</td>
+          <td>Taux d'effort calculé sur revenu net moyen 2 ans</td>
+        </tr>
+        <tr>
+          <td><strong>Investisseur 2e à 4e bien</strong></td>
+          <td>Méthode différentielle, loyers pondérés à 70 %</td>
+          <td>Recalcul du taux d'effort en intégrant les loyers nets</td>
+        </tr>
+        <tr>
+          <td><strong>Investisseur multi-bien (5+)</strong></td>
+          <td>Banques spécialisées, prêt in fine, SCI à l'IS</td>
+          <td>Sortie de la grille classique, analyse patrimoniale</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="piege">
+    <div class="label">⚠ Piège à éviter</div>
+    <p>Ne crois pas que le HCSF est une loi gravée dans le marbre. C'est une décision contraignante avec une vraie marge de dérogation, sous-utilisée par les banques (17,1 % au T4 2025 sur les 20 % autorisés). Trop d'investisseurs renoncent à un projet parce qu'ils sont à 36 ou 37 % de taux d'effort, alors qu'un bon courtier connaît les banques qui jouent leur flexibilité ce trimestre-là. Ta première mission : trouver le bon courtier, pas négocier la 4e décimale du taux.</p>
+  </div>
+
+  <div class="sources">
+    <div class="label">Sources et références juridiques</div>
+    <ul>
+      <li>Article L.631-2-1, 5° du Code monétaire et financier</li>
+      <li>Décision D-HCSF-2021-7 du 29 septembre 2021</li>
+      <li>Décision D-HCSF-2023-2 du 29 juin 2023</li>
+      <li>Décision D-HCSF-2023-6 du 18 décembre 2023</li>
+      <li>Communiqué HCSF du 3 mars 2026 (maintien des règles)</li>
+      <li>Banque de France, statistiques crédit immobilier T4 2025</li>
+    </ul>
+  </div>
+
+  <footer class="footer">
+    <span class="brand">La méthode Emeline SIRON</span>
+    <span class="url">emeline-siron.fr</span>
+    <span>À jour au 12/05/2026</span>
+  </footer>
+
+</article>
+
+</body>
+</html>

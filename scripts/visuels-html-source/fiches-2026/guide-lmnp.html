@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>LMNP 2025-2026 · La méthode Emeline SIRON</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --es-green: #1B4332; --es-green-light: #2D6A4F; --es-green-dark: #0F2B1E;
+    --es-cream: #F5F0E8; --es-cream-light: #FAF8F4; --es-cream-dark: #EDE8DC;
+    --es-gold: #C9A96E; --es-gold-light: #E5D5B0;
+    --es-text: #1a1a1a; --es-text-soft: #555;
+    --es-warn-bg: #FFF8F0; --es-warn-border: #E5C9A6; --es-warn-accent: #B8642E; --es-warn-text: #6B3A1A;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; font-family: 'Inter', Georgia, serif; color: var(--es-text); line-height: 1.55; font-size: 10.5pt; }
+  .print-bar { position: sticky; top: 0; background: var(--es-green-dark); color: white; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; z-index: 100; font-family: 'Inter', sans-serif; }
+  .print-bar .brand { font-family: 'Playfair Display', serif; font-weight: 600; font-size: 14pt; letter-spacing: 0.3px; }
+  .print-bar .brand span { color: var(--es-gold); font-style: italic; font-weight: 500; }
+  .print-bar button { background: var(--es-gold); color: var(--es-green-dark); border: none; padding: 10px 22px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 10.5pt; cursor: pointer; border-radius: 2px; letter-spacing: 0.3px; transition: background 0.15s; }
+  .print-bar button:hover { background: white; }
+  @page { size: A4; margin: 18mm 20mm 18mm 20mm; }
+  @media screen { body { background: #e0ddd8; padding: 28px 0 40px; } .fiche { max-width: 170mm; margin: 0 auto; padding: 18mm 20mm; background: white; box-shadow: 0 2px 24px rgba(0,0,0,0.08); } }
+  .fiche-header { border-bottom: 2px solid var(--es-green); padding-bottom: 14px; margin-bottom: 22px; }
+  .fiche-eyebrow { color: var(--es-gold); font-size: 8.5pt; text-transform: uppercase; letter-spacing: 2.5px; font-weight: 600; margin-bottom: 6px; }
+  h1 { font-family: 'Playfair Display', serif; color: var(--es-green); font-size: 26pt; font-weight: 700; margin: 0 0 6px 0; line-height: 1.1; letter-spacing: -0.5px; }
+  .fiche-subtitle { font-style: italic; color: var(--es-text-soft); font-size: 11pt; margin: 0; max-width: 135mm; }
+  .essentiel { background: var(--es-green); color: white; padding: 16px 22px; margin: 20px 0 24px; border-radius: 2px; page-break-inside: avoid; }
+  .essentiel .label { font-family: 'Playfair Display', serif; font-size: 11pt; font-weight: 600; color: var(--es-gold); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1.8px; }
+  .essentiel ul { margin: 0; padding-left: 18px; } .essentiel li { margin-bottom: 4px; line-height: 1.5; } .essentiel strong { color: white; font-weight: 700; }
+  h2 { font-family: 'Playfair Display', serif; color: var(--es-green); font-size: 16pt; font-weight: 600; margin: 24px 0 10px 0; padding-left: 14px; border-left: 4px solid var(--es-green); line-height: 1.25; page-break-after: avoid; }
+  h3 { font-family: 'Inter', sans-serif; color: var(--es-green-dark); font-size: 11pt; font-weight: 700; margin: 16px 0 6px 0; text-transform: uppercase; letter-spacing: 0.6px; page-break-after: avoid; }
+  p { margin: 0 0 9px 0; } ul, ol { padding-left: 20px; margin: 0 0 10px 0; } li { margin-bottom: 3px; } strong { color: var(--es-green-dark); font-weight: 600; }
+  .nouveaute { background: var(--es-cream); border-left: 4px solid var(--es-gold); padding: 14px 20px; margin: 18px 0; border-radius: 0 2px 2px 0; page-break-inside: avoid; }
+  .nouveaute .label { font-family: 'Playfair Display', serif; color: var(--es-green); font-weight: 600; font-size: 10.5pt; text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 6px; }
+  .nouveaute p:last-child { margin-bottom: 0; } .nouveaute ul { margin: 6px 0 0 0; }
+  .table-wrap { margin: 14px 0 18px; page-break-inside: avoid; }
+  table { width: 100%; border-collapse: collapse; font-size: 9.5pt; }
+  th { background: var(--es-green); color: white; text-align: left; padding: 9px 12px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 9pt; text-transform: uppercase; letter-spacing: 0.5px; }
+  td { padding: 9px 12px; border-bottom: 1px solid var(--es-cream-dark); vertical-align: top; }
+  tr:nth-child(even) td { background: var(--es-cream-light); } td strong { color: var(--es-green-dark); }
+  .piege { background: var(--es-warn-bg); border: 1px solid var(--es-warn-border); border-left: 4px solid var(--es-warn-accent); padding: 14px 20px; margin: 18px 0; border-radius: 0 2px 2px 0; page-break-inside: avoid; }
+  .piege .label { font-family: 'Playfair Display', serif; color: var(--es-warn-text); font-weight: 700; font-size: 10.5pt; text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 6px; }
+  .piege p:last-child { margin-bottom: 0; }
+  .sources { margin-top: 22px; padding: 12px 16px; background: var(--es-cream-light); border-top: 1px solid var(--es-cream-dark); border-bottom: 1px solid var(--es-cream-dark); font-size: 8.5pt; color: var(--es-text-soft); page-break-inside: avoid; }
+  .sources .label { font-family: 'Inter', sans-serif; color: var(--es-green); font-weight: 700; font-size: 8.5pt; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .sources ul { margin: 0; padding-left: 16px; } .sources li { margin-bottom: 2px; }
+  .footer { margin-top: 18px; padding-top: 10px; border-top: 1px solid var(--es-cream-dark); display: flex; justify-content: space-between; align-items: center; font-size: 8.5pt; color: var(--es-text-soft); font-family: 'Inter', sans-serif; }
+  .footer .brand { font-family: 'Playfair Display', serif; color: var(--es-green); font-weight: 600; letter-spacing: 0.3px; font-size: 9pt; } .footer .url { font-weight: 500; }
+  @media print { html, body { background: white; } .print-bar { display: none; } .fiche { max-width: none; margin: 0; padding: 0; box-shadow: none; background: white; } }
+</style>
+</head>
+<body>
+<div class="print-bar">
+  <span class="brand">ES Academy <span>· Fiche ressource</span></span>
+  <button onclick="window.print()">Imprimer cette fiche en PDF</button>
+</div>
+<article class="fiche">
+  <header class="fiche-header">
+    <div class="fiche-eyebrow">Module 09 · Imposition</div>
+    <h1>LMNP 2025-2026</h1>
+    <p class="fiche-subtitle">Régime fiscal, micro-BIC vs réel, et ce que la réforme du 15 février 2025 change concrètement sur la plus-value de revente.</p>
+  </header>
+  <div class="essentiel">
+    <div class="label">L'essentiel en 30 secondes</div>
+    <ul>
+      <li><strong>Statut LMNP</strong> : recettes &lt; 23 000 € / an ou inférieures aux autres revenus d'activité du foyer.</li>
+      <li><strong>Régime réel</strong> presque toujours plus avantageux que le micro-BIC pendant la phase locative.</li>
+      <li><strong>Réforme 15 février 2025</strong> : les amortissements pratiqués (y compris ceux antérieurs à 2025) sont désormais réintégrés dans le calcul de la plus-value à la revente.</li>
+    </ul>
+  </div>
+  <h2>Le statut LMNP, c'est quoi exactement</h2>
+  <p>Tu es Loueur en Meublé Non Professionnel (LMNP) si <strong>au moins une</strong> des deux conditions suivantes est remplie :</p>
+  <ul>
+    <li>Les recettes annuelles tirées de la location meublée par ton foyer fiscal sont <strong>inférieures à 23 000 €</strong></li>
+    <li>OU ces recettes sont <strong>inférieures aux autres revenus d'activité</strong> du foyer fiscal (salaires, autres BIC, BNC, BA)</li>
+  </ul>
+  <p>Au-delà, tu bascules en LMP (Loueur en Meublé Professionnel), avec un régime social et fiscal différent. Les revenus LMNP sont déclarés en bénéfices industriels et commerciaux (BIC) sur la 2042-C-PRO.</p>
+
+  <h2>Les deux régimes fiscaux : micro-BIC vs réel</h2>
+  <h3>Micro-BIC : la simplicité</h3>
+  <p>L'administration applique un abattement forfaitaire sur tes recettes brutes. Tu ne déduis aucune charge réelle ni amortissement. La loi Le Meur du 19 novembre 2024 a fortement durci le micro-BIC pour les meublés de tourisme.</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th style="width:42%">Type de location</th><th style="width:28%">Plafond micro-BIC</th><th style="width:30%">Abattement</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Meublé classique (longue durée)</strong></td><td>77 700 €</td><td>50 %</td></tr>
+        <tr><td><strong>Meublé de tourisme classé</strong></td><td>77 700 € (avant : 188 700 €)</td><td>50 % (avant : 71 %)</td></tr>
+        <tr><td><strong>Meublé de tourisme non classé</strong></td><td>15 000 € (avant : 77 700 €)</td><td>30 % (avant : 50 %)</td></tr>
+        <tr><td><strong>Chambres d'hôtes</strong></td><td>188 700 €</td><td>71 % (inchangé)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <h3>Régime réel : la déduction</h3>
+  <p>Tu déduis toutes les charges réelles (intérêts d'emprunt, taxe foncière, assurance, gestion, frais comptables) et tu pratiques <strong>l'amortissement comptable</strong> du bien et du mobilier. C'est ce qui fait du LMNP un régime fiscal très attractif : l'amortissement vient en charge déductible et fait souvent tomber le résultat fiscal à zéro pendant 15 à 20 ans.</p>
+  <ul>
+    <li><strong>Amortissement du bâti</strong> : 2 à 3 % par an sur la valeur hors foncier (durée 30 à 50 ans)</li>
+    <li><strong>Amortissement du mobilier</strong> : 5 à 10 % par an (durée 5 à 10 ans)</li>
+    <li><strong>Limite</strong> : l'amortissement déduit ne peut pas créer un déficit. Il est plafonné aux loyers nets de charges. Le surplus est stocké en "amortissements différés" et reportable sans limite de durée.</li>
+  </ul>
+  <p>À noter : la réduction d'impôt pour adhésion à un Organisme de Gestion Agréé (OGA) a été <strong>supprimée depuis 2025</strong>. Les frais de comptabilité restent en revanche déductibles au réel.</p>
+
+  <div class="nouveaute">
+    <div class="label">La réforme du 15 février 2025 : section critique</div>
+    <p>L'article 84 de la loi de finances pour 2025 (loi n° 2025-127 du 14 février 2025) a créé un nouvel article 150 VB III du CGI. Ce qui change :</p>
+    <ul>
+      <li>Pour les cessions réalisées à compter du <strong>15 février 2025</strong>, les amortissements pratiqués pendant la période de location sont <strong>réintégrés dans le calcul de la plus-value</strong>.</li>
+      <li>La plus-value brute se calcule : <em>Prix de cession - (Prix d'acquisition majoré - Amortissements déduits)</em>.</li>
+      <li>La réponse ministérielle Mette (question n° 10097, JO AN du 24 mars 2026) a confirmé : la réintégration s'applique <strong>quelle que soit la date de mise en location</strong>, donc aussi pour les amortissements pratiqués avant 2025.</li>
+      <li>Les abattements pour durée de détention restent applicables : exonération IR à 22 ans, exonération totale (IR + PS) à 30 ans.</li>
+    </ul>
+  </div>
+
+  <h2>Tableau comparatif avant / après réforme</h2>
+  <p>Pour bien voir l'impact, un cas chiffré : achat 200 000 €, vente 280 000 € après 10 ans de détention, amortissements pratiqués 4 000 €/an soit 40 000 € cumulés.</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th style="width:34%">Étape de calcul</th><th style="width:33%">Avant réforme</th><th style="width:33%">Depuis 15 fév. 2025</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Prix de cession</td><td>280 000 €</td><td>280 000 €</td></tr>
+        <tr><td>Prix d'acquisition retenu</td><td>200 000 €</td><td>200 000 - 40 000 = <strong>160 000 €</strong></td></tr>
+        <tr><td><strong>Plus-value brute</strong></td><td>80 000 €</td><td><strong>120 000 €</strong></td></tr>
+        <tr><td>Abattement IR (10 ans : 30 %)</td><td>-24 000 €</td><td>-36 000 €</td></tr>
+        <tr><td>Base IR (taux 19 %)</td><td>56 000 € → <strong>10 640 €</strong></td><td>84 000 € → <strong>15 960 €</strong></td></tr>
+        <tr><td>Surcoût net de la réforme</td><td colspan="2"><strong>environ +9 500 € après PS 17,2 % sur ce cas</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:9pt;color:var(--es-text-soft);font-style:italic;">Exemple à valider par un fiscaliste avant toute décision de cession. Abattements pour durée de détention applicables : IR 6 %/an de la 6e à la 21e année, 4 % la 22e année (exonération IR à 22 ans) ; PS 1,65 %/an de la 6e à la 21e année, 1,60 % la 22e année, 9 %/an de la 23e à la 30e année (exonération PS à 30 ans).</p>
+
+  <h2>Les exceptions à la réintégration</h2>
+  <p>Certaines situations échappent à la réintégration des amortissements. À connaître pour bien arbitrer :</p>
+  <ul>
+    <li><strong>Résidences services</strong> : étudiantes, seniors (résidents de plus de 65 ans), EHPAD, établissements médico-sociaux et de santé longue durée sont totalement exemptés.</li>
+    <li><strong>Travaux d'amélioration</strong> déjà déduits des revenus locatifs au titre de l'article 150 VB II 4° du CGI ne sont pas réintégrés (logique anti double-comptage).</li>
+    <li><strong>Mobilier</strong> : les amortissements du mobilier ne sont pas concernés, seuls les amortissements des composants immobiliers (structure, toiture, installations techniques) entrent dans le calcul.</li>
+    <li><strong>Régime micro-BIC</strong> : pas d'amortissement pratiqué, donc rien à réintégrer.</li>
+  </ul>
+
+  <h2>Stratégies à envisager</h2>
+  <ul>
+    <li><strong>Vendre maintenant</strong> : si tu envisages une revente à court terme, plus tu attends, plus le stock d'amortissements grossit et alourdit la plus-value future.</li>
+    <li><strong>Garder long terme</strong> : à 22 ans, exonération IR ; à 30 ans, exonération totale (IR + PS).</li>
+    <li><strong>Bascule en LMP</strong> : la plus-value pro permet une exonération sous conditions (5 ans d'activité + recettes &lt; 90 000 € HT, art. 151 septies CGI).</li>
+    <li><strong>Apport à une SCI à l'IS</strong> ou holding patrimoniale : à étudier avec un fiscaliste, peut purger les amortissements selon le montage.</li>
+    <li><strong>Résidence services</strong> : reste épargnée par la réforme, alternative pour les nouveaux investissements LMNP.</li>
+  </ul>
+
+  <div class="piege">
+    <div class="label">⚠ Piège à éviter</div>
+    <p>Ne pense pas que tu peux échapper à la réforme en restant au micro-BIC pour éviter les amortissements. Le micro-BIC est presque toujours moins avantageux que le réel pendant la phase locative, sauf cas très spécifiques (charges très faibles, location 100 % saisonnière classée). Sur 10 ans de location, ce que tu économises en amortissements au réel compense largement le surcoût à la revente, sauf pour les biens à très forte plus-value. Le bon calcul se fait avec ton expert-comptable, pas à l'instinct.</p>
+  </div>
+
+  <div class="sources">
+    <div class="label">Sources et références juridiques</div>
+    <ul>
+      <li>Loi n° 2025-127 du 14 février 2025 de finances pour 2025, article 84</li>
+      <li>Articles 150 VB III, 39 C et 50-0 du Code général des impôts</li>
+      <li>Loi n° 2024-1039 du 19 novembre 2024 dite "Le Meur" (micro-BIC tourisme)</li>
+      <li>Réponse ministérielle Mette, question n° 10097, JO AN du 24 mars 2026</li>
+      <li>Décision Conseil constitutionnel n° 2025-874 DC du 13 février 2025</li>
+      <li>Notice fiscale 2048-IMM (mise à jour mars 2025)</li>
+    </ul>
+  </div>
+
+  <footer class="footer">
+    <span class="brand">La méthode Emeline SIRON</span>
+    <span class="url">emeline-siron.fr</span>
+    <span>À jour au 12/05/2026</span>
+  </footer>
+</article>
+</body>
+</html>
