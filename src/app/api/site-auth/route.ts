@@ -1,8 +1,11 @@
 import { NextResponse } from "next/server";
+import { validateBody } from "@/lib/validators/validate";
+import { SiteAuthSchema } from "@/lib/validators/auth";
 
 export async function POST(request: Request) {
-  const body = await request.json();
-  const { password } = body;
+  const v = await validateBody(request, SiteAuthSchema);
+  if (!v.ok) return v.response;
+  const { password } = v.data;
   const sitePassword = process.env.SITE_PASSWORD;
 
   if (!sitePassword || password !== sitePassword) {

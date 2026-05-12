@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import { createFamilyCheckoutSession } from "@/lib/stripe/checkout";
 import { FAMILY_LAUNCH_PENDING } from "@/lib/utils/constants";
+import { validateBody, validateQuery } from "@/lib/validators/validate";
+import {
+  FamilyCheckoutSchema,
+  FamilyCheckoutQuerySchema,
+} from "@/lib/validators/stripe-checkout";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3001";
 
@@ -17,12 +22,11 @@ export async function GET(request: Request) {
     return NextResponse.redirect(`${SITE_URL}/family?status=launch-pending`, { status: 303 });
   }
   try {
-    const url = new URL(request.url);
-    const plan = (url.searchParams.get("plan") || "fondateur") as "fondateur" | "standard";
-
-    if (plan !== "fondateur" && plan !== "standard") {
+    const q = validateQuery(request, FamilyCheckoutQuerySchema);
+    if (!q.ok) {
       return NextResponse.redirect(`${SITE_URL}/family?error=invalid-plan`, { status: 303 });
     }
+    const { plan } = q.data;
 
     const session = await createFamilyCheckoutSession({
       plan,
@@ -49,16 +53,9 @@ export async function POST(request: Request) {
     );
   }
   try {
-    const body = await request.json().catch(() => ({}));
-    const plan = body?.plan || "fondateur";
-    const email = typeof body?.email === "string" ? body.email.trim() : undefined;
-
-    if (plan !== "fondateur" && plan !== "standard") {
-      return NextResponse.json(
-        { error: "Plan invalide (attendu : fondateur ou standard)" },
-        { status: 400 }
-      );
-    }
+    const v = await validateBody(request, FamilyCheckoutSchema);
+    if (!v.ok) return v.response;
+    const { plan, email } = v.data;
 
     const session = await createFamilyCheckoutSession({
       plan,

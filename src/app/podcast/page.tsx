@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/Button";
@@ -40,10 +41,13 @@ export default function PodcastPage() {
           backgroundSize: "40px 40px",
         }} />
         <div className="relative max-w-4xl mx-auto px-6 text-center">
-          <img
+          <Image
             src="/images/logo-otb.png"
             alt="Out of the Box"
-            className="h-20 sm:h-28 mx-auto mb-6"
+            width={400}
+            height={120}
+            className="h-20 sm:h-28 w-auto mx-auto mb-6"
+            priority
           />
           <p className="text-xl text-white/70 max-w-2xl mx-auto mb-8 leading-relaxed">
             Chaque mardi, un épisode de 30 minutes pour repenser ton rapport à l&apos;argent,

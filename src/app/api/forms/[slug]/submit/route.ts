@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase/server";
 import { rateLimit, getClientIp, cleanupBuckets } from "@/lib/utils/rate-limit";
 import { autoEnrollByTags, tagsAdded } from "@/lib/sequences/auto-enroll";
-
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+import { validateBody } from "@/lib/validators/validate";
+import { FormSubmissionSchema } from "@/lib/validators/form-submission";
 
 /**
  * POST public /api/forms/[slug]/submit : soumission publique du formulaire.
@@ -30,27 +30,9 @@ export async function POST(
     }
 
     const { slug } = await params;
-    const body = await request.json().catch(() => ({}));
-    const {
-      email,
-      first_name,
-      last_name,
-      phone,
-      consent,
-    } = body as {
-      email?: string;
-      first_name?: string;
-      last_name?: string;
-      phone?: string;
-      consent?: boolean;
-    };
-
-    if (!email || typeof email !== "string" || !EMAIL_RE.test(email.trim())) {
-      return NextResponse.json({ error: "Email invalide" }, { status: 400 });
-    }
-    if (!consent) {
-      return NextResponse.json({ error: "Consentement RGPD requis" }, { status: 400 });
-    }
+    const v = await validateBody(request, FormSubmissionSchema);
+    if (!v.ok) return v.response;
+    const { email, first_name, last_name, phone } = v.data;
 
     const supabase = await createServiceClient();
 

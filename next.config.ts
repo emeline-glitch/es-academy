@@ -12,6 +12,7 @@ const nextConfig: NextConfig = {
     // qui passe quality={85} ou {90}. Liste alignee sur les usages reels.
     qualities: [75, 85, 90],
     remotePatterns: [
+      // Notion attachments (S3 signe, expirent en 1h)
       {
         protocol: "https",
         hostname: "**.amazonaws.com",
@@ -20,9 +21,20 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "prod-files-secure.s3.us-west-2.amazonaws.com",
       },
+      // Notion direct (covers, icons hostes par Notion)
+      {
+        protocol: "https",
+        hostname: "**.notion.so",
+      },
+      // Bunny CDN (videos hosting Family/Academy)
       {
         protocol: "https",
         hostname: "**.b-cdn.net",
+      },
+      // Unsplash (photos thematiques fallback blog)
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
       },
     ],
   },

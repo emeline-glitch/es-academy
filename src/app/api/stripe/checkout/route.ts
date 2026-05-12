@@ -1,19 +1,15 @@
 import { NextResponse } from "next/server";
 import { createAcademyCheckoutSession } from "@/lib/stripe/checkout";
+import { validateBody } from "@/lib/validators/validate";
+import { AcademyCheckoutSchema } from "@/lib/validators/stripe-checkout";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3001";
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    const plan = body?.plan;
-
-    if (plan !== "1x" && plan !== "3x" && plan !== "4x") {
-      return NextResponse.json(
-        { error: "Plan invalide (attendu: 1x, 3x ou 4x)" },
-        { status: 400 }
-      );
-    }
+    const v = await validateBody(request, AcademyCheckoutSchema);
+    if (!v.ok) return v.response;
+    const { plan } = v.data;
 
     const session = await createAcademyCheckoutSession({
       plan,

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 
 const C = {
   ivoire: "#FFF8EB",
@@ -261,11 +262,14 @@ function Hero() {
   return (
     <section className="relative min-h-[92vh] flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0">
-        <img
+        <Image
           src={PHOTOS.bokehLights}
           alt=""
           aria-hidden="true"
-          className="w-full h-full object-cover animate-slow-zoom"
+          fill
+          sizes="100vw"
+          priority
+          className="object-cover animate-slow-zoom"
         />
         <div
           className="absolute inset-0"
@@ -699,11 +703,14 @@ function SectionFinaleOptIn() {
   return (
     <section className="relative py-32 px-6 overflow-hidden" id="form-avent">
       <div className="absolute inset-0">
-        <img
+        <Image
           src={PHOTOS.tableFestive}
           alt=""
           aria-hidden="true"
-          className="w-full h-full object-cover"
+          fill
+          sizes="100vw"
+          className="object-cover"
+          loading="lazy"
         />
         <div
           className="absolute inset-0"

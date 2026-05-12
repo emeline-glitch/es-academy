@@ -6,10 +6,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import Image from "next/image";
 
-// TODO: Remplacer par le vrai username Calendly/Cal.com d'Emeline
-// Pour Calendly : https://calendly.com/emelinesiron/appel-decouverte
-// Pour Cal.com : https://cal.com/emelinesiron/30min
-const CALENDLY_BASE_URL = "https://calendly.com/emelinesiron/appel-decouverte";
+const CALENDLY_BASE_URL = "https://calendly.com/antony-emeline-siron/appel-decouverte-es-academy";
 
 function CalendlyEmbed() {
   const searchParams = useSearchParams();
@@ -27,6 +24,7 @@ function CalendlyEmbed() {
         height="800"
         title="Réserver un appel découverte avec Emeline Siron"
         className="w-full"
+        loading="lazy"
       />
     </div>
   );

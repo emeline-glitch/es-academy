@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { validateBody } from "@/lib/validators/validate";
+import { MagicLinkRequestSchema } from "@/lib/validators/auth";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
@@ -15,23 +17,15 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
  * Cote client on retourne toujours { ok: true } pour eviter de leaker.
  */
 export async function POST(request: Request) {
-  let body: unknown;
-  try {
-    body = await request.json();
-  } catch {
-    return NextResponse.json({ error: "invalid_json" }, { status: 400 });
-  }
-
-  const email = (body as { email?: unknown })?.email;
-  if (typeof email !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return NextResponse.json({ error: "invalid_email" }, { status: 400 });
-  }
+  const v = await validateBody(request, MagicLinkRequestSchema);
+  if (!v.ok) return v.response;
+  const { email } = v.data;
 
   const supabase = await createClient();
   // shouldCreateUser=false : on ne cree PAS de compte si l'email n'existe pas.
   // Pour Academy, l'user a forcement deja un compte (cree par le webhook Stripe).
   const { error } = await supabase.auth.signInWithOtp({
-    email: email.toLowerCase().trim(),
+    email,
     options: {
       shouldCreateUser: false,
       emailRedirectTo: `${SITE_URL}/api/auth/callback?next=/dashboard`,

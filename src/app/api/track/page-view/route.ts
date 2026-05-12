@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase/server";
+import { validateBody } from "@/lib/validators/validate";
+import { TrackPageViewSchema } from "@/lib/validators/tracking";
 
 const BOT_REGEX = /(bot|crawler|spider|crawling|wget|curl|python-requests|axios|node-fetch|googlebot|bingbot|ahrefs|semrush|yandex|baiduspider|applebot|mj12|dotbot|screaming|petalbot|facebookexternalhit|linkedinbot|whatsapp|telegrambot|slackbot|discordbot|headlesschrome|phantom|puppeteer|playwright|lighthouse)/i;
 
@@ -14,40 +16,14 @@ const SKIP_PATH_PREFIXES = [
   "/_next",
 ];
 
-interface TrackPayload {
-  path?: unknown;
-  referrer?: unknown;
-  session_id?: unknown;
-  utm_source?: unknown;
-  utm_medium?: unknown;
-  utm_campaign?: unknown;
-  utm_term?: unknown;
-  utm_content?: unknown;
-  gclid?: unknown;
-  fbclid?: unknown;
-  landing_path?: unknown;
-}
-
-function pickString(v: unknown, max = 200): string | null {
-  if (typeof v !== "string" || v.length === 0) return null;
-  return v.slice(0, max);
-}
-
 export async function POST(request: Request) {
-  let body: TrackPayload;
-  try {
-    body = (await request.json()) as TrackPayload;
-  } catch {
-    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
-  }
+  const v = await validateBody(request, TrackPageViewSchema);
+  if (!v.ok) return v.response;
+  const body = v.data;
+  const path = body.path;
+  const rawReferrer = body.referrer ?? null;
+  const sessionId = body.session_id ?? null;
 
-  const path = typeof body.path === "string" ? body.path : null;
-  const rawReferrer = typeof body.referrer === "string" ? body.referrer : null;
-  const sessionId = typeof body.session_id === "string" ? body.session_id : null;
-
-  if (!path || path.length > 500) {
-    return NextResponse.json({ error: "Bad path" }, { status: 400 });
-  }
   if (SKIP_PATH_PREFIXES.some((p) => path.startsWith(p))) {
     return NextResponse.json({ skipped: true });
   }
@@ -85,14 +61,14 @@ export async function POST(request: Request) {
       country,
       is_bot: isBot,
       session_id: sessionId?.slice(0, 100) || null,
-      utm_source: pickString(body.utm_source),
-      utm_medium: pickString(body.utm_medium),
-      utm_campaign: pickString(body.utm_campaign),
-      utm_term: pickString(body.utm_term),
-      utm_content: pickString(body.utm_content),
-      gclid: pickString(body.gclid),
-      fbclid: pickString(body.fbclid),
-      landing_path: pickString(body.landing_path),
+      utm_source: body.utm_source ?? null,
+      utm_medium: body.utm_medium ?? null,
+      utm_campaign: body.utm_campaign ?? null,
+      utm_term: body.utm_term ?? null,
+      utm_content: body.utm_content ?? null,
+      gclid: body.gclid ?? null,
+      fbclid: body.fbclid ?? null,
+      landing_path: body.landing_path ?? null,
     });
   } catch (e) {
     console.error("[track/page-view] insert error:", e);

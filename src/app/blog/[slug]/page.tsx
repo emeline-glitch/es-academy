@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -119,13 +120,20 @@ export default async function ArticlePage({
       </section>
 
       {/* Featured image (Notion FeaturedImage si dispo, sinon photo Unsplash thématique) */}
-      <div className="max-w-4xl mx-auto px-6 -mt-6">
-        <img
-          src={articleImage}
-          alt={article.title}
-          className="w-full rounded-xl shadow-lg"
-        />
-      </div>
+      {articleImage && (
+        <div className="max-w-4xl mx-auto px-6 -mt-6">
+          <div className="relative w-full aspect-[16/9] rounded-xl overflow-hidden shadow-lg">
+            <Image
+              src={articleImage}
+              alt={article.title}
+              fill
+              sizes="(max-width: 1024px) 100vw, 1024px"
+              className="object-cover"
+              priority
+            />
+          </div>
+        </div>
+      )}
 
       {/* Article content */}
       <article className="max-w-3xl mx-auto px-6 py-12">
@@ -173,13 +181,17 @@ export default async function ArticlePage({
                   href={`/blog/${a.slug}`}
                   className="bg-white rounded-xl overflow-hidden border border-es-cream-dark card-hover group"
                 >
-                  <div className="aspect-[16/9] bg-es-cream-dark">
-                    <img
-                      src={imageMap.get(a.slug) || a.featuredImage || ""}
-                      alt={a.title}
-                      className="w-full h-full object-cover"
-                      loading="lazy"
-                    />
+                  <div className="aspect-[16/9] bg-es-cream-dark relative overflow-hidden">
+                    {(imageMap.get(a.slug) || a.featuredImage) && (
+                      <Image
+                        src={imageMap.get(a.slug) || a.featuredImage || ""}
+                        alt={a.title}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                        className="object-cover"
+                        loading="lazy"
+                      />
+                    )}
                   </div>
                   <div className="p-4">
                     <h3 className="font-serif font-bold text-es-text group-hover:text-es-green transition-colors leading-snug">

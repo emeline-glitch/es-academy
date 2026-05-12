@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase/server";
 import { verifyUnsubscribeToken, buildUnsubscribeUrl } from "@/lib/utils/unsubscribe-token";
 import { sendEmail } from "@/lib/ses/client";
+import { validateBody } from "@/lib/validators/validate";
+import { UnsubscribeRequestSchema } from "@/lib/validators/unsubscribe";
 
 /**
  * POST /api/contacts/unsubscribe
@@ -25,19 +27,11 @@ import { sendEmail } from "@/lib/ses/client";
  * rejetee avec 400 pour eviter le revenge-unsubscribe.
  */
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
 export async function POST(request: Request) {
   try {
-    const body = await request.json().catch(() => ({}));
-    const rawEmail = typeof body?.email === "string" ? body.email : "";
-    const token = typeof body?.token === "string" ? body.token : "";
-    const source = typeof body?.source === "string" ? body.source : "";
-
-    const email = rawEmail.trim().toLowerCase();
-    if (!email || !EMAIL_RE.test(email)) {
-      return NextResponse.json({ error: "Email invalide" }, { status: 400 });
-    }
+    const v = await validateBody(request, UnsubscribeRequestSchema);
+    if (!v.ok) return v.response;
+    const { email, token, source } = v.data;
 
     const supabase = await createServiceClient();
 

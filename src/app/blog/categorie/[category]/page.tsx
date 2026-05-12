@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { getArticlesByCategory } from "@/lib/notion/blog";
@@ -109,13 +110,17 @@ export default async function CategoryPage({
                   href={`/blog/${article.slug}`}
                   className="bg-white rounded-xl overflow-hidden border border-es-cream-dark card-hover group"
                 >
-                  <div className="aspect-[16/9] bg-es-cream-dark">
-                    <img
-                      src={imageMap.get(article.slug) || article.featuredImage || ""}
-                      alt={article.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      loading="lazy"
-                    />
+                  <div className="aspect-[16/9] bg-es-cream-dark relative overflow-hidden">
+                    {(imageMap.get(article.slug) || article.featuredImage) && (
+                      <Image
+                        src={imageMap.get(article.slug) || article.featuredImage || ""}
+                        alt={article.title}
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        loading="lazy"
+                      />
+                    )}
                   </div>
                   <div className="p-5">
                     <h2 className="font-serif text-lg font-bold text-es-text group-hover:text-es-green transition-colors leading-snug mb-2">

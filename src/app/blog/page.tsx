@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { getPublishedArticles } from "@/lib/notion/blog";
@@ -80,12 +81,16 @@ export default async function BlogPage() {
                 >
                   {/* Image (Notion FeaturedImage si dispo, sinon photo Unsplash thématique selon la catégorie) */}
                   <div className="aspect-[16/9] bg-es-cream-dark relative overflow-hidden">
-                    <img
-                      src={imageMap.get(article.slug) || article.featuredImage || ""}
-                      alt={article.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      loading="lazy"
-                    />
+                    {(imageMap.get(article.slug) || article.featuredImage) && (
+                      <Image
+                        src={imageMap.get(article.slug) || article.featuredImage || ""}
+                        alt={article.title}
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        loading="lazy"
+                      />
+                    )}
                     {article.category && (
                       <span className="absolute top-3 left-3 bg-es-green text-white text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-full">
                         {article.category}

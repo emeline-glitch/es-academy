@@ -13,6 +13,7 @@ import {
   syncFamilySubscription,
 } from "@/lib/sync/family-sync";
 import Stripe from "stripe";
+import { StripeWebhookEventSchema } from "@/lib/validators/stripe-webhook";
 
 export async function POST(request: Request) {
   const body = await request.text();
@@ -36,6 +37,15 @@ export async function POST(request: Request) {
     const msg = err instanceof Error ? err.message : "unknown";
     console.error("[webhook] signature verification failed:", msg);
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
+  }
+
+  // Defense en profondeur : la signature Stripe reste la garde principale, on
+  // valide en plus le shape minimal (id, type, data.object) au cas ou Stripe
+  // enverrait un payload deforme apres une migration d API version.
+  const shape = StripeWebhookEventSchema.safeParse(event);
+  if (!shape.success) {
+    console.error("[webhook] event shape invalid:", shape.error.message);
+    return NextResponse.json({ error: "Invalid event shape" }, { status: 400 });
   }
 
   // Tracking idempotence Academy : on note l'event dans processed_stripe_events

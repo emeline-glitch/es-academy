@@ -372,11 +372,13 @@ export default function Home() {
                 />
               </div>
               <div className="text-center md:text-left max-w-xl">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <Image
                   src="/images/logo-otb.png"
                   alt="Out of the Box : Podcast Emeline Siron"
-                  className="h-16 sm:h-20 mx-auto md:mx-0 mb-4"
+                  width={320}
+                  height={80}
+                  className="h-16 sm:h-20 w-auto mx-auto md:mx-0 mb-4"
+                  loading="lazy"
                 />
                 <p className="text-es-text-muted">
                   Chaque mardi, un épisode de 30 minutes pour repenser ton rapport à l&apos;argent,
