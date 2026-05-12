@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import { runSeoAudit } from "@/lib/seo/audit";
 
 /**
@@ -22,6 +23,9 @@ export async function POST(request: Request) {
   }
 
   try {
+    // Purge le cache Notion (1h sinon) pour que l'audit voit les dernieres
+    // modifs editoriales (SEO_Title, Excerpt, etc.) faites depuis l'admin.
+    revalidateTag("notion-blog");
     const result = await runSeoAudit();
     return NextResponse.json(result);
   } catch (e) {

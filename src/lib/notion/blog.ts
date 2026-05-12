@@ -35,7 +35,7 @@ async function queryBlogDatabase(
         "Content-Type": "application/json",
       },
       body: JSON.stringify(body),
-      next: { revalidate: 3600 },
+      next: { revalidate: 3600, tags: ["notion-blog"] },
     }
   );
 
