@@ -5,6 +5,7 @@ import { requireAdmin } from "@/lib/utils/admin-auth";
 import { sendEmail } from "@/lib/ses/client";
 import { applyTracking } from "@/lib/email/tracking";
 import { buildUnsubscribeUrl } from "@/lib/utils/unsubscribe-token";
+import { writeAuditLog, extractRequestContext } from "@/lib/utils/audit";
 
 // Parallélise l'envoi par paquets pour éviter le timeout Vercel (~10s hobby, 60s pro)
 // sur des campagnes > 50 contacts, tout en respectant les quotas SES (~14/s en sandbox, 50/s en prod).
@@ -155,6 +156,23 @@ export async function POST(request: Request) {
       target_tags: Array.isArray(target_tags) && target_tags.length > 0 ? target_tags : null,
     })
     .eq("id", campaign_id);
+
+  await writeAuditLog(supabase, {
+    actor_id: auth.userId,
+    actor_email: auth.user.email || null,
+    action: "campaign.send",
+    entity_type: "email_campaign",
+    entity_id: campaign_id,
+    after: {
+      subject: campaign.subject,
+      target_tags: Array.isArray(target_tags) && target_tags.length > 0 ? target_tags : null,
+      total_recipients: contacts.length,
+      sent: sentCount,
+      failed: failedCount,
+      campaign_status: campaignStatus,
+      request_context: extractRequestContext(request),
+    },
+  });
 
   revalidatePath("/admin/emails");
   revalidatePath(`/admin/emails/${campaign_id}`);

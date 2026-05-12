@@ -3,6 +3,7 @@ import { revalidatePath } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/utils/admin-auth";
 import { autoEnrollByTags } from "@/lib/sequences/auto-enroll";
+import { writeAuditLog, extractRequestContext } from "@/lib/utils/audit";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const VALID_CONSENT_TYPES = ["explicit", "legitimate_interest", "re_consent"] as const;
@@ -245,9 +246,10 @@ export async function POST(request: Request) {
   }
 
   // Audit log
-  await supabase.from("audit_log").insert({
+  await writeAuditLog(supabase, {
     actor_id: auth.userId,
-    action: "contacts_imported",
+    actor_email: auth.user.email || null,
+    action: "admin.bulk_import",
     entity_type: "contacts",
     entity_id: null,
     after: {
@@ -258,6 +260,7 @@ export async function POST(request: Request) {
       alumni: !!set_alumni_evermind,
       source_detail: source_detail || null,
       auto_enrolled: totalEnrolled,
+      request_context: extractRequestContext(request),
     },
   });
 

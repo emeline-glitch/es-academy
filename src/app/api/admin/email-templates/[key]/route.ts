@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/utils/admin-auth";
+import { writeAuditLog, extractRequestContext } from "@/lib/utils/audit";
 
 export async function GET(
   _request: Request,
@@ -47,6 +48,13 @@ export async function PATCH(
   }
 
   const supabase = await createServiceClient();
+
+  const { data: before } = await supabase
+    .from("email_templates")
+    .select("id, subject, from_email, from_name, name")
+    .eq("key", key)
+    .maybeSingle();
+
   const { data, error } = await supabase
     .from("email_templates")
     .update(update)
@@ -56,6 +64,24 @@ export async function PATCH(
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   if (!data) return NextResponse.json({ error: "Template introuvable" }, { status: 404 });
+
+  await writeAuditLog(supabase, {
+    actor_id: auth.userId,
+    actor_email: auth.user.email || null,
+    action: "template.update",
+    entity_type: "email_template",
+    entity_id: data.id,
+    before: before || null,
+    after: {
+      key,
+      subject: data.subject,
+      from_email: data.from_email,
+      from_name: data.from_name,
+      fields_changed: Object.keys(update),
+      html_content_changed: body.html_content !== undefined,
+      request_context: extractRequestContext(request),
+    },
+  });
 
   revalidatePath("/admin/emails/templates");
   return NextResponse.json({ template: data });

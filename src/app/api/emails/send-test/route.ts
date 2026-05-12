@@ -3,6 +3,7 @@ import { createServiceClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/utils/admin-auth";
 import { sendEmail } from "@/lib/ses/client";
 import { applyTracking } from "@/lib/email/tracking";
+import { writeAuditLog, extractRequestContext } from "@/lib/utils/audit";
 
 export async function POST(request: Request) {
   // Admin only : un test email rentre du HTML libre (parametre html_content)
@@ -117,6 +118,21 @@ export async function POST(request: Request) {
       .update({ status: result.success ? "sent" : "failed" })
       .eq("id", sendRecord.id);
   }
+
+  await writeAuditLog(supabase, {
+    actor_id: auth.userId,
+    actor_email: auth.user.email || null,
+    action: "campaign.test_send",
+    entity_type: "email_campaign",
+    entity_id: campaignId,
+    after: {
+      to,
+      subject,
+      success: result.success,
+      ses_error: result.success ? null : result.error || null,
+      request_context: extractRequestContext(request),
+    },
+  });
 
   return NextResponse.json({
     success: result.success,

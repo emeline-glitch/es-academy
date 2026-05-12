@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/utils/admin-auth";
+import { writeAuditLog, extractRequestContext } from "@/lib/utils/audit";
 
 export async function POST(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const auth = await requireAdmin();
@@ -56,6 +57,21 @@ export async function POST(
     }));
     await supabase.from("email_sequence_steps").insert(stepsToInsert);
   }
+
+  await writeAuditLog(supabase, {
+    actor_id: auth.userId,
+    actor_email: auth.user.email || null,
+    action: "sequence.duplicate",
+    entity_type: "email_sequence",
+    entity_id: created.id,
+    after: {
+      source_sequence_id: id,
+      source_name: src.name,
+      new_name: created.name,
+      steps_copied: steps.length,
+      request_context: extractRequestContext(request),
+    },
+  });
 
   return NextResponse.json({ sequence: created, steps_copied: steps.length });
 }

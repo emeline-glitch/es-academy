@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/utils/admin-auth";
-import { writeAuditLog } from "@/lib/utils/audit";
+import { writeAuditLog, extractRequestContext } from "@/lib/utils/audit";
 import { autoEnrollByTags, tagsAdded } from "@/lib/sequences/auto-enroll";
 
 const VALID_STAGES = [
@@ -156,13 +156,36 @@ export async function PATCH(
   for (const change of pipelineChanges) {
     await writeAuditLog(supabase, {
       actor_id: auth.userId,
+      actor_email: auth.user.email || null,
       action: "pipeline_stage_change",
       entity_type: "contact",
       entity_id: id,
       before: { pipeline: change.pipeline, stage: change.before },
-      after: { pipeline: change.pipeline, stage: change.after },
+      after: { pipeline: change.pipeline, stage: change.after, request_context: extractRequestContext(request) },
     });
   }
+
+  // Audit log pour les autres modifications (tags, status, infos perso)
+  const otherFieldsChanged = Object.keys(updateData).filter(
+    (k) => !k.startsWith("pipeline_")
+  );
+  if (otherFieldsChanged.length > 0) {
+    await writeAuditLog(supabase, {
+      actor_id: auth.userId,
+      actor_email: auth.user.email || null,
+      action: "contact.update",
+      entity_type: "contact",
+      entity_id: id,
+      before: before ? { tags: before.tags, status: before.status } : null,
+      after: {
+        fields_changed: otherFieldsChanged,
+        status: data?.status,
+        tags_count: Array.isArray(data?.tags) ? data.tags.length : null,
+        request_context: extractRequestContext(request),
+      },
+    });
+  }
+
   if (pipelineChanges.length > 0) {
     revalidatePath("/admin/dashboard");
   }

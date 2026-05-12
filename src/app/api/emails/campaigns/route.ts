@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/utils/admin-auth";
+import { writeAuditLog, extractRequestContext } from "@/lib/utils/audit";
 
 export async function POST(request: Request) {
   const auth = await requireAdmin();
@@ -27,5 +28,22 @@ export async function POST(request: Request) {
     .single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  await writeAuditLog(supabase, {
+    actor_id: auth.userId,
+    actor_email: auth.user.email || null,
+    action: "campaign.create",
+    entity_type: "email_campaign",
+    entity_id: data.id,
+    after: {
+      subject: data.subject,
+      status: data.status,
+      from_email: data.from_email,
+      target_tags: data.target_tags,
+      scheduled_at: data.scheduled_at,
+      request_context: extractRequestContext(request),
+    },
+  });
+
   return NextResponse.json(data);
 }

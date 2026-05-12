@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/utils/admin-auth";
+import { writeAuditLog, extractRequestContext } from "@/lib/utils/audit";
 
 const VALID_FORMATS = ["masterclass", "quiz", "simulator", "pdf", "email_series", "game"] as const;
 
@@ -65,6 +66,13 @@ export async function PATCH(
   }
 
   const supabase = await createServiceClient();
+
+  const { data: before } = await supabase
+    .from("lead_magnets")
+    .select("name, slug, format, opt_in_tag, is_active")
+    .eq("id", id)
+    .maybeSingle();
+
   const { data, error } = await supabase
     .from("lead_magnets")
     .update(update)
@@ -75,12 +83,30 @@ export async function PATCH(
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   if (!data) return NextResponse.json({ error: "Lead magnet introuvable" }, { status: 404 });
 
+  await writeAuditLog(supabase, {
+    actor_id: auth.userId,
+    actor_email: auth.user.email || null,
+    action: "lead_magnet.update",
+    entity_type: "lead_magnet",
+    entity_id: id,
+    before: before || null,
+    after: {
+      name: data.name,
+      slug: data.slug,
+      format: data.format,
+      opt_in_tag: data.opt_in_tag,
+      is_active: data.is_active,
+      fields_changed: Object.keys(update),
+      request_context: extractRequestContext(request),
+    },
+  });
+
   revalidatePath("/admin/lead-magnets");
   return NextResponse.json({ lead_magnet: data });
 }
 
 export async function DELETE(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const auth = await requireAdmin();
@@ -88,8 +114,27 @@ export async function DELETE(
 
   const { id } = await params;
   const supabase = await createServiceClient();
+
+  const { data: before } = await supabase
+    .from("lead_magnets")
+    .select("name, slug, format, opt_in_tag")
+    .eq("id", id)
+    .maybeSingle();
+
   const { error } = await supabase.from("lead_magnets").delete().eq("id", id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  await writeAuditLog(supabase, {
+    actor_id: auth.userId,
+    actor_email: auth.user.email || null,
+    action: "lead_magnet.delete",
+    entity_type: "lead_magnet",
+    entity_id: id,
+    before: before || null,
+    after: {
+      request_context: extractRequestContext(request),
+    },
+  });
 
   revalidatePath("/admin/lead-magnets");
   return NextResponse.json({ success: true });

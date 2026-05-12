@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/utils/admin-auth";
+import { writeAuditLog, extractRequestContext } from "@/lib/utils/audit";
 
 export async function PATCH(request: Request) {
   const auth = await requireAdmin();
@@ -67,6 +68,20 @@ export async function PATCH(request: Request) {
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+
+  await writeAuditLog(supabase, {
+    actor_id: auth.userId,
+    actor_email: auth.user.email || null,
+    action: "coaching_credits.update",
+    entity_type: "profile",
+    entity_id: user_id,
+    before: current ? { coaching_credits_total: current.coaching_credits_total, coaching_credits_used: current.coaching_credits_used } : null,
+    after: {
+      coaching_credits_total: data?.coaching_credits_total,
+      coaching_credits_used: data?.coaching_credits_used,
+      request_context: extractRequestContext(request),
+    },
+  });
 
   revalidatePath("/admin/eleves");
   revalidatePath(`/admin/eleves/${user_id}`);

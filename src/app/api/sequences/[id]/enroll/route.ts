@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/utils/admin-auth";
+import { writeAuditLog, extractRequestContext } from "@/lib/utils/audit";
 
 // POST : Enroll contacts in a sequence
 export async function POST(
@@ -65,6 +66,23 @@ export async function POST(
     if (error) skipped++;
     else enrolled++;
   }
+
+  await writeAuditLog(supabase, {
+    actor_id: auth.userId,
+    actor_email: auth.user.email || null,
+    action: "sequence.enroll",
+    entity_type: "email_sequence",
+    entity_id: id,
+    after: {
+      sequence_name: sequence.name,
+      contacts_targeted: ids.length,
+      enrolled,
+      skipped,
+      via_tag: tag || null,
+      via_explicit_ids: Array.isArray(contact_ids) && contact_ids.length > 0,
+      request_context: extractRequestContext(request),
+    },
+  });
 
   return NextResponse.json({ enrolled, skipped, total: ids.length });
 }

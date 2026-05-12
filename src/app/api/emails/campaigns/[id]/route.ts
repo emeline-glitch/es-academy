@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/utils/admin-auth";
+import { writeAuditLog, extractRequestContext } from "@/lib/utils/audit";
 
 const VALID_STATUSES = ["draft", "scheduled", "sending", "sent", "failed", "archived"] as const;
 
@@ -76,6 +77,12 @@ export async function PATCH(
   const { id } = await params;
   const body = await request.json();
 
+  const { data: before } = await supabase
+    .from("email_campaigns")
+    .select("subject, status, from_email, target_tags, scheduled_at")
+    .eq("id", id)
+    .maybeSingle();
+
   const updateData: Record<string, unknown> = {};
   if (body.subject !== undefined) updateData.subject = body.subject;
   if (body.html_content !== undefined) updateData.html_content = body.html_content;
@@ -100,6 +107,25 @@ export async function PATCH(
     .single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  await writeAuditLog(supabase, {
+    actor_id: auth.userId,
+    actor_email: auth.user.email || null,
+    action: "campaign.update",
+    entity_type: "email_campaign",
+    entity_id: id,
+    before: before || null,
+    after: {
+      subject: data.subject,
+      status: data.status,
+      from_email: data.from_email,
+      target_tags: data.target_tags,
+      scheduled_at: data.scheduled_at,
+      html_content_changed: body.html_content !== undefined,
+      request_context: extractRequestContext(request),
+    },
+  });
+
   revalidatePath("/admin/emails");
   revalidatePath(`/admin/emails/${id}`);
   return NextResponse.json(data);

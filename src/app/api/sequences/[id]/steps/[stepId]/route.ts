@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/utils/admin-auth";
+import { writeAuditLog, extractRequestContext } from "@/lib/utils/audit";
 
 // GET : Fetch un step complet (avec html_content) à la demande
 // Permet à la liste /admin/sequences de ne charger que les métas, et fetcher le HTML uniquement
@@ -37,6 +38,12 @@ export async function PATCH(
   const { id, stepId } = await params;
   const body = await request.json();
 
+  const { data: before } = await supabase
+    .from("email_sequence_steps")
+    .select("step_order, delay_days, delay_hours, subject, status")
+    .eq("id", stepId)
+    .maybeSingle();
+
   const updateData: Record<string, unknown> = {};
   if (body.delay_days !== undefined) updateData.delay_days = body.delay_days;
   if (body.delay_hours !== undefined) updateData.delay_hours = body.delay_hours;
@@ -53,6 +60,26 @@ export async function PATCH(
     .single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  await writeAuditLog(supabase, {
+    actor_id: auth.userId,
+    actor_email: auth.user.email || null,
+    action: "sequence.step.update",
+    entity_type: "email_sequence_step",
+    entity_id: stepId,
+    before: before || null,
+    after: {
+      sequence_id: id,
+      step_order: data.step_order,
+      delay_days: data.delay_days,
+      delay_hours: data.delay_hours,
+      subject: data.subject,
+      status: data.status,
+      html_content_changed: body.html_content !== undefined,
+      request_context: extractRequestContext(request),
+    },
+  });
+
   revalidatePath("/admin/sequences");
   revalidatePath(`/admin/sequences/${id}`);
   return NextResponse.json(data);
@@ -69,12 +96,32 @@ export async function DELETE(
 
   const { id, stepId } = await params;
 
+  const { data: before } = await supabase
+    .from("email_sequence_steps")
+    .select("step_order, subject, delay_days, delay_hours, status")
+    .eq("id", stepId)
+    .maybeSingle();
+
   const { error } = await supabase
     .from("email_sequence_steps")
     .delete()
     .eq("id", stepId);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  await writeAuditLog(supabase, {
+    actor_id: auth.userId,
+    actor_email: auth.user.email || null,
+    action: "sequence.step.delete",
+    entity_type: "email_sequence_step",
+    entity_id: stepId,
+    before: before || null,
+    after: {
+      sequence_id: id,
+      request_context: extractRequestContext(request),
+    },
+  });
+
   revalidatePath("/admin/sequences");
   revalidatePath(`/admin/sequences/${id}`);
   return NextResponse.json({ success: true });
