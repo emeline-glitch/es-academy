@@ -53,86 +53,51 @@ export default async function Dashboard() {
         </Card>
       </div>
 
-      {/* ES Family CTA : terracotta */}
+      {/* ES Family CTA : carte compacte, charte mint */}
       <div className="mt-12">
-        <div className="relative overflow-hidden rounded-2xl" style={{ backgroundColor: "#c4663a" }}>
-          <div className="absolute top-0 right-0 w-80 h-80 bg-white/5 rounded-full -translate-y-1/3 translate-x-1/3" />
-          <div className="absolute bottom-0 left-0 w-48 h-48 bg-black/5 rounded-full translate-y-1/2 -translate-x-1/4" />
-          <div className="relative p-8 md:p-10">
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-2xl">👑</span>
-              <span className="text-xs font-bold text-white/70 uppercase tracking-widest">Communauté patrimoniale</span>
-            </div>
-            <h2 className="font-serif text-2xl md:text-3xl font-bold text-white mb-3">Rejoins ES Family</h2>
-            <p className="text-white/85 text-sm md:text-base mb-5 max-w-2xl leading-relaxed">
-              Pas juste un groupe immo. Un écosystème patrimoine complet : immo, bourse, fiscalité, entrepreneuriat, mindset : dans ta poche, 7j/7.
-              <strong className="block mt-1 text-white">1 800 membres déjà actifs.</strong>
-            </p>
-
-            {/* Features grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
-              {[
-                {
-                  icon: "📱",
-                  title: "App mobile 7j/7",
-                  desc: "Ta communauté dans ta poche, disponible partout et à tout moment.",
-                },
-                {
-                  icon: "🎙",
-                  title: "Lives mensuels + replays à vie",
-                  desc: "Décryptage d'opportunités, Q&A et études de cas avec Emeline et ses partenaires experts.",
-                },
-                {
-                  icon: "💬",
-                  title: "Groupes thématiques actifs",
-                  desc: "Immobilier, patrimoine, bricolage, gestion locative, bourse, entrepreneuriat, fiscalité…",
-                },
-                {
-                  icon: "📊",
-                  title: "5 simulateurs intégrés",
-                  desc: "Capacité d'emprunt, cashflow mensuel, frais de notaire, prix au m² (France), rendement locatif.",
-                },
-                {
-                  icon: "🛠",
-                  title: "Bons plans Sorel",
-                  desc: "Chaque semaine, les promos matériaux, mobilier et équipement sélectionnées pour les chantiers.",
-                },
-                {
-                  icon: "🤝",
-                  title: "Partenaires exclusifs",
-                  desc: "Fiscaliste, expert-comptable, décoratrice, artisan travaux, chasseur immo : codes promo réservés aux membres.",
-                },
-                {
-                  icon: "🏆",
-                  title: "Gamification + parrainage",
-                  desc: "Badges et classement pour progresser. Ton code parrain = mois offerts à chaque filleul.",
-                },
-                {
-                  icon: "👥",
-                  title: "Annuaire + networking",
-                  desc: "Retrouve les membres par région ou par projet, ouvre une discussion directe, construis ton réseau.",
-                },
-              ].map((f, i) => (
-                <div key={i} className="flex items-start gap-3 bg-white/10 rounded-lg p-3">
-                  <span className="text-xl shrink-0 leading-none mt-0.5">{f.icon}</span>
-                  <div className="min-w-0">
-                    <p className="text-sm font-semibold text-white leading-snug">{f.title}</p>
-                    <p className="text-xs text-white/70 leading-relaxed mt-1">{f.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-es-mint-dark to-es-mint-deep">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-es-mint/15 rounded-full -translate-y-1/3 translate-x-1/3 blur-2xl" />
+          <div className="relative grid lg:grid-cols-5 gap-8 p-6 md:p-8">
+            {/* Pitch + CTA */}
+            <div className="lg:col-span-2 flex flex-col justify-center">
+              <div className="inline-flex items-center gap-2 mb-3">
+                <span className="inline-block w-2 h-2 rounded-full bg-es-mint" />
+                <span className="text-[11px] font-semibold text-white/80 uppercase tracking-[0.15em]">ES Family</span>
+              </div>
+              <h2 className="text-2xl md:text-[28px] font-bold text-white leading-tight mb-3">
+                Ta communauté patrimoniale, dans ta poche.
+              </h2>
+              <p className="text-white/80 text-sm leading-relaxed mb-5">
+                Lives, simulateurs, partenaires et 1 800 membres actifs.
+                <span className="block mt-1 text-white/95 font-medium">Pour le prix d&apos;un forfait téléphonique.</span>
+              </p>
               <a
                 href="/family"
-                className="inline-flex items-center justify-center font-semibold rounded-lg px-6 py-3 bg-white text-es-terracotta hover:bg-es-cream transition-all text-sm"
+                className="inline-flex items-center justify-center font-medium rounded-full px-5 py-2.5 bg-white text-es-mint-dark hover:bg-es-mint-light transition-all text-sm shadow-sm w-fit"
               >
-                Découvrir ES Family : 19€/mois fondateurs →
+                Rejoindre ES Family : 19€/mois
+                <svg className="w-3.5 h-3.5 ml-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                </svg>
               </a>
-              <div className="flex items-center gap-4 text-white/60 text-xs">
-                <span>Sans engagement</span>
-              </div>
+              <p className="text-white/55 text-xs mt-2">Tarif fondateur à vie · Sans engagement</p>
+            </div>
+
+            {/* Features condensées */}
+            <div className="lg:col-span-3 grid grid-cols-2 gap-2.5">
+              {[
+                { icon: "📱", label: "App mobile 7j/7" },
+                { icon: "🎙", label: "Lives + replays" },
+                { icon: "📊", label: "5 simulateurs" },
+                { icon: "🤝", label: "Partenaires + codes promo" },
+                { icon: "💬", label: "Groupes thématiques" },
+                { icon: "👥", label: "Annuaire + networking" },
+              ].map((f, i) => (
+                <div key={i} className="flex items-center gap-2.5 bg-white/10 backdrop-blur-sm rounded-lg px-3 py-2.5 border border-white/5">
+                  <span className="text-base leading-none">{f.icon}</span>
+                  <span className="text-xs font-medium text-white leading-snug">{f.label}</span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
