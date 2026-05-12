@@ -13,7 +13,9 @@ export async function POST() {
   const auth = await requireAdmin();
   if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: auth.status });
 
-  revalidateTag("notion-blog");
+  // Next.js 16 : revalidateTag requiert un profil cacheLife (stale window).
+  // "max" = invalidation immediate avec stale-while-revalidate max.
+  revalidateTag("notion-blog", "max");
   revalidatePath("/blog");
   revalidatePath("/admin/seo");
 

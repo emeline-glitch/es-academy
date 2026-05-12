@@ -25,7 +25,8 @@ export async function POST(request: Request) {
   try {
     // Purge le cache Notion (1h sinon) pour que l'audit voit les dernieres
     // modifs editoriales (SEO_Title, Excerpt, etc.) faites depuis l'admin.
-    revalidateTag("notion-blog");
+    // Next.js 16 : 2e arg = profil cacheLife stale-while-revalidate.
+    revalidateTag("notion-blog", "max");
     const result = await runSeoAudit();
     return NextResponse.json(result);
   } catch (e) {
