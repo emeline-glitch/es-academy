@@ -149,8 +149,21 @@ export async function POST(request: Request) {
     } else if (sesMessage.notificationType === "Complaint") {
       await handleComplaint(supabase, sesMessage, snsMessage.MessageId);
     } else {
-      const unknown = (sesMessage as { notificationType?: string }).notificationType;
+      const unknown = (sesMessage as { notificationType?: string; eventType?: string }).notificationType
+        ?? (sesMessage as { eventType?: string }).eventType
+        ?? "(absent)";
       console.warn("[sns] notificationType inconnu:", unknown);
+      // Debug : stocke le payload entier pour comprendre le format envoye par SES
+      await supabase.from("audit_log").insert({
+        action: "sns_unknown_type",
+        entity_type: "sns_message",
+        after: {
+          sns_message_id: snsMessage.MessageId,
+          topic_arn: snsMessage.TopicArn,
+          detected_type: unknown,
+          raw_payload: sesMessage,
+        },
+      });
     }
   } catch (err) {
     const msg = err instanceof Error ? err.message : "unknown";
