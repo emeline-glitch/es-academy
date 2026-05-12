@@ -1,141 +1,63 @@
-"use client";
+import { getCachedUser, createServiceClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
+import { Breadcrumb } from "@/components/platform/Breadcrumb";
+import { AvatarUpload } from "@/components/platform/AvatarUpload";
+import { ProfileInfoForm } from "@/components/platform/ProfileInfoForm";
+import { NotificationPrefsForm } from "@/components/platform/NotificationPrefsForm";
+import { SecuritySection } from "@/components/platform/SecuritySection";
+import { PaymentsList } from "@/components/platform/PaymentsList";
+import { RgpdActions } from "@/components/platform/RgpdActions";
+import { getLearnerProfile, getPaymentSummaries, DEFAULT_NOTIFICATION_PREFERENCES } from "@/lib/platform/profile";
 
-import { useState, useEffect } from "react";
-import { createClient } from "@/lib/supabase/client";
-import { Card } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
-import { Button } from "@/components/ui/Button";
+export default async function ProfilPage() {
+  const user = await getCachedUser();
+  if (!user) redirect("/connexion");
 
-export default function ProfilPage() {
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState("");
-  const [portalLoading, setPortalLoading] = useState(false);
-  const [portalError, setPortalError] = useState("");
+  const supabase = await createServiceClient();
+  const [profile, payments] = await Promise.all([
+    getLearnerProfile(supabase, user.id),
+    getPaymentSummaries(supabase, user.id),
+  ]);
 
-  useEffect(() => {
-    const supabase = createClient();
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (user) {
-        setEmail(user.email || "");
-        setFullName(user.user_metadata?.full_name || "");
-      }
-      setLoading(false);
-    });
-  }, []);
-
-  async function handleSave(e: React.FormEvent) {
-    e.preventDefault();
-    setSaving(true);
-    setMessage("");
-
-    const supabase = createClient();
-    const { error } = await supabase.auth.updateUser({
-      data: { full_name: fullName },
-    });
-
-    if (error) {
-      setMessage("Erreur lors de la mise à jour.");
-    } else {
-      setMessage("Profil mis à jour !");
-    }
-    setSaving(false);
-  }
-
-  async function handleOpenPortal() {
-    setPortalLoading(true);
-    setPortalError("");
-    try {
-      const res = await fetch("/api/stripe/portal", { method: "POST" });
-      const data = await res.json();
-      if (!res.ok || !data.url) {
-        setPortalError(data.error || "Impossible d'ouvrir le portail.");
-        setPortalLoading(false);
-        return;
-      }
-      window.location.href = data.url;
-    } catch {
-      setPortalError("Erreur réseau. Réessaye.");
-      setPortalLoading(false);
-    }
-  }
-
-  if (loading) {
-    return (
-      <div className="animate-pulse space-y-4">
-        <div className="h-8 bg-gray-200 rounded w-1/3" />
-        <div className="h-64 bg-gray-100 rounded-xl" />
-      </div>
-    );
-  }
+  const email = user.email || "";
+  // Fallback : si la row profiles n'existe pas (cas extreme : trigger pas
+  // execute), on degrade gracieusement avec des defaults pour ne pas casser
+  // toute la page.
+  const fullName = profile?.full_name || (user.user_metadata?.full_name as string | undefined) || "";
+  const city = profile?.city || "";
+  const bio = profile?.bio || "";
+  const prefs = profile?.notification_preferences || DEFAULT_NOTIFICATION_PREFERENCES;
 
   return (
-    <div>
-      <div className="mb-8">
+    <div className="max-w-3xl mx-auto space-y-6">
+      <Breadcrumb items={[{ label: "Dashboard", href: "/dashboard" }, { label: "Mon profil" }]} />
+
+      <header>
         <h1 className="font-serif text-3xl font-bold text-gray-900">Mon profil</h1>
-        <p className="text-gray-500 mt-1">Gère tes informations personnelles.</p>
-      </div>
+        <p className="text-gray-500 mt-1">Tes informations, tes préférences, tes paiements et tes droits RGPD.</p>
+      </header>
 
-      <div className="max-w-xl">
-        <Card>
-          <form onSubmit={handleSave} className="space-y-5">
-            <Input
-              label="Nom complet"
-              type="text"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              placeholder="Ton nom"
-            />
-            <div>
-              <label className="text-sm font-medium text-es-text mb-1.5 block">Email</label>
-              <input
-                type="email"
-                value={email}
-                disabled
-                className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed"
-              />
-              <p className="text-xs text-gray-400 mt-1">L&apos;email ne peut pas être modifié.</p>
-            </div>
+      <AvatarUpload
+        userId={user.id}
+        initialAvatarUrl={profile?.avatar_url || null}
+        initialName={fullName || email}
+      />
 
-            {message && (
-              <div className={`text-sm rounded-lg p-3 ${message.includes("Erreur") ? "bg-red-50 text-red-800" : "bg-green-50 text-green-800"}`}>
-                {message}
-              </div>
-            )}
+      <ProfileInfoForm
+        userId={user.id}
+        email={email}
+        initialFullName={fullName}
+        initialCity={city}
+        initialBio={bio}
+      />
 
-            <Button type="submit" variant="primary" disabled={saving}>
-              {saving ? "Enregistrement..." : "Enregistrer"}
-            </Button>
-          </form>
-        </Card>
+      <NotificationPrefsForm userId={user.id} initial={prefs} />
 
-        {/* Paiements et abonnements (Stripe Customer Portal) */}
-        <Card className="mt-6">
-          <h3 className="font-medium text-gray-900 mb-2">Paiements et abonnements</h3>
-          <p className="text-sm text-gray-500 mb-4">
-            Consulte tes factures, mets à jour ta carte de paiement, gère ton abonnement
-            Family (résiliation possible à tout moment).
-          </p>
-          {portalError && (
-            <div className="text-sm rounded-lg p-3 bg-red-50 text-red-800 mb-3">
-              {portalError}
-            </div>
-          )}
-          <Button onClick={handleOpenPortal} disabled={portalLoading} variant="primary">
-            {portalLoading ? "Ouverture..." : "Gérer mes paiements et abonnements"}
-          </Button>
-        </Card>
+      <SecuritySection email={email} />
 
-        {/* Danger zone */}
-        <Card className="mt-6 border-red-200">
-          <h3 className="font-medium text-gray-900 mb-2">Zone de danger</h3>
-          <p className="text-sm text-gray-500 mb-4">
-            Pour supprimer ton compte et tes données, contacte-nous à contact@emeline-siron.fr
-          </p>
-        </Card>
-      </div>
+      <PaymentsList payments={payments} />
+
+      <RgpdActions />
     </div>
   );
 }

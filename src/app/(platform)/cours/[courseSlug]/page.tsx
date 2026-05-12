@@ -1,111 +1,122 @@
-import { createClient, getCachedUser } from "@/lib/supabase/server";
+import { createServiceClient, getCachedUser } from "@/lib/supabase/server";
 import { getFullCourseStructure } from "@/lib/notion/queries";
 import { redirect, notFound } from "next/navigation";
-import { Button } from "@/components/ui/Button";
 import { ProgressBar } from "@/components/ui/ProgressBar";
+import { Card } from "@/components/ui/Card";
+import { Breadcrumb } from "@/components/platform/Breadcrumb";
+import { ModuleRow } from "@/components/platform/ModuleRow";
+import { hasActiveEnrollmentForCourse } from "@/lib/platform/enrollments";
+import { findNextLesson, computeModuleProgress } from "@/lib/platform/recommendations";
+import Link from "next/link";
 
-export default async function CoursePage({
-  params,
-}: {
+interface PageProps {
   params: Promise<{ courseSlug: string }>;
-}) {
+}
+
+export default async function CoursePage({ params }: PageProps) {
   const { courseSlug } = await params;
-  // Parallel : auth + Notion course structure
-  const [user, structure] = await Promise.all([
-    getCachedUser(),
-    getFullCourseStructure(courseSlug),
-  ]);
+
+  const [user, structure] = await Promise.all([getCachedUser(), getFullCourseStructure(courseSlug)]);
   if (!user) redirect("/connexion");
   if (!structure) notFound();
 
-  const supabase = await createClient();
+  // Double-check enrollment cote code (le layout (platform) gate sur "academy%"
+  // de maniere coarse, mais ici on veut s'assurer que l'user a bien CE course).
+  // On accepte aussi les admins/staff via role.
+  const supabase = await createServiceClient();
+  const adminEmail = (process.env.ADMIN_EMAIL || "").toLowerCase();
+  const userEmail = (user.email || "").toLowerCase();
+  let isStaff = Boolean(adminEmail && userEmail === adminEmail);
+  if (!isStaff) {
+    const { data: prof } = await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle();
+    isStaff = prof?.role === "admin";
+  }
 
-  // Get user progress
+  if (!isStaff) {
+    const allowed = await hasActiveEnrollmentForCourse(supabase, user.id, courseSlug);
+    if (!allowed) {
+      redirect("/dashboard?notice=no-access");
+    }
+  }
+
   const { data: progressData } = await supabase
     .from("progress")
     .select("lesson_id")
     .eq("user_id", user.id)
     .eq("course_id", structure.course.id);
 
-  const completedIds = new Set((progressData || []).map((p) => p.lesson_id));
+  const completedIds = new Set((progressData || []).map((p) => p.lesson_id as string));
   const totalLessons = structure.modules.reduce((sum, m) => sum + m.lessons.length, 0);
   const completedCount = completedIds.size;
+  const percent = totalLessons > 0 ? Math.round((completedCount / totalLessons) * 100) : 0;
 
-  // Find first incomplete lesson for "Continue" button
-  let nextLesson: { moduleSlug: string; lessonSlug: string } | null = null;
-  for (const { module, lessons } of structure.modules) {
-    for (const lesson of lessons) {
-      if (!completedIds.has(lesson.id)) {
-        nextLesson = { moduleSlug: module.slug, lessonSlug: lesson.slug };
-        break;
-      }
-    }
-    if (nextLesson) break;
-  }
+  const nextLesson = findNextLesson(courseSlug, structure, completedIds);
+  const moduleProgress = computeModuleProgress(structure, completedIds);
 
   return (
-    <div>
-      <div className="mb-8">
-        <h1 className="font-serif text-3xl font-bold text-gray-900 mb-2">
-          {structure.course.name}
-        </h1>
-        <p className="text-gray-500">{structure.course.description}</p>
-        <ProgressBar
-          value={completedCount}
-          max={totalLessons}
-          label={`${completedCount} / ${totalLessons} lecons terminees`}
-          className="mt-4 max-w-md"
-        />
-        {nextLesson && (
-          <Button
-            href={`/cours/${courseSlug}/${nextLesson.moduleSlug}/${nextLesson.lessonSlug}`}
-            variant="primary"
-            className="mt-4"
-          >
-            {completedCount > 0 ? "Continuer" : "Commencer"}
-          </Button>
-        )}
-      </div>
+    <div className="space-y-8">
+      <Breadcrumb items={[{ label: "Dashboard", href: "/dashboard" }, { label: structure.course.name }]} />
 
-      <div className="space-y-4">
-        {structure.modules.map(({ module, lessons }) => {
-          const moduleCompleted = lessons.filter((l) => completedIds.has(l.id)).length;
-          return (
-            <div key={module.id} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-              <div className="p-5 flex items-center justify-between">
-                <div>
-                  <h3 className="font-medium text-gray-900">{module.name}</h3>
-                  <p className="text-sm text-gray-500 mt-0.5">{module.description}</p>
-                </div>
-                <span className="text-sm text-gray-400">
-                  {moduleCompleted}/{lessons.length}
-                </span>
-              </div>
-              <div className="border-t border-gray-100">
-                {lessons.map((lesson) => (
-                  <a
-                    key={lesson.id}
-                    href={`/cours/${courseSlug}/${module.slug}/${lesson.slug}`}
-                    className="flex items-center gap-3 px-5 py-3 hover:bg-gray-50 transition-colors border-b border-gray-50 last:border-0"
-                  >
-                    {completedIds.has(lesson.id) ? (
-                      <svg className="w-5 h-5 text-es-green shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
-                      </svg>
-                    ) : (
-                      <div className="w-5 h-5 rounded-full border-2 border-gray-300 shrink-0" />
-                    )}
-                    <span className="text-sm text-gray-700 flex-1">{lesson.name}</span>
-                    {lesson.videoDuration && (
-                      <span className="text-xs text-gray-400">{lesson.videoDuration} min</span>
-                    )}
-                  </a>
-                ))}
-              </div>
-            </div>
-          );
-        })}
-      </div>
+      <header>
+        <h1 className="font-serif text-3xl md:text-4xl font-bold text-gray-900">{structure.course.name}</h1>
+        {structure.course.description && (
+          <p className="text-gray-500 mt-2 max-w-2xl">{structure.course.description}</p>
+        )}
+        <div className="mt-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          <ProgressBar
+            value={completedCount}
+            max={totalLessons}
+            label={`${completedCount} / ${totalLessons} leçons`}
+            className="flex-1 max-w-md"
+          />
+          <span className="text-xs uppercase tracking-widest text-gray-400">
+            {percent === 0 ? "Pas commencee" : percent === 100 ? "Terminée" : "En cours"}
+          </span>
+        </div>
+      </header>
+
+      {nextLesson && percent < 100 && (
+        <Card className="bg-gradient-to-br from-es-green/5 to-es-green/10 border-es-green/20">
+          <p className="text-xs uppercase tracking-widest text-es-green font-semibold">
+            {completedCount > 0 ? "Continuer ou tu en etais" : "Première leçon"}
+          </p>
+          <h2 className="font-serif text-xl font-bold text-gray-900 mt-1">{nextLesson.lessonName}</h2>
+          <p className="text-sm text-gray-500 mt-1">
+            Module : {nextLesson.moduleName} <span className="text-gray-300">·</span> Leçon {nextLesson.position} / {nextLesson.total}
+          </p>
+          <Link
+            href={`/cours/${courseSlug}/${nextLesson.moduleSlug}/${nextLesson.lessonSlug}`}
+            className="inline-flex items-center gap-2 mt-4 bg-es-green text-white font-semibold px-5 py-3 rounded-xl hover:bg-es-green-light transition-colors"
+          >
+            {completedCount > 0 ? "Reprendre" : "Commencer maintenant"}
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </Link>
+        </Card>
+      )}
+
+      <section>
+        <h2 className="font-serif text-xl font-bold text-gray-900 mb-4">Les modules</h2>
+        <div className="space-y-3">
+          {structure.modules.map(({ module, lessons }, idx) => {
+            const progress = moduleProgress[idx];
+            return (
+              <ModuleRow
+                key={module.id}
+                index={idx + 1}
+                name={module.name}
+                description={module.description}
+                href={`/cours/${courseSlug}/${module.slug}`}
+                totalLessons={lessons.length}
+                completed={progress.completed}
+                durationMinutes={progress.durationMinutes}
+                status={progress.status}
+              />
+            );
+          })}
+        </div>
+      </section>
     </div>
   );
 }

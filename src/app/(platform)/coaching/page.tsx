@@ -1,10 +1,10 @@
 import { createClient, getCachedUser } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { Card } from "@/components/ui/Card";
+import { Breadcrumb } from "@/components/platform/Breadcrumb";
 
-// TODO: remplacer par les vrais liens Calendly quand ils seront créés
-const CALENDLY_INCLUDED_URL = ""; // Coaching inclus (pas de paiement)
-const CALENDLY_PAID_URL = ""; // Coaching 150€ avec paiement Stripe intégré
+const CALENDLY_INCLUDED_URL = "https://calendly.com/emeline-emeline-siron/coaching-es-academy-package"; // Coaching inclus dans un package
+const CALENDLY_PAID_URL = "https://calendly.com/emeline-emeline-siron/coaching-session-alumni"; // 150€ alumni (membres Academy)
 
 export default async function CoachingPage() {
   const user = await getCachedUser();
@@ -24,6 +24,8 @@ export default async function CoachingPage() {
 
   return (
     <div>
+      <Breadcrumb items={[{ label: "Dashboard", href: "/dashboard" }, { label: "Coaching" }]} />
+
       <div className="mb-8">
         <h1 className="font-serif text-3xl font-bold text-gray-900">Coaching</h1>
         <p className="text-gray-500 mt-1">Réserve une session en visio avec Emeline.</p>

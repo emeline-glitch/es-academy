@@ -42,7 +42,7 @@ export function EvaluationClient({ questions, totalQuestions, passThreshold }: P
   const [validatedAt, setValidatedAt] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  // Au mount : check si l'examen a deja ete passe
+  // Au mount : check si l'examen a déjà ete passe
   useEffect(() => {
     let cancelled = false;
     fetch("/api/evaluation/submit")
