@@ -60,7 +60,10 @@ const DEFAULT_THRESHOLDS: AuditThresholds = {
   key_landing_min_views_30d: 30,
   article_low_views_30d: 5,
   publish_recent_days: 30,
-  traffic_audit_min_total_views_30d: 100,
+  // 500 views/30j = ~17/jour, signal de trafic organique reel. En dessous,
+  // les recos low_traffic_* sont structurelles (site qui demarre, user testing)
+  // et noient les vraies actions editoriales (article_stale, seo_title, etc.).
+  traffic_audit_min_total_views_30d: 500,
   gsc_verified_via: "domain",
 };
 
