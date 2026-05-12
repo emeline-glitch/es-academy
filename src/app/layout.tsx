@@ -25,6 +25,15 @@ const inter = Inter({
   display: "swap",
 });
 
+// Fallback OG si une page n'override pas son image : OG dynamique cree par
+// /api/og avec le titre de marque. Plus robuste qu'un fichier statique qui
+// peut disparaitre / etre 404.
+const DEFAULT_OG_PARAMS = new URLSearchParams({
+  title: "Emeline Siron",
+  subtitle: "Investir en immobilier, sans heritage ni reseau",
+});
+const DEFAULT_OG_URL = `${SITE_URL}/api/og?${DEFAULT_OG_PARAMS.toString()}`;
+
 export const metadata: Metadata = {
   title: {
     default: `${SITE_NAME} : Formation investissement immobilier`,
@@ -33,14 +42,28 @@ export const metadata: Metadata = {
   description: SITE_DESCRIPTION,
   metadataBase: new URL(SITE_URL),
   alternates: { canonical: SITE_URL },
+  keywords: [
+    "investissement immobilier",
+    "immobilier locatif",
+    "formation immobilier",
+    "rentabilité immobilière",
+    "autofinancement",
+    "colocation",
+    "LMNP",
+    "SCI",
+  ],
+  authors: [{ name: "Emeline Siron", url: SITE_URL }],
+  creator: "Emeline Siron",
+  publisher: "Holdem Groupe",
   openGraph: {
     siteName: SITE_NAME,
     locale: "fr_FR",
     type: "website",
-    images: [{ url: `${SITE_URL}/images/og-default.jpg`, width: 1200, height: 630 }],
+    images: [{ url: DEFAULT_OG_URL, width: 1200, height: 630, alt: SITE_NAME }],
   },
   twitter: {
     card: "summary_large_image",
+    images: [DEFAULT_OG_URL],
   },
   robots: {
     index: true,

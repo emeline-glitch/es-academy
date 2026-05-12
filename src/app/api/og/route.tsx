@@ -1,11 +1,15 @@
 import { ImageResponse } from "next/og";
 
 /**
- * OG image dynamique : /api/og?title=...&category=...
+ * OG image dynamique : /api/og?title=...&subtitle=...&category=...&variant=...
  *
- * Utilisee comme image Open Graph + Twitter Card pour les articles de blog
- * qui n'ont pas de FeaturedImage Notion (boost partage social, plus de
- * backlinks indirects). 1200x630, format standard OG.
+ * Utilisee comme image Open Graph + Twitter Card pour les pages avec
+ * besoin d'OG dynamique. 1200x630, format standard OG.
+ *
+ * Variants :
+ *  - default (homepage, simulateurs, glossaire)
+ *  - blog (article : category badge + author footer)
+ *  - product (academy, family : prix mis en avant)
  *
  * Pas de font custom (les system fonts du runtime suffisent et evitent
  * un fetch reseau qui ralentirait la generation).
@@ -22,11 +26,22 @@ const COLORS = {
   textMuted: "#5C6B62",
 };
 
+type Variant = "default" | "blog" | "product";
+
+function pickVariant(raw: string | null): Variant {
+  if (raw === "blog" || raw === "product") return raw;
+  return "default";
+}
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const title = (searchParams.get("title") || "Emeline Siron").slice(0, 200);
+  const subtitle = (searchParams.get("subtitle") || "").slice(0, 180);
   const category = (searchParams.get("category") || "").slice(0, 60);
   const author = (searchParams.get("author") || "Emeline Siron").slice(0, 60);
+  const variant = pickVariant(searchParams.get("variant"));
+
+  const titleFontSize = title.length > 80 ? 56 : title.length > 50 ? 66 : 76;
 
   return new ImageResponse(
     (
@@ -54,49 +69,83 @@ export async function GET(request: Request) {
           }}
         />
 
-        {/* Categorie en haut */}
-        {category && (
-          <div
+        {/* Header brand */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            fontSize: "22px",
+            textTransform: "uppercase",
+            letterSpacing: "3px",
+            color: COLORS.green,
+            fontFamily: "Helvetica, Arial, sans-serif",
+            fontWeight: 600,
+            marginBottom: "20px",
+          }}
+        >
+          <span
             style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "12px",
-              fontSize: "22px",
-              textTransform: "uppercase",
-              letterSpacing: "3px",
-              color: COLORS.green,
-              fontFamily: "Helvetica, Arial, sans-serif",
-              fontWeight: 600,
-              marginBottom: "30px",
+              width: "8px",
+              height: "8px",
+              borderRadius: "50%",
+              background: COLORS.gold,
+              display: "block",
             }}
-          >
-            <span
-              style={{
-                width: "8px",
-                height: "8px",
-                borderRadius: "50%",
-                background: COLORS.gold,
-                display: "block",
-              }}
-            />
-            {category}
-          </div>
-        )}
+          />
+          {category || (variant === "product" ? "ES Academy" : "Emeline Siron")}
+        </div>
 
         {/* Title principal */}
         <div
           style={{
             display: "flex",
-            fontSize: title.length > 80 ? "58px" : title.length > 50 ? "68px" : "78px",
+            fontSize: titleFontSize,
             lineHeight: 1.1,
             color: COLORS.text,
             fontWeight: 700,
-            marginTop: category ? "10px" : "60px",
+            marginTop: "10px",
             maxWidth: "1020px",
           }}
         >
           {title}
         </div>
+
+        {/* Subtitle (variants product/blog longs) */}
+        {subtitle && (
+          <div
+            style={{
+              display: "flex",
+              fontSize: "28px",
+              lineHeight: 1.35,
+              color: COLORS.textMuted,
+              marginTop: "24px",
+              maxWidth: "980px",
+              fontFamily: "Helvetica, Arial, sans-serif",
+            }}
+          >
+            {subtitle}
+          </div>
+        )}
+
+        {/* Badge produit (variant product) */}
+        {variant === "product" && !subtitle && (
+          <div
+            style={{
+              display: "flex",
+              marginTop: "30px",
+              padding: "10px 22px",
+              background: COLORS.green,
+              color: COLORS.cream,
+              fontSize: "22px",
+              borderRadius: "999px",
+              fontWeight: 600,
+              fontFamily: "Helvetica, Arial, sans-serif",
+            }}
+          >
+            La methode complete pour investir
+          </div>
+        )}
 
         {/* Spacer pour pousser le footer en bas */}
         <div style={{ flex: 1, display: "flex" }} />
@@ -126,7 +175,7 @@ export async function GET(request: Request) {
                 letterSpacing: "2px",
               }}
             >
-              Par
+              {variant === "blog" ? "Par" : "Avec"}
             </span>
             <span
               style={{

@@ -7,10 +7,17 @@ import { podcastSeriesSchema, breadcrumbSchema } from "@/lib/seo/schemas";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { SITE_URL } from "@/lib/utils/constants";
 
+const PODCAST_OG_PARAMS = new URLSearchParams({
+  title: "Out of the Box, le podcast",
+  subtitle: "30 minutes chaque mardi pour repenser ton rapport a l'argent",
+  category: "Podcast",
+});
+
 export const metadata: Metadata = buildMetadata({
   title: "Podcast Out of the Box : par Emeline Siron",
   description: "Chaque mardi, un épisode de 30 minutes pour repenser ton rapport à l'argent, l'investissement et l'entrepreneuriat.",
   path: "/podcast",
+  image: `${SITE_URL}/api/og?${PODCAST_OG_PARAMS.toString()}`,
 });
 
 export default function PodcastPage() {
