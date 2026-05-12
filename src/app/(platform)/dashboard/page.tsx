@@ -132,49 +132,112 @@ export default async function Dashboard() {
         )}
       </div>
 
-      {/* ES Family CTA : carte compacte, charte mint */}
+      {/* ES Family CTA : fond mint clair, CTA noir, features en pilules */}
       <div className="mt-12">
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-es-mint-dark to-es-mint-deep">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-es-mint/15 rounded-full -translate-y-1/3 translate-x-1/3 blur-2xl" />
-          <div className="relative grid lg:grid-cols-5 gap-8 p-6 md:p-8">
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-es-mint-soft via-es-mint-light to-es-mint-pastel">
+          <div className="absolute top-0 right-0 w-72 h-72 bg-es-mint/20 rounded-full -translate-y-1/3 translate-x-1/4 blur-3xl" />
+          <div className="absolute bottom-0 left-1/3 w-64 h-64 bg-white/40 rounded-full translate-y-1/2 blur-3xl" />
+          <div className="relative grid lg:grid-cols-5 gap-8 p-6 md:p-10">
             {/* Pitch + CTA */}
-            <div className="lg:col-span-2 flex flex-col justify-center">
-              <div className="inline-flex items-center gap-2 mb-3">
+            <div className="lg:col-span-3 flex flex-col justify-center">
+              <div className="inline-flex items-center gap-2 mb-4">
                 <span className="inline-block w-2 h-2 rounded-full bg-es-mint" />
-                <span className="text-[11px] font-semibold text-white/80 uppercase tracking-[0.15em]">ES Family</span>
+                <span className="text-[11px] font-semibold text-es-mint-deep uppercase tracking-[0.18em]">ES Family</span>
               </div>
-              <h2 className="text-2xl md:text-[28px] font-bold text-white leading-tight mb-3">
-                Ta communauté patrimoniale, dans ta poche.
+              <h2 className="text-3xl md:text-4xl font-semibold text-es-mint-deep leading-[1.15] mb-4">
+                Ta communauté patrimoniale,
+                <br />
+                <span className="italic font-normal">dans ta poche.</span>
               </h2>
-              <p className="text-white/80 text-sm leading-relaxed mb-5">
-                Lives, simulateurs, partenaires et 1 800 membres actifs.
-                <span className="block mt-1 text-white/95 font-medium">Pour le prix d&apos;un forfait téléphonique.</span>
+              <p className="text-es-mint-deep/75 text-[15px] leading-relaxed mb-2">
+                Lives, simulateurs, partenaires et discussions entre membres.
+              </p>
+              <p className="text-es-mint-deep font-medium text-[15px] mb-6">
+                Pour le prix d&apos;un forfait téléphonique.
               </p>
               <a
                 href="/family"
-                className="inline-flex items-center justify-center font-medium rounded-full px-5 py-2.5 bg-white text-es-mint-dark hover:bg-es-mint-light transition-all text-sm shadow-sm w-fit"
+                className="inline-flex items-center justify-center font-medium rounded-full px-6 py-3 bg-gray-900 text-white hover:bg-black transition-all text-sm shadow-sm w-fit"
               >
                 Rejoindre ES Family : 19€/mois
-                <svg className="w-3.5 h-3.5 ml-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-3.5 h-3.5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
                 </svg>
               </a>
-              <p className="text-white/55 text-xs mt-2">Tarif fondateur à vie · Sans engagement</p>
+              <p className="text-es-mint-deep/60 text-xs mt-3">
+                Tarif fondateur à vie · Sans engagement · Résiliable en 1 clic
+              </p>
             </div>
 
-            {/* Features condensées */}
-            <div className="lg:col-span-3 grid grid-cols-2 gap-2.5">
+            {/* Features en pilules blanches */}
+            <div className="lg:col-span-2 flex flex-col gap-2.5 justify-center">
               {[
-                { icon: "📱", label: "App mobile 7j/7" },
-                { icon: "🎙", label: "Lives + replays" },
-                { icon: "📊", label: "5 simulateurs" },
-                { icon: "🤝", label: "Partenaires + codes promo" },
-                { icon: "💬", label: "Groupes thématiques" },
-                { icon: "👥", label: "Annuaire + networking" },
+                {
+                  label: "App mobile 7j/7",
+                  icon: (
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                      <rect x="7" y="3" width="10" height="18" rx="2" strokeLinecap="round" />
+                      <line x1="11" y1="18" x2="13" y2="18" strokeLinecap="round" />
+                    </svg>
+                  ),
+                },
+                {
+                  label: "Lives + replays",
+                  icon: (
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                      <rect x="2" y="6" width="14" height="12" rx="2" strokeLinejoin="round" />
+                      <path d="M22 8l-6 4 6 4V8z" strokeLinejoin="round" />
+                    </svg>
+                  ),
+                },
+                {
+                  label: "5 simulateurs",
+                  icon: (
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                      <line x1="6" y1="20" x2="6" y2="10" strokeLinecap="round" />
+                      <line x1="12" y1="20" x2="12" y2="4" strokeLinecap="round" />
+                      <line x1="18" y1="20" x2="18" y2="14" strokeLinecap="round" />
+                    </svg>
+                  ),
+                },
+                {
+                  label: "Codes partenaires",
+                  icon: (
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                      <path d="M21 8v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8" strokeLinejoin="round" />
+                      <path d="M3 8l9 6 9-6M3 8a2 2 0 012-2h14a2 2 0 012 2" strokeLinejoin="round" />
+                    </svg>
+                  ),
+                },
+                {
+                  label: "Groupes thématiques",
+                  icon: (
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                      <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" strokeLinejoin="round" />
+                    </svg>
+                  ),
+                },
+                {
+                  label: "Annuaire networking",
+                  icon: (
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                      <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" strokeLinejoin="round" />
+                      <circle cx="9" cy="7" r="4" />
+                      <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" strokeLinejoin="round" />
+                    </svg>
+                  ),
+                },
               ].map((f, i) => (
-                <div key={i} className="flex items-center gap-2.5 bg-white/10 backdrop-blur-sm rounded-lg px-3 py-2.5 border border-white/5">
-                  <span className="text-base leading-none">{f.icon}</span>
-                  <span className="text-xs font-medium text-white leading-snug">{f.label}</span>
+                <div
+                  key={i}
+                  className="flex items-center gap-3 bg-white rounded-full pl-3 pr-5 py-2.5 shadow-sm"
+                >
+                  <span className="flex items-center justify-center w-7 h-7 rounded-full bg-es-mint-soft text-es-mint-dark shrink-0">
+                    {f.icon}
+                  </span>
+                  <span className="text-sm font-medium text-gray-900 leading-snug">
+                    {f.label}
+                  </span>
                 </div>
               ))}
             </div>
