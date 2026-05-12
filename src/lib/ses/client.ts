@@ -1,4 +1,5 @@
 import { SESv2Client, SendEmailCommand } from "@aws-sdk/client-sesv2";
+import { createServiceClient } from "@/lib/supabase/server";
 
 interface SendEmailParams {
   to: string | string[];
@@ -6,6 +7,37 @@ interface SendEmailParams {
   html: string;
   from?: string;
   replyTo?: string;
+}
+
+/**
+ * Quand AWS SES retourne MessageRejected avec un message indiquant que
+ * l'email est dans la liste de suppression au niveau du compte (hard bounce
+ * ou complaint passes), on marque le contact en 'bounced' (le RPC
+ * get_pending_sequence_sends filtre deja sur status='active', donc le contact
+ * est exclu des sequences). Audit log systematique pour tracabilite.
+ *
+ * On preserve 'unsubscribed' (RGPD opt-out explicite > technicalite bounce).
+ */
+async function markSesSuppressed(email: string, reason: string): Promise<void> {
+  try {
+    const supabase = await createServiceClient();
+    const emailLower = email.toLowerCase();
+
+    await supabase
+      .from("contacts")
+      .update({ status: "bounced" })
+      .eq("email", emailLower)
+      .neq("status", "unsubscribed");
+
+    await supabase.from("audit_log").insert({
+      action: "ses_suppression_list_hit",
+      entity_type: "contact",
+      after: { email: emailLower, reason },
+    });
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    console.error("[SES] markSesSuppressed failed:", msg);
+  }
 }
 
 // Singleton client réutilisé par toutes les invocations serverless (cache de connexion TLS)
@@ -66,9 +98,26 @@ export async function sendEmail({
     const res = await client.send(cmd);
     return { success: true, messageId: res.MessageId };
   } catch (error) {
-    const msg = error instanceof Error ? error.message : String(error);
-    console.error("[SES] send error:", msg);
-    return { success: false, error: msg };
+    const err = error as { name?: string; message?: string };
+    const errName = err.name || "";
+    const errMessage = err.message || String(error);
+
+    // AWS SES retourne MessageRejected quand l'email est dans la liste de
+    // suppression au niveau du compte (hard bounce ou complaint passes).
+    // Message type : "Email address is suppressed for this account, reason: BOUNCE"
+    // ou "Address blocked: Email address is on the suppression list".
+    // On marque le contact bounced pour qu'il soit exclu des prochaines
+    // sequences (RPC get_pending_sequence_sends filtre sur status='active').
+    const isSuppressed =
+      errName === "MessageRejected" &&
+      /suppression list|address is suppressed/i.test(errMessage);
+
+    if (isSuppressed && recipients.length === 1) {
+      await markSesSuppressed(recipients[0], errMessage);
+    }
+
+    console.error("[SES] send error:", errName, errMessage);
+    return { success: false, error: errMessage };
   }
 }
 
