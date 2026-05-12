@@ -28,9 +28,8 @@ export async function POST(request: Request) {
     // clients en clair dans les logs Vercel).
     const message = error instanceof Error ? error.message : "Erreur inconnue";
     console.error("[stripe/checkout]", message);
-    // Debug temporaire : expose le message d'erreur Stripe (a retirer apres prod stable)
     return NextResponse.json(
-      { error: "Erreur lors de la création du paiement", debug: message },
+      { error: "Erreur lors de la création du paiement" },
       { status: 500 }
     );
   }
