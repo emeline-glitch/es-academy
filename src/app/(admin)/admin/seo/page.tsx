@@ -4,6 +4,9 @@ import { Badge } from "@/components/ui/Badge";
 import { SeoRunAudit } from "@/components/admin/SeoRunAudit";
 import { SeoRecommendations, type Recommendation } from "@/components/admin/SeoRecommendations";
 import { SeoKeywords, type TargetKeyword } from "@/components/admin/SeoKeywords";
+import { SeoPageSpeed, type PageSpeedRow } from "@/components/admin/SeoPageSpeed";
+import { SeoKeyLandings } from "@/components/admin/SeoKeyLandings";
+import { getKeyLandings } from "@/lib/seo/settings";
 import { SITE_URL } from "@/lib/utils/constants";
 
 export const dynamic = "force-dynamic";
@@ -39,7 +42,7 @@ export default async function AdminSeoPage({
 
   const supabase = await createServiceClient();
 
-  const [statsRes, topPagesRes, topSourcesRes, recosRes, keywordsRes] = await Promise.all([
+  const [statsRes, topPagesRes, topSourcesRes, recosRes, keywordsRes, pageSpeedRes, landings] = await Promise.all([
     supabase.rpc("seo_dashboard_stats", { period_days: periodDays }),
     supabase.rpc("seo_top_pages", { period_days: periodDays, page_limit: 20 }),
     supabase.rpc("seo_top_sources", { period_days: periodDays, source_limit: 15 }),
@@ -52,6 +55,8 @@ export default async function AdminSeoPage({
       .select("*")
       .order("priority", { ascending: true })
       .order("keyword", { ascending: true }),
+    supabase.rpc("seo_latest_pagespeed", { target_strategy: "mobile" }),
+    getKeyLandings(),
   ]);
 
   const stats = (statsRes.data as DashboardStats) || {
@@ -73,6 +78,8 @@ export default async function AdminSeoPage({
   const topSources = (topSourcesRes.data || []) as Array<{ source: string; sessions: number; views: number }>;
   const recos = (recosRes.data || []) as Recommendation[];
   const keywords = (keywordsRes.data || []) as TargetKeyword[];
+  const pageSpeedRows = (pageSpeedRes.data || []) as PageSpeedRow[];
+  const monitoredPaths = landings.filter((l) => l.monitor).map((l) => l.path);
 
   const viewsDelta = deltaPct(stats.total_views, stats.total_views_prev);
   const sessionsDelta = deltaPct(stats.unique_sessions, stats.unique_sessions_prev);
@@ -260,10 +267,25 @@ export default async function AdminSeoPage({
         <SeoRecommendations recommendations={recos} />
       </Card>
 
+      {/* Core Web Vitals (PageSpeed Insights) */}
+      <Card padding="md">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="font-serif text-xl font-bold">Core Web Vitals &amp; Lighthouse</h2>
+          <Badge variant="info">Signal de ranking Google</Badge>
+        </div>
+        <SeoPageSpeed rows={pageSpeedRows} monitoredPaths={monitoredPaths} />
+      </Card>
+
       {/* Mots-cles cibles */}
       <Card padding="md">
         <h2 className="font-serif text-xl font-bold mb-3">Mots-cles cibles</h2>
         <SeoKeywords keywords={keywords} />
+      </Card>
+
+      {/* Pages strategiques (settings DB-editable) */}
+      <Card padding="md">
+        <h2 className="font-serif text-xl font-bold mb-3">Pages strategiques monitorees</h2>
+        <SeoKeyLandings landings={landings} />
       </Card>
 
       {/* Top pages + Top sources */}

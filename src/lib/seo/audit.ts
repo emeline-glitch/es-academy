@@ -1,34 +1,7 @@
 import { createServiceClient } from "@/lib/supabase/server";
 import { getPublishedArticles, type Article } from "@/lib/notion/blog";
 import { SITE_URL } from "@/lib/utils/constants";
-
-// ============================================================
-// Seuils d'audit (ajustables ici, pas de magic number ailleurs)
-// ============================================================
-const TITLE_MIN = 30;
-const TITLE_MAX = 60;
-const DESC_MIN = 70;
-const DESC_MAX = 160;
-const ARTICLE_STALE_DAYS = 365;          // article non touche depuis 1 an
-const KEY_LANDING_MIN_VIEWS_30D = 30;    // /academy /family devraient depasser ca
-const ARTICLE_LOW_VIEWS_30D = 5;         // article publie > 30j avec < 5 vues
-const PUBLISH_RECENT_DAYS = 30;
-
-// ============================================================
-// Pages cles dont on attend du trafic (audit "page importante peu visitee")
-// Liste hardcodee : ce sont les pages commerciales et editoriales pivot.
-// ============================================================
-const KEY_LANDINGS: Array<{ path: string; label: string; severity: "high" | "medium" }> = [
-  { path: "/", label: "Homepage", severity: "high" },
-  { path: "/academy", label: "Page de vente Academy", severity: "high" },
-  { path: "/family", label: "Page de vente Family", severity: "high" },
-  { path: "/cahier-preview", label: "Cahier preview (lead magnet)", severity: "medium" },
-  { path: "/podcast", label: "Page podcast", severity: "medium" },
-  { path: "/a-propos", label: "A propos", severity: "medium" },
-  { path: "/blog", label: "Listing blog", severity: "medium" },
-  { path: "/glossaire", label: "Glossaire", severity: "medium" },
-  { path: "/outils-gratuits", label: "Outils gratuits", severity: "medium" },
-];
+import { getKeyLandings, getAuditThresholds, type KeyLanding, type AuditThresholds } from "@/lib/seo/settings";
 
 export type RecoType =
   | "missing_meta_description"
@@ -87,7 +60,7 @@ async function getPageViewCounts(periodDays: number): Promise<Map<string, number
 // ============================================================
 // Auditeurs (un par categorie de check)
 // ============================================================
-function auditArticles(articles: Article[]): DraftReco[] {
+function auditArticles(articles: Article[], thresholds: AuditThresholds): DraftReco[] {
   const recos: DraftReco[] = [];
 
   for (const a of articles) {
@@ -102,24 +75,24 @@ function auditArticles(articles: Article[]): DraftReco[] {
         page_path: path,
         title: `Article sans titre SEO : ${a.slug}`,
         description: "Cet article n'a pas de titre SEO defini, Google va utiliser le H1 par defaut.",
-        fix_action: "Renseigner le champ 'SEO Title' dans Notion (entre 30 et 60 caracteres).",
+        fix_action: `Renseigner le champ 'SEO Title' dans Notion (entre ${thresholds.title_min} et ${thresholds.title_max} caracteres).`,
       });
-    } else if (seoTitle.length > TITLE_MAX) {
+    } else if (seoTitle.length > thresholds.title_max) {
       recos.push({
         type: "seo_title_too_long",
         severity: "medium",
         page_path: path,
         title: `Titre SEO trop long (${seoTitle.length} car.) : ${a.title}`,
-        description: `Google tronque les titres au-dela de ${TITLE_MAX} caracteres, le tien fait ${seoTitle.length}.`,
-        fix_action: "Raccourcir le SEO Title dans Notion sous 60 caracteres.",
+        description: `Google tronque les titres au-dela de ${thresholds.title_max} caracteres, le tien fait ${seoTitle.length}.`,
+        fix_action: `Raccourcir le SEO Title dans Notion sous ${thresholds.title_max} caracteres.`,
       });
-    } else if (seoTitle.length < TITLE_MIN) {
+    } else if (seoTitle.length < thresholds.title_min) {
       recos.push({
         type: "seo_title_too_short",
         severity: "low",
         page_path: path,
         title: `Titre SEO trop court (${seoTitle.length} car.) : ${a.title}`,
-        description: `Un titre SEO sous ${TITLE_MIN} caracteres est sous-exploite, ajoute des mots-cles ou le nom de marque.`,
+        description: `Un titre SEO sous ${thresholds.title_min} caracteres est sous-exploite, ajoute des mots-cles ou le nom de marque.`,
         fix_action: "Etoffer le SEO Title (ex: ajouter 'Emeline Siron' ou la requete cible).",
       });
     }
@@ -133,25 +106,25 @@ function auditArticles(articles: Article[]): DraftReco[] {
         page_path: path,
         title: `Article sans meta description : ${a.title}`,
         description: "Sans meta description, Google va inventer un snippet rarement optimal.",
-        fix_action: "Renseigner 'SEO Description' dans Notion (entre 70 et 160 caracteres, avec un appel a l'action).",
+        fix_action: `Renseigner 'SEO Description' dans Notion (entre ${thresholds.desc_min} et ${thresholds.desc_max} caracteres, avec un appel a l'action).`,
       });
-    } else if (desc.length > DESC_MAX) {
+    } else if (desc.length > thresholds.desc_max) {
       recos.push({
         type: "meta_description_too_long",
         severity: "medium",
         page_path: path,
         title: `Meta description trop longue (${desc.length} car.) : ${a.title}`,
-        description: `Google tronque au-dela de ${DESC_MAX} caracteres, le tien fait ${desc.length}.`,
+        description: `Google tronque au-dela de ${thresholds.desc_max} caracteres, le tien fait ${desc.length}.`,
         fix_action: "Raccourcir la SEO Description dans Notion.",
       });
-    } else if (desc.length < DESC_MIN) {
+    } else if (desc.length < thresholds.desc_min) {
       recos.push({
         type: "meta_description_too_short",
         severity: "low",
         page_path: path,
         title: `Meta description trop courte (${desc.length} car.) : ${a.title}`,
         description: "Une meta description courte gaspille de la place dans la SERP.",
-        fix_action: "Etoffer la SEO Description (idealement 140-160 caracteres).",
+        fix_action: `Etoffer la SEO Description (ideal : ${thresholds.desc_max - 20}-${thresholds.desc_max} caracteres).`,
       });
     }
 
@@ -170,7 +143,7 @@ function auditArticles(articles: Article[]): DraftReco[] {
     // Article stale (publie il y a longtemps, signal Google de le rafraichir)
     if (a.publishDate) {
       const age = daysBetween(a.publishDate);
-      if (age > ARTICLE_STALE_DAYS) {
+      if (age > thresholds.article_stale_days) {
         recos.push({
           type: "article_stale",
           severity: "low",
@@ -188,12 +161,15 @@ function auditArticles(articles: Article[]): DraftReco[] {
 
 function auditTraffic(
   views: Map<string, number>,
-  articles: Article[]
+  articles: Article[],
+  landings: KeyLanding[],
+  thresholds: AuditThresholds
 ): DraftReco[] {
   const recos: DraftReco[] = [];
 
   // Pages cles : peu ou pas de trafic
-  for (const lp of KEY_LANDINGS) {
+  for (const lp of landings) {
+    if (!lp.monitor) continue;
     const v = views.get(lp.path) || 0;
     if (v === 0) {
       recos.push({
@@ -204,26 +180,26 @@ function auditTraffic(
         description: "Cette page strategique n'a recu aucun trafic ce mois-ci. Verifie qu'elle est bien indexee, liee depuis le menu et partagee.",
         fix_action: "Verifier dans Search Console qu'elle est indexee, ajouter des liens internes depuis articles populaires.",
       });
-    } else if (v < KEY_LANDING_MIN_VIEWS_30D) {
+    } else if (v < thresholds.key_landing_min_views_30d) {
       recos.push({
         type: "low_traffic_landing",
         severity: lp.severity === "high" ? "medium" : "low",
         page_path: lp.path,
         title: `${lp.label} : seulement ${v} vues sur 30 jours`,
-        description: `Trafic faible pour une page strategique (seuil bas : ${KEY_LANDING_MIN_VIEWS_30D}). Pousse-la depuis les articles, le podcast et l'email.`,
+        description: `Trafic faible pour une page strategique (seuil bas : ${thresholds.key_landing_min_views_30d}). Pousse-la depuis les articles, le podcast et l'email.`,
         fix_action: "Ajouter des CTA depuis les articles les plus vus + relancer la sequence email.",
       });
     }
   }
 
-  // Articles publies depuis > 30j avec < 5 vues
+  // Articles publies depuis > N jours avec < N vues
   for (const a of articles) {
     if (!a.publishDate) continue;
     const age = daysBetween(a.publishDate);
-    if (age <= PUBLISH_RECENT_DAYS) continue; // trop recent pour juger
+    if (age <= thresholds.publish_recent_days) continue;
     const path = `/blog/${a.slug}`;
     const v = views.get(path) || 0;
-    if (v < ARTICLE_LOW_VIEWS_30D) {
+    if (v < thresholds.article_low_views_30d) {
       recos.push({
         type: "article_low_traffic",
         severity: "low",
@@ -333,17 +309,19 @@ export async function runSeoAudit(): Promise<AuditResult> {
   const auditId = auditRow.id as string;
 
   try {
-    // 2. Charge les sources
-    const [articles, viewCounts] = await Promise.all([
+    // 2. Charge les sources + settings DB
+    const [articles, viewCounts, landings, thresholds] = await Promise.all([
       getPublishedArticles(200),
       getPageViewCounts(30),
+      getKeyLandings(),
+      getAuditThresholds(),
     ]);
 
     // 3. Lance les auditeurs
     const drafts: DraftReco[] = [
       ...auditGlobalSetup(),
-      ...auditArticles(articles),
-      ...auditTraffic(viewCounts, articles),
+      ...auditArticles(articles, thresholds),
+      ...auditTraffic(viewCounts, articles, landings, thresholds),
       ...(await auditKeywords()),
     ];
 
@@ -359,7 +337,7 @@ export async function runSeoAudit(): Promise<AuditResult> {
     }
 
     const durationMs = Date.now() - startedAt;
-    const pagesScanned = articles.length + KEY_LANDINGS.length;
+    const pagesScanned = articles.length + landings.length;
 
     // 6. Update audit row
     await supabase
@@ -389,4 +367,4 @@ export async function runSeoAudit(): Promise<AuditResult> {
 }
 
 // Export utilitaire utilise dans le dashboard
-export { KEY_LANDINGS, SITE_URL };
+export { SITE_URL };

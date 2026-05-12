@@ -190,19 +190,31 @@
           "letter": "A",
           "order": 1,
           "name": "Définir les principaux indicateurs financiers",
-          "evermind_idpage": 3907081
+          "evermind_idpage": 3907081,
+          "bunny_video_id": "f87bb626-c8f3-4ab7-89f4-d05b071ffe11",
+          "bunny_uploaded_at": "2026-05-04T11:40:07.905",
+          "bunny_thumbnail_uploaded_at": "2026-05-04T11:40:07.905",
+          "notion_lesson_id": "356c679c-c075-816d-8ce9-c73e3921a37e"
         },
         {
           "letter": "B",
           "order": 2,
           "name": "Établir un business plan rigoureux et structuré",
-          "evermind_idpage": 3907082
+          "evermind_idpage": 3907082,
+          "bunny_video_id": "18fbcc90-710d-4719-9c2c-0edcbffdf1cd",
+          "bunny_uploaded_at": "2026-05-04T11:40:28.776",
+          "bunny_thumbnail_uploaded_at": "2026-05-04T11:40:28.776",
+          "notion_lesson_id": "356c679c-c075-8170-8e71-e418c0bdc8d1"
         },
         {
           "letter": "C",
           "order": 3,
           "name": "Valider ses critères de Go et No Go",
-          "evermind_idpage": 3907083
+          "evermind_idpage": 3907083,
+          "bunny_video_id": "9916509a-6745-4945-8a57-bc0179caae78",
+          "bunny_uploaded_at": "2026-05-04T11:40:43.936",
+          "bunny_thumbnail_uploaded_at": "2026-05-04T11:40:43.936",
+          "notion_lesson_id": "356c679c-c075-81fe-8bcd-f7fcd464b1eb"
         }
       ]
     },
@@ -217,7 +229,11 @@
           "letter": "A",
           "order": 1,
           "name": "Déroulé d'une visite immobilière et check-list",
-          "evermind_idpage": 3907084
+          "evermind_idpage": 3907084,
+          "bunny_video_id": "e1c491ce-2e1e-41c7-8c5e-cd8147b5d95e",
+          "bunny_uploaded_at": "2026-05-04T11:45:14.358",
+          "bunny_thumbnail_uploaded_at": "2026-05-04T11:45:14.358",
+          "notion_lesson_id": "356c679c-c075-81f2-8a39-c058b6a74bd9"
         },
         {
           "letter": "B",
@@ -229,19 +245,31 @@
           "letter": "C",
           "order": 3,
           "name": "Utiliser les diagnostics immobiliers à son avantage",
-          "evermind_idpage": 3907086
+          "evermind_idpage": 3907086,
+          "bunny_video_id": "b4bebcfb-1fde-4ffe-b42e-7a9686631070",
+          "bunny_uploaded_at": "2026-05-04T11:41:01.59",
+          "bunny_thumbnail_uploaded_at": "2026-05-04T11:41:01.59",
+          "notion_lesson_id": "356c679c-c075-8146-8ea0-d275bf964d35"
         },
         {
           "letter": "D",
           "order": 4,
           "name": "Les techniques puissantes pour négocier",
-          "evermind_idpage": 3907087
+          "evermind_idpage": 3907087,
+          "bunny_video_id": "e1816306-2d76-42b9-ab00-4eb23be1f9db",
+          "bunny_uploaded_at": "2026-05-04T11:41:26.591",
+          "bunny_thumbnail_uploaded_at": "2026-05-04T11:41:26.591",
+          "notion_lesson_id": "356c679c-c075-813c-8186-ca3e3fbfe764"
         },
         {
           "letter": "E",
           "order": 5,
           "name": "Comprendre le notaire et les formalités foncières",
-          "evermind_idpage": 3907088
+          "evermind_idpage": 3907088,
+          "bunny_video_id": "66ddea12-7fac-41fc-86b6-ee92fbe9dbe6",
+          "bunny_uploaded_at": "2026-05-04T11:41:48.886",
+          "bunny_thumbnail_uploaded_at": "2026-05-04T11:41:48.886",
+          "notion_lesson_id": "356c679c-c075-8183-b0ce-d211ee9229bf"
         }
       ]
     },
@@ -256,31 +284,51 @@
           "letter": "A",
           "order": 1,
           "name": "Les différents crédits bancaires",
-          "evermind_idpage": 3907089
+          "evermind_idpage": 3907089,
+          "bunny_video_id": "9291e26e-f45a-4538-9543-ece6467440b8",
+          "bunny_uploaded_at": "2026-05-04T12:00:54.388",
+          "bunny_thumbnail_uploaded_at": "2026-05-04T12:00:54.388",
+          "notion_lesson_id": "356c679c-c075-81b0-910d-c19b1eba4d75"
         },
         {
           "letter": "B",
           "order": 2,
           "name": "Les caractéristiques d'un prêt immobilier",
-          "evermind_idpage": 3907090
+          "evermind_idpage": 3907090,
+          "bunny_video_id": "3ec107bc-dbe1-4d47-9092-d995b4ab0a65",
+          "bunny_uploaded_at": "2026-05-04T12:01:12.851",
+          "bunny_thumbnail_uploaded_at": "2026-05-04T12:01:12.851",
+          "notion_lesson_id": "356c679c-c075-81a1-804e-f58b8e2a0797"
         },
         {
           "letter": "C",
           "order": 3,
           "name": "Faire une demande de crédit comme un pro",
-          "evermind_idpage": 3907091
+          "evermind_idpage": 3907091,
+          "bunny_video_id": "4a823f2f-7e76-47ab-807c-c3339447c112",
+          "bunny_uploaded_at": "2026-05-04T12:01:30.525",
+          "bunny_thumbnail_uploaded_at": "2026-05-04T12:01:30.525",
+          "notion_lesson_id": "356c679c-c075-8156-8ab5-e0172c14179a"
         },
         {
           "letter": "D",
           "order": 4,
           "name": "Améliorer son dossier et enchainer les crédits",
-          "evermind_idpage": 3907092
+          "evermind_idpage": 3907092,
+          "bunny_video_id": "865863d9-2c94-4ea8-8b3a-9a6c25889fd1",
+          "bunny_uploaded_at": "2026-05-04T12:01:49.93",
+          "bunny_thumbnail_uploaded_at": "2026-05-04T12:01:49.93",
+          "notion_lesson_id": "356c679c-c075-8182-9e19-c9366b71877f"
         },
         {
           "letter": "E",
           "order": 5,
           "name": "Le financement participatif Crowdfunding",
-          "evermind_idpage": 4600028
+          "evermind_idpage": 4600028,
+          "bunny_video_id": "965d0803-5f49-4443-ad14-f98cde9f4bdd",
+          "bunny_uploaded_at": "2026-05-04T12:02:04.956",
+          "bunny_thumbnail_uploaded_at": "2026-05-04T12:02:04.956",
+          "notion_lesson_id": "356c679c-c075-8115-a3c2-c0ac1e4a287a"
         }
       ]
     },
@@ -295,19 +343,31 @@
           "letter": "A",
           "order": 1,
           "name": "Choisir la bonne entreprise de rénovation",
-          "evermind_idpage": 3907093
+          "evermind_idpage": 3907093,
+          "bunny_video_id": "51df5627-ae3b-402e-aa0a-9343a4bf3405",
+          "bunny_uploaded_at": "2026-05-04T12:02:17.688",
+          "bunny_thumbnail_uploaded_at": "2026-05-04T12:02:17.688",
+          "notion_lesson_id": "356c679c-c075-815c-9cf8-fbc8e3bb7d8b"
         },
         {
           "letter": "B",
           "order": 2,
           "name": "Confronter les devis et diminuer son budget travaux",
-          "evermind_idpage": 3907094
+          "evermind_idpage": 3907094,
+          "bunny_video_id": "50e5d424-ae54-4526-b25b-feed5efb2af1",
+          "bunny_uploaded_at": "2026-05-04T12:02:43.019",
+          "bunny_thumbnail_uploaded_at": "2026-05-04T12:02:43.019",
+          "notion_lesson_id": "356c679c-c075-81fe-bbc1-ca16dd4b0c99"
         },
         {
           "letter": "C",
           "order": 3,
           "name": "Comprendre tous les travaux sans être artisan",
-          "evermind_idpage": 3907095
+          "evermind_idpage": 3907095,
+          "bunny_video_id": "e7962a68-cec7-497a-8e1b-4d96c85821ef",
+          "bunny_uploaded_at": "2026-05-04T12:02:59.176",
+          "bunny_thumbnail_uploaded_at": "2026-05-04T12:02:59.176",
+          "notion_lesson_id": "356c679c-c075-81b7-af4a-e4f07c79d30f"
         },
         {
           "letter": "D",
@@ -319,19 +379,31 @@
           "letter": "E",
           "order": 5,
           "name": "Le détail de chaque pièce d'un bien",
-          "evermind_idpage": 3907097
+          "evermind_idpage": 3907097,
+          "bunny_video_id": "314b90f8-a49f-4c58-ac89-5e0402daddba",
+          "bunny_uploaded_at": "2026-05-04T12:03:22.866",
+          "bunny_thumbnail_uploaded_at": "2026-05-04T12:03:22.866",
+          "notion_lesson_id": "356c679c-c075-8199-9b27-fa1eb72ba4ab"
         },
         {
           "letter": "F",
           "order": 6,
           "name": "La réception du chantier et les garanties",
-          "evermind_idpage": 3907098
+          "evermind_idpage": 3907098,
+          "bunny_video_id": "0b7f9fbf-b202-4c1e-87b7-d8748c6e3c1a",
+          "bunny_uploaded_at": "2026-05-04T12:03:47.934",
+          "bunny_thumbnail_uploaded_at": "2026-05-04T12:03:47.934",
+          "notion_lesson_id": "356c679c-c075-8194-949b-dbf2d26f4329"
         },
         {
           "letter": "G",
           "order": 7,
           "name": "Maîtriser l'urbanisme et les déclarations associées",
-          "evermind_idpage": 3907099
+          "evermind_idpage": 3907099,
+          "bunny_video_id": "a3dd6395-f4e3-49b2-910a-b0db78a8045f",
+          "bunny_uploaded_at": "2026-05-04T12:04:01.79",
+          "bunny_thumbnail_uploaded_at": "2026-05-04T12:04:01.79",
+          "notion_lesson_id": "356c679c-c075-81dc-8aed-f97d071acae0"
         }
       ]
     },
@@ -370,13 +442,21 @@
           "letter": "E",
           "order": 5,
           "name": "Les assurances indispensables",
-          "evermind_idpage": 4607998
+          "evermind_idpage": 4607998,
+          "bunny_video_id": "2588ea0d-99ef-45f2-af5f-f988d8c06b54",
+          "bunny_uploaded_at": "2026-05-11T10:50:09.487",
+          "bunny_thumbnail_uploaded_at": "2026-05-11T10:50:09.487",
+          "notion_lesson_id": "35dc679c-c075-81f6-8811-dceb40335568"
         },
         {
           "letter": "F",
           "order": 6,
           "name": "Fonctionnement de la copropriété",
-          "evermind_idpage": 4607999
+          "evermind_idpage": 4607999,
+          "bunny_video_id": "50c0d9b3-1e20-4026-be8f-b5cb273c3b6f",
+          "bunny_uploaded_at": "2026-05-11T10:50:24.131",
+          "bunny_thumbnail_uploaded_at": "2026-05-11T10:50:24.131",
+          "notion_lesson_id": "35dc679c-c075-81a8-85a4-d38c1357118e"
         }
       ]
     },
@@ -391,31 +471,51 @@
           "letter": "A",
           "order": 1,
           "name": "Les bases de l'imposition des particuliers",
-          "evermind_idpage": 3907104
+          "evermind_idpage": 3907104,
+          "bunny_video_id": "a730ca7c-cd63-4e54-b02f-16f429297e81",
+          "bunny_uploaded_at": "2026-05-11T10:50:44.214",
+          "bunny_thumbnail_uploaded_at": "2026-05-11T10:50:44.214",
+          "notion_lesson_id": "35dc679c-c075-817c-86d2-f33a4fd5d212"
         },
         {
           "letter": "B",
           "order": 2,
           "name": "L'imposition des revenus locatifs",
-          "evermind_idpage": 3907105
+          "evermind_idpage": 3907105,
+          "bunny_video_id": "d85ccab4-17fc-4036-915f-a2d44cde5cb8",
+          "bunny_uploaded_at": "2026-05-11T10:51:20.242",
+          "bunny_thumbnail_uploaded_at": "2026-05-11T10:51:20.242",
+          "notion_lesson_id": "35dc679c-c075-81e1-8221-d1d95c137fb7"
         },
         {
           "letter": "C",
           "order": 3,
           "name": "Les taxes et impositions locales",
-          "evermind_idpage": 3907106
+          "evermind_idpage": 3907106,
+          "bunny_video_id": "d17e98eb-252f-4d3a-93d2-5ed9f84140e7",
+          "bunny_uploaded_at": "2026-05-11T10:51:39.963",
+          "bunny_thumbnail_uploaded_at": "2026-05-11T10:51:39.963",
+          "notion_lesson_id": "35dc679c-c075-8196-a023-e827be4e17ee"
         },
         {
           "letter": "D",
           "order": 4,
           "name": "Fiscalité du patrimoine",
-          "evermind_idpage": 3907107
+          "evermind_idpage": 3907107,
+          "bunny_video_id": "91f959d2-3a44-4269-a8bc-30a6cf7b8fd1",
+          "bunny_uploaded_at": "2026-05-11T10:51:55.58",
+          "bunny_thumbnail_uploaded_at": "2026-05-11T10:51:55.58",
+          "notion_lesson_id": "35dc679c-c075-81fb-b823-f109d895cbab"
         },
         {
           "letter": "E",
           "order": 5,
           "name": "Obligation déclarative pour les propriétaires",
-          "evermind_idpage": 4028091
+          "evermind_idpage": 4028091,
+          "bunny_video_id": "55714d7e-da65-4094-85c0-7516c05e5201",
+          "bunny_uploaded_at": "2026-05-11T10:52:09.496",
+          "bunny_thumbnail_uploaded_at": "2026-05-11T10:52:09.496",
+          "notion_lesson_id": "35dc679c-c075-819e-b6ff-f5aebe481612"
         }
       ]
     },
@@ -430,19 +530,31 @@
           "letter": "A",
           "order": 1,
           "name": "Les différentes sociétés immobilières",
-          "evermind_idpage": 3907108
+          "evermind_idpage": 3907108,
+          "bunny_video_id": "8a742309-dfa9-4fd8-8930-767adc3314b4",
+          "bunny_uploaded_at": "2026-05-11T13:01:43.274",
+          "bunny_thumbnail_uploaded_at": "2026-05-11T13:01:43.274",
+          "notion_lesson_id": "35dc679c-c075-81cc-9551-c16d54ccd9ce"
         },
         {
           "letter": "B",
           "order": 2,
           "name": "Les étapes de la création d'entreprise",
-          "evermind_idpage": 3907109
+          "evermind_idpage": 3907109,
+          "bunny_video_id": "a64b86c2-d130-4041-9b17-3cdc34b9d45f",
+          "bunny_uploaded_at": "2026-05-11T13:02:04.686",
+          "bunny_thumbnail_uploaded_at": "2026-05-11T13:02:04.686",
+          "notion_lesson_id": "35dc679c-c075-818e-8e8d-fbcfc8a27cab"
         },
         {
           "letter": "C",
           "order": 3,
           "name": "Se rémunérer en tant que dirigeant",
-          "evermind_idpage": 3907110
+          "evermind_idpage": 3907110,
+          "bunny_video_id": "9ad5af76-2bc4-44c1-a3a3-2b3454c259ed",
+          "bunny_uploaded_at": "2026-05-11T13:02:19.526",
+          "bunny_thumbnail_uploaded_at": "2026-05-11T13:02:19.526",
+          "notion_lesson_id": "35dc679c-c075-81ff-9f80-d495600e2ff1"
         },
         {
           "letter": "D",
@@ -454,13 +566,21 @@
           "letter": "E",
           "order": 5,
           "name": "L'imposition avantageuse en société",
-          "evermind_idpage": 3907112
+          "evermind_idpage": 3907112,
+          "bunny_video_id": "adeda699-e098-43da-86d7-4ecc243f02a6",
+          "bunny_uploaded_at": "2026-05-11T13:02:35.793",
+          "bunny_thumbnail_uploaded_at": "2026-05-11T13:02:35.793",
+          "notion_lesson_id": "35dc679c-c075-812b-a01b-db8f6e7a5dff"
         },
         {
           "letter": "F",
           "order": 6,
           "name": "Salaire ou dividende : le match ultime !",
-          "evermind_idpage": 3907113
+          "evermind_idpage": 3907113,
+          "bunny_video_id": "4ceb118f-aa3b-4420-be7c-985076da1e40",
+          "bunny_uploaded_at": "2026-05-11T13:02:49.606",
+          "bunny_thumbnail_uploaded_at": "2026-05-11T13:02:49.606",
+          "notion_lesson_id": "35dc679c-c075-8165-9077-ff6a865c7746"
         }
       ]
     },
@@ -475,25 +595,41 @@
           "letter": "A",
           "order": 1,
           "name": "Les circulations d'argent à travers la holding",
-          "evermind_idpage": 3907114
+          "evermind_idpage": 3907114,
+          "bunny_video_id": "5e415920-c5eb-44c9-b34e-0dd365d57764",
+          "bunny_uploaded_at": "2026-05-07T12:28:24.614",
+          "bunny_thumbnail_uploaded_at": "2026-05-07T12:28:24.614",
+          "notion_lesson_id": "359c679c-c075-81d4-b1eb-d924c120a9c4"
         },
         {
           "letter": "B",
           "order": 2,
           "name": "Le démembrement pour faciliter la transmission",
-          "evermind_idpage": 3907115
+          "evermind_idpage": 3907115,
+          "bunny_video_id": "abc6eaf3-79cc-48ea-ba4c-5d97478dac78",
+          "bunny_uploaded_at": "2026-05-07T12:29:04.596",
+          "bunny_thumbnail_uploaded_at": "2026-05-07T12:29:04.596",
+          "notion_lesson_id": "359c679c-c075-816e-bf5f-ecf319b83c96"
         },
         {
           "letter": "C",
           "order": 3,
           "name": "Droit des successions et donations",
-          "evermind_idpage": 3907116
+          "evermind_idpage": 3907116,
+          "bunny_video_id": "e1e2e137-434e-42fd-9885-eea5159b97b3",
+          "bunny_uploaded_at": "2026-05-07T06:48:13.164",
+          "bunny_thumbnail_uploaded_at": "2026-05-07T06:48:13.164",
+          "notion_lesson_id": "359c679c-c075-8135-a170-f5858d2d4f06"
         },
         {
           "letter": "D",
           "order": 4,
           "name": "Régimes matrimoniaux au coeur de l'entreprise",
-          "evermind_idpage": 3907117
+          "evermind_idpage": 3907117,
+          "bunny_video_id": "18617de3-1258-4b49-b1a1-f31ce3a4d2d3",
+          "bunny_uploaded_at": "2026-05-07T07:16:39.061",
+          "bunny_thumbnail_uploaded_at": "2026-05-07T07:16:39.061",
+          "notion_lesson_id": "359c679c-c075-81b1-83a1-fd7c1f091def"
         }
       ]
     },
@@ -508,19 +644,31 @@
           "letter": "A",
           "order": 1,
           "name": "Aller plus loin dans la recherche de biens",
-          "evermind_idpage": 3907118
+          "evermind_idpage": 3907118,
+          "bunny_video_id": "4a1392e6-713a-44a6-8ad7-7b5c097735e6",
+          "bunny_uploaded_at": "2026-05-07T07:22:05.473",
+          "bunny_thumbnail_uploaded_at": "2026-05-07T07:22:05.473",
+          "notion_lesson_id": "359c679c-c075-8126-81f2-e216011f1261"
         },
         {
           "letter": "B",
           "order": 2,
           "name": "Une gestion 100% déléguée",
-          "evermind_idpage": 3907119
+          "evermind_idpage": 3907119,
+          "bunny_video_id": "8fe27c31-5c8a-4aaf-9828-2ed83c0df063",
+          "bunny_uploaded_at": "2026-05-07T12:29:28.696",
+          "bunny_thumbnail_uploaded_at": "2026-05-07T12:29:28.696",
+          "notion_lesson_id": "359c679c-c075-816f-ac32-edad3b253ca8"
         },
         {
           "letter": "C",
           "order": 3,
           "name": "Adapter sa fiscalité en fonction de sa stratégie",
-          "evermind_idpage": 3907120
+          "evermind_idpage": 3907120,
+          "bunny_video_id": "ae69b4b5-706d-4f9a-84db-cefc0a1777b6",
+          "bunny_uploaded_at": "2026-05-07T12:30:07.919",
+          "bunny_thumbnail_uploaded_at": "2026-05-07T12:30:07.919",
+          "notion_lesson_id": "359c679c-c075-817f-a030-cf1428b84412"
         },
         {
           "letter": "D",
@@ -541,19 +689,31 @@
           "letter": "A",
           "order": 1,
           "name": "Les réponses sur le financement et la banque",
-          "evermind_idpage": 3907121
+          "evermind_idpage": 3907121,
+          "bunny_video_id": "6daac4e1-f6a1-4a16-976f-07dc624700e7",
+          "bunny_uploaded_at": "2026-05-12T09:33:27.940Z",
+          "bunny_thumbnail_uploaded_at": "2026-05-12T09:33:29.600Z",
+          "notion_lesson_id": "35ec679c-c075-818a-8835-eba57ddaa24d"
         },
         {
           "letter": "B",
           "order": 2,
           "name": "Plus de doutes sur les travaux et la location",
-          "evermind_idpage": 3907122
+          "evermind_idpage": 3907122,
+          "bunny_video_id": "10c09453-b6cc-4706-bfde-4aaee1c802ef",
+          "bunny_uploaded_at": "2026-05-12T09:33:49.779Z",
+          "bunny_thumbnail_uploaded_at": "2026-05-12T09:33:51.292Z",
+          "notion_lesson_id": "35ec679c-c075-81bc-8d71-cc3bc6cb5455"
         },
         {
           "letter": "C",
           "order": 3,
           "name": "Maîtriser parfaitement la fiscalité et les sociétés",
-          "evermind_idpage": 3907123
+          "evermind_idpage": 3907123,
+          "bunny_video_id": "d215fbcc-3d66-48fa-be9a-5e895b822824",
+          "bunny_uploaded_at": "2026-05-12T09:34:09.892Z",
+          "bunny_thumbnail_uploaded_at": "2026-05-12T09:34:11.548Z",
+          "notion_lesson_id": "35ec679c-c075-81cc-97e8-fac9a5f573a4"
         }
       ]
     },
