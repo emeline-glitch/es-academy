@@ -1,8 +1,27 @@
-import { getCachedUser } from "@/lib/supabase/server";
+import { getCachedUser, createServiceClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { ProgressBar } from "@/components/ui/ProgressBar";
+
+// Metadata par course_id : total lecons + meta affichee sur la carte.
+// 66 lecons = total de "La Methode Emeline SIRON" (14 modules). A garder
+// sync avec le contenu Notion. Si on ajoute une formation, on l'ajoute ici.
+const COURSE_META: Record<
+  string,
+  { title: string; modules: number; videoHours: number; tools: number; totalLessons: number; href: string }
+> = {
+  "methode-emeline-siron": {
+    title: "La Méthode Emeline SIRON",
+    modules: 14,
+    videoHours: 30,
+    tools: 60,
+    totalLessons: 66,
+    href: "/cours/methode-emeline-siron",
+  },
+};
+
+const DEFAULT_COURSE_ID = "methode-emeline-siron";
 
 export default async function Dashboard() {
   const user = await getCachedUser();
@@ -11,8 +30,38 @@ export default async function Dashboard() {
   const displayName =
     user.user_metadata?.full_name || user.email?.split("@")[0] || "Élève";
 
-  // TODO: Fetch enrollments and progress from Supabase
-  // For now, show a placeholder dashboard
+  // Service client : le user pourrait lire ses propres rows via RLS, mais on
+  // garde service ici pour eviter un round-trip auth et rester coherent avec
+  // le layout (platform) qui utilise deja service pour le gating product.
+  const supabase = await createServiceClient();
+
+  const { data: enrollments } = await supabase
+    .from("enrollments")
+    .select("id, course_id, product_name, purchased_at")
+    .eq("user_id", user.id)
+    .eq("status", "active")
+    .order("purchased_at", { ascending: false });
+
+  const userEnrollments = enrollments || [];
+
+  // Aggregation progress par course_id en 1 seule query (vs N par enrollment).
+  const courseIds = userEnrollments
+    .map((e) => e.course_id)
+    .filter((c): c is string => Boolean(c));
+
+  const progressByCourse: Record<string, number> = {};
+  if (courseIds.length > 0) {
+    const { data: progressRows } = await supabase
+      .from("progress")
+      .select("course_id")
+      .eq("user_id", user.id)
+      .in("course_id", courseIds);
+
+    for (const row of progressRows || []) {
+      const cid = row.course_id;
+      if (cid) progressByCourse[cid] = (progressByCourse[cid] || 0) + 1;
+    }
+  }
 
   return (
     <div>
@@ -25,32 +74,62 @@ export default async function Dashboard() {
 
       {/* Enrolled courses */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* Placeholder course card */}
-        <Card hover className="flex flex-col">
-          <div className="aspect-video bg-es-green/10 rounded-lg mb-4 flex items-center justify-center">
-            <span className="font-serif text-2xl font-bold text-es-green">ES</span>
-          </div>
-          <h3 className="font-serif text-lg font-bold text-gray-900 mb-1">
-            La Méthode Emeline SIRON
-          </h3>
-          <p className="text-sm text-gray-500 mb-4 flex-1">
-            14 modules · 30h de vidéo · 60 outils
-          </p>
-          <ProgressBar value={0} label="Progression" className="mb-4" />
-          <Button href="/cours/methode-emeline-siron" variant="primary" className="w-full">
-            Commencer
-          </Button>
-        </Card>
+        {userEnrollments.length === 0 ? (
+          <Card className="col-span-full text-center py-12">
+            <p className="text-gray-500 mb-4">
+              Tu n&apos;as pas encore de formation active.
+              <br className="hidden sm:inline" />
+              Découvre La Méthode Emeline SIRON pour commencer.
+            </p>
+            <Button href="/academy" variant="primary">
+              Voir la formation
+            </Button>
+          </Card>
+        ) : (
+          userEnrollments.map((enrollment) => {
+            const courseId = enrollment.course_id || DEFAULT_COURSE_ID;
+            const meta = COURSE_META[courseId] || COURSE_META[DEFAULT_COURSE_ID];
+            const completed = progressByCourse[courseId] || 0;
+            const total = meta.totalLessons;
+            const percent = total > 0 ? Math.min(100, Math.round((completed / total) * 100)) : 0;
+            const cta = percent === 0 ? "Commencer" : percent >= 100 ? "Revoir" : "Continuer";
 
-        {/* Empty state for no more courses */}
-        <Card className="flex flex-col items-center justify-center text-center border-dashed border-2">
-          <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-3">
-            <svg className="w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-            </svg>
-          </div>
-          <p className="text-sm text-gray-400">D&apos;autres formations bientôt</p>
-        </Card>
+            return (
+              <Card key={enrollment.id} hover className="flex flex-col">
+                <div className="aspect-video bg-es-green/10 rounded-lg mb-4 flex items-center justify-center">
+                  <span className="font-serif text-2xl font-bold text-es-green">ES</span>
+                </div>
+                <h3 className="font-serif text-lg font-bold text-gray-900 mb-1">
+                  {meta.title}
+                </h3>
+                <p className="text-sm text-gray-500 mb-4 flex-1">
+                  {meta.modules} modules · {meta.videoHours}h de vidéo · {meta.tools} outils
+                </p>
+                <ProgressBar
+                  value={percent}
+                  label={`Progression · ${completed}/${total} leçons`}
+                  className="mb-4"
+                />
+                <Button href={meta.href} variant="primary" className="w-full">
+                  {cta}
+                </Button>
+              </Card>
+            );
+          })
+        )}
+
+        {/* Empty state for no more courses : seulement si l'utilisateur a deja
+            au moins 1 enrollment (sinon le card vide ci-dessus suffit). */}
+        {userEnrollments.length > 0 && (
+          <Card className="flex flex-col items-center justify-center text-center border-dashed border-2">
+            <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-3">
+              <svg className="w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+            </div>
+            <p className="text-sm text-gray-400">D&apos;autres formations bientôt</p>
+          </Card>
+        )}
       </div>
 
       {/* ES Family CTA : carte compacte, charte mint */}
