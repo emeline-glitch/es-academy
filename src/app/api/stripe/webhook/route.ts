@@ -391,6 +391,32 @@ async function handleAcademyPurchase(session: Stripe.Checkout.Session) {
     console.error("[webhook] Contact upsert RPC error:", contactErr.message);
   }
 
+  // 5b. Log consent_log : trace l'acceptation CGV + renonciation retractation
+  //     comme preuve RGPD/L221-28-13. Best-effort, ne bloque pas le handler si
+  //     consent_log absent. Idempotent via clef (email, session_id) cote SQL si
+  //     UNIQUE index. Si Stripe n'a pas requis le ToS (legacy session avant
+  //     L221 update), session.consent peut etre null = on saute.
+  const tosAccepted = (session.consent as { terms_of_service?: string } | null)
+    ?.terms_of_service === "accepted";
+  if (tosAccepted) {
+    try {
+      await supabase.from("consent_log").insert({
+        email,
+        consent_type: "terms_of_service_and_retractation_waiver",
+        action: "accepted",
+        basis: "stripe_checkout_required_consent",
+        proof: {
+          stripe_session_id: session.id,
+          scope: "academy",
+          installments,
+          accepted_at: new Date().toISOString(),
+        },
+      });
+    } catch {
+      // best-effort
+    }
+  }
+
   // 6. Sync vers Supabase Family : pré-créer l'user Family + écrire le gift_code
   //    sur profiles. Permet à l'user de venir s'abonner Family plus tard avec
   //    le code déjà reconnu sur son compte Family.
@@ -636,6 +662,29 @@ async function handleFamilyPurchase(session: Stripe.Checkout.Session) {
   });
   if (contactErr) {
     console.error("[webhook] Family contact upsert RPC error:", contactErr.message);
+  }
+
+  // Log consent_log : preuve RGPD/L221-28-1 (acceptation CGV + renonciation
+  // retractation). Best-effort, ne bloque pas le handler.
+  const tosAcceptedFamily = (session.consent as { terms_of_service?: string } | null)
+    ?.terms_of_service === "accepted";
+  if (tosAcceptedFamily) {
+    try {
+      await supabase.from("consent_log").insert({
+        email,
+        consent_type: "terms_of_service_and_retractation_waiver",
+        action: "accepted",
+        basis: "stripe_checkout_required_consent",
+        proof: {
+          stripe_session_id: session.id,
+          scope: "family",
+          plan,
+          accepted_at: new Date().toISOString(),
+        },
+      });
+    } catch {
+      // best-effort
+    }
   }
 
   // Sync vers Supabase Family : créer le user auth Family + upsert dans la

@@ -6,6 +6,33 @@ interface AcademyCheckoutParams {
   cancelUrl: string;
 }
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://emeline-siron.fr";
+
+/**
+ * Texte affiche au-dessus de la case ToS obligatoire de Stripe Checkout.
+ * Combine 2 acceptations RGPD/L221-28-13° en une seule case :
+ *   1. Acceptation des CGV (Stripe affiche par defaut un lien CGV)
+ *   2. Renonciation expresse au droit de retractation 14j (L221-28 13°)
+ *
+ * Sans cette renonciation, un acheteur Academy a 14j pour demander
+ * remboursement meme apres avoir consomme la formation = perte 998 EUR.
+ * La case est checkbox obligatoire = bloque le paiement si decochee.
+ *
+ * Stripe ne supporte que du markdown basique (**bold**, [link](url)).
+ */
+const ACADEMY_TOS_MESSAGE =
+  "Je reconnais avoir lu et accepte les **conditions generales de vente** " +
+  "([CGV](" + SITE_URL + "/cgv)) et **je renonce expressement a mon droit de " +
+  "retractation de 14 jours** (article L221-28 13 du Code de la consommation) " +
+  "afin de beneficier d'un acces immediat a la formation des reception du paiement. " +
+  "Sans cette renonciation, l'acces est differe a la fin du delai legal.";
+
+const FAMILY_TOS_MESSAGE =
+  "Je reconnais avoir lu et accepte les **conditions generales de vente** " +
+  "([CGV](" + SITE_URL + "/cgv)) et **je renonce expressement a mon droit de " +
+  "retractation de 14 jours** (article L221-28 1 du Code de la consommation) " +
+  "afin d'acceder immediatement a la communaute ES Family des l'activation de l'abonnement.";
+
 interface FamilyCheckoutParams {
   plan: "fondateur" | "standard";
   successUrl: string;
@@ -52,6 +79,14 @@ export async function createAcademyCheckoutSession({
     installments: String(cfg.installments),
   };
 
+  // Case ToS obligatoire combinant acceptation CGV + renonciation retractation
+  // 14j (L221-28 13). Stripe stocke l'acceptation dans session.consent.terms_of_service,
+  // qu'on logge dans consent_log cote webhook pour preuve RGPD.
+  const consentCollection = { terms_of_service: "required" as const };
+  const customText = {
+    terms_of_service_acceptance: { message: ACADEMY_TOS_MESSAGE },
+  };
+
   if (cfg.mode === "payment") {
     return stripe.checkout.sessions.create({
       mode: "payment",
@@ -61,6 +96,8 @@ export async function createAcademyCheckoutSession({
       success_url: successUrl,
       cancel_url: cancelUrl,
       allow_promotion_codes: false,
+      consent_collection: consentCollection,
+      custom_text: customText,
     });
   }
 
@@ -78,6 +115,8 @@ export async function createAcademyCheckoutSession({
     success_url: successUrl,
     cancel_url: cancelUrl,
     allow_promotion_codes: false,
+    consent_collection: consentCollection,
+    custom_text: customText,
   });
 }
 
@@ -136,5 +175,9 @@ export async function createFamilyCheckoutSession({
     cancel_url: cancelUrl,
     // Accepte EVERMIND (alumni) + autres promo codes parrainage
     allow_promotion_codes: true,
+    consent_collection: { terms_of_service: "required" },
+    custom_text: {
+      terms_of_service_acceptance: { message: FAMILY_TOS_MESSAGE },
+    },
   });
 }
