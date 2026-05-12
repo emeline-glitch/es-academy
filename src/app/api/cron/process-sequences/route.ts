@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase/server";
 import { sendEmail } from "@/lib/ses/client";
 import { applyTracking } from "@/lib/email/tracking";
+import { buildUnsubscribeUrl } from "@/lib/utils/unsubscribe-token";
 
 /**
  * Cron /api/cron/process-sequences :
@@ -98,7 +99,16 @@ export async function POST(request: Request) {
           prenom: item.contact_first_name || "",
           nom: item.contact_last_name || "",
           email: item.contact_email,
-          unsubscribe_url: `https://emeline-siron.fr/desabonnement?email=${encodeURIComponent(item.contact_email)}`,
+          // Token HMAC pour 1-click GDPR (cf src/lib/utils/unsubscribe-token.ts).
+          // Si UNSUBSCRIBE_SECRET est absent en env, on degrade : URL email-only,
+          // path manuel obligatoire cote /desabonnement. Le mail part quand meme.
+          unsubscribe_url: (() => {
+            try {
+              return buildUnsubscribeUrl(item.contact_email);
+            } catch {
+              return `${process.env.NEXT_PUBLIC_SITE_URL || "https://emeline-siron.fr"}/desabonnement?email=${encodeURIComponent(item.contact_email)}`;
+            }
+          })(),
         };
 
         // 1. Créer l'email_send record pour le tracking ID

@@ -4,6 +4,7 @@ import { createServiceClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/utils/admin-auth";
 import { sendEmail } from "@/lib/ses/client";
 import { applyTracking } from "@/lib/email/tracking";
+import { buildUnsubscribeUrl } from "@/lib/utils/unsubscribe-token";
 
 // Parallélise l'envoi par paquets pour éviter le timeout Vercel (~10s hobby, 60s pro)
 // sur des campagnes > 50 contacts, tout en respectant les quotas SES (~14/s en sandbox, 50/s en prod).
@@ -99,10 +100,19 @@ export async function POST(request: Request) {
     // 2. Tracking (pixel + link rewrite)
     const trackedHtml = applyTracking(campaign.html_content, sendRecord.id);
 
-    // 3. Personnalisation (merge tags)
+    // 3. Personnalisation (merge tags). unsubscribe_url avec token HMAC pour
+    // 1-click GDPR. Fallback URL email-only si UNSUBSCRIBE_SECRET absent.
+    let unsubscribeUrl: string;
+    try {
+      unsubscribeUrl = buildUnsubscribeUrl(contact.email);
+    } catch {
+      const site = process.env.NEXT_PUBLIC_SITE_URL || "https://emeline-siron.fr";
+      unsubscribeUrl = `${site}/desabonnement?email=${encodeURIComponent(contact.email)}`;
+    }
     const personalizedHtml = trackedHtml
       .replace(/\{\{prenom\}\}/gi, contact.first_name || "")
-      .replace(/\{\{email\}\}/gi, contact.email);
+      .replace(/\{\{email\}\}/gi, contact.email)
+      .replace(/\{\{unsubscribe_url\}\}/gi, unsubscribeUrl);
 
     // 4. Envoi SES
     const result = await sendEmail({

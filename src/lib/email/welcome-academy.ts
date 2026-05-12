@@ -2,6 +2,7 @@ import type { createServiceClient } from "@/lib/supabase/server";
 import { renderEmailTemplate } from "@/lib/email/render-template";
 import { sendEmail } from "@/lib/ses/client";
 import { getPaymentLabel } from "@/lib/config/app-config";
+import { buildUnsubscribeUrl } from "@/lib/utils/unsubscribe-token";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3001";
 
@@ -30,6 +31,15 @@ export async function sendAcademyWelcomeEmail(args: SendAcademyWelcomeArgs): Pro
   // Fallback hardcodé si la table est inaccessible ou la clé manquante.
   const paymentLabel = await getPaymentLabel(args.supabase, args.installments);
 
+  // Token HMAC pour 1-click unsubscribe RGPD. Fallback URL email-only si
+  // UNSUBSCRIBE_SECRET absent (degraded mode).
+  let unsubscribeUrl: string;
+  try {
+    unsubscribeUrl = buildUnsubscribeUrl(args.to);
+  } catch {
+    unsubscribeUrl = `${SITE_URL}/desabonnement?email=${encodeURIComponent(args.to)}`;
+  }
+
   // magic_link est toujours fourni au template :
   //   - new user (action_link signé via type=invite/magiclink) : active la session sans password
   //   - user existant sans link : fallback sur /connexion (où il peut entrer son password ou cliquer "mot de passe oublié")
@@ -41,6 +51,7 @@ export async function sendAcademyWelcomeEmail(args: SendAcademyWelcomeArgs): Pro
     payment_label: paymentLabel,
     site_url: SITE_URL,
     magic_link: args.magicLink || `${SITE_URL}/connexion`,
+    unsubscribe_url: unsubscribeUrl,
   });
 
   if (!rendered) {

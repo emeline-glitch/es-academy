@@ -2,6 +2,7 @@ import type { createServiceClient } from "@/lib/supabase/server";
 import { renderEmailTemplate } from "@/lib/email/render-template";
 import { sendEmail } from "@/lib/ses/client";
 import { generateFamilyMagicLink } from "@/lib/sync/family-sync";
+import { buildUnsubscribeUrl } from "@/lib/utils/unsubscribe-token";
 
 type SupabaseService = Awaited<ReturnType<typeof createServiceClient>>;
 
@@ -43,12 +44,23 @@ export async function sendFamilyWelcomeEmail(
     (await generateFamilyMagicLink(args.to, "https://esfamily.fr/feed")) ||
     "https://esfamily.fr/connexion";
 
+  // Token HMAC pour 1-click unsubscribe RGPD. Si UNSUBSCRIBE_SECRET absent,
+  // fallback sur URL email-only (degraded mode, path manuel cote /desabonnement).
+  let unsubscribeUrl: string;
+  try {
+    unsubscribeUrl = buildUnsubscribeUrl(args.to);
+  } catch {
+    const site = process.env.NEXT_PUBLIC_SITE_URL || "https://emeline-siron.fr";
+    unsubscribeUrl = `${site}/desabonnement?email=${encodeURIComponent(args.to)}`;
+  }
+
   const rendered = await renderEmailTemplate("welcome_purchase_family", {
     prenom: args.firstName,
     email: args.to,
     login_url: magicLink,
     app_store_url: APP_STORE_URL,
     play_store_url: PLAY_STORE_URL,
+    unsubscribe_url: unsubscribeUrl,
   });
 
   if (!rendered) {

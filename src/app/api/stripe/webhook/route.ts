@@ -7,6 +7,7 @@ import { sendFamilyWelcomeEmail } from "@/lib/email/welcome-family";
 import { renderEmailTemplate } from "@/lib/email/render-template";
 import { sendEmail } from "@/lib/ses/client";
 import { trackServerPurchase } from "@/lib/analytics/ga4-server";
+import { buildUnsubscribeUrl } from "@/lib/utils/unsubscribe-token";
 import {
   syncAcademyGiftToFamily,
   syncFamilySubscription,
@@ -209,6 +210,16 @@ async function handleAcademyPaymentFailed(invoice: Stripe.Invoice) {
   });
   const invoiceUrl = invoice.hosted_invoice_url || `${process.env.NEXT_PUBLIC_SITE_URL || "https://emeline-siron.fr"}/dashboard`;
 
+  // Token HMAC pour 1-click unsubscribe RGPD (le mail dunning est transactionnel
+  // donc pas obligatoirement opt-out, mais on ajoute le lien pour homogénéité).
+  let unsubscribeUrl: string;
+  try {
+    unsubscribeUrl = buildUnsubscribeUrl(email);
+  } catch {
+    const site = process.env.NEXT_PUBLIC_SITE_URL || "https://emeline-siron.fr";
+    unsubscribeUrl = `${site}/desabonnement?email=${encodeURIComponent(email)}`;
+  }
+
   const rendered = await renderEmailTemplate("academy_dunning_payment_failed", {
     prenom: firstName,
     email,
@@ -216,6 +227,7 @@ async function handleAcademyPaymentFailed(invoice: Stripe.Invoice) {
     attempt_date: attemptDate,
     invoice_url: invoiceUrl,
     installments: matchedInstallments,
+    unsubscribe_url: unsubscribeUrl,
   });
 
   if (!rendered) {
