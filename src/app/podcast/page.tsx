@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/Button";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { podcastSeriesSchema, breadcrumbSchema } from "@/lib/seo/schemas";
 import { buildMetadata } from "@/lib/seo/metadata";
+import { SITE_URL } from "@/lib/utils/constants";
 
 export const metadata: Metadata = buildMetadata({
   title: "Podcast Out of the Box : par Emeline Siron",
@@ -13,6 +16,13 @@ export const metadata: Metadata = buildMetadata({
 export default function PodcastPage() {
   return (
     <div className="min-h-screen bg-es-cream">
+      <JsonLd data={[
+        podcastSeriesSchema(),
+        breadcrumbSchema([
+          { name: "Accueil", url: SITE_URL },
+          { name: "Podcast", url: `${SITE_URL}/podcast` },
+        ]),
+      ]} />
       <Header />
 
       {/* Hero */}

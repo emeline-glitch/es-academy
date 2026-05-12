@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { breadcrumbSchema } from "@/lib/seo/schemas";
 import { buildMetadata } from "@/lib/seo/metadata";
+import { SITE_URL } from "@/lib/utils/constants";
 
 export const metadata: Metadata = buildMetadata({
   title: "Glossaire immobilier : tous les termes à connaître",
@@ -40,6 +43,10 @@ const letters = Array.from(new Set(glossary.map((g) => g.term[0].toUpperCase()))
 export default function GlossairePage() {
   return (
     <div className="min-h-screen bg-es-cream">
+      <JsonLd data={breadcrumbSchema([
+        { name: "Accueil", url: SITE_URL },
+        { name: "Glossaire", url: `${SITE_URL}/glossaire` },
+      ])} />
       <Header />
 
       <section className="bg-es-green py-16">

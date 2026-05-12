@@ -6,11 +6,12 @@ import { Accordion } from "@/components/ui/Accordion";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { MobileCta } from "@/components/ui/MobileCta";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { faqSchema } from "@/lib/seo/schemas";
+import { faqSchema, breadcrumbSchema } from "@/lib/seo/schemas";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { BottomBanner } from "@/components/marketing/BottomBanner";
 import { TrackedLink } from "@/components/analytics/TrackedLink";
 import { ViewItemTracker } from "@/components/analytics/ViewItemTracker";
+import { SITE_URL } from "@/lib/utils/constants";
 
 export const metadata: Metadata = buildMetadata({
   title: "ES Family : la communauté patrimoniale d'Emeline Siron",
@@ -46,7 +47,13 @@ export default async function FamilyPage(props: {
   return (
     <div className="min-h-screen">
       <Header activePage="family" />
-      <JsonLd data={faqSchema(faqItems)} />
+      <JsonLd data={[
+        faqSchema(faqItems),
+        breadcrumbSchema([
+          { name: "Accueil", url: SITE_URL },
+          { name: "Family", url: `${SITE_URL}/family` },
+        ]),
+      ]} />
       <ViewItemTracker
         itemId="family-fondateur"
         itemName="ES Family Fondateur"

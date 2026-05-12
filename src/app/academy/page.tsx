@@ -10,10 +10,10 @@ import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
 import { MobileCta } from "@/components/ui/MobileCta";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { courseSchema, faqSchema } from "@/lib/seo/schemas";
+import { courseSchema, faqSchema, productSchema, breadcrumbSchema } from "@/lib/seo/schemas";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { ViewItemTracker } from "@/components/analytics/ViewItemTracker";
-import { STATS, PRICING, MODULES_PROGRAMME } from "@/lib/utils/constants";
+import { STATS, PRICING, MODULES_PROGRAMME, SITE_URL } from "@/lib/utils/constants";
 
 export const metadata: Metadata = buildMetadata({
   title: "ES Academy : la méthode Emeline Siron pour investir",
@@ -39,7 +39,15 @@ export default function AcademyPage() {
   return (
     <div className="min-h-screen">
       <Header activePage="academy" />
-      <JsonLd data={[courseSchema(), faqSchema(faqItems)]} />
+      <JsonLd data={[
+        courseSchema(),
+        productSchema(),
+        faqSchema(faqItems),
+        breadcrumbSchema([
+          { name: "Accueil", url: SITE_URL },
+          { name: "Academy", url: `${SITE_URL}/academy` },
+        ]),
+      ]} />
       <ViewItemTracker
         itemId="academy"
         itemName="ES Academy"
