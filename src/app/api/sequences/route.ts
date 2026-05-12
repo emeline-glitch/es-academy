@@ -1,15 +1,15 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/utils/admin-auth";
 
 const VALID_TRIGGERS = ["tag_added", "form_submit", "manual", "product_purchase"] as const;
 type TriggerType = (typeof VALID_TRIGGERS)[number];
 
 // GET : List all sequences with their steps + enrollment counts (1 seul RPC pour les compteurs)
 export async function GET() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
+  const auth = await requireAdmin();
+  if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: auth.status });
+  const supabase = auth.supabase;
 
   // PERF : on NE charge PLUS html_content dans la liste (peut faire 100+ Ko de JSON total avec 64 mails).
   // Le html_content est chargé à la demande quand l'utilisatrice clique sur "Modifier" un step
@@ -51,9 +51,9 @@ export async function GET() {
 
 // POST : Create a new sequence
 export async function POST(request: Request) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
+  const auth = await requireAdmin();
+  if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: auth.status });
+  const supabase = auth.supabase;
 
   const body = await request.json();
   const { name, trigger_type, trigger_value } = body;

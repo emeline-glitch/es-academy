@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/utils/admin-auth";
 
 export async function POST(request: Request) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
+  const auth = await requireAdmin();
+  if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: auth.status });
+  const supabase = auth.supabase;
 
   const body = await request.json();
 

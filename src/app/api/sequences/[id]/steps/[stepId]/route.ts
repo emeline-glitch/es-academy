@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/utils/admin-auth";
 
 // GET : Fetch un step complet (avec html_content) à la demande
 // Permet à la liste /admin/sequences de ne charger que les métas, et fetcher le HTML uniquement
@@ -9,9 +9,9 @@ export async function GET(
   _request: Request,
   { params }: { params: Promise<{ id: string; stepId: string }> }
 ) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
+  const auth = await requireAdmin();
+  if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: auth.status });
+  const supabase = auth.supabase;
 
   const { stepId } = await params;
   const { data, error } = await supabase
@@ -30,9 +30,9 @@ export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string; stepId: string }> }
 ) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
+  const auth = await requireAdmin();
+  if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: auth.status });
+  const supabase = auth.supabase;
 
   const { id, stepId } = await params;
   const body = await request.json();
@@ -63,9 +63,9 @@ export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string; stepId: string }> }
 ) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
+  const auth = await requireAdmin();
+  if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: auth.status });
+  const supabase = auth.supabase;
 
   const { id, stepId } = await params;
 

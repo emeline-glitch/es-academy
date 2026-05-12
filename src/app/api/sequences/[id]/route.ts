@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/utils/admin-auth";
 
 const VALID_STATUSES = ["draft", "active", "paused", "archived"] as const;
 const VALID_TRIGGERS = ["tag_added", "form_submit", "manual", "product_purchase"] as const;
@@ -10,9 +10,9 @@ export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
+  const auth = await requireAdmin();
+  if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: auth.status });
+  const supabase = auth.supabase;
 
   const { id } = await params;
 
@@ -34,9 +34,9 @@ export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
+  const auth = await requireAdmin();
+  if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: auth.status });
+  const supabase = auth.supabase;
 
   const { id } = await params;
   const body = await request.json();
@@ -75,9 +75,9 @@ export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
+  const auth = await requireAdmin();
+  if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: auth.status });
+  const supabase = auth.supabase;
 
   const { id } = await params;
 
