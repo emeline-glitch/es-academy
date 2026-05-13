@@ -449,7 +449,6 @@ export default function AcademyPage() {
                   </div>
                   <figcaption className="mt-4 text-center">
                     <p className="font-serif text-base text-es-text font-semibold">{t.name}</p>
-                    <p className="text-es-text-muted text-xs uppercase tracking-widest mt-1">Élève ES Academy</p>
                   </figcaption>
                 </figure>
               </ScrollReveal>
