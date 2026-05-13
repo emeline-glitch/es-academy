@@ -17,7 +17,7 @@ export function BottomBanner({ accent = "terracotta" }: BottomBannerProps) {
         {/* Réseaux sociaux */}
         <span className={`text-xs ${accentClass} uppercase tracking-widest font-medium`}>Restons connectés</span>
         <h2 className="font-serif text-2xl font-bold text-es-text mt-3 mb-4">
-          Suivez-moi au quotidien
+          Suis-moi au quotidien
         </h2>
         <div className="flex justify-center gap-4 mb-10">
           {[
@@ -41,10 +41,10 @@ export function BottomBanner({ accent = "terracotta" }: BottomBannerProps) {
         {/* Newsletter */}
         <div className="bg-white rounded-2xl p-6 border border-es-cream-dark">
           <h3 className="font-serif text-lg font-bold text-es-text mb-1">
-            Recevez mes conseils immobiliers chaque semaine
+            Reçois mes conseils immobiliers chaque semaine
           </h3>
           <p className="text-xs text-es-text-muted mb-4">
-            Rejoignez 1 900+ investisseurs. Analyses, astuces et opportunités.
+            Rejoins 1 900+ investisseurs. Analyses, astuces et opportunités.
           </p>
           <NewsletterForm />
         </div>

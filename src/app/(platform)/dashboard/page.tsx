@@ -26,7 +26,7 @@ const COURSE_META: Record<
 > = {
   "methode-emeline-siron": {
     title: "La Méthode Emeline SIRON",
-    description: "14 modules, 66 leçons et 60 outils pour batir un patrimoine immobilier qui paie ton train de vie.",
+    description: "14 modules, 66 leçons et 91 outils pour batir un patrimoine immobilier qui paie ton train de vie.",
     modules: 14,
     totalLessons: 66,
     href: "/cours/methode-emeline-siron",

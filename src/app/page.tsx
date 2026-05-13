@@ -12,7 +12,7 @@ import { BottomBanner } from "@/components/marketing/BottomBanner";
 import { SocialStats } from "@/components/marketing/SocialStats";
 import { TestimonialsGrid } from "@/components/marketing/TestimonialsGrid";
 import { buildMetadata } from "@/lib/seo/metadata";
-import { STATS } from "@/lib/utils/constants";
+import { STATS, PRICING, SOCIAL_LINKS } from "@/lib/utils/constants";
 
 export const metadata: Metadata = buildMetadata({
   title: "Emeline Siron : formation investissement immobilier et autofinancement",
@@ -238,8 +238,11 @@ export default function Home() {
                 <span className="bg-es-gold/80 text-white px-2 py-0.5 rounded-sm">ES Academy</span>
               </h3>
               <p className="text-white/60 text-sm font-medium mb-4">Forme-toi &amp; passe à l&apos;action</p>
-              <p className="text-white/80 mb-6 leading-relaxed">
+              <p className="text-white/80 mb-3 leading-relaxed">
                 {STATS.videoHours}h de formation · {STATS.tools} outils · La méthode complète pour investir en immobilier locatif
+              </p>
+              <p className="text-es-gold text-sm font-semibold mb-6">
+                À partir de {PRICING.academy.priceDisplay}€ · Paiement en 1, 3 ou 4 fois
               </p>
               <span className="inline-flex items-center gap-2 bg-es-cream text-es-green px-5 py-2.5 rounded-lg font-medium text-sm group-hover:bg-white transition-colors">
                 Accéder
@@ -295,7 +298,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Témoignages */}
+      {/* Témoignages WhatsApp (visuels) */}
       <section className="py-20 bg-es-cream">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-12">
@@ -321,6 +324,82 @@ export default function Home() {
               },
             ]}
           />
+        </div>
+      </section>
+
+      {/* Avis Trustpilot vérifiés */}
+      <section className="py-20 bg-white">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <span className="text-xs text-es-terracotta uppercase tracking-widest font-medium">Avis vérifiés</span>
+            <h2 className="font-serif text-3xl font-bold text-es-text mt-3 mb-3">Notés 4,9/5 sur Trustpilot</h2>
+            <p className="text-sm text-es-text-muted">
+              {STATS.trustpilotReviews} avis vérifiés · 5 étoiles
+            </p>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              {
+                name: "Aurélie I.",
+                date: "2 mars 2026",
+                title: "Formation idéale pour passer à l'action rapidement et efficacement",
+                text: "Formation idéale, si tu suis tous les conseils, t'es obligé de passer à l'action ! Au bout de 15 jours, je recherchais plus efficacement un bien dans un secteur plus précis. Au bout d'1 mois j'apprenais à gagner du temps et j'arrêtais les visites inutiles. Au bout d'1 mois et demi j'ai choisi ma stratégie. Au bout de 2 mois j'ai trouvé une pépite, fais une proposition d'achat. 2 mois et demi après, la proposition a été acceptée.",
+              },
+              {
+                name: "Jessica O.",
+                date: "1 janvier 2025",
+                title: "Formation vraiment très complète",
+                text: "Formation très complète, rien n'est laissé au hasard. Une mine d'or pour pouvoir se lancer dans l'investissement immobilier. Emeline est inspirante et a énormément d'expérience ce qui est rassurant et donne confiance. Je recommande fortement, vous pouvez y aller les yeux fermés !",
+              },
+              {
+                name: "Lydie G.",
+                date: "24 avril 2026",
+                title: "Cet entretien a été très bénéfique pour moi",
+                text: "Cet entretien a été très bénéfique pour moi. Je remercie à nouveau Émeline pour ces éclaircissements, conseils etc. Cette formation est ce dont j'avais besoin pour me lancer en immo. Les cours sont denses et les formateurs disponibles, aucun regret d'avoir investi dans cette formation, je grandis et j'agis. Merci.",
+              },
+            ].map((t, i) => (
+              <a
+                key={i}
+                href={SOCIAL_LINKS.trustpilot}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-white rounded-xl p-6 border border-es-cream-dark hover:border-es-terracotta/40 hover:shadow-md transition-all flex flex-col"
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex gap-0.5">
+                    {[...Array(5)].map((_, j) => (
+                      <span key={j} className="w-5 h-5 bg-[#00B67A] flex items-center justify-center">
+                        <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                      </span>
+                    ))}
+                  </div>
+                  <span className="text-[10px] text-es-text-muted/60">{t.date}</span>
+                </div>
+                <p className="text-sm font-semibold text-es-text mb-2">{t.title}</p>
+                <p className="text-sm text-es-text-muted leading-relaxed mb-4 line-clamp-6">{t.text}</p>
+                <div className="flex items-center gap-2 mt-auto pt-3 border-t border-es-cream-dark">
+                  <div className="w-7 h-7 rounded-full bg-es-green/10 flex items-center justify-center">
+                    <span className="text-[10px] font-bold text-es-green">{t.name[0]}</span>
+                  </div>
+                  <span className="text-sm font-medium text-es-text flex-1">{t.name}</span>
+                  <span className="text-[10px] text-[#00B67A] font-semibold">Trustpilot ↗</span>
+                </div>
+              </a>
+            ))}
+          </div>
+          <div className="text-center mt-10">
+            <a
+              href={SOCIAL_LINKS.trustpilot}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-sm text-es-text-muted hover:text-es-terracotta transition-colors"
+            >
+              Voir tous les avis sur Trustpilot
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </a>
+          </div>
         </div>
       </section>
 

@@ -33,7 +33,7 @@ export default function MerciOutils() {
               </h2>
               <p className="text-white/70 mb-6 leading-relaxed">
                 Les outils gratuits te donnent un aperçu. La Méthode Emeline Siron te donne
-                <strong className="text-white"> tout</strong> : 14 modules, 30h de vidéo, 60 outils, coaching et communauté.
+                <strong className="text-white"> tout</strong> : 14 modules, 30h de vidéo, 91 outils, coaching et communauté.
               </p>
 
               <div className="bg-white/10 rounded-xl p-5 mb-6">

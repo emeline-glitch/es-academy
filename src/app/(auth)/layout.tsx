@@ -36,7 +36,7 @@ export default function AuthLayout({
           <span>·</span>
           <span>30h de vidéo</span>
           <span>·</span>
-          <span>60 outils</span>
+          <span>91 outils</span>
         </div>
       </div>
 

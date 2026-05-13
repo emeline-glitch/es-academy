@@ -9,12 +9,12 @@ const tools = [
   {
     icon: "📊",
     title: "Simulateur de rentabilité locative",
-    desc: "Calculez en 2 minutes si un bien est rentable. Rendement brut, net, cash-flow mensuel.",
+    desc: "Calcule en 2 minutes si un bien est rentable. Rendement brut, net, cash-flow mensuel.",
   },
   {
     icon: "✅",
     title: "Checklist visite : 47 points de contrôle",
-    desc: "Ne ratez plus rien lors d'une visite. Toiture, électricité, humidité, copropriété...",
+    desc: "Ne rate plus rien lors d'une visite. Toiture, électricité, humidité, copropriété...",
   },
   {
     icon: "📖",
@@ -97,7 +97,7 @@ export default function OutilsGratuits() {
 
               {status === "error" && (
                 <div className="bg-red-50 text-red-800 text-sm rounded-lg p-3 mb-4">
-                  Une erreur est survenue. Réessayez.
+                  Une erreur est survenue. Réessaie.
                 </div>
               )}
 

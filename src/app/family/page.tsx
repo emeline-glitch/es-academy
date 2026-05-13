@@ -467,7 +467,7 @@ export default async function FamilyPage(props: {
                 Tu veux les deux ?
               </h2>
               <p className="text-white/80 text-lg mb-8 leading-relaxed">
-                Avec ES Academy, tu reçois <strong>3 mois d&apos;ES Family offerts</strong>. Tu apprends les fondamentaux sur 30h de formation et 60 outils, puis tu rejoins la communauté pour la suite.
+                Avec ES Academy, tu reçois <strong>3 mois d&apos;ES Family offerts</strong>. Tu apprends les fondamentaux sur 30h de formation et 91 outils, puis tu rejoins la communauté pour la suite.
                 C&apos;est le duo le plus efficace pour passer de 0 à plusieurs biens.
               </p>
               <a

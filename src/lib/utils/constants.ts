@@ -31,7 +31,7 @@ export const PRICING = {
     currency: "EUR",
     features: [
       "Formation vidéo 30h + supports téléchargeables",
-      "60 outils de l'investisseur (calculateurs, modèles, checklists)",
+      "91 outils de l'investisseur (calculateurs, modèles, checklists)",
       "3 mois ES Family offerts",
       "Accès illimité si formation terminée en 3 mois",
       "Module bonus : interviews de professionnels",
@@ -67,7 +67,7 @@ export const STATS = {
   participants: 1900,
   satisfaction: 98,
   videoHours: 30,
-  tools: 60,
+  tools: 91,
   modules: 14,
   trustpilotScore: 4.9,
   trustpilotReviews: 447,
