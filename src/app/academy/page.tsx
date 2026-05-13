@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { BottomBanner } from "@/components/marketing/BottomBanner";
@@ -13,19 +14,13 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { courseSchema, faqSchema, productSchema, breadcrumbSchema } from "@/lib/seo/schemas";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { ViewItemTracker } from "@/components/analytics/ViewItemTracker";
-import { STATS, PRICING, MODULES_PROGRAMME, SITE_URL } from "@/lib/utils/constants";
-
-const ACADEMY_OG_PARAMS = new URLSearchParams({
-  title: "ES Academy : la methode Emeline Siron",
-  subtitle: "30h de cours, 60 outils, 1900 investisseurs formes",
-  variant: "product",
-});
+import { STATS, PRICING, MODULES_PROGRAMME, SITE_URL, SOCIAL_LINKS } from "@/lib/utils/constants";
 
 export const metadata: Metadata = buildMetadata({
   title: "ES Academy : la méthode Emeline Siron pour investir",
-  description: "La formation pour investir en immobilier locatif et viser l'autofinancement. 30h de cours, 60 outils, communauté ES Family incluse 3 mois.",
+  description: "La formation pour investir en immobilier locatif et viser l'autofinancement. 30h de cours, 91 outils, communauté ES Family incluse 3 mois.",
   path: "/academy",
-  image: `${SITE_URL}/api/og?${ACADEMY_OG_PARAMS.toString()}`,
+  image: `${SITE_URL}/og/og-default.jpg`,
 });
 
 const faqItems = [
@@ -36,10 +31,13 @@ const faqItems = [
   { question: "Quelle est la politique de remboursement ?", answer: "Tu disposes de 14 jours pour tester la formation. Si elle ne te convient pas, envoie un email et tu es remboursé(e) intégralement." },
 ];
 
+const BUNNY_LIBRARY_ID = "636029";
+
 const videoTestimonials = [
-  { name: "Stéphanie V.", quote: "De salariée à 12 lots en 18 mois", color: "from-es-green-dark to-es-green" },
-  { name: "Nicolas B.", quote: "Mon premier immeuble grâce à la méthode", color: "from-es-terracotta/80 to-es-terracotta" },
-  { name: "Audrey M.", quote: "J'ai quitté mon CDI grâce aux revenus locatifs", color: "from-es-green to-es-green-light" },
+  { name: "Clément A.", bunnyId: "ab6610e8-c958-4330-971d-9d17da91844d" },
+  { name: "Ketty R.", bunnyId: "1c7af189-a052-4305-9c48-594573701f21" },
+  { name: "Maxime B.", bunnyId: "ff29c8a8-c295-46a7-97b4-8b4607c68be6" },
+  { name: "Pauline C.", bunnyId: "ff674fb4-4aba-43e5-bcf2-81d247b11a65" },
 ];
 
 export default function AcademyPage() {
@@ -101,24 +99,72 @@ export default function AcademyPage() {
         <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-white to-transparent" />
       </section>
 
-      {/* Vidéo d'introduction */}
-      <section className="py-20 bg-white">
-        <div className="max-w-4xl mx-auto px-6">
+      {/* En coulisses (placeholder en attendant la vidéo de présentation) */}
+      <section className="py-24 bg-es-green-dark relative overflow-hidden">
+        {/* Watermark décoratif "Emeline" */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 flex items-center justify-center pointer-events-none select-none"
+        >
+          <span className="font-serif italic text-white/[0.04] text-[20vw] leading-none whitespace-nowrap">
+            Emeline
+          </span>
+        </div>
+
+        <div className="max-w-6xl mx-auto px-6 relative">
           <ScrollReveal>
-            <div className="text-center mb-8">
-              <span className="text-xs text-es-terracotta uppercase tracking-widest font-medium">Présentation</span>
-              <h2 className="font-serif text-3xl font-bold text-es-text mt-3">Découvrez la méthode en 3 minutes</h2>
+            <div className="text-center mb-14">
+              <span className="text-xs text-es-gold uppercase tracking-[0.3em] font-medium">
+                En coulisses
+              </span>
+              <div className="mx-auto mt-3 w-12 h-px bg-es-gold/40" />
+              <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-white mt-6">
+                La méthode,{" "}
+                <span className="italic text-es-gold font-normal">par celle qui la vit.</span>
+              </h2>
             </div>
-            <div className="aspect-video bg-es-green-dark rounded-2xl overflow-hidden flex items-center justify-center relative group cursor-pointer">
-              <div className="absolute inset-0 bg-gradient-to-br from-es-green-dark via-es-green to-es-green-light/30" />
-              <div className="relative text-center text-white">
-                <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center group-hover:bg-white/30 transition-colors">
-                  <svg className="w-8 h-8 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M8 5v14l11-7z"/>
-                  </svg>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 max-w-5xl mx-auto">
+              {[
+                {
+                  src: "/images/site/01-chantier-action/chantier-04-spatule-salle-de-bain.jpeg",
+                  alt: "Emeline en plein chantier, spatule en bouche, escalier en rénovation",
+                  rotate: "-rotate-3",
+                },
+                {
+                  src: "/images/site/01-chantier-action/chantier-08-enceinte-perceuse-cartons.jpeg",
+                  alt: "Emeline perceuse en main devant un mur en travaux",
+                  rotate: "rotate-1",
+                },
+                {
+                  src: "/images/site/01-chantier-action/chantier-07-enceinte-carrelage-signature.jpeg",
+                  alt: "Emeline accroupie sur un chantier extérieur avec ses outils",
+                  rotate: "rotate-3",
+                },
+              ].map((p, i) => (
+                <div
+                  key={i}
+                  className={`relative ${p.rotate} hover:rotate-0 transition-transform duration-500 shadow-2xl rounded-2xl overflow-hidden bg-white/5`}
+                >
+                  <div className="aspect-[3/4] relative">
+                    <Image
+                      src={p.src}
+                      alt={p.alt}
+                      fill
+                      sizes="(max-width: 640px) 90vw, 33vw"
+                      className="object-cover"
+                    />
+                  </div>
                 </div>
-                <p className="text-sm text-white/60">Vidéo de présentation</p>
-              </div>
+              ))}
+            </div>
+
+            <div className="text-center mt-14">
+              <p className="text-white/60 text-sm">La vidéo de présentation arrive bientôt.</p>
+              <p className="text-es-gold text-xs uppercase tracking-widest mt-2">
+                <span className="inline-block w-1.5 h-1.5 rounded-full bg-es-gold mr-2 align-middle" />
+                emeline-siron.fr
+              </p>
             </div>
           </ScrollReveal>
         </div>
@@ -276,7 +322,7 @@ export default function AcademyPage() {
                 <ul className="space-y-5">
                   {[
                     { strong: "30h de formation vidéo structurée", rest: ", du zéro aux stratégies avancées (LMNP, colocation, immeuble de rapport, SCI, fiscalité)" },
-                    { strong: "60+ outils prêts à l'emploi", rest: " : calculateurs, modèles de négociation, checklists visites, trames de baux, grilles d'analyse" },
+                    { strong: "91 outils prêts à l'emploi", rest: " : calculateurs, modèles de négociation, checklists visites, trames de baux, grilles d'analyse" },
                     { strong: "Quiz final de validation", rest: " : mesure tes acquis à la fin du parcours et identifie les points à renforcer" },
                     { strong: "Accès à vie + mises à jour incluses", rest: " : le marché bouge, ta formation aussi" },
                     { strong: "Option Coaching sur mesure", rest: " : un expert dédié t'accompagne à chaque étape, calibré selon ton profil et ton projet (sur devis, activable à tout moment)" },
@@ -384,34 +430,34 @@ export default function AcademyPage() {
           <div className="text-center mb-12">
             <span className="text-xs text-es-terracotta uppercase tracking-widest font-medium">Témoignages vidéo</span>
             <h2 className="font-serif text-3xl font-bold text-es-text mt-3">Ils témoignent en vidéo</h2>
+            <p className="text-es-text-muted mt-3 text-sm">Quatre élèves racontent ce que la méthode a changé pour eux.</p>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {videoTestimonials.map((t, i) => (
-              <ScrollReveal key={i} delay={i * 150}>
-                <div className="group cursor-pointer">
-                  <div className={`aspect-video rounded-2xl overflow-hidden relative bg-gradient-to-br ${t.color} flex items-center justify-center`}>
-                    <div className="absolute inset-0 opacity-[0.05]" style={{
-                      backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
-                      backgroundSize: "24px 24px",
-                    }} />
-                    <div className="relative w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center group-hover:bg-white/30 group-hover:scale-110 transition-all duration-300">
-                      <svg className="w-7 h-7 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M8 5v14l11-7z"/>
-                      </svg>
-                    </div>
+              <ScrollReveal key={t.bunnyId} delay={i * 120}>
+                <figure className="group">
+                  <div className="aspect-[9/16] rounded-2xl overflow-hidden relative bg-es-green-dark shadow-lg ring-1 ring-es-green-dark/10 group-hover:shadow-xl group-hover:ring-es-gold/30 transition-all duration-300">
+                    <iframe
+                      src={`https://iframe.mediadelivery.net/embed/${BUNNY_LIBRARY_ID}/${t.bunnyId}?autoplay=false&preload=false&responsive=true`}
+                      title={`Témoignage vidéo de ${t.name}`}
+                      loading="lazy"
+                      className="absolute inset-0 w-full h-full"
+                      allow="accelerometer; gyroscope; encrypted-media; picture-in-picture"
+                      allowFullScreen
+                    />
                   </div>
-                  <div className="mt-4">
-                    <p className="font-medium text-es-text text-sm">{t.name}</p>
-                    <p className="text-es-text-muted text-sm mt-1">&laquo; {t.quote} &raquo;</p>
-                  </div>
-                </div>
+                  <figcaption className="mt-4 text-center">
+                    <p className="font-serif text-base text-es-text font-semibold">{t.name}</p>
+                    <p className="text-es-text-muted text-xs uppercase tracking-widest mt-1">Élève ES Academy</p>
+                  </figcaption>
+                </figure>
               </ScrollReveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Avis texte */}
+      {/* Avis texte - Trustpilot vérifiés */}
       <section className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-12">
@@ -424,33 +470,84 @@ export default function AcademyPage() {
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              { name: "Sophie L.", text: "Grâce à la méthode, j'ai acheté mon premier appartement en 4 mois.", src: "Trustpilot" },
-              { name: "Thomas R.", text: "Les outils fournis m'ont fait gagner un temps fou. 3 biens en 18 mois.", src: "Google" },
-              { name: "Marie D.", text: "Emeline explique tout simplement. Même sans connaissance, on passe à l'action.", src: "Trustpilot" },
-              { name: "Julien M.", text: "Le module négociation m'a permis d'obtenir -15% sur un immeuble de 5 lots.", src: "Google" },
-              { name: "Camille B.", text: "La partie fiscalité est incroyablement bien expliquée. Optimisation dès la première année.", src: "Trustpilot" },
-              { name: "Alexandre P.", text: "De 0 à 8 lots en 2 ans. La méthode fonctionne si on suit les étapes.", src: "Google" },
+              {
+                name: "Romy",
+                date: "19 avril 2024",
+                title: "Formation au top",
+                text: "Une formation très complète et riche animée par Emeline, une vraie passionnée et surtout une jeune femme très authentique et dynamique. Elle m'a permise d'acquérir des bases solides dans le domaine et surtout me donner l'envie d'y croire. Je recommande à tous les novices de s'inscrire car le soutien et l'accompagnement de l'équipe dans sa globalité sont excellents.",
+              },
+              {
+                name: "S. G.",
+                date: "22 juillet 2024",
+                title: "Excellente formation en investissement immobilier",
+                text: "J'ai récemment suivi la formation en immobilier locatif proposée par Evermind et je suis très satisfaite de cette expérience. J'étais novice dans le sujet et ça m'a beaucoup apporté ! Emeline est une experte passionnée, capable de rendre accessibles des concepts parfois complexes. Le contenu est bien structuré et regorge d'exemples pratiques et d'études de cas concrets. Je recommande vivement cette formation à tous ceux qui souhaitent réussir dans l'investissement locatif !",
+              },
+              {
+                name: "Damien",
+                date: "27 août 2024",
+                title: "Très bonne formation",
+                text: "Très bonne formation de la part d'Evermind tant dans le suivi que dans le contenu. Emeline partage un bon nombre de conseils, d'anecdotes et met à disposition des outils facilitant le passage à l'action (BP, prix moyens des prestations travaux par typologie, dossier de financement…). Je recommande.",
+              },
+              {
+                name: "Deborah B.",
+                date: "3 octobre 2024",
+                title: "Je recommande à 1000%",
+                text: "Je recommande à 1000%, la formation va dans un niveau de détail impressionnant, tout est carré, ça rassure vraiment pour se lancer et permet d'éviter beaucoup d'erreurs. Emeline est d'une énergie débordante, c'est inspirant, ça donne envie de se donner à fond.",
+              },
+              {
+                name: "Laura R.",
+                date: "28 novembre 2025",
+                title: "Un coaching précis et personnalisé",
+                text: "Emeline est toujours à la fois humaine, à l'écoute dans son coaching et précise, professionnelle. Elle ne perd jamais le nord et reste positive même dans les situations compliquées. Cela rend l'accompagnement chaleureux tout en ayant pas l'impression que l'émotion prend le dessus.",
+              },
+              {
+                name: "Myriam",
+                date: "5 mars 2026",
+                title: "Formation de qualité",
+                text: "Je vous recommande cette formation si vous voulez être plus serein lorsque vous achetez un bien. La formation est très complète avec tous les éléments pour être un bon investisseur immobilier. Emeline est très pédagogue et ses explications sont très claires. Je n'ai pas encore fait le coaching individuel mais j'ai hâte de m'y mettre.",
+              },
             ].map((t, i) => (
-              <div key={i} className="bg-white rounded-xl p-6 card-hover">
-                <div className="flex gap-0.5 mb-3">
-                  {[...Array(5)].map((_, j) => (
-                    <svg key={j} className="w-4 h-4 text-es-terracotta" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                    </svg>
-                  ))}
-                </div>
-                <p className="text-sm text-es-text-muted leading-relaxed mb-4">&laquo; {t.text} &raquo;</p>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-full bg-es-green/10 flex items-center justify-center">
-                      <span className="text-[10px] font-bold text-es-green">{t.name[0]}</span>
-                    </div>
-                    <span className="text-sm font-medium text-es-text">{t.name}</span>
+              <a
+                key={i}
+                href={SOCIAL_LINKS.trustpilot}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-white rounded-xl p-6 border border-es-cream-dark hover:border-es-terracotta/40 hover:shadow-md transition-all flex flex-col"
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex gap-0.5">
+                    {[...Array(5)].map((_, j) => (
+                      <span key={j} className="w-5 h-5 bg-[#00B67A] flex items-center justify-center">
+                        <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                      </span>
+                    ))}
                   </div>
-                  <span className="text-[10px] text-es-text-muted/50">{t.src}</span>
+                  <span className="text-[10px] text-es-text-muted/60">{t.date}</span>
                 </div>
-              </div>
+                <p className="text-sm font-semibold text-es-text mb-2">{t.title}</p>
+                <p className="text-sm text-es-text-muted leading-relaxed mb-4 line-clamp-5">{t.text}</p>
+                <div className="flex items-center gap-2 mt-auto pt-3 border-t border-es-cream-dark">
+                  <div className="w-7 h-7 rounded-full bg-es-green/10 flex items-center justify-center">
+                    <span className="text-[10px] font-bold text-es-green">{t.name[0]}</span>
+                  </div>
+                  <span className="text-sm font-medium text-es-text flex-1">{t.name}</span>
+                  <span className="text-[10px] text-[#00B67A] font-semibold">Trustpilot ↗</span>
+                </div>
+              </a>
             ))}
+          </div>
+          <div className="text-center mt-10">
+            <a
+              href={SOCIAL_LINKS.trustpilot}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-sm text-es-text-muted hover:text-es-terracotta transition-colors"
+            >
+              Voir tous les avis sur Trustpilot
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </a>
           </div>
         </div>
       </section>

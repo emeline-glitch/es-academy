@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/utils/admin-auth";
+import { writeAuditLog, extractRequestContext } from "@/lib/utils/audit";
 
 function slugify(s: string): string {
   return s
@@ -77,6 +78,22 @@ export async function POST(request: Request) {
     }
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+
+  await writeAuditLog(supabase, {
+    actor_id: auth.userId,
+    actor_email: auth.user.email || null,
+    action: "form.create",
+    entity_type: "form",
+    entity_id: data.id,
+    after: {
+      name: data.name,
+      slug: data.slug,
+      list_id: data.list_id,
+      status: data.status,
+      request_context: extractRequestContext(request),
+    },
+  });
+
   revalidatePath("/admin/forms");
   return NextResponse.json({ form: data });
 }

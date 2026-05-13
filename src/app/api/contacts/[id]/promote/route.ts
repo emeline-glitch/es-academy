@@ -4,6 +4,7 @@ import { createServiceClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/utils/admin-auth";
 import { renderEmailTemplate } from "@/lib/email/render-template";
 import { sendEmail } from "@/lib/ses/client";
+import { writeAuditLog, extractRequestContext } from "@/lib/utils/audit";
 
 export async function POST(
   request: Request,
@@ -192,23 +193,22 @@ export async function POST(
     .eq("id", id);
 
   // Audit log
-  try {
-    await supabase.from("audit_log").insert({
-      actor_id: auth.userId,
-      action: "contact_promoted",
-      entity_type: "contact",
-      entity_id: id,
-      after: {
-        user_id: authUser.id,
-        enrollment_id: enrollment?.id,
-        product_name,
-        amount_paid: Math.floor(amount_paid * 100),
-        coaching_credits: Math.max(0, Math.floor(coaching_credits)),
-      },
-    });
-  } catch (e) {
-    console.warn("[audit_log] promote:", e);
-  }
+  await writeAuditLog(supabase, {
+    actor_id: auth.userId,
+    actor_email: auth.user.email || null,
+    action: "contact.promote",
+    entity_type: "contact",
+    entity_id: id,
+    after: {
+      user_id: authUser.id,
+      enrollment_id: enrollment?.id,
+      product_name,
+      amount_paid_cents: Math.floor(amount_paid * 100),
+      coaching_credits: Math.max(0, Math.floor(coaching_credits)),
+      created_auth_user: createdAuthUserInThisRequest,
+      request_context: extractRequestContext(request),
+    },
+  });
 
   // 8. Envoi du mail d'invitation avec notre template DB (si demandé)
   let emailSent = false;

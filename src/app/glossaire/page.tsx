@@ -6,17 +6,10 @@ import { breadcrumbSchema } from "@/lib/seo/schemas";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { SITE_URL } from "@/lib/utils/constants";
 
-const GLOSSAIRE_OG_PARAMS = new URLSearchParams({
-  title: "Glossaire de l'immobilier",
-  subtitle: "Tous les termes a connaitre, expliques simplement",
-  category: "Ressource",
-});
-
 export const metadata: Metadata = buildMetadata({
   title: "Glossaire immobilier : tous les termes à connaître",
   description: "Définitions simples de tous les termes de l'investissement immobilier : LMNP, SCI, cash-flow, rendement, DPE, et plus.",
   path: "/glossaire",
-  image: `${SITE_URL}/api/og?${GLOSSAIRE_OG_PARAMS.toString()}`,
 });
 
 const glossary = [

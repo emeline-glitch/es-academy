@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/utils/admin-auth";
+import { writeAuditLog, extractRequestContext } from "@/lib/utils/audit";
 
 const VALID_FORMATS = ["masterclass", "quiz", "simulator", "pdf", "email_series", "game"] as const;
 
@@ -97,6 +98,21 @@ export async function POST(request: Request) {
     }
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+
+  await writeAuditLog(supabase, {
+    actor_id: auth.userId,
+    actor_email: auth.user.email || null,
+    action: "lead_magnet.create",
+    entity_type: "lead_magnet",
+    entity_id: data.id,
+    after: {
+      name: data.name,
+      slug: data.slug,
+      format: data.format,
+      opt_in_tag: data.opt_in_tag,
+      request_context: extractRequestContext(request),
+    },
+  });
 
   revalidatePath("/admin/lead-magnets");
   return NextResponse.json({ lead_magnet: data });

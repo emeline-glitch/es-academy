@@ -7,6 +7,12 @@ interface SendEmailParams {
   html: string;
   from?: string;
   replyTo?: string;
+  /**
+   * Pour emails admin internes (healthcheck, alertes monitoring) : ne pas
+   * marquer le destinataire en 'bounced' si SES rejette pour cause de
+   * suppression list. Evite de laisser un admin invisible dans la base.
+   */
+  skipSuppressionCheck?: boolean;
 }
 
 /**
@@ -69,6 +75,7 @@ export async function sendEmail({
   html,
   from,
   replyTo,
+  skipSuppressionCheck,
 }: SendEmailParams): Promise<{ success: boolean; messageId?: string; error?: string }> {
   const accessKeyId = process.env.AWS_SES_ACCESS_KEY_ID;
   const secretAccessKey = process.env.AWS_SES_SECRET_ACCESS_KEY;
@@ -112,7 +119,7 @@ export async function sendEmail({
       errName === "MessageRejected" &&
       /suppression list|address is suppressed/i.test(errMessage);
 
-    if (isSuppressed && recipients.length === 1) {
+    if (isSuppressed && recipients.length === 1 && !skipSuppressionCheck) {
       await markSesSuppressed(recipients[0], errMessage);
     }
 

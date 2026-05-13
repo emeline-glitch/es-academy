@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/utils/admin-auth";
+import { writeAuditLog, extractRequestContext } from "@/lib/utils/audit";
 
 const VALID_TRIGGERS = ["tag_added", "form_submit", "manual", "product_purchase"] as const;
 type TriggerType = (typeof VALID_TRIGGERS)[number];
@@ -76,6 +77,21 @@ export async function POST(request: Request) {
     .single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  await writeAuditLog(supabase, {
+    actor_id: auth.userId,
+    actor_email: auth.user.email || null,
+    action: "sequence.create",
+    entity_type: "email_sequence",
+    entity_id: data.id,
+    after: {
+      name: data.name,
+      trigger_type: data.trigger_type,
+      trigger_value: data.trigger_value,
+      request_context: extractRequestContext(request),
+    },
+  });
+
   revalidatePath("/admin/sequences");
   return NextResponse.json(data);
 }

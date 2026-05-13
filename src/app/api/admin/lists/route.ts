@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/utils/admin-auth";
+import { writeAuditLog, extractRequestContext } from "@/lib/utils/audit";
 
 /**
  * GET → retourne folders + lists + count par liste (via query sur tags)
@@ -80,8 +81,26 @@ export async function PATCH(request: Request) {
   }
 
   const table = kind === "folder" ? "contact_list_folders" : "contact_lists";
+
+  const { data: before } = await supabase.from(table).select("name").eq("id", id).maybeSingle();
+
   const { data, error } = await supabase.from(table).update(update).eq("id", id).select().maybeSingle();
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  await writeAuditLog(supabase, {
+    actor_id: auth.userId,
+    actor_email: auth.user.email || null,
+    action: kind === "folder" ? "list_folder.update" : "list.update",
+    entity_type: table,
+    entity_id: id,
+    before: before || null,
+    after: {
+      name: (data as { name?: string } | null)?.name,
+      fields_changed: Object.keys(update),
+      request_context: extractRequestContext(request),
+    },
+  });
+
   revalidatePath("/admin/lists");
   revalidatePath("/admin/contacts");
   return NextResponse.json({ [kind]: data });
@@ -110,6 +129,19 @@ export async function POST(request: Request) {
       .select()
       .single();
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+    await writeAuditLog(supabase, {
+      actor_id: auth.userId,
+      actor_email: auth.user.email || null,
+      action: "list_folder.create",
+      entity_type: "contact_list_folders",
+      entity_id: data.id,
+      after: {
+        name: data.name,
+        request_context: extractRequestContext(request),
+      },
+    });
+
     revalidatePath("/admin/lists");
     return NextResponse.json({ folder: data });
   }
@@ -161,6 +193,21 @@ export async function POST(request: Request) {
       }
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
+
+    await writeAuditLog(supabase, {
+      actor_id: auth.userId,
+      actor_email: auth.user.email || null,
+      action: "list.create",
+      entity_type: "contact_lists",
+      entity_id: data.id,
+      after: {
+        name: data.name,
+        tag_key: data.tag_key,
+        folder_id: data.folder_id,
+        request_context: extractRequestContext(request),
+      },
+    });
+
     revalidatePath("/admin/lists");
     revalidatePath("/admin/contacts");
     return NextResponse.json({ list: data });
@@ -202,8 +249,28 @@ export async function DELETE(request: Request) {
   }
 
   const table = kind === "folder" ? "contact_list_folders" : "contact_lists";
+
+  const beforeRes = kind === "folder"
+    ? await supabase.from("contact_list_folders").select("name").eq("id", id).maybeSingle()
+    : await supabase.from("contact_lists").select("name, tag_key, folder_id").eq("id", id).maybeSingle();
+  const before = beforeRes.data;
+
   const { error } = await supabase.from(table).delete().eq("id", id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  await writeAuditLog(supabase, {
+    actor_id: auth.userId,
+    actor_email: auth.user.email || null,
+    action: kind === "folder" ? "list_folder.delete" : "list.delete",
+    entity_type: table,
+    entity_id: id,
+    before: before || null,
+    after: {
+      cleaned_contacts: cleanedContacts,
+      request_context: extractRequestContext(request),
+    },
+  });
+
   revalidatePath("/admin/lists");
   revalidatePath("/admin/contacts");
   return NextResponse.json({ success: true, cleaned_contacts: cleanedContacts });

@@ -25,14 +25,11 @@ const inter = Inter({
   display: "swap",
 });
 
-// Fallback OG si une page n'override pas son image : OG dynamique cree par
-// /api/og avec le titre de marque. Plus robuste qu'un fichier statique qui
-// peut disparaitre / etre 404.
-const DEFAULT_OG_PARAMS = new URLSearchParams({
-  title: "Emeline Siron",
-  subtitle: "Investir en immobilier, sans heritage ni reseau",
-});
-const DEFAULT_OG_URL = `${SITE_URL}/api/og?${DEFAULT_OG_PARAMS.toString()}`;
+// OG par defaut : image statique 1200x630 servie depuis public/og/.
+// Branded photo + tagline "Investis dans la pierre, sans heritage ni reseau".
+// Une page produit (academy) ou un article de blog override avec son propre
+// metadata.openGraph.images pour pousser une image dediee.
+const DEFAULT_OG_URL = `${SITE_URL}/og/og-default.jpg`;
 
 export const metadata: Metadata = {
   title: {

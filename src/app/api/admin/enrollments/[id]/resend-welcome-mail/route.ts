@@ -3,6 +3,7 @@ import { revalidatePath } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/utils/admin-auth";
 import { sendAcademyWelcomeEmail } from "@/lib/email/welcome-academy";
+import { writeAuditLog, extractRequestContext } from "@/lib/utils/audit";
 
 /**
  * POST /api/admin/enrollments/[id]/resend-welcome-mail
@@ -19,7 +20,7 @@ import { sendAcademyWelcomeEmail } from "@/lib/email/welcome-academy";
  * Génère un nouveau magic link à chaque appel (les liens expirent 24h).
  */
 export async function POST(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const auth = await requireAdmin();
@@ -92,12 +93,18 @@ export async function POST(
   });
 
   // Audit log pour traçabilité (l'admin a forcé un renvoi).
-  await supabase.from("audit_log").insert({
+  await writeAuditLog(supabase, {
     actor_id: auth.userId,
-    action: result.success ? "academy_welcome_resent_manually" : "academy_welcome_resend_manually_failed",
+    actor_email: auth.user.email || null,
+    action: "enrollment.welcome_resend",
     entity_type: "enrollment",
     entity_id: enrollmentId,
-    after: { email, ses_error: result.success ? null : result.error || "unknown" },
+    after: {
+      user_id: enroll.user_id,
+      success: result.success,
+      ses_error: result.success ? null : result.error || "unknown",
+      request_context: extractRequestContext(request),
+    },
   });
 
   // Invalidate les pages server-component qui affichent ces compteurs.

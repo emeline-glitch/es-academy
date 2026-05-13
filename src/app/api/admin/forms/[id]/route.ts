@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/utils/admin-auth";
+import { writeAuditLog, extractRequestContext } from "@/lib/utils/audit";
 
 function slugify(s: string): string {
   return s
@@ -60,6 +61,13 @@ export async function PATCH(
   if (body.slug !== undefined) update.slug = slugify(String(body.slug)) || null;
 
   const supabase = await createServiceClient();
+
+  const { data: before } = await supabase
+    .from("forms")
+    .select("name, slug, list_id, status")
+    .eq("id", id)
+    .maybeSingle();
+
   const { data, error } = await supabase
     .from("forms")
     .update(update)
@@ -73,13 +81,31 @@ export async function PATCH(
     }
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+
+  await writeAuditLog(supabase, {
+    actor_id: auth.userId,
+    actor_email: auth.user.email || null,
+    action: "form.update",
+    entity_type: "form",
+    entity_id: id,
+    before: before || null,
+    after: {
+      name: data?.name,
+      slug: data?.slug,
+      list_id: data?.list_id,
+      status: data?.status,
+      fields_changed: Object.keys(update),
+      request_context: extractRequestContext(request),
+    },
+  });
+
   revalidatePath("/admin/forms");
   revalidatePath(`/admin/forms/${id}`);
   return NextResponse.json({ form: data });
 }
 
 export async function DELETE(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const auth = await requireAdmin();
@@ -87,8 +113,28 @@ export async function DELETE(
 
   const { id } = await params;
   const supabase = await createServiceClient();
+
+  const { data: before } = await supabase
+    .from("forms")
+    .select("name, slug, list_id, status")
+    .eq("id", id)
+    .maybeSingle();
+
   const { error } = await supabase.from("forms").delete().eq("id", id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  await writeAuditLog(supabase, {
+    actor_id: auth.userId,
+    actor_email: auth.user.email || null,
+    action: "form.delete",
+    entity_type: "form",
+    entity_id: id,
+    before: before || null,
+    after: {
+      request_context: extractRequestContext(request),
+    },
+  });
+
   revalidatePath("/admin/forms");
   return NextResponse.json({ success: true });
 }

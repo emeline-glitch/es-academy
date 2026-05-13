@@ -13,17 +13,10 @@ import { TrackedLink } from "@/components/analytics/TrackedLink";
 import { ViewItemTracker } from "@/components/analytics/ViewItemTracker";
 import { SITE_URL } from "@/lib/utils/constants";
 
-const FAMILY_OG_PARAMS = new URLSearchParams({
-  title: "ES Family : la communaute patrimoniale",
-  subtitle: "Immobilier, bourse, fiscalite, actifs alternatifs. Tarif fondateur 19EUR/mois.",
-  variant: "product",
-});
-
 export const metadata: Metadata = buildMetadata({
   title: "ES Family : la communauté patrimoniale d'Emeline Siron",
   description: "Immobilier, bourse, fiscalité, actifs alternatifs : la communauté des investisseurs qui construisent leur patrimoine. Tarif fondateur 19€/mois.",
   path: "/family",
-  image: `${SITE_URL}/api/og?${FAMILY_OG_PARAMS.toString()}`,
 });
 
 // Skool abandonne avril 2026 (cf. memory feedback_no_skool).

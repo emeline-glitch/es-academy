@@ -32,22 +32,15 @@ export async function generateMetadata({
   const article = await getArticleBySlug(slug);
   if (!article) return {};
 
-  // Pour OG image, on utilise /api/og (titre overlay + branding ES) plutot que
-  // la featuredImage Notion (URLs S3 temporaires qui expirent en 1h, ce qui
-  // casserait les partages sociaux apres quelques heures).
+  // OG image : visuel chartree unique pour tous les partages (cf. public/og/og-default.jpg).
+  // On ne genere plus d'overlay dynamique avec le titre car le rendu visuel etait juge
+  // trop sec en preview WhatsApp / LinkedIn.
   const ogTitle = article.seoTitle || article.title;
-  const ogParams = new URLSearchParams({
-    title: ogTitle,
-    category: article.category || "",
-    author: article.author || "Emeline Siron",
-  });
-  const ogImage = `${SITE_URL}/api/og?${ogParams.toString()}`;
 
   return buildMetadata({
     title: ogTitle,
     description: article.seoDescription || article.excerpt,
     path: `/blog/${article.slug}`,
-    image: ogImage,
     type: "article",
     publishedTime: article.publishDate,
   });
@@ -162,7 +155,7 @@ export default async function ArticlePage({
         {/* CTA */}
         <div className="mt-12 bg-es-green rounded-2xl p-8 text-center text-white">
           <h3 className="font-serif text-xl font-bold mb-2">Envie d&apos;aller plus loin ?</h3>
-          <p className="text-white/70 text-sm mb-6">Découvrez la méthode complète pour investir en immobilier locatif.</p>
+          <p className="text-white/70 text-sm mb-6">Découvre la méthode complète pour investir en immobilier locatif.</p>
           <Button variant="cta" className="btn-gold-shimmer" href="/academy">
             Découvrir ES Academy →
           </Button>

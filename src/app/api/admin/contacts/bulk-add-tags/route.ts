@@ -3,6 +3,7 @@ import { revalidatePath } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/utils/admin-auth";
 import { autoEnrollByTags } from "@/lib/sequences/auto-enroll";
+import { writeAuditLog, extractRequestContext } from "@/lib/utils/audit";
 
 /**
  * Bulk ajoute un ou plusieurs tags à une sélection de contacts.
@@ -52,6 +53,21 @@ export async function POST(request: Request) {
     const { enrolled } = await autoEnrollByTags(supabase, c.id, tags_to_add);
     totalEnrolled += enrolled;
   }
+
+  await writeAuditLog(supabase, {
+    actor_id: auth.userId,
+    actor_email: auth.user.email || null,
+    action: "contacts.bulk_add_tags",
+    entity_type: "contacts",
+    entity_id: null,
+    after: {
+      contact_count: contacts?.length || 0,
+      tags_added: tags_to_add,
+      errors,
+      auto_enrolled: totalEnrolled,
+      request_context: extractRequestContext(request),
+    },
+  });
 
   revalidatePath("/admin/contacts");
   revalidatePath("/admin/dashboard");
