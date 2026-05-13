@@ -226,7 +226,7 @@ export default async function FamilyPage(props: {
       </section>
 
       {/* Features : Un seul abonnement (layout editorial, inspiration Linear/Vercel/Stripe) */}
-      <section className="bg-es-cream py-24 md:py-32">
+      <section className="bg-white py-24 md:py-32">
         <div className="mx-auto max-w-6xl px-6">
           {/* Header */}
           <div className="text-center mb-20">
