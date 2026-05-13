@@ -309,12 +309,16 @@ export default function PipelinePage() {
         </div>
       </div>
 
-      {/* Tabs pour switcher entre les 3 pipelines */}
+      {/* Tabs pour switcher entre les 3 pipelines.
+          Pipeline vide -> onglet gris claire, indique visuellement qu'il
+          n'y a rien dedans (Antony closer Academy n'a pas a se demander
+          si Family ou Sur-mesure ont du contenu cache). */}
       <div className="flex gap-1 mb-4 border-b border-gray-200 overflow-x-auto">
         {(Object.keys(PIPELINES) as PipelineType[]).map((t) => {
           const cfg = PIPELINES[t];
           const count = countsByPipeline[t];
           const active = pipelineType === t;
+          const isEmpty = count === 0;
           return (
             <button
               key={t}
@@ -322,16 +326,17 @@ export default function PipelinePage() {
               className={`px-4 py-2.5 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
                 active
                   ? "border-es-green text-es-green"
-                  : "border-transparent text-gray-500 hover:text-gray-700"
+                  : isEmpty
+                    ? "border-transparent text-gray-300 hover:text-gray-500"
+                    : "border-transparent text-gray-500 hover:text-gray-700"
               }`}
+              title={isEmpty ? `Aucun contact dans le pipeline ${cfg.label}` : undefined}
             >
               <span className="mr-1.5">{cfg.icon}</span>
               {cfg.label}
-              {count > 0 && (
-                <span className={`ml-2 text-[10px] px-1.5 py-0.5 rounded-full ${active ? "bg-es-green/10 text-es-green" : "bg-gray-100 text-gray-500"}`}>
-                  {count}
-                </span>
-              )}
+              <span className={`ml-2 text-[10px] px-1.5 py-0.5 rounded-full ${active ? "bg-es-green/10 text-es-green" : isEmpty ? "bg-gray-50 text-gray-300" : "bg-gray-100 text-gray-500"}`}>
+                {count}
+              </span>
             </button>
           );
         })}
