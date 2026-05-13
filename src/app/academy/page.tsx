@@ -19,7 +19,7 @@ export const metadata: Metadata = buildMetadata({
   title: "ES Academy : la méthode Emeline Siron pour investir",
   description: "La formation pour investir en immobilier locatif et viser l'autofinancement. 30h de cours, 60 outils, communauté ES Family incluse 3 mois.",
   path: "/academy",
-  image: `${SITE_URL}/og/og-academy.jpg`,
+  image: `${SITE_URL}/og/og-default.jpg`,
 });
 
 const faqItems = [
@@ -101,7 +101,7 @@ export default function AcademyPage() {
           <ScrollReveal>
             <div className="text-center mb-8">
               <span className="text-xs text-es-terracotta uppercase tracking-widest font-medium">Présentation</span>
-              <h2 className="font-serif text-3xl font-bold text-es-text mt-3">Découvrez la méthode en 3 minutes</h2>
+              <h2 className="font-serif text-3xl font-bold text-es-text mt-3">Découvre la méthode en 3 minutes</h2>
             </div>
             <div className="aspect-video bg-es-green-dark rounded-2xl overflow-hidden flex items-center justify-center relative group cursor-pointer">
               <div className="absolute inset-0 bg-gradient-to-br from-es-green-dark via-es-green to-es-green-light/30" />
