@@ -1,6 +1,21 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
+
+// Routes ou la social proof ne doit JAMAIS s'afficher :
+// admin (Antony, Tiffany), espace eleve, parcours formation, checkout, auth.
+const PRIVATE_PREFIXES = [
+  "/admin",
+  "/dashboard",
+  "/cours",
+  "/profil",
+  "/checkout",
+  "/connexion",
+  "/inscription",
+  "/mot-de-passe-oublie",
+  "/reset-password",
+];
 
 type ProofMessage =
   | { type: "person"; name: string; action: string; time: string }
@@ -52,11 +67,15 @@ function pickMessage(): ProofMessage {
 }
 
 export function SocialProof() {
+  const pathname = usePathname();
   const [visible, setVisible] = useState(false);
   const [dismissed, setDismissed] = useState(false);
   const [msg, setMsg] = useState<ProofMessage | null>(null);
 
+  const isPrivateRoute = PRIVATE_PREFIXES.some((p) => pathname?.startsWith(p));
+
   useEffect(() => {
+    if (isPrivateRoute) return;
     setMsg(pickMessage());
     const timer = setTimeout(() => setVisible(true), 8000);
     const hideTimer = setTimeout(() => setVisible(false), 18000);
@@ -64,9 +83,9 @@ export function SocialProof() {
       clearTimeout(timer);
       clearTimeout(hideTimer);
     };
-  }, []);
+  }, [isPrivateRoute]);
 
-  if (!visible || dismissed || !msg) return null;
+  if (isPrivateRoute || !visible || dismissed || !msg) return null;
 
   return (
     <div className="fixed bottom-20 md:bottom-6 left-4 md:left-6 z-40 bg-white rounded-xl shadow-lg border border-es-cream-dark p-4 max-w-xs animate-[fadeInUp_0.4s_ease-out]">

@@ -50,9 +50,9 @@ export default function Inscription() {
             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
           </svg>
         </div>
-        <h2 className="font-serif text-xl font-bold text-gray-900 mb-2">Verifie ta boite mail</h2>
+        <h2 className="font-serif text-xl font-bold text-gray-900 mb-2">Vérifie ta boîte mail</h2>
         <p className="text-gray-500 text-sm">
-          Un email de confirmation a ete envoye a <strong>{email}</strong>.
+          Un email de confirmation a été envoyé à <strong>{email}</strong>.
           Clique sur le lien pour activer ton compte.
         </p>
       </div>
@@ -62,10 +62,10 @@ export default function Inscription() {
   return (
     <>
       <h1 className="font-serif text-2xl font-bold text-gray-900 mb-2">
-        Creer un compte
+        Créer un compte
       </h1>
       <p className="text-gray-500 text-sm mb-6">
-        Rejoins ES Academy et accede a ta formation.
+        Rejoins ES Academy et accède à ta formation.
       </p>
 
       {error && (

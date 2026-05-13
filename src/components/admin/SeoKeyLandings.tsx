@@ -60,7 +60,7 @@ export function SeoKeyLandings({ landings }: { landings: KeyLanding[] }) {
     e.preventDefault();
     if (!form.path.trim() || !form.label.trim()) return;
     if (items.some((i) => i.path === form.path.trim())) {
-      setError("Cette URL est deja dans la liste");
+      setError("Cette URL est déjà dans la liste");
       return;
     }
     save([...items, { ...form, path: form.path.trim(), label: form.label.trim() }]);

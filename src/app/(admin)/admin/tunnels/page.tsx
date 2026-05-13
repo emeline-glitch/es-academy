@@ -5,7 +5,7 @@ import { formatMoney } from "@/lib/utils/format";
 
 interface TunnelStep {
   name: string;
-  url: string;
+  url: string | null;
   type: string;
 }
 interface Tunnel {
@@ -31,7 +31,7 @@ const tunnels: Tunnel[] = [
     productName: "academy",
     steps: [
       { name: "Page de vente", url: "/academy", type: "vente" },
-      { name: "Checkout Stripe", url: "#", type: "paiement" },
+      { name: "Checkout Stripe", url: null, type: "paiement" },
       { name: "Page merci", url: "/merci", type: "confirmation" },
       { name: "Séquence bienvenue", url: "/admin/sequences", type: "email" },
     ],
@@ -41,7 +41,7 @@ const tunnels: Tunnel[] = [
     productName: "family",
     steps: [
       { name: "Page de vente", url: "/family", type: "vente" },
-      { name: "Checkout Stripe", url: "/api/stripe/checkout-family?plan=fondateur", type: "paiement" },
+      { name: "Checkout Stripe", url: null, type: "paiement" },
     ],
   },
 ];
@@ -124,24 +124,40 @@ export default async function AdminTunnels() {
 
               {/* Steps */}
               <div className="flex flex-wrap items-center gap-2">
-                {tunnel.steps.map((step, j) => (
-                  <div key={j} className="flex items-center gap-2">
-                    <a
-                      href={step.url}
-                      target={step.url.startsWith("http") ? "_blank" : undefined}
-                      rel={step.url.startsWith("http") ? "noopener noreferrer" : undefined}
-                      className="flex items-center gap-2 px-4 py-2.5 bg-gray-50 rounded-lg hover:bg-es-green/5 transition-colors group"
-                    >
+                {tunnel.steps.map((step, j) => {
+                  const stepContent = (
+                    <>
                       <span>{stepIcons[step.type] || "📄"}</span>
                       <span className="text-sm text-gray-700 group-hover:text-es-green">{step.name}</span>
-                    </a>
-                    {j < tunnel.steps.length - 1 && (
-                      <svg className="w-4 h-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    )}
-                  </div>
-                ))}
+                    </>
+                  );
+                  return (
+                    <div key={j} className="flex items-center gap-2">
+                      {step.url ? (
+                        <a
+                          href={step.url}
+                          target={step.url.startsWith("http") ? "_blank" : undefined}
+                          rel={step.url.startsWith("http") ? "noopener noreferrer" : undefined}
+                          className="flex items-center gap-2 px-4 py-2.5 bg-gray-50 rounded-lg hover:bg-es-green/5 transition-colors group"
+                        >
+                          {stepContent}
+                        </a>
+                      ) : (
+                        <div
+                          title="Étape automatique gérée par Stripe (pas de page navigable)"
+                          className="flex items-center gap-2 px-4 py-2.5 bg-gray-50 rounded-lg text-gray-400 cursor-default"
+                        >
+                          {stepContent}
+                        </div>
+                      )}
+                      {j < tunnel.steps.length - 1 && (
+                        <svg className="w-4 h-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </Card>
           );

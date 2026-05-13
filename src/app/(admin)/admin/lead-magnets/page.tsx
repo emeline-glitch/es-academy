@@ -140,7 +140,9 @@ export default function LeadMagnetsPage() {
         <div>
           <h1 className="font-serif text-2xl font-bold text-gray-900">Lead Magnets</h1>
           <p className="text-sm text-gray-500 mt-1">
-            Tes 6 portes d&apos;entrée vers ES Academy. Chaque lead magnet a une séquence welcome associée.
+            {leadMagnets.length === 0
+              ? "Tes portes d'entrée vers ES Academy. Chaque lead magnet a une séquence welcome associée."
+              : `${leadMagnets.length} ${leadMagnets.length > 1 ? "portes d'entrée" : "porte d'entrée"} vers ES Academy. Chaque lead magnet a une séquence welcome associée.`}
           </p>
         </div>
         <Button variant="primary" size="sm" onClick={() => setShowCreate(true)}>

@@ -200,7 +200,7 @@ export default function NewEmailCampaign() {
           description={
             recipientsDone
               ? `${state.target_tags.length} liste${state.target_tags.length > 1 ? "s" : ""} sélectionnée${state.target_tags.length > 1 ? "s" : ""}`
-              : "Les personnes qui reçoivent votre campagne"
+              : "Les personnes qui reçoivent ta campagne"
           }
           actionLabel={recipientsDone ? "Modifier les destinataires" : "Ajouter des destinataires"}
           onAction={() => setOpenSection("recipients")}
