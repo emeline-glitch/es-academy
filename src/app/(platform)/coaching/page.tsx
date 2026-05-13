@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/Card";
 import { Breadcrumb } from "@/components/platform/Breadcrumb";
 
 const CALENDLY_INCLUDED_URL = "https://calendly.com/emeline-emeline-siron/coaching-es-academy-package"; // Coaching inclus dans un package
-const CALENDLY_PAID_URL = "https://calendly.com/emeline-emeline-siron/coaching-session-alumni"; // 150€ alumni (membres Academy)
+const CALENDLY_PAID_URL = "https://calendly.com/emeline-emeline-siron/coaching-1to1-emeline"; // 300€ session unitaire avec Emeline
 const CALENDLY_PACKAGE_SALES_URL = "https://calendly.com/antony-emeline-siron/coaching-acceleration"; // Antony : vente packages coaching
 
 export default async function CoachingPage() {
@@ -129,7 +129,7 @@ export default async function CoachingPage() {
           </p>
 
           <div className="bg-es-cream rounded-xl p-4 mb-5 flex items-baseline gap-2">
-            <span className="font-serif text-3xl font-bold text-es-text">150€</span>
+            <span className="font-serif text-3xl font-bold text-es-text">300€</span>
             <span className="text-xs text-es-text-muted">TTC · 1h visio</span>
           </div>
 

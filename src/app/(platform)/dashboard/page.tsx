@@ -203,7 +203,7 @@ function CoachingTeaser({ remaining, total }: { remaining: number; total: number
       ) : (
         <>
           <p className="text-sm text-gray-600 mt-2 flex-1">
-            Pas de coaching inclus dans ton offre. Tu peux prendre un package (plusieurs sessions avec Emeline) ou une session unitaire à 150&nbsp;€.
+            Pas de coaching inclus dans ton offre. Tu peux prendre un package (plusieurs sessions avec Emeline) ou une session unitaire à 300&nbsp;€.
           </p>
           <Link
             href="/coaching"

@@ -77,8 +77,12 @@ function eventNameToSourceTag(eventName: string): string | null {
 function eventNameToContextTag(eventName: string): string | null {
   const n = normalize(eventName);
   if (n.includes("coaching") && n.includes("package")) return "coaching:package";
+  // 1to1 = session unitaire avec Emeline (300€). Slug actuel :
+  // coaching-1to1-emeline. Tag explicite plutot que de tomber dans
+  // "autre", utile pour les sequences post-coaching et le reporting.
+  if (n.includes("coaching") && n.includes("1to1")) return "coaching:1to1";
   if (n.includes("coaching") && n.includes("300")) return "coaching:300";
-  if (n.includes("coaching") && n.includes("150")) return "coaching:150";
+  if (n.includes("coaching") && n.includes("150")) return "coaching:150"; // legacy
   if (n.includes("coaching") && n.includes("eleve")) return "coaching:eleve";
   if (n.includes("coaching") && n.includes("session")) return "coaching:session";
   if (n.includes("coaching")) return "coaching:autre";
