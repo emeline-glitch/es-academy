@@ -41,7 +41,7 @@ export default function SimulateurPage() {
               Simulateur de rentabilité locative
             </h1>
             <p className="text-es-text-muted max-w-xl mx-auto">
-              Calculez en 2 minutes si un bien est rentable. Rendement brut, net, cash-flow mensuel.
+              Calcule en 2 minutes si un bien est rentable. Rendement brut, net, cash-flow mensuel.
             </p>
           </div>
 

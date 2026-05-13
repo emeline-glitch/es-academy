@@ -49,3 +49,6 @@ public/images/site/_originals/
 .claude/skills/
 skills-lock.json
 .gtm-service-account.json
+
+# Sources médias volumineuses (videos shorts uploadées sur Bunny Stream)
+/Avis-academy/

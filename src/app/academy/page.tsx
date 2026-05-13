@@ -14,7 +14,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { courseSchema, faqSchema, productSchema, breadcrumbSchema } from "@/lib/seo/schemas";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { ViewItemTracker } from "@/components/analytics/ViewItemTracker";
-import { STATS, PRICING, MODULES_PROGRAMME, SITE_URL, SOCIAL_LINKS } from "@/lib/utils/constants";
+import { STATS, PRICING, MODULES_PROGRAMME, SITE_URL } from "@/lib/utils/constants";
 import { generateSignedVideoUrl } from "@/lib/bunny/signed-url";
 
 export const revalidate = 3600;
@@ -507,12 +507,9 @@ export default function AcademyPage() {
                 text: "Je vous recommande cette formation si vous voulez être plus serein lorsque vous achetez un bien. La formation est très complète avec tous les éléments pour être un bon investisseur immobilier. Emeline est très pédagogue et ses explications sont très claires. Je n'ai pas encore fait le coaching individuel mais j'ai hâte de m'y mettre.",
               },
             ].map((t, i) => (
-              <a
+              <div
                 key={i}
-                href={SOCIAL_LINKS.trustpilot}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-white rounded-xl p-6 border border-es-cream-dark hover:border-es-terracotta/40 hover:shadow-md transition-all flex flex-col"
+                className="bg-white rounded-xl p-6 border border-es-cream-dark flex flex-col"
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex gap-0.5">
@@ -533,21 +530,10 @@ export default function AcademyPage() {
                     <span className="text-[10px] font-bold text-es-green">{t.name[0]}</span>
                   </div>
                   <span className="text-sm font-medium text-es-text flex-1">{t.name}</span>
-                  <span className="text-[10px] text-[#00B67A] font-semibold">Trustpilot ↗</span>
+                  <span className="text-[10px] text-[#00B67A] font-semibold">Trustpilot</span>
                 </div>
-              </a>
+              </div>
             ))}
-          </div>
-          <div className="text-center mt-10">
-            <a
-              href={SOCIAL_LINKS.trustpilot}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-sm text-es-text-muted hover:text-es-terracotta transition-colors"
-            >
-              Voir tous les avis sur Trustpilot
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-            </a>
           </div>
         </div>
       </section>

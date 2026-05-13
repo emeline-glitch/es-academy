@@ -70,7 +70,7 @@ export function courseSchema() {
     "@id": `${SITE_URL}/academy#course`,
     courseCode: "ES-ACADEMY-V1",
     name: "La Méthode Emeline Siron",
-    description: "Formation complète en investissement immobilier locatif : 14 modules, 30h de vidéo, 60 outils pratiques.",
+    description: "Formation complète en investissement immobilier locatif : 14 modules, 30h de vidéo, 91 outils pratiques.",
     provider: {
       "@type": "Organization",
       "@id": `${SITE_URL}#organization`,
@@ -116,7 +116,7 @@ export function productSchema() {
     "@type": "Product",
     "@id": `${SITE_URL}/academy#product`,
     name: "ES Academy : La Méthode Emeline Siron",
-    description: "Formation en ligne sur l'investissement immobilier locatif : 14 modules, 30h de vidéo, 60 outils, 3 mois ES Family inclus.",
+    description: "Formation en ligne sur l'investissement immobilier locatif : 14 modules, 30h de vidéo, 91 outils, 3 mois ES Family inclus.",
     image: `${SITE_URL}/og/og-default.jpg`,
     brand: {
       "@type": "Brand",
