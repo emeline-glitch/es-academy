@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 
@@ -16,18 +15,22 @@ export default function MotDePasseOublie() {
     setError("");
     setLoading(true);
 
-    const supabase = createClient();
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,
-    });
-
-    if (error) {
-      setError(error.message);
+    // On passe par notre endpoint qui envoie un email SES chartré avec
+    // le template `reset_password` (au lieu du mail Supabase par défaut).
+    // Le serveur génère le lien via admin.generateLink(type='recovery'),
+    // rend le template depuis email_templates et envoie via SES.
+    try {
+      await fetch("/api/auth/send-password-reset", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      setSent(true);
+    } catch {
+      setError("Erreur réseau. Réessaie dans quelques secondes.");
+    } finally {
       setLoading(false);
-      return;
     }
-
-    setSent(true);
   }
 
   if (sent) {
