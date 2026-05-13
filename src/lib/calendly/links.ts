@@ -45,6 +45,11 @@ export const CALENDLY_LINKS: Record<CalendlyOwner, { profile: string; events: Ca
         url: "https://calendly.com/antony-emeline-siron/appel-decouverte-es-academy",
         description: "Appel decouverte Academy (sequences PA)",
       },
+      {
+        source: "Coaching package",
+        url: "https://calendly.com/antony-emeline-siron/coaching-acceleration",
+        description: "Vente packages coaching pour eleves Academy sans credits inclus",
+      },
     ],
   },
   emeline: {

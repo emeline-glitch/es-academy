@@ -203,13 +203,13 @@ function CoachingTeaser({ remaining, total }: { remaining: number; total: number
       ) : (
         <>
           <p className="text-sm text-gray-600 mt-2 flex-1">
-            Pas de coaching inclus dans ton offre actuelle. Tu peux quand meme réserver une session a l&apos;unite (150 EUR / 1h).
+            Pas de coaching inclus dans ton offre. Tu peux prendre un package (plusieurs sessions avec Emeline) ou une session unitaire à 150&nbsp;€.
           </p>
           <Link
             href="/coaching"
-            className="inline-flex items-center justify-center mt-5 bg-white border-2 border-es-green text-es-green font-semibold px-5 py-3 rounded-xl hover:bg-es-green hover:text-white transition-colors"
+            className="inline-flex items-center justify-center mt-5 bg-es-gold-dark text-white font-semibold px-5 py-3 rounded-xl hover:bg-es-gold transition-colors"
           >
-            Voir les options de coaching
+            Découvrir les packages
           </Link>
         </>
       )}

@@ -5,6 +5,7 @@ import { Breadcrumb } from "@/components/platform/Breadcrumb";
 
 const CALENDLY_INCLUDED_URL = "https://calendly.com/emeline-emeline-siron/coaching-es-academy-package"; // Coaching inclus dans un package
 const CALENDLY_PAID_URL = "https://calendly.com/emeline-emeline-siron/coaching-session-alumni"; // 150€ alumni (membres Academy)
+const CALENDLY_PACKAGE_SALES_URL = "https://calendly.com/antony-emeline-siron/coaching-acceleration"; // Antony : vente packages coaching
 
 export default async function CoachingPage() {
   const user = await getCachedUser();
@@ -32,17 +33,23 @@ export default async function CoachingPage() {
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">
-        {/* 1. Coaching inclus dans l'offre */}
-        <Card className={`flex flex-col h-full ${hasIncluded ? "border-2 border-es-green/30 bg-es-green/[0.02]" : "opacity-60"}`}>
+        {/* 1. Coaching :
+             - Si l'élève a des sessions incluses : on lui propose de les réserver
+             - Sinon : on transforme la card en CTA d'achat de package (RDV avec
+               Antony pour qualifier + vendre le package adapté). C'est la vraie
+               "porte d'entrée package" depuis l'app. */}
+        <Card className={`flex flex-col h-full ${hasIncluded ? "border-2 border-es-green/30 bg-es-green/[0.02]" : "border-2 border-es-gold/30 bg-es-gold/[0.04]"}`}>
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 rounded-xl bg-es-green/10 flex items-center justify-center">
-              <span className="text-2xl">🎟</span>
+            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${hasIncluded ? "bg-es-green/10" : "bg-es-gold/15"}`}>
+              <span className="text-2xl">{hasIncluded ? "🎟" : "🚀"}</span>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs text-es-green font-semibold uppercase tracking-widest">
-                {hasIncluded ? "Inclus" : "Inclus : épuisé"}
+              <p className={`text-xs font-semibold uppercase tracking-widest ${hasIncluded ? "text-es-green" : "text-es-gold-dark"}`}>
+                {hasIncluded ? "Inclus" : "Package"}
               </p>
-              <h2 className="font-serif text-lg font-bold text-gray-900">Coaching dans ton offre</h2>
+              <h2 className="font-serif text-lg font-bold text-gray-900">
+                {hasIncluded ? "Coaching dans ton offre" : "Prendre un package de coaching"}
+              </h2>
             </div>
           </div>
 
@@ -79,14 +86,25 @@ export default async function CoachingPage() {
             </>
           ) : (
             <>
-              <p className="text-sm text-gray-600 leading-relaxed mb-2">
-                Tu n&apos;as pas de session de coaching dans ton offre actuelle.
+              <p className="text-sm text-gray-600 leading-relaxed mb-3">
+                Tu veux un accompagnement plus régulier ? Le package de coaching te donne plusieurs sessions avec Emeline pour accélérer ton premier achat (chasse, négo, financement, signature).
               </p>
               <p className="text-sm text-gray-500 leading-relaxed mb-5">
-                Tu peux prendre un package ou réserver une session à l&apos;unité juste à côté →
+                Antony, mon bras droit, t&apos;appelle 20 min pour qualifier ton projet et te proposer le package adapté.
               </p>
-              <div className="mt-auto bg-gray-50 text-gray-500 text-xs italic p-3 rounded-lg text-center">
-                0 session restante
+
+              <div className="mt-auto">
+                <a
+                  href={CALENDLY_PACKAGE_SALES_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center w-full bg-es-gold-dark text-white font-semibold py-3.5 rounded-xl hover:bg-es-gold transition-colors"
+                >
+                  Découvrir les packages →
+                </a>
+                <p className="text-[11px] text-gray-400 mt-3 text-center">
+                  Appel de qualification gratuit · 20 min avec Antony
+                </p>
               </div>
             </>
           )}
