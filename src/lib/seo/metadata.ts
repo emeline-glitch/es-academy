@@ -21,7 +21,7 @@ export function buildMetadata({
   noIndex = false,
 }: MetadataParams): Metadata {
   const url = `${SITE_URL}${path}`;
-  const ogImage = image || `${SITE_URL}/images/og-default.jpg`;
+  const ogImage = image || `${SITE_URL}/og/og-default.jpg`;
 
   return {
     title,

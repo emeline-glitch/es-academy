@@ -117,7 +117,7 @@ export function productSchema() {
     "@id": `${SITE_URL}/academy#product`,
     name: "ES Academy : La Méthode Emeline Siron",
     description: "Formation en ligne sur l'investissement immobilier locatif : 14 modules, 30h de vidéo, 60 outils, 3 mois ES Family inclus.",
-    image: `${SITE_URL}/images/og-default.jpg`,
+    image: `${SITE_URL}/og/og-default.jpg`,
     brand: {
       "@type": "Brand",
       name: "ES Academy",
@@ -171,7 +171,7 @@ export function articleSchema(article: {
     },
     datePublished: article.publishDate,
     dateModified: article.publishDate,
-    image: article.featuredImage || `${SITE_URL}/images/og-default.jpg`,
+    image: article.featuredImage || `${SITE_URL}/og/og-default.jpg`,
     mainEntityOfPage: {
       "@type": "WebPage",
       "@id": `${SITE_URL}/blog/${article.slug}`,
@@ -299,7 +299,7 @@ export function podcastSeriesSchema() {
     description: "Chaque mardi, Emeline Siron interviewe entrepreneurs et investisseurs pour repenser ton rapport a l'argent, l'investissement et l'entrepreneuriat.",
     url: "https://otb-podcast.fr",
     inLanguage: "fr-FR",
-    image: `${SITE_URL}/images/og-default.jpg`,
+    image: `${SITE_URL}/og/og-default.jpg`,
     author: {
       "@type": "Person",
       "@id": `${SITE_URL}#emeline-siron`,

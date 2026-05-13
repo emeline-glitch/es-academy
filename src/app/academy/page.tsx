@@ -15,17 +15,11 @@ import { buildMetadata } from "@/lib/seo/metadata";
 import { ViewItemTracker } from "@/components/analytics/ViewItemTracker";
 import { STATS, PRICING, MODULES_PROGRAMME, SITE_URL } from "@/lib/utils/constants";
 
-const ACADEMY_OG_PARAMS = new URLSearchParams({
-  title: "ES Academy : la methode Emeline Siron",
-  subtitle: "30h de cours, 60 outils, 1900 investisseurs formes",
-  variant: "product",
-});
-
 export const metadata: Metadata = buildMetadata({
   title: "ES Academy : la méthode Emeline Siron pour investir",
   description: "La formation pour investir en immobilier locatif et viser l'autofinancement. 30h de cours, 60 outils, communauté ES Family incluse 3 mois.",
   path: "/academy",
-  image: `${SITE_URL}/api/og?${ACADEMY_OG_PARAMS.toString()}`,
+  image: `${SITE_URL}/og/og-academy.jpg`,
 });
 
 const faqItems = [
