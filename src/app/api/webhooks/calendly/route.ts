@@ -63,6 +63,7 @@ function normalize(s: string): string {
  */
 function eventNameToSourceTag(eventName: string): string | null {
   const n = normalize(eventName);
+  if (n.includes("coaching")) return null;
   if (n.includes("newsletter")) return "source:newsletter";
   if (n.includes("podcast")) return "source:podcast";
   if (n.includes("linkedin")) return "source:linkedin";
