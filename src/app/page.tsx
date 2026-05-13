@@ -12,7 +12,7 @@ import { BottomBanner } from "@/components/marketing/BottomBanner";
 import { SocialStats } from "@/components/marketing/SocialStats";
 import { TestimonialsGrid } from "@/components/marketing/TestimonialsGrid";
 import { buildMetadata } from "@/lib/seo/metadata";
-import { STATS, PRICING, SOCIAL_LINKS } from "@/lib/utils/constants";
+import { STATS, PRICING } from "@/lib/utils/constants";
 
 export const metadata: Metadata = buildMetadata({
   title: "Emeline Siron : formation investissement immobilier et autofinancement",
@@ -358,12 +358,9 @@ export default function Home() {
                 text: "Cet entretien a été très bénéfique pour moi. Je remercie à nouveau Émeline pour ces éclaircissements, conseils etc. Cette formation est ce dont j'avais besoin pour me lancer en immo. Les cours sont denses et les formateurs disponibles, aucun regret d'avoir investi dans cette formation, je grandis et j'agis. Merci.",
               },
             ].map((t, i) => (
-              <a
+              <div
                 key={i}
-                href={SOCIAL_LINKS.trustpilot}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-white rounded-xl p-6 border border-es-cream-dark hover:border-es-terracotta/40 hover:shadow-md transition-all flex flex-col"
+                className="bg-white rounded-xl p-6 border border-es-cream-dark flex flex-col"
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex gap-0.5">
@@ -384,21 +381,10 @@ export default function Home() {
                     <span className="text-[10px] font-bold text-es-green">{t.name[0]}</span>
                   </div>
                   <span className="text-sm font-medium text-es-text flex-1">{t.name}</span>
-                  <span className="text-[10px] text-[#00B67A] font-semibold">Trustpilot ↗</span>
+                  <span className="text-[10px] text-[#00B67A] font-semibold">Trustpilot</span>
                 </div>
-              </a>
+              </div>
             ))}
-          </div>
-          <div className="text-center mt-10">
-            <a
-              href={SOCIAL_LINKS.trustpilot}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-sm text-es-text-muted hover:text-es-terracotta transition-colors"
-            >
-              Voir tous les avis sur Trustpilot
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-            </a>
           </div>
         </div>
       </section>
