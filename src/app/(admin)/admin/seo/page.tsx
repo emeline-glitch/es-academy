@@ -6,7 +6,9 @@ import { SeoRecommendations, type Recommendation } from "@/components/admin/SeoR
 import { SeoKeywords, type TargetKeyword } from "@/components/admin/SeoKeywords";
 import { SeoPageSpeed, type PageSpeedRow } from "@/components/admin/SeoPageSpeed";
 import { SeoKeyLandings } from "@/components/admin/SeoKeyLandings";
+import { CalendlyLinks } from "@/components/admin/CalendlyLinks";
 import { getKeyLandings } from "@/lib/seo/settings";
+import { CALENDLY_LINKS } from "@/lib/calendly/links";
 import { SITE_URL } from "@/lib/utils/constants";
 
 export const dynamic = "force-dynamic";
@@ -286,6 +288,24 @@ export default async function AdminSeoPage({
       <Card padding="md">
         <h2 className="font-serif text-xl font-bold mb-3">Pages strategiques monitorees</h2>
         <SeoKeyLandings landings={landings} />
+      </Card>
+
+      {/* Liens Calendly Antony par source */}
+      <Card padding="md">
+        <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+          <div>
+            <h2 className="font-serif text-xl font-bold">Liens Calendly Antony</h2>
+            <p className="text-sm text-es-text-muted mt-1">
+              Un lien dedie par source de trafic pour tracker l&apos;origine des appels entrants.
+            </p>
+          </div>
+          <Badge variant="info">{CALENDLY_LINKS.antony.events.length} liens actifs</Badge>
+        </div>
+        <CalendlyLinks
+          owner="Antony"
+          profileUrl={CALENDLY_LINKS.antony.profile}
+          events={CALENDLY_LINKS.antony.events}
+        />
       </Card>
 
       {/* Top pages + Top sources */}
