@@ -80,7 +80,7 @@ export default function StudentDetailPage() {
       const res = await fetch(`/api/admin/enrollments/${enrollmentId}/resend-welcome-mail`, { method: "POST" });
       const json = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(json.error || "Erreur");
-      toast.success("Mail Family renvoye");
+      toast.success("Mail Family renvoyé");
       fetchData();
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Erreur");
@@ -226,7 +226,7 @@ export default function StudentDetailPage() {
                         </div>
                       </div>
                       {hasGift && sentAt && (
-                        <p className="text-[11px] text-gray-500">Mail bienvenue + code Family envoye {formatRelative(sentAt)}</p>
+                        <p className="text-[11px] text-gray-500">Mail bienvenue + code Family envoyé {formatRelative(sentAt)}</p>
                       )}
                       {giveUp && (
                         <div className="flex items-center justify-between gap-2 pt-1 border-t border-red-100">

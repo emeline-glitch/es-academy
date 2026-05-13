@@ -38,9 +38,9 @@ export default function MotDePasseOublie() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
           </svg>
         </div>
-        <h2 className="font-serif text-xl font-bold text-gray-900 mb-2">Email envoye</h2>
+        <h2 className="font-serif text-xl font-bold text-gray-900 mb-2">Email envoyé</h2>
         <p className="text-gray-500 text-sm">
-          Si un compte existe avec <strong>{email}</strong>, tu recevras un lien pour reinitialiser ton mot de passe.
+          Si un compte existe avec <strong>{email}</strong>, tu recevras un lien pour réinitialiser ton mot de passe.
         </p>
       </div>
     );
@@ -49,10 +49,10 @@ export default function MotDePasseOublie() {
   return (
     <>
       <h1 className="font-serif text-2xl font-bold text-gray-900 mb-2">
-        Mot de passe oublie
+        Mot de passe oublié
       </h1>
       <p className="text-gray-500 text-sm mb-6">
-        Entre ton email pour recevoir un lien de reinitialisation.
+        Entre ton email pour recevoir un lien de réinitialisation.
       </p>
 
       {error && (
@@ -74,7 +74,7 @@ export default function MotDePasseOublie() {
       </form>
 
       <div className="mt-6 text-center text-sm text-gray-500">
-        <a href="/connexion" className="text-es-green hover:underline">Retour a la connexion</a>
+        <a href="/connexion" className="text-es-green hover:underline">Retour à la connexion</a>
       </div>
     </>
   );

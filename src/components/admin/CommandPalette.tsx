@@ -20,12 +20,23 @@ interface Action {
 }
 
 const QUICK_ACTIONS: Action[] = [
-  { label: "Pipeline", hint: "Voir le pipeline commercial", icon: "🎯", href: "/admin/pipeline" },
-  { label: "Ajouter un contact", hint: "Nouveau contact dans le CRM", icon: "➕", href: "/admin/contacts?add=1" },
-  { label: "Listes", hint: "Gérer les listes et dossiers", icon: "📋", href: "/admin/lists" },
-  { label: "Élèves", hint: "Voir la liste des élèves", icon: "🎓", href: "/admin/eleves" },
-  { label: "Nouvelle campagne email", hint: "Rédiger une campagne", icon: "✉️", href: "/admin/emails/new" },
   { label: "Dashboard", hint: "KPIs et activité", icon: "📊", href: "/admin/dashboard" },
+  { label: "Pipeline", hint: "Voir le pipeline commercial", icon: "🎯", href: "/admin/pipeline" },
+  { label: "Contacts CRM", hint: "Tous les contacts", icon: "👥", href: "/admin/contacts" },
+  { label: "Ajouter un contact", hint: "Nouveau contact dans le CRM", icon: "➕", href: "/admin/contacts?add=1" },
+  { label: "Importer des contacts", hint: "Import CSV avec tagging et RGPD", icon: "📥", href: "/admin/import-contacts" },
+  { label: "Listes", hint: "Gérer les listes et dossiers", icon: "📋", href: "/admin/lists" },
+  { label: "Formulaires", hint: "Pages de capture publiques", icon: "📝", href: "/admin/forms" },
+  { label: "Lead Magnets", hint: "Portes d'entrée vers Academy", icon: "🧲", href: "/admin/lead-magnets" },
+  { label: "Élèves", hint: "Voir la liste des élèves", icon: "🎓", href: "/admin/eleves" },
+  { label: "Campagnes email", hint: "Newsletters et envois manuels", icon: "📧", href: "/admin/emails" },
+  { label: "Nouvelle campagne email", hint: "Rédiger une campagne", icon: "✉️", href: "/admin/emails/new" },
+  { label: "Templates email", hint: "Emails transactionnels automatiques", icon: "📨", href: "/admin/emails/templates" },
+  { label: "Séquences", hint: "Tunnels d'emails automatiques", icon: "⚡", href: "/admin/sequences" },
+  { label: "Tunnels de vente", hint: "Parcours de conversion", icon: "🔄", href: "/admin/tunnels" },
+  { label: "SEO & Analytics", hint: "Trafic, mots-clés, recommandations", icon: "📈", href: "/admin/seo" },
+  { label: "Activité", hint: "Journal qui a fait quoi, quand", icon: "🕓", href: "/admin/activity" },
+  { label: "Paramètres", hint: "Services connectés et config", icon: "⚙️", href: "/admin/settings" },
 ];
 
 export function CommandPalette() {

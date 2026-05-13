@@ -68,7 +68,7 @@ export function SeoRecommendations({ recommendations }: { recommendations: Recom
   const tabs = [
     { key: "open", label: `Ouvertes (${counts.open})` },
     { key: "done", label: `Faites (${counts.done})` },
-    { key: "dismissed", label: `Ignorees (${counts.dismissed})` },
+    { key: "dismissed", label: `Ignorées (${counts.dismissed})` },
     { key: "all", label: `Toutes (${counts.all})` },
   ] as const;
 

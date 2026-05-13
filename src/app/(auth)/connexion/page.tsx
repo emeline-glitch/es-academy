@@ -14,7 +14,7 @@ function ConnexionForm() {
   const [magicLinkLoading, setMagicLinkLoading] = useState(false);
   const [magicLinkSent, setMagicLinkSent] = useState(false);
   const searchParams = useSearchParams();
-  const redirect = searchParams.get("redirect") || "/dashboard";
+  const redirectParam = searchParams.get("redirect");
   const checkoutSuccess = searchParams.get("checkout") === "success";
   const linkExpired = searchParams.get("error") === "auth";
 
@@ -24,7 +24,7 @@ function ConnexionForm() {
     setLoading(true);
 
     const supabase = createClient();
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data: signIn, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
@@ -35,7 +35,17 @@ function ConnexionForm() {
       return;
     }
 
-    window.location.href = redirect;
+    let target = redirectParam || "/dashboard";
+    if (!redirectParam && signIn?.user) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", signIn.user.id)
+        .maybeSingle();
+      if (profile?.role === "admin") target = "/admin/dashboard";
+    }
+
+    window.location.href = target;
   }
 
   async function handleSendMagicLink() {
@@ -53,7 +63,7 @@ function ConnexionForm() {
       });
       setMagicLinkSent(true);
     } catch {
-      setError("Erreur reseau. Reessaie dans quelques secondes.");
+      setError("Erreur réseau. Réessaie dans quelques secondes.");
     } finally {
       setMagicLinkLoading(false);
     }
@@ -65,25 +75,25 @@ function ConnexionForm() {
         Connexion
       </h1>
       <p className="text-gray-500 text-sm mb-6">
-        Accede a ta formation et tes outils.
+        Accède à ta formation et tes outils.
       </p>
 
       {linkExpired && !magicLinkSent && (
         <div className="bg-amber-50 border border-amber-200 text-amber-900 text-sm rounded-lg p-4 mb-6">
-          <p className="font-medium mb-1">Ton lien de connexion a expire.</p>
+          <p className="font-medium mb-1">Ton lien de connexion a expiré.</p>
           <p className="text-xs">Entre ton email ci-dessous et clique &quot;Recevoir un nouveau lien&quot; pour te connecter sans mot de passe.</p>
         </div>
       )}
 
       {checkoutSuccess && (
         <div className="bg-green-50 text-green-800 text-sm rounded-lg p-4 mb-6">
-          Paiement reussi ! Connecte-toi pour acceder a ta formation.
+          Paiement réussi ! Connecte-toi pour accéder à ta formation.
         </div>
       )}
 
       {magicLinkSent && (
         <div className="bg-green-50 text-green-800 text-sm rounded-lg p-4 mb-6">
-          Si un compte existe avec cet email, un lien de connexion vient de partir. Verifie ta boite (et tes indesirables).
+          Si un compte existe avec cet email, un lien de connexion vient de partir. Vérifie ta boîte (et tes indésirables).
         </div>
       )}
 
@@ -131,7 +141,7 @@ function ConnexionForm() {
           {magicLinkLoading
             ? "Envoi en cours..."
             : magicLinkSent
-              ? "Lien envoye"
+              ? "Lien envoyé"
               : "Recevoir un lien de connexion par email"}
         </button>
       </div>
@@ -142,7 +152,7 @@ function ConnexionForm() {
             href="/mot-de-passe-oublie"
             className="text-es-green hover:underline"
           >
-            Mot de passe oublie ?
+            Mot de passe oublié ?
           </a>
         </p>
         <p>

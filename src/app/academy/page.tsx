@@ -15,6 +15,9 @@ import { courseSchema, faqSchema, productSchema, breadcrumbSchema } from "@/lib/
 import { buildMetadata } from "@/lib/seo/metadata";
 import { ViewItemTracker } from "@/components/analytics/ViewItemTracker";
 import { STATS, PRICING, MODULES_PROGRAMME, SITE_URL, SOCIAL_LINKS } from "@/lib/utils/constants";
+import { generateSignedVideoUrl } from "@/lib/bunny/signed-url";
+
+export const revalidate = 3600;
 
 export const metadata: Metadata = buildMetadata({
   title: "ES Academy : la méthode Emeline Siron pour investir",
@@ -30,8 +33,6 @@ const faqItems = [
   { question: "Les sessions collectives sont-elles enregistrées ?", answer: "Oui, toutes les sessions de mentorat collectives sont enregistrées et disponibles en replay dans ton espace." },
   { question: "Quelle est la politique de remboursement ?", answer: "Tu disposes de 14 jours pour tester la formation. Si elle ne te convient pas, envoie un email et tu es remboursé(e) intégralement." },
 ];
-
-const BUNNY_LIBRARY_ID = "636029";
 
 const videoTestimonials = [
   { name: "Clément A.", bunnyId: "ab6610e8-c958-4330-971d-9d17da91844d" },
@@ -438,7 +439,7 @@ export default function AcademyPage() {
                 <figure className="group">
                   <div className="aspect-[9/16] rounded-2xl overflow-hidden relative bg-es-green-dark shadow-lg ring-1 ring-es-green-dark/10 group-hover:shadow-xl group-hover:ring-es-gold/30 transition-all duration-300">
                     <iframe
-                      src={`https://iframe.mediadelivery.net/embed/${BUNNY_LIBRARY_ID}/${t.bunnyId}?autoplay=false&preload=false&responsive=true`}
+                      src={`${generateSignedVideoUrl({ videoId: t.bunnyId, expiresInHours: 24 })}&autoplay=false&preload=false&responsive=true`}
                       title={`Témoignage vidéo de ${t.name}`}
                       loading="lazy"
                       className="absolute inset-0 w-full h-full"

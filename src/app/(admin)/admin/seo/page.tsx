@@ -88,7 +88,7 @@ export default async function AdminSeoPage({
     {
       label: "Pages vues",
       value: stats.total_views.toLocaleString("fr-FR"),
-      sub: `${stats.bot_views} vues bots ignorees`,
+      sub: `${stats.bot_views} vues bots ignorées`,
       delta: viewsDelta,
       icon: "👁️",
       color: "text-blue-700 bg-blue-50",
@@ -131,7 +131,7 @@ export default async function AdminSeoPage({
         <div>
           <h1 className="font-serif text-3xl font-bold text-es-text">SEO &amp; Analytics</h1>
           <p className="text-sm text-es-text-muted mt-1">
-            Trafic, mots-cles et recommandations actionnables. Periode : {periodDays} jours.
+            Trafic, mots-clés et recommandations actionnables. Période : {periodDays} jours.
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -213,15 +213,15 @@ export default async function AdminSeoPage({
             {process.env.GOOGLE_SITE_VERIFICATION ? (
               <>
                 <span className="text-green-600">✓</span>
-                <span>Google Search Console verifie</span>
+                <span>Google Search Console vérifié</span>
               </>
             ) : (
               <>
                 <span className="text-amber-600">⚠</span>
                 <span>
-                  Google Search Console pas verifie. Variable d&apos;env{" "}
+                  Google Search Console pas vérifié. Variable d&apos;env{" "}
                   <code className="text-xs bg-es-cream-dark/50 px-1 rounded">GOOGLE_SITE_VERIFICATION</code>{" "}
-                  a ajouter sur Vercel.{" "}
+                  à ajouter sur Vercel.{" "}
                   <a
                     href="https://search.google.com/search-console"
                     target="_blank"
@@ -239,7 +239,7 @@ export default async function AdminSeoPage({
               <>
                 <span className="text-red-600">✗</span>
                 <span className="text-red-700 font-medium">
-                  Site bloque par mot de passe. Google ne peut pas crawler. Retire SITE_PASSWORD pour public.
+                  Site bloqué par mot de passe. Google ne peut pas crawler. Retire SITE_PASSWORD pour public.
                 </span>
               </>
             ) : (
@@ -251,7 +251,7 @@ export default async function AdminSeoPage({
           </li>
           <li className="flex items-center gap-2">
             <span className="text-green-600">✓</span>
-            <span>Donnees structurees JSON-LD : Organization, Course, Article, FAQ, Breadcrumb</span>
+            <span>Données structurées JSON-LD : Organization, Course, Article, FAQ, Breadcrumb</span>
           </li>
         </ul>
       </Card>
