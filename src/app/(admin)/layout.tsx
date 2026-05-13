@@ -9,6 +9,7 @@ const adminNav = [
   { label: "Dashboard", href: "/admin/dashboard", icon: "📊" },
   { label: "Pipeline", href: "/admin/pipeline", icon: "🎯" },
   { label: "Contacts CRM", href: "/admin/contacts", icon: "👥" },
+  { label: "Importer CSV", href: "/admin/import-contacts", icon: "📥", sub: true },
   { label: "Listes", href: "/admin/lists", icon: "📋" },
   { label: "Formulaires", href: "/admin/forms", icon: "📝" },
   { label: "Lead Magnets", href: "/admin/lead-magnets", icon: "🧲" },

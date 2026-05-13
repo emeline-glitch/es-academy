@@ -238,24 +238,68 @@ function FamilyBanner() {
 
 function ReviewCta() {
   return (
-    <Card>
-      <div className="flex flex-col sm:flex-row items-center gap-4">
+    <div className="relative overflow-hidden rounded-2xl border-2 border-[#00B67A]/20 bg-gradient-to-br from-es-cream via-white to-white p-6 sm:p-8 shadow-sm">
+      {/* Décor : cercle vert Trustpilot en fond */}
+      <div aria-hidden="true" className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-[#00B67A]/[0.06]" />
+      <div aria-hidden="true" className="absolute -bottom-12 -left-12 h-32 w-32 rounded-full bg-[#00B67A]/[0.04]" />
+
+      <div className="relative flex flex-col gap-6 md:flex-row md:items-center">
+        {/* Bloc étoile Trustpilot */}
+        <div className="flex shrink-0 items-center gap-4 md:flex-col md:gap-2">
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#00B67A] shadow-lg shadow-[#00B67A]/20">
+            <svg className="h-9 w-9 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+            </svg>
+          </div>
+          <div className="flex gap-0.5 md:hidden">
+            {[...Array(5)].map((_, i) => (
+              <span key={i} className="flex h-4 w-4 items-center justify-center bg-[#00B67A]">
+                <svg className="h-2.5 w-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Bloc texte */}
         <div className="flex-1">
-          <h3 className="font-serif text-lg font-bold text-gray-900 mb-1">Tu aimes la formation ? Dis-le !</h3>
-          <p className="text-sm text-gray-500">
-            Ton avis aide d&apos;autres investisseurs a nous decouvrir. 2 minutes suffisent et ca compte enormement.
+          <div className="mb-2 flex items-center gap-3">
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-[#00B67A]">Avis Trustpilot</span>
+            <div className="hidden gap-0.5 md:flex">
+              {[...Array(5)].map((_, i) => (
+                <span key={i} className="flex h-4 w-4 items-center justify-center bg-[#00B67A]">
+                  <svg className="h-2.5 w-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                </span>
+              ))}
+            </div>
+          </div>
+          <h3 className="font-serif text-xl font-bold text-gray-900 sm:text-2xl">
+            Tu progresses ? Partage ton expérience.
+          </h3>
+          <p className="mt-1 text-sm text-gray-600 sm:text-base">
+            30 secondes de ton temps. C&apos;est ce qui aide d&apos;autres investisseurs comme toi à oser se lancer.
           </p>
         </div>
-        <div className="flex gap-3 shrink-0">
-          <Button href="https://www.google.com/search?q=emeline+siron+avis" variant="secondary" size="sm" target="_blank" rel="noopener">
-            Avis Google
-          </Button>
-          <Button href="https://fr.trustpilot.com/review/emelinesiron.com" variant="secondary" size="sm" target="_blank" rel="noopener">
-            Trustpilot
-          </Button>
+
+        {/* Bloc CTA (Google sera rajouté quand la fiche Business sera validée) */}
+        <div className="flex shrink-0">
+          <a
+            href="https://fr.trustpilot.com/evaluate/emeline-siron.fr"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#00B67A] px-6 py-3 text-sm font-semibold text-white shadow-md transition-all hover:bg-[#00A06D] hover:shadow-lg"
+          >
+            <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+            </svg>
+            Laisser mon avis
+          </a>
         </div>
       </div>
-    </Card>
+    </div>
   );
 }
 

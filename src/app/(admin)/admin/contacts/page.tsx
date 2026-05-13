@@ -34,22 +34,31 @@ interface ListFolder {
   name: string;
 }
 
-type ContactType = "all" | "client" | "prospect" | "ebook" | "formation_gratuite";
+type ContactType = "all" | "client" | "prospect" | "lead_magnet";
 
 const CONTACT_TYPES: { key: ContactType; label: string; description: string; color: string }[] = [
   { key: "all", label: "Tous", description: "Tous les contacts", color: "bg-gray-100 text-gray-700" },
   { key: "client", label: "Clients", description: "Ont acheté une formation", color: "bg-green-100 text-green-700" },
   { key: "prospect", label: "Prospects", description: "Inscrits newsletter", color: "bg-blue-100 text-blue-700" },
-  { key: "ebook", label: "Lead Ebook", description: "Arrivés via un ebook", color: "bg-purple-100 text-purple-700" },
-  { key: "formation_gratuite", label: "Formation gratuite", description: "Arrivés via formation gratuite", color: "bg-amber-100 text-amber-700" },
+  { key: "lead_magnet", label: "Lead magnets", description: "Arrivés via un lead magnet (ebook, masterclass, quiz, formation gratuite, etc.)", color: "bg-purple-100 text-purple-700" },
 ];
 
 function getTypeFromContact(c: Contact): ContactType {
   const tags = c.tags || [];
   const source = c.source || "";
   if (tags.includes("client") || source === "purchase" || source === "stripe") return "client";
-  if (tags.includes("ebook") || tags.includes("lead_magnet") || source === "ebook" || source === "lead_magnet") return "ebook";
-  if (tags.includes("formation_gratuite") || source === "formation_gratuite" || source === "free_course") return "formation_gratuite";
+  // Tout lead magnet (ebook, masterclass, quiz, simulator, formation gratuite, etc.)
+  // est regroupe sous "lead_magnet" pour matcher la page /admin/lead-magnets.
+  const isLeadMagnet =
+    tags.includes("ebook") ||
+    tags.includes("lead_magnet") ||
+    tags.includes("formation_gratuite") ||
+    source === "ebook" ||
+    source === "lead_magnet" ||
+    source === "formation_gratuite" ||
+    source === "free_course" ||
+    source.startsWith("form:");
+  if (isLeadMagnet) return "lead_magnet";
   return "prospect";
 }
 
@@ -151,7 +160,7 @@ export default function AdminContacts() {
       acc.all++;
       return acc;
     },
-    { all: 0, client: 0, prospect: 0, ebook: 0, formation_gratuite: 0 } as Record<ContactType, number>
+    { all: 0, client: 0, prospect: 0, lead_magnet: 0 } as Record<ContactType, number>
   );
 
   async function handleAddContact() {
@@ -406,33 +415,54 @@ export default function AdminContacts() {
         <div className="mb-6 bg-es-cream/50 border border-es-green/20 rounded-xl p-4">
           <p className="text-xs font-bold text-es-green uppercase tracking-wider mb-2">💡 Par où commencer</p>
           <ol className="grid md:grid-cols-4 gap-3 text-xs text-gray-700">
-            <li className="flex gap-2">
-              <span className="shrink-0 w-5 h-5 rounded-full bg-es-green text-white text-[10px] font-bold flex items-center justify-center">1</span>
-              <div>
-                <p className="font-semibold text-gray-900">Crée une liste</p>
-                <p className="text-gray-500">Ex : « Leads Instagram », « Newsletter ». <Link href="/admin/lists" className="text-es-green hover:underline">→</Link></p>
-              </div>
+            <li>
+              <Link
+                href="/admin/lists"
+                className="flex gap-2 -m-2 p-2 rounded-lg hover:bg-white/60 transition-colors group"
+              >
+                <span className="shrink-0 w-5 h-5 rounded-full bg-es-green text-white text-[10px] font-bold flex items-center justify-center">1</span>
+                <div>
+                  <p className="font-semibold text-gray-900 group-hover:text-es-green">Crée une liste</p>
+                  <p className="text-gray-500">Ex : « Leads Instagram », « Newsletter ».</p>
+                </div>
+              </Link>
             </li>
-            <li className="flex gap-2">
-              <span className="shrink-0 w-5 h-5 rounded-full bg-es-green text-white text-[10px] font-bold flex items-center justify-center">2</span>
-              <div>
-                <p className="font-semibold text-gray-900">Ajoute des contacts</p>
-                <p className="text-gray-500">Un par un ou en CSV. Chaque contact peut être dans plusieurs listes.</p>
-              </div>
+            <li>
+              <button
+                type="button"
+                onClick={() => setShowAddContact(true)}
+                className="w-full text-left flex gap-2 -m-2 p-2 rounded-lg hover:bg-white/60 transition-colors group"
+              >
+                <span className="shrink-0 w-5 h-5 rounded-full bg-es-green text-white text-[10px] font-bold flex items-center justify-center">2</span>
+                <div>
+                  <p className="font-semibold text-gray-900 group-hover:text-es-green">Ajoute des contacts</p>
+                  <p className="text-gray-500">Un par un ou en CSV. Chaque contact peut être dans plusieurs listes.</p>
+                </div>
+              </button>
             </li>
-            <li className="flex gap-2">
-              <span className="shrink-0 w-5 h-5 rounded-full bg-es-green text-white text-[10px] font-bold flex items-center justify-center">3</span>
-              <div>
-                <p className="font-semibold text-gray-900">Crée un formulaire</p>
-                <p className="text-gray-500">Lié à une liste. <Link href="/admin/forms" className="text-es-green hover:underline">→</Link></p>
-              </div>
+            <li>
+              <Link
+                href="/admin/forms"
+                className="flex gap-2 -m-2 p-2 rounded-lg hover:bg-white/60 transition-colors group"
+              >
+                <span className="shrink-0 w-5 h-5 rounded-full bg-es-green text-white text-[10px] font-bold flex items-center justify-center">3</span>
+                <div>
+                  <p className="font-semibold text-gray-900 group-hover:text-es-green">Crée un formulaire</p>
+                  <p className="text-gray-500">Lié à une liste.</p>
+                </div>
+              </Link>
             </li>
-            <li className="flex gap-2">
-              <span className="shrink-0 w-5 h-5 rounded-full bg-es-green text-white text-[10px] font-bold flex items-center justify-center">4</span>
-              <div>
-                <p className="font-semibold text-gray-900">Envoie une newsletter</p>
-                <p className="text-gray-500">Cible une ou plusieurs listes. <Link href="/admin/emails/new" className="text-es-green hover:underline">→</Link></p>
-              </div>
+            <li>
+              <Link
+                href="/admin/emails/new"
+                className="flex gap-2 -m-2 p-2 rounded-lg hover:bg-white/60 transition-colors group"
+              >
+                <span className="shrink-0 w-5 h-5 rounded-full bg-es-green text-white text-[10px] font-bold flex items-center justify-center">4</span>
+                <div>
+                  <p className="font-semibold text-gray-900 group-hover:text-es-green">Envoie une newsletter</p>
+                  <p className="text-gray-500">Cible une ou plusieurs listes.</p>
+                </div>
+              </Link>
             </li>
           </ol>
         </div>

@@ -315,7 +315,7 @@ export default function Home() {
               {
                 src: "/images/site/04-avis-clients/avis-07-nantes-emoji-etoiles.jpg",
                 alt: "Témoignage d'un élève devenu propriétaire d'un immeuble à Nantes",
-                label: "Élève Evermind, immeuble acquis centre de Nantes",
+                label: "Élève de la méthode, immeuble acquis centre de Nantes",
               },
               {
                 src: "/images/site/04-avis-clients/avis-05-mosaique-clients-clefs.jpg",

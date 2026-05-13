@@ -7,6 +7,7 @@ interface NavItem {
   label: string;
   href: string;
   icon: string;
+  sub?: boolean;
 }
 
 export function AdminNav({ items }: { items: NavItem[] }) {
@@ -23,7 +24,7 @@ export function AdminNav({ items }: { items: NavItem[] }) {
             key={item.href}
             href={item.href}
             prefetch
-            className={`flex items-center gap-3 px-6 py-3 text-sm transition-colors relative ${
+            className={`flex items-center gap-3 ${item.sub ? "pl-12 pr-6 py-2 text-xs" : "px-6 py-3 text-sm"} transition-colors relative ${
               active
                 ? "bg-white/15 text-white font-semibold"
                 : "text-white/70 hover:text-white hover:bg-white/10"
