@@ -69,6 +69,7 @@ function eventNameToSourceTag(eventName: string): string | null {
   if (n.includes("instagram")) return "source:instagram";
   if (n.includes("cahier")) return "source:cahier-vacances";
   if (n.includes("site")) return "source:site";
+  if (n.includes("academy")) return "source:academy-post-achat";
   return null;
 }
 
@@ -77,8 +78,10 @@ function eventNameToContextTag(eventName: string): string | null {
   if (n.includes("coaching") && n.includes("package")) return "coaching:package";
   if (n.includes("coaching") && n.includes("300")) return "coaching:300";
   if (n.includes("coaching") && n.includes("150")) return "coaching:150";
+  if (n.includes("coaching") && n.includes("eleve")) return "coaching:eleve";
+  if (n.includes("coaching") && n.includes("session")) return "coaching:session";
   if (n.includes("coaching")) return "coaching:autre";
-  if (n.includes("decouverte") || n.includes("découverte")) return "appel-decouverte";
+  if (n.includes("decouverte")) return "appel-decouverte";
   return null;
 }
 
