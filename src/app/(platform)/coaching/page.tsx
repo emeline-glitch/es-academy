@@ -80,7 +80,7 @@ export default async function CoachingPage() {
                   </div>
                 )}
                 <p className="text-[11px] text-gray-400 mt-3 text-center">
-                  Pas de paiement · Créneau confirmé par email
+                  Pas de paiement · Créneau confirmé par email · Compteur mis à jour après la confirmation Calendly
                 </p>
               </div>
             </>

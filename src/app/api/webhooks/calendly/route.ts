@@ -163,6 +163,13 @@ export async function POST(request: Request) {
         },
       });
     }
+
+    // Ringrement credit coaching si le RDV annule etait un coaching:package
+    // (l'eleve recupere son credit, comportement attendu).
+    const cancelCtx = eventNameToContextTag(eventName);
+    if (cancelCtx === "coaching:package") {
+      await adjustCoachingCredits(supabase, email, -1);
+    }
     return NextResponse.json({ success: true, action: "canceled_logged" });
   }
 
@@ -220,6 +227,13 @@ export async function POST(request: Request) {
     },
   });
 
+  // Decrement credit coaching si le RDV est un coaching:package (l'eleve
+  // consomme une session de son pack). Sans ca, le compteur cote
+  // /coaching et /dashboard reste fige et l'eleve peut reserver indefiniment.
+  if (contextTag === "coaching:package") {
+    await adjustCoachingCredits(supabase, email, 1);
+  }
+
   const newlyAdded = tagsToApply.filter((t) => !previousTags.includes(t));
   if (newlyAdded.length > 0) {
     await autoEnrollByTags(supabase, contactId, newlyAdded);
@@ -231,6 +245,42 @@ export async function POST(request: Request) {
     tags_added: newlyAdded,
     source: sourceTag?.replace("source:", "") || null,
   });
+}
+
+/**
+ * Ajuste coaching_credits_used du profil matche par email.
+ * delta = +1 quand on reserve (decrement disponible), -1 sur cancel (rollback).
+ * Clamp [0, coaching_credits_total] pour eviter -1 ou over-use sur cancel d'un
+ * RDV pris quand l'eleve n'avait pas encore de pack.
+ */
+async function adjustCoachingCredits(
+  supabase: Awaited<ReturnType<typeof createServiceClient>>,
+  email: string,
+  delta: number,
+): Promise<void> {
+  // Lookup user_id depuis auth.users via la RPC (table profiles n'a pas l'email).
+  const { data: userId } = await supabase.rpc("get_user_id_by_email", { _email: email });
+  if (!userId) return;
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("coaching_credits_total, coaching_credits_used")
+    .eq("id", userId)
+    .maybeSingle<{ coaching_credits_total: number | null; coaching_credits_used: number | null }>();
+  if (!profile) return;
+
+  const total = profile.coaching_credits_total ?? 0;
+  const used = profile.coaching_credits_used ?? 0;
+  const next = Math.max(0, Math.min(total, used + delta));
+  if (next === used) return;
+
+  const { error } = await supabase
+    .from("profiles")
+    .update({ coaching_credits_used: next, updated_at: new Date().toISOString() })
+    .eq("id", userId);
+  if (error) {
+    console.warn("[calendly] adjustCoachingCredits failed:", error.message);
+  }
 }
 
 export async function GET() {
