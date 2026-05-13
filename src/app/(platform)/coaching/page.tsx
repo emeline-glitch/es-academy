@@ -90,7 +90,7 @@ export default async function CoachingPage() {
                 Tu veux un accompagnement plus régulier ? Le package de coaching te donne plusieurs sessions avec Emeline pour accélérer ton premier achat (chasse, négo, financement, signature).
               </p>
               <p className="text-sm text-gray-500 leading-relaxed mb-5">
-                Antony, mon bras droit, t&apos;appelle 20 min pour qualifier ton projet et te proposer le package adapté.
+                Antony, de mon équipe, t&apos;appelle 20 min pour qualifier ton projet et te proposer le package adapté.
               </p>
 
               <div className="mt-auto">
