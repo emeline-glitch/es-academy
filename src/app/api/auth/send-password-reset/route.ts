@@ -58,16 +58,17 @@ export async function POST(request: Request) {
   if (!firstName) firstName = "à toi";
 
   // 2) Genere le lien de recovery via admin.generateLink (1h de validite par defaut).
-  //    Important PKCE : on route via /api/auth/callback qui fait
-  //    exchangeCodeForSession et pose les cookies de session. Sans ca, la
-  //    page /reset-password n'a pas de session valide cote client et
-  //    updateUser plante avec "Auth session missing".
+  //    admin.generateLink retourne TOUJOURS un implicit grant link
+  //    (#access_token=... dans le hash, pas ?code=). On ne peut donc PAS
+  //    passer par /api/auth/callback car le hash reste cote browser et
+  //    n'est jamais envoye au serveur. La page /reset-password lit le hash
+  //    elle-meme au mount via setSession.
   //    L'URL doit etre dans la whitelist Supabase Auth > URL Configuration.
   const { data: linkData, error: linkErr } = await admin.auth.admin.generateLink({
     type: "recovery",
     email,
     options: {
-      redirectTo: `${SITE_URL}/api/auth/callback?next=/reset-password`,
+      redirectTo: `${SITE_URL}/reset-password`,
     },
   });
 
