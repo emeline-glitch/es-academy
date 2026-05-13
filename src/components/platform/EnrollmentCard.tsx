@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { ProgressBar } from "@/components/ui/ProgressBar";
@@ -11,6 +12,8 @@ interface EnrollmentCardProps {
   href: string;
   /** Slug pour deep link "Reprendre". Si null, on tombe sur href racine du cours. */
   resumeHref?: string | null;
+  /** Image de couverture optionnelle. Defaut : photo Emeline + clés (la méthode). */
+  coverImage?: string;
 }
 
 export function EnrollmentCard({
@@ -21,18 +24,26 @@ export function EnrollmentCard({
   completed,
   href,
   resumeHref,
+  coverImage = "/images/formation/methode-emeline-cover.webp",
 }: EnrollmentCardProps) {
   const percent = totalLessons > 0 ? Math.min(100, Math.round((completed / totalLessons) * 100)) : 0;
   const isDone = percent >= 100;
   const hasStarted = completed > 0;
-  const cta = isDone ? "Revoir le cours" : hasStarted ? "Reprendre ou je m'etais arrete" : "Commencer la formation";
+  const cta = isDone ? "Revoir le cours" : hasStarted ? "Reprendre où je m'étais arrêté" : "Commencer la formation";
 
   return (
     <Card hover className="flex flex-col h-full">
-      <div className="aspect-video bg-gradient-to-br from-es-green/10 to-es-green/20 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
-        <span className="font-serif text-3xl font-bold text-es-green">ES</span>
+      <div className="aspect-video rounded-lg mb-4 relative overflow-hidden bg-es-green/5">
+        <Image
+          src={coverImage}
+          alt={title}
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+          className="object-cover"
+          priority
+        />
         {isDone && (
-          <span className="absolute top-3 right-3 bg-es-green text-white text-xs font-semibold px-2.5 py-1 rounded-full">
+          <span className="absolute top-3 right-3 bg-es-green text-white text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm">
             Terminé
           </span>
         )}
