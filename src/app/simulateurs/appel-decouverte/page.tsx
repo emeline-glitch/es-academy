@@ -6,7 +6,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import Image from "next/image";
 
-const CALENDLY_BASE_URL = "https://calendly.com/antony-emeline-siron/appel-decouverte-es-academy";
+const CALENDLY_BASE_URL = "https://calendly.com/antony-emeline-siron/on-parle-de-ton-projet-immo-site-internet";
 
 function CalendlyEmbed() {
   const searchParams = useSearchParams();
