@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<title>OG ES Family</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    color: #0A0A0A;
+    background: #B8EBDD;
+  }
+
+  .card {
+    position: relative;
+    width: 1200px;
+    height: 630px;
+    padding: 64px 80px;
+    background:
+      radial-gradient(900px 600px at 95% 110%, #D7F5ED 0%, transparent 60%),
+      radial-gradient(700px 500px at 5% -10%, #E8FAF4 0%, transparent 55%),
+      #B8EBDD;
+    overflow: hidden;
+  }
+
+  .ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 107, 88, 0.18);
+    pointer-events: none;
+  }
+  .ring.r1 { width: 720px; height: 720px; right: -260px; top: -260px; }
+  .ring.r2 { width: 520px; height: 520px; right: -160px; top: -160px; }
+  .ring.r3 { width: 320px; height: 320px; right: -60px; top: -60px; }
+
+  .brand {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    z-index: 2;
+  }
+  .brand-dot {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: #00B894;
+    box-shadow: 0 0 0 7px rgba(0, 184, 148, 0.18);
+  }
+  .brand-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 22px;
+    color: #006B58;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .badge {
+    position: absolute;
+    top: 76px;
+    right: 80px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 22px;
+    border-radius: 999px;
+    background: #FFFFFF;
+    border: 1px solid #E5E5E5;
+    font-size: 16px;
+    font-weight: 600;
+    color: #006B58;
+    z-index: 3;
+  }
+  .badge .pulse {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #00B894;
+    box-shadow: 0 0 0 4px rgba(0, 184, 148, 0.22);
+  }
+
+  .title-block {
+    position: absolute;
+    left: 80px;
+    top: 200px;
+    max-width: 720px;
+    z-index: 2;
+  }
+
+  h1 {
+    font-weight: 700;
+    font-size: 76px;
+    line-height: 1.02;
+    letter-spacing: -2.5px;
+    color: #0A0A0A;
+  }
+  h1 .accent {
+    color: #006B58;
+  }
+
+  .sub {
+    margin-top: 36px;
+    font-size: 22px;
+    font-weight: 500;
+    color: #525252;
+    line-height: 1.45;
+    max-width: 640px;
+  }
+  .sub strong {
+    color: #0A0A0A;
+    font-weight: 700;
+  }
+
+  .bill {
+    position: absolute;
+    right: 40px;
+    bottom: 0;
+    width: 460px;
+    height: auto;
+    z-index: 2;
+    filter: drop-shadow(0 24px 36px rgba(0, 107, 88, 0.22));
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="ring r1"></div>
+    <div class="ring r2"></div>
+    <div class="ring r3"></div>
+
+    <div class="brand">
+      <div class="brand-dot"></div>
+      <div class="brand-name">ES Family</div>
+    </div>
+
+    <div class="badge">
+      <span class="pulse"></span>
+      <span>Communauté en direct</span>
+    </div>
+
+    <div class="title-block">
+      <h1>La communauté <span class="accent">patrimoniale</span><br/>dans ta poche.</h1>
+      <div class="sub">
+        Discussions, ressources, live mensuel. Pour le prix d'un <strong>forfait téléphonique</strong>.
+      </div>
+    </div>
+
+    <img class="bill" src="bill-trimmed.webp" alt="Bill, la mascotte ES Family qui salue" />
+  </div>
+</body>
+</html>
