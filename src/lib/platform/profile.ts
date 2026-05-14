@@ -1,4 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { getStripe } from "@/lib/stripe/client";
+import type Stripe from "stripe";
 
 export interface NotificationPreferences {
   email_weekly_digest: boolean;
@@ -63,7 +65,22 @@ export async function getLearnerProfile(
 /**
  * Résumé de paiement affiche dans /profil. Récupère les enrollments + les
  * family_subscriptions pour l'eleve. On expose une vue plate, triee par date.
+ *
+ * Champs Stripe live (enriched) : currentPeriodEnd, paidCount, installments,
+ * stripeStatus, invoices[]. Best-effort : si Stripe est lent/indispo, ces
+ * champs restent null mais la fiche s'affiche quand meme.
  */
+export interface InvoiceSummary {
+  id: string;
+  number: string | null;
+  status: string | null;
+  paid: boolean;
+  amountCents: number;
+  createdAt: string;
+  invoicePdf: string | null;
+  hostedInvoiceUrl: string | null;
+}
+
 export interface PaymentSummary {
   id: string;
   kind: "academy" | "family";
@@ -73,6 +90,13 @@ export interface PaymentSummary {
   status: string;
   invoiceUrl: string | null;
   stripeCustomerId: string | null;
+  stripeSubscriptionId: string | null;
+  installments: number;
+  stripeStatus: string | null;
+  currentPeriodEnd: string | null;
+  paidCount: number;
+  cancelAtPeriodEnd: boolean;
+  invoices: InvoiceSummary[];
 }
 
 export async function getPaymentSummaries(
@@ -82,12 +106,12 @@ export async function getPaymentSummaries(
   const [enrollRes, famRes] = await Promise.all([
     supabase
       .from("enrollments")
-      .select("id, product_name, purchased_at, amount_paid, status, stripe_customer_id")
+      .select("id, product_name, purchased_at, amount_paid, status, installments, stripe_customer_id, stripe_subscription_id")
       .eq("user_id", userId)
       .order("purchased_at", { ascending: false }),
     supabase
       .from("family_subscriptions")
-      .select("id, status, current_period_end, stripe_customer_id, created_at")
+      .select("id, status, current_period_end, stripe_customer_id, stripe_subscription_id, created_at")
       .eq("user_id", userId)
       .order("created_at", { ascending: false }),
   ]);
@@ -104,6 +128,13 @@ export async function getPaymentSummaries(
       status: (e.status as string) || "active",
       invoiceUrl: null,
       stripeCustomerId: (e.stripe_customer_id as string | null) ?? null,
+      stripeSubscriptionId: (e.stripe_subscription_id as string | null) ?? null,
+      installments: (e.installments as number) || 1,
+      stripeStatus: null,
+      currentPeriodEnd: null,
+      paidCount: 0,
+      cancelAtPeriodEnd: false,
+      invoices: [],
     });
   }
 
@@ -117,8 +148,50 @@ export async function getPaymentSummaries(
       status: (f.status as string) || "active",
       invoiceUrl: null,
       stripeCustomerId: (f.stripe_customer_id as string | null) ?? null,
+      stripeSubscriptionId: (f.stripe_subscription_id as string | null) ?? null,
+      installments: 1,
+      stripeStatus: null,
+      currentPeriodEnd: null,
+      paidCount: 0,
+      cancelAtPeriodEnd: false,
+      invoices: [],
     });
   }
+
+  // Enrichissement Stripe live : pour chaque payment ayant une subscription,
+  // recupere statut + invoices. Best-effort : si timeout/erreur Stripe, on
+  // laisse les champs par defaut et la fiche s'affiche quand meme.
+  await Promise.all(
+    items.map(async (item) => {
+      if (!item.stripeSubscriptionId) return;
+      try {
+        const stripe = getStripe();
+        const [sub, invoices] = await Promise.all([
+          stripe.subscriptions.retrieve(item.stripeSubscriptionId),
+          stripe.invoices.list({ subscription: item.stripeSubscriptionId, limit: 12 }),
+        ]);
+        const periodEnd = (sub.items?.data?.[0] as Stripe.SubscriptionItem | undefined)
+          ?.current_period_end ?? null;
+        const paidInvoices = invoices.data.filter((i) => i.status === "paid" || i.paid);
+        item.stripeStatus = sub.status;
+        item.cancelAtPeriodEnd = Boolean(sub.cancel_at_period_end);
+        item.currentPeriodEnd = periodEnd ? new Date(periodEnd * 1000).toISOString() : null;
+        item.paidCount = paidInvoices.length;
+        item.invoices = invoices.data.map((i) => ({
+          id: i.id ?? "",
+          number: i.number || null,
+          status: i.status || null,
+          paid: Boolean(i.paid),
+          amountCents: i.amount_paid || i.amount_due || 0,
+          createdAt: new Date(i.created * 1000).toISOString(),
+          invoicePdf: i.invoice_pdf || null,
+          hostedInvoiceUrl: i.hosted_invoice_url || null,
+        }));
+      } catch (err) {
+        console.error(`[profile] Stripe enrich failed for ${item.id}:`, err);
+      }
+    })
+  );
 
   return items.sort((a, b) => b.purchasedAt.localeCompare(a.purchasedAt));
 }
