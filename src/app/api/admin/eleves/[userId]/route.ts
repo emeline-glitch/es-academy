@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/utils/admin-auth";
+import { getStripe } from "@/lib/stripe/client";
+import type Stripe from "stripe";
 
 export async function GET(
   _request: Request,
@@ -21,7 +23,7 @@ export async function GET(
       .maybeSingle(),
     supabase
       .from("enrollments")
-      .select("id, product_name, amount_paid, purchased_at, status, course_id, family_gift_code, family_gift_email_sent_at, family_gift_email_attempts, family_gift_email_last_error")
+      .select("id, product_name, amount_paid, purchased_at, status, course_id, installments, stripe_customer_id, stripe_subscription_id, family_gift_code, family_gift_email_sent_at, family_gift_email_attempts, family_gift_email_last_error")
       .eq("user_id", userId)
       .order("purchased_at", { ascending: false }),
     supabase
@@ -60,6 +62,17 @@ export async function GET(
     progressByCourse[cid] = (progressByCourse[cid] || 0) + 1;
   }
 
+  // Enrichissement Stripe live : pour chaque enrollment avec subscription,
+  // recupere statut + prochaine echeance + invoices. Best-effort, ne bloque
+  // pas la fiche si Stripe est lent (timeout 5s par sub).
+  const enrichments = await Promise.all(
+    (enrollRes.data || []).map((e) => fetchStripeEnrichment(e.id, e.stripe_subscription_id))
+  );
+  const stripeByEnrollment: Record<string, StripeEnrichment | null> = {};
+  for (const en of enrichments) {
+    if (en) stripeByEnrollment[en.enrollment_id] = en;
+  }
+
   return NextResponse.json({
     profile: profileRes.data,
     auth: {
@@ -69,10 +82,89 @@ export async function GET(
       email_confirmed_at: authUser?.email_confirmed_at || null,
     },
     enrollments: enrollRes.data || [],
+    stripe_by_enrollment: stripeByEnrollment,
     progress: progressRes.data || [],
     progress_by_course: progressByCourse,
     last_progress_at: lastProgressAt,
     quiz_results: quizRes.data || [],
     notes: notesRes.data || [],
   });
+}
+
+interface StripeInvoiceSummary {
+  id: string;
+  number: string | null;
+  status: string | null;
+  paid: boolean;
+  amount_paid_cents: number;
+  amount_due_cents: number;
+  created_at: string;
+  period_start: string | null;
+  period_end: string | null;
+  invoice_pdf: string | null;
+  hosted_invoice_url: string | null;
+}
+
+interface StripeEnrichment {
+  enrollment_id: string;
+  status: string;
+  cancel_at_period_end: boolean;
+  current_period_end: string | null;
+  paid_count: number;
+  invoices: StripeInvoiceSummary[];
+  error?: string;
+}
+
+async function fetchStripeEnrichment(
+  enrollmentId: string,
+  subscriptionId: string | null
+): Promise<StripeEnrichment | null> {
+  if (!subscriptionId) return null;
+  try {
+    const stripe = getStripe();
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000);
+    try {
+      const [sub, invoices] = await Promise.all([
+        stripe.subscriptions.retrieve(subscriptionId),
+        stripe.invoices.list({ subscription: subscriptionId, limit: 12 }),
+      ]);
+      const periodEnd = (sub.items?.data?.[0] as Stripe.SubscriptionItem | undefined)
+        ?.current_period_end ?? null;
+      const paidInvoices = invoices.data.filter((i) => i.status === "paid" || i.paid);
+      return {
+        enrollment_id: enrollmentId,
+        status: sub.status,
+        cancel_at_period_end: Boolean(sub.cancel_at_period_end),
+        current_period_end: periodEnd ? new Date(periodEnd * 1000).toISOString() : null,
+        paid_count: paidInvoices.length,
+        invoices: invoices.data.map((i) => ({
+          id: i.id ?? "",
+          number: i.number || null,
+          status: i.status || null,
+          paid: Boolean(i.paid),
+          amount_paid_cents: i.amount_paid || 0,
+          amount_due_cents: i.amount_due || 0,
+          created_at: new Date(i.created * 1000).toISOString(),
+          period_start: i.period_start ? new Date(i.period_start * 1000).toISOString() : null,
+          period_end: i.period_end ? new Date(i.period_end * 1000).toISOString() : null,
+          invoice_pdf: i.invoice_pdf || null,
+          hosted_invoice_url: i.hosted_invoice_url || null,
+        })),
+      };
+    } finally {
+      clearTimeout(timeout);
+    }
+  } catch (err) {
+    console.error(`[admin/eleves] Stripe enrich failed for enrollment ${enrollmentId}:`, err);
+    return {
+      enrollment_id: enrollmentId,
+      status: "unknown",
+      cancel_at_period_end: false,
+      current_period_end: null,
+      paid_count: 0,
+      invoices: [],
+      error: "stripe_unavailable",
+    };
+  }
 }

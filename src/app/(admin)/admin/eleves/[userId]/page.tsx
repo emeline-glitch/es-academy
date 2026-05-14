@@ -10,6 +10,30 @@ import { ProgressBar } from "@/components/ui/ProgressBar";
 import { useToast } from "@/components/ui/Toast";
 import { formatRelative, formatDateTime, formatMoney } from "@/lib/utils/format";
 
+interface StripeInvoice {
+  id: string;
+  number: string | null;
+  status: string | null;
+  paid: boolean;
+  amount_paid_cents: number;
+  amount_due_cents: number;
+  created_at: string;
+  period_start: string | null;
+  period_end: string | null;
+  invoice_pdf: string | null;
+  hosted_invoice_url: string | null;
+}
+
+interface StripeEnrichment {
+  enrollment_id: string;
+  status: string;
+  cancel_at_period_end: boolean;
+  current_period_end: string | null;
+  paid_count: number;
+  invoices: StripeInvoice[];
+  error?: string;
+}
+
 interface StudentData {
   profile: {
     id: string;
@@ -33,16 +57,46 @@ interface StudentData {
     amount_paid: number;
     purchased_at: string;
     status: string;
+    installments: number | null;
+    stripe_customer_id: string | null;
+    stripe_subscription_id: string | null;
     family_gift_code: string | null;
     family_gift_email_sent_at: string | null;
     family_gift_email_attempts: number | null;
     family_gift_email_last_error: string | null;
   }>;
+  stripe_by_enrollment: Record<string, StripeEnrichment | null>;
   progress: Array<{ id: string; lesson_id: string; course_id: string; completed_at: string }>;
   progress_by_course: Record<string, number>;
   last_progress_at: string | null;
   quiz_results: Array<{ quiz_id: string; lesson_id: string | null; score: number; passed: boolean; completed_at: string }>;
   notes: Array<{ id: string; content: string; created_at: string; author_id: string }>;
+}
+
+function formatDate(iso: string | null): string {
+  if (!iso) return "-";
+  const d = new Date(iso);
+  return d.toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" });
+}
+
+function stripeStatusLabel(s: string): { label: string; variant: "success" | "warning" | "error" | "default" } {
+  switch (s) {
+    case "active":
+      return { label: "Actif", variant: "success" };
+    case "trialing":
+      return { label: "Periode d'essai", variant: "warning" };
+    case "past_due":
+      return { label: "Echec mensualite", variant: "error" };
+    case "unpaid":
+      return { label: "Impaye", variant: "error" };
+    case "canceled":
+      return { label: "Resilie", variant: "default" };
+    case "incomplete":
+    case "incomplete_expired":
+      return { label: "Inacheve", variant: "warning" };
+    default:
+      return { label: s, variant: "default" };
+  }
 }
 
 const TOTAL_LESSONS = 64;
@@ -213,8 +267,12 @@ export default function StudentDetailPage() {
                   const hasGift = !!e.family_gift_code;
                   const giveUp = hasGift && !sentAt && attempts >= 3;
                   const pending = hasGift && !sentAt && attempts > 0 && attempts < 3;
+                  const stripe = data.stripe_by_enrollment?.[e.id] || null;
+                  const installments = e.installments || 1;
+                  const isAcademyMulti = installments > 1;
+                  const isFamilyOrRecurring = installments === 1 && !!e.stripe_subscription_id && stripe?.status !== "canceled";
                   return (
-                    <div key={e.id} className="bg-gray-50 rounded-lg p-3 space-y-2">
+                    <div key={e.id} className="bg-gray-50 rounded-lg p-3 space-y-3">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <Badge variant="success">{e.product_name}</Badge>
@@ -225,6 +283,98 @@ export default function StudentDetailPage() {
                           <p className="text-[10px] text-gray-400">{formatRelative(e.purchased_at)}</p>
                         </div>
                       </div>
+
+                      {/* Bloc Stripe live : statut + plan paiement + prochaine echeance */}
+                      {stripe && !stripe.error && (
+                        <div className="bg-white border border-gray-200 rounded-md p-3 space-y-2">
+                          <div className="flex items-center justify-between flex-wrap gap-2">
+                            <div className="flex items-center gap-2">
+                              <span className="text-[10px] uppercase tracking-wider text-gray-500">Stripe</span>
+                              <Badge variant={stripeStatusLabel(stripe.status).variant}>
+                                {stripeStatusLabel(stripe.status).label}
+                              </Badge>
+                              {stripe.cancel_at_period_end && (
+                                <Badge variant="warning">Resiliation programmee</Badge>
+                              )}
+                            </div>
+                            {isAcademyMulti && (
+                              <span className="text-xs font-semibold text-gray-700">
+                                {stripe.paid_count} / {installments} mensualites payees
+                              </span>
+                            )}
+                            {!isAcademyMulti && isFamilyOrRecurring && (
+                              <span className="text-xs font-semibold text-gray-700">
+                                Abonnement {e.product_name === "family" ? "Family" : "recurrent"}
+                              </span>
+                            )}
+                          </div>
+
+                          {stripe.current_period_end && stripe.status !== "canceled" && (
+                            <div className="flex items-center justify-between text-xs">
+                              <span className="text-gray-500">
+                                {isAcademyMulti && stripe.paid_count < installments
+                                  ? "Prochaine mensualite"
+                                  : "Prochaine echeance"}
+                              </span>
+                              <span className="font-semibold text-gray-900">{formatDate(stripe.current_period_end)}</span>
+                            </div>
+                          )}
+
+                          {isAcademyMulti && stripe.paid_count < installments && (
+                            <div className="pt-1">
+                              <ProgressBar
+                                value={stripe.paid_count}
+                                max={installments}
+                                label={`${installments - stripe.paid_count} mensualite${installments - stripe.paid_count > 1 ? "s" : ""} restante${installments - stripe.paid_count > 1 ? "s" : ""}`}
+                              />
+                            </div>
+                          )}
+
+                          {/* Factures telechargeables */}
+                          {stripe.invoices.length > 0 && (
+                            <details className="pt-1">
+                              <summary className="text-xs font-semibold text-gray-700 cursor-pointer hover:text-es-green">
+                                Factures ({stripe.invoices.length})
+                              </summary>
+                              <div className="mt-2 space-y-1.5">
+                                {stripe.invoices.map((inv) => (
+                                  <div key={inv.id} className="flex items-center justify-between text-xs bg-gray-50 rounded px-2 py-1.5">
+                                    <div className="flex-1 min-w-0">
+                                      <p className="font-mono text-gray-700 truncate">{inv.number || inv.id}</p>
+                                      <p className="text-[10px] text-gray-400">{formatDate(inv.created_at)}</p>
+                                    </div>
+                                    <div className="flex items-center gap-2 shrink-0">
+                                      <span className="font-semibold text-gray-900">{formatMoney(inv.amount_paid_cents || inv.amount_due_cents)}</span>
+                                      {inv.paid ? (
+                                        <Badge variant="success">Payee</Badge>
+                                      ) : (
+                                        <Badge variant="warning">{inv.status || "en attente"}</Badge>
+                                      )}
+                                      {inv.invoice_pdf && (
+                                        <a
+                                          href={inv.invoice_pdf}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="text-es-green hover:underline font-semibold"
+                                        >
+                                          PDF
+                                        </a>
+                                      )}
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </details>
+                          )}
+                        </div>
+                      )}
+
+                      {stripe?.error && (
+                        <p className="text-[11px] text-amber-600 italic">
+                          Donnees Stripe indisponibles pour cet enrollment (timeout ou cle invalide).
+                        </p>
+                      )}
+
                       {hasGift && sentAt && (
                         <p className="text-[11px] text-gray-500">Mail bienvenue + code Family envoyé {formatRelative(sentAt)}</p>
                       )}
