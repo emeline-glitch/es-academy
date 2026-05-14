@@ -395,10 +395,29 @@ async function handleAcademyPurchase(session: Stripe.Checkout.Session) {
     p_first_name: firstName,
     p_last_name: lastName,
     p_add_tags: ["client", "academy"],
-    p_source: "stripe",
+    // Pas de p_source ici : la source d'acquisition est immuable. La RPC
+    // preserve la source existante du lead. Si le contact est nouveau (achat
+    // direct sans lead pre-existant), source restera NULL ; on tagge "client"
+    // ce qui permet de l'identifier comme client-direct.
+    p_source: null,
   });
   if (contactErr) {
     console.error("[webhook] Contact upsert RPC error:", contactErr.message);
+  }
+
+  // 5d. Pipeline Academy : passe le contact en "gagne" automatiquement.
+  //     L'achat Stripe est la source de verite : plus besoin de bouger la
+  //     carte a la main dans le Kanban. Idempotent : si deja en "gagne",
+  //     l'UPDATE est un no-op.
+  const { error: pipelineErr } = await supabase
+    .from("contacts")
+    .update({
+      pipeline_stage: "gagne",
+      pipeline_updated_at: new Date().toISOString(),
+    })
+    .eq("email", emailLower);
+  if (pipelineErr) {
+    console.error("[webhook] Pipeline Academy update error:", pipelineErr.message);
   }
 
   // 5b. Log consent_log : trace l'acceptation CGV + renonciation retractation
@@ -668,10 +687,26 @@ async function handleFamilyPurchase(session: Stripe.Checkout.Session) {
     p_first_name: firstName,
     p_last_name: lastName,
     p_add_tags: ["client", "family", `family:${plan}`],
-    p_source: "stripe",
+    // Source preservee par la RPC (cf migration 055).
+    p_source: null,
   });
   if (contactErr) {
     console.error("[webhook] Family contact upsert RPC error:", contactErr.message);
+  }
+
+  // Pipeline Family : trial_actif si status="trialing", sinon membre_payant.
+  // L'achat Stripe est la source de verite : la carte se positionne toute
+  // seule dans le Kanban Family.
+  const familyStage = status === "trialing" ? "trial_actif" : "membre_payant";
+  const { error: familyPipelineErr } = await supabase
+    .from("contacts")
+    .update({
+      pipeline_family_stage: familyStage,
+      pipeline_family_updated_at: new Date().toISOString(),
+    })
+    .eq("email", emailLower);
+  if (familyPipelineErr) {
+    console.error("[webhook] Pipeline Family update error:", familyPipelineErr.message);
   }
 
   // Log consent_log : preuve RGPD/L221-28-1 (acceptation CGV + renonciation
@@ -773,6 +808,27 @@ async function handleFamilySubscriptionDeleted(sub: Stripe.Subscription) {
     // (ex : webhook activé après création de la sub côté Stripe). On ignore.
     console.warn(`[webhook] subscription.deleted for unknown sub ${sub.id}`);
     return;
+  }
+
+  // Pipeline Family : bascule en "churn" automatiquement a la resiliation.
+  // Recupere l'email du user pour cibler le contact CRM.
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("email")
+    .eq("id", row.user_id)
+    .maybeSingle();
+
+  if (profile?.email) {
+    const { error: churnErr } = await supabase
+      .from("contacts")
+      .update({
+        pipeline_family_stage: "churn",
+        pipeline_family_updated_at: new Date().toISOString(),
+      })
+      .eq("email", profile.email.toLowerCase());
+    if (churnErr) {
+      console.error("[webhook] Pipeline Family churn update error:", churnErr.message);
+    }
   }
 }
 

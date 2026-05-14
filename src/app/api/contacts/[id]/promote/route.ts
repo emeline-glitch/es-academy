@@ -180,16 +180,29 @@ export async function POST(
     );
   }
 
-  // 7. Mettre à jour le contact : pipeline gagné + tag client
+  // 7. Mettre à jour le contact : pipeline gagne sur le BON pipeline selon
+  //    le produit, + tag client. Eviter de toucher pipeline_stage (Academy)
+  //    quand on promote vers Family ou Custom : sinon la carte saute du
+  //    mauvais Kanban.
   const currentTags: string[] = contact.tags || [];
   const nextTags = Array.from(new Set([...currentTags, "client"]));
+  const now = new Date().toISOString();
+  const isFamily = product_name === "family";
+  const isCustom = product_name === "coaching" || product_name === "sur-mesure" || product_name === "custom" || product_name.startsWith("coaching-");
+  const pipelineUpdate: Record<string, unknown> = { tags: nextTags };
+  if (isFamily) {
+    pipelineUpdate.pipeline_family_stage = "membre_payant";
+    pipelineUpdate.pipeline_family_updated_at = now;
+  } else if (isCustom) {
+    pipelineUpdate.pipeline_custom_stage = "accepte";
+    pipelineUpdate.pipeline_custom_updated_at = now;
+  } else {
+    pipelineUpdate.pipeline_stage = "gagne";
+    pipelineUpdate.pipeline_updated_at = now;
+  }
   await supabase
     .from("contacts")
-    .update({
-      pipeline_stage: "gagne",
-      pipeline_updated_at: new Date().toISOString(),
-      tags: nextTags,
-    })
+    .update(pipelineUpdate)
     .eq("id", id);
 
   // Audit log
