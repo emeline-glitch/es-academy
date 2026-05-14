@@ -95,7 +95,10 @@ export function PaymentsList({ payments }: Props) {
                   </div>
                   <div className="flex items-center gap-3 shrink-0">
                     {p.amount > 0 && (
-                      <span className="text-sm text-gray-700 font-medium">{formatEuro(p.amount)}</span>
+                      <div className="text-right">
+                        <span className="text-sm text-gray-700 font-medium">{formatEuro(p.amount)}</span>
+                        <p className="text-[10px] text-gray-400">{formatEuro(p.amount / 1.2)} HT</p>
+                      </div>
                     )}
                     <span
                       className={`text-[10px] font-semibold uppercase tracking-widest px-2 py-0.5 rounded-full ${

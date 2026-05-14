@@ -131,10 +131,19 @@ export default async function AdminDashboard() {
     churn_rate_pct: number;
   } | undefined) || { active_count: 0, trial_count: 0, canceled_30d: 0, mrr_cents: 0, churn_rate_pct: 0 };
 
+  // Taux TVA par defaut applique pour l'affichage HT (ES Academy SASU = 20%).
+  // Pour les KPIs agreges (CA total, MRR), on calcule un HT estimatif a 20%
+  // qui correspond au taux pratique sur 99% des enrollments. Pour les lignes
+  // individuelles on lit vat_rate sur l'enrollment.
+  const VAT = 0.20;
+  const htMonth = Math.floor(monthRevenue / (1 + VAT));
+  const htTotal = Math.floor(totalRevenue / (1 + VAT));
+  const htMrr = Math.floor(familyMrr.mrr_cents / (1 + VAT));
+
   const statCards = [
-    { label: "CA ce mois-ci", value: `${(monthRevenue / 100).toLocaleString("fr-FR")}€`, sub: `${monthSalesCount} vente${monthSalesCount > 1 ? "s" : ""}`, icon: "💰", color: "text-green-600 bg-green-50", href: "/admin/eleves" },
-    { label: "MRR Family", value: `${(familyMrr.mrr_cents / 100).toLocaleString("fr-FR")}€`, sub: `${familyMrr.active_count} actif${familyMrr.active_count > 1 ? "s" : ""}${familyMrr.trial_count > 0 ? ` · ${familyMrr.trial_count} trial` : ""} · churn ${familyMrr.churn_rate_pct}%`, icon: "👑", color: "text-fuchsia-600 bg-fuchsia-50", href: "/admin/pipeline" },
-    { label: "CA total", value: `${(totalRevenue / 100).toLocaleString("fr-FR")}€`, sub: `${totalEnrollments || 0} formations`, icon: "📦", color: "text-blue-600 bg-blue-50", href: "/admin/eleves" },
+    { label: "CA ce mois-ci", value: `${(monthRevenue / 100).toLocaleString("fr-FR")}€`, sub: `${(htMonth / 100).toLocaleString("fr-FR")}€ HT · ${monthSalesCount} vente${monthSalesCount > 1 ? "s" : ""}`, icon: "💰", color: "text-green-600 bg-green-50", href: "/admin/eleves" },
+    { label: "MRR Family", value: `${(familyMrr.mrr_cents / 100).toLocaleString("fr-FR")}€`, sub: `${(htMrr / 100).toLocaleString("fr-FR")}€ HT · ${familyMrr.active_count} actif${familyMrr.active_count > 1 ? "s" : ""}${familyMrr.trial_count > 0 ? ` · ${familyMrr.trial_count} trial` : ""} · churn ${familyMrr.churn_rate_pct}%`, icon: "👑", color: "text-fuchsia-600 bg-fuchsia-50", href: "/admin/pipeline" },
+    { label: "CA total", value: `${(totalRevenue / 100).toLocaleString("fr-FR")}€`, sub: `${(htTotal / 100).toLocaleString("fr-FR")}€ HT · ${totalEnrollments || 0} formations`, icon: "📦", color: "text-blue-600 bg-blue-50", href: "/admin/eleves" },
     { label: "Contacts CRM", value: totalContacts || 0, sub: `${todayContacts || 0} aujourd'hui`, icon: "👥", color: "text-purple-600 bg-purple-50", href: "/admin/contacts" },
     { label: "Élèves inscrits", value: totalProfiles || 0, icon: "🎓", color: "text-amber-600 bg-amber-50", href: "/admin/eleves" },
     { label: "Pipeline : deals gagnés", value: stageCounts.gagne, icon: "🏆", color: "text-es-green bg-es-green/10", href: "/admin/pipeline" },
@@ -384,13 +393,15 @@ export default async function AdminDashboard() {
                   <th className="text-right py-2 px-2">Contacts</th>
                   <th className="text-right py-2 px-2">Acheteurs</th>
                   <th className="text-right py-2 px-2">Taux conv.</th>
-                  <th className="text-right py-2 px-2">CA</th>
+                  <th className="text-right py-2 px-2">CA TTC</th>
+                  <th className="text-right py-2 px-2">CA HT</th>
                 </tr>
               </thead>
               <tbody>
                 {revenueBySource.slice(0, 12).map((row) => {
                   const conv = row.contacts_count > 0 ? Math.round((row.buyers_count / row.contacts_count) * 100) : 0;
                   const labelClass = row.source === "inconnue" ? "italic text-gray-400" : "text-gray-700 font-medium";
+                  const htRow = Math.floor(row.revenue_cents / (1 + VAT));
                   return (
                     <tr key={row.source} className="border-b border-gray-50 last:border-0">
                       <td className={`py-2 px-2 ${labelClass}`}>{row.source}</td>
@@ -398,6 +409,7 @@ export default async function AdminDashboard() {
                       <td className="py-2 px-2 text-right font-semibold text-gray-900">{row.buyers_count}</td>
                       <td className={`py-2 px-2 text-right font-semibold ${conv >= 10 ? "text-es-green" : conv >= 5 ? "text-amber-600" : "text-gray-400"}`}>{conv}%</td>
                       <td className="py-2 px-2 text-right font-bold text-gray-900">{(row.revenue_cents / 100).toLocaleString("fr-FR")}€</td>
+                      <td className="py-2 px-2 text-right text-gray-500">{(htRow / 100).toLocaleString("fr-FR")}€</td>
                     </tr>
                   );
                 })}

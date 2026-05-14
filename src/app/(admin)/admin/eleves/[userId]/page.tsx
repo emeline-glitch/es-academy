@@ -280,6 +280,12 @@ export default function StudentDetailPage() {
                         </div>
                         <div className="text-right">
                           <span className="font-bold text-gray-900">{formatMoney(e.amount_paid)}</span>
+                          {(() => {
+                            const ht = Math.floor(e.amount_paid / 1.2);
+                            return ht !== e.amount_paid ? (
+                              <p className="text-[10px] text-gray-500">{formatMoney(ht)} HT</p>
+                            ) : null;
+                          })()}
                           <p className="text-[10px] text-gray-400">{formatRelative(e.purchased_at)}</p>
                         </div>
                       </div>

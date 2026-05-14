@@ -45,3 +45,24 @@ export function formatDateTime(input: string | Date | null | undefined): string 
 export function formatMoney(amountCents: number): string {
   return `${(amountCents / 100).toLocaleString("fr-FR")}€`;
 }
+
+/**
+ * Calcule le montant HT a partir du TTC et du taux de TVA.
+ * Utilise un floor (jamais surestimer la base imposable).
+ */
+export function htCents(amountTtcCents: number, vatRate: number): number {
+  if (!vatRate || vatRate === 0) return amountTtcCents;
+  return Math.floor(amountTtcCents / (1 + vatRate));
+}
+
+/**
+ * Formatte un montant en TTC + HT entre parentheses si vatRate > 0.
+ * Exemple : "998€ TTC (831€ HT)".
+ * Si vatRate = 0 (franchise) : "998€".
+ */
+export function formatMoneyWithHt(amountTtcCents: number, vatRate: number): string {
+  const ttc = `${(amountTtcCents / 100).toLocaleString("fr-FR")}€`;
+  if (!vatRate || vatRate === 0) return ttc;
+  const ht = `${(htCents(amountTtcCents, vatRate) / 100).toLocaleString("fr-FR")}€`;
+  return `${ttc} TTC · ${ht} HT`;
+}
