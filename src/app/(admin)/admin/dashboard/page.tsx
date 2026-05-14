@@ -37,6 +37,7 @@ export default async function AdminDashboard() {
   const [
     statsRes, recentContactsRes, recentEnrollmentsRes, auditRes,
     lmPerfRes, alumniRes, chatelRes, quizRes, welcomeFailedRes,
+    revenueBySourceRes, familyMrrRes,
   ] = await Promise.all([
     supabase.rpc("dashboard_stats", { month_start: monthStart, today_start: todayStart }),
     supabase
@@ -66,6 +67,8 @@ export default async function AdminDashboard() {
       .select("result_category")
       .gte("completed_at", new Date(Date.now() - 30 * 24 * 3600 * 1000).toISOString()),
     supabase.rpc("academy_welcome_email_failed_count"),
+    supabase.rpc("revenue_by_source", { period_days: 30 }),
+    supabase.rpc("family_mrr"),
   ]);
   const welcomeFailedCount = (welcomeFailedRes?.data as number | null) || 0;
 
@@ -113,12 +116,27 @@ export default async function AdminDashboard() {
   }
   const totalQuiz = quizCounts.tu_perds_argent + quizCounts.operation_blanche + quizCounts.autofinancement_positif;
 
+  // Nouvelles RPC commerciales (migration 056)
+  const revenueBySource = (revenueBySourceRes.data || []) as Array<{
+    source: string;
+    contacts_count: number;
+    buyers_count: number;
+    revenue_cents: number;
+  }>;
+  const familyMrr = (familyMrrRes.data?.[0] as {
+    active_count: number;
+    trial_count: number;
+    canceled_30d: number;
+    mrr_cents: number;
+    churn_rate_pct: number;
+  } | undefined) || { active_count: 0, trial_count: 0, canceled_30d: 0, mrr_cents: 0, churn_rate_pct: 0 };
+
   const statCards = [
     { label: "CA ce mois-ci", value: `${(monthRevenue / 100).toLocaleString("fr-FR")}€`, sub: `${monthSalesCount} vente${monthSalesCount > 1 ? "s" : ""}`, icon: "💰", color: "text-green-600 bg-green-50", href: "/admin/eleves" },
+    { label: "MRR Family", value: `${(familyMrr.mrr_cents / 100).toLocaleString("fr-FR")}€`, sub: `${familyMrr.active_count} actif${familyMrr.active_count > 1 ? "s" : ""}${familyMrr.trial_count > 0 ? ` · ${familyMrr.trial_count} trial` : ""} · churn ${familyMrr.churn_rate_pct}%`, icon: "👑", color: "text-fuchsia-600 bg-fuchsia-50", href: "/admin/pipeline" },
     { label: "CA total", value: `${(totalRevenue / 100).toLocaleString("fr-FR")}€`, sub: `${totalEnrollments || 0} formations`, icon: "📦", color: "text-blue-600 bg-blue-50", href: "/admin/eleves" },
     { label: "Contacts CRM", value: totalContacts || 0, sub: `${todayContacts || 0} aujourd'hui`, icon: "👥", color: "text-purple-600 bg-purple-50", href: "/admin/contacts" },
     { label: "Élèves inscrits", value: totalProfiles || 0, icon: "🎓", color: "text-amber-600 bg-amber-50", href: "/admin/eleves" },
-    { label: "Campagnes email", value: totalCampaigns || 0, icon: "📧", color: "text-red-600 bg-red-50", href: "/admin/emails" },
     { label: "Pipeline : deals gagnés", value: stageCounts.gagne, icon: "🏆", color: "text-es-green bg-es-green/10", href: "/admin/pipeline" },
   ];
 
@@ -345,6 +363,49 @@ export default async function AdminDashboard() {
           )}
         </Card>
       </div>
+
+      {/* CA par source d'acquisition (30j) : repond a "quelle campagne me rapporte le plus" */}
+      <Card className="mb-8">
+        <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
+          <div>
+            <h2 className="font-serif text-lg font-bold text-gray-900">CA par source d&apos;acquisition</h2>
+            <p className="text-xs text-gray-500 mt-0.5">30 derniers jours · groupes par source d&apos;origine du contact (immuable)</p>
+          </div>
+          <Link href="/admin/contacts" prefetch className="text-xs text-es-green hover:underline">Voir contacts →</Link>
+        </div>
+        {revenueBySource.length === 0 ? (
+          <p className="text-sm text-gray-400 italic py-4 text-center">Pas encore de contact avec une source renseignee.</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-[10px] uppercase text-gray-500 tracking-wider border-b border-gray-100">
+                  <th className="text-left py-2 px-2">Source</th>
+                  <th className="text-right py-2 px-2">Contacts</th>
+                  <th className="text-right py-2 px-2">Acheteurs</th>
+                  <th className="text-right py-2 px-2">Taux conv.</th>
+                  <th className="text-right py-2 px-2">CA</th>
+                </tr>
+              </thead>
+              <tbody>
+                {revenueBySource.slice(0, 12).map((row) => {
+                  const conv = row.contacts_count > 0 ? Math.round((row.buyers_count / row.contacts_count) * 100) : 0;
+                  const labelClass = row.source === "inconnue" ? "italic text-gray-400" : "text-gray-700 font-medium";
+                  return (
+                    <tr key={row.source} className="border-b border-gray-50 last:border-0">
+                      <td className={`py-2 px-2 ${labelClass}`}>{row.source}</td>
+                      <td className="py-2 px-2 text-right text-gray-600">{row.contacts_count}</td>
+                      <td className="py-2 px-2 text-right font-semibold text-gray-900">{row.buyers_count}</td>
+                      <td className={`py-2 px-2 text-right font-semibold ${conv >= 10 ? "text-es-green" : conv >= 5 ? "text-amber-600" : "text-gray-400"}`}>{conv}%</td>
+                      <td className="py-2 px-2 text-right font-bold text-gray-900">{(row.revenue_cents / 100).toLocaleString("fr-FR")}€</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </Card>
 
       <div className="grid lg:grid-cols-2 gap-6 mb-8">
         {/* Dernières ventes */}

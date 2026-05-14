@@ -261,18 +261,23 @@ export default function PipelinePage() {
       });
   }
 
-  // Un contact est "en retard" s'il est dans un stage d'action et n'a pas bougé depuis 7 jours
-  function isOverdue(c: Contact): boolean {
+  // Un contact est "tiede" >7j (orange) ou "froid" >14j (rouge) s'il est dans
+  // un stage d'action. Les stages finaux (gagne/perdu/non_qualifie) ne sont
+  // jamais flagues : ils n'ont pas vocation a bouger.
+  type OverdueLevel = "none" | "warning" | "danger";
+  function overdueLevel(c: Contact): OverdueLevel {
     const overdueByType: Record<PipelineType, string[]> = {
-      academy: ["rdv_pris", "offre_envoyee"],
-      family: ["trial_actif"],
-      custom: ["devis_envoye", "accepte"],
+      academy: ["leads", "prospect", "rdv_pris", "rdv_effectif", "offre_envoyee"],
+      family: ["leads", "trial_actif"],
+      custom: ["demande", "qualification", "devis_envoye", "accepte", "en_cours"],
     };
     const stage = getStage(c);
-    if (!stage || !overdueByType[pipelineType].includes(stage)) return false;
+    if (!stage || !overdueByType[pipelineType].includes(stage)) return "none";
     const last = new Date(c[updatedAtColumn] || c.subscribed_at).getTime();
-    const sevenDays = 7 * 24 * 60 * 60 * 1000;
-    return Date.now() - last > sevenDays;
+    const daysSince = (Date.now() - last) / (1000 * 60 * 60 * 24);
+    if (daysSince > 14) return "danger";
+    if (daysSince > 7) return "warning";
+    return "none";
   }
 
   // Compteur de contacts dans chaque pipeline (pour les badges des tabs)
@@ -410,7 +415,7 @@ export default function PipelinePage() {
                       <PipelineCard
                         key={c.id}
                         contact={c}
-                        overdue={isOverdue(c)}
+                        overdueLevel={overdueLevel(c)}
                         selected={selected.has(c.id)}
                         dragging={draggingId === c.id}
                         currentStage={getStage(c)}
@@ -453,7 +458,7 @@ export default function PipelinePage() {
 
 const PipelineCard = memo(function PipelineCard({
   contact: c,
-  overdue,
+  overdueLevel,
   selected,
   dragging,
   currentStage,
@@ -465,7 +470,7 @@ const PipelineCard = memo(function PipelineCard({
   onChangeStage,
 }: {
   contact: Contact;
-  overdue: boolean;
+  overdueLevel: "none" | "warning" | "danger";
   selected: boolean;
   dragging: boolean;
   currentStage: string | null;
@@ -481,6 +486,21 @@ const PipelineCard = memo(function PipelineCard({
     (Date.now() - new Date(updatedAt || c.subscribed_at).getTime()) / (1000 * 60 * 60 * 24)
   );
 
+  const ringClass =
+    overdueLevel === "danger"
+      ? "border-red-400 ring-2 ring-red-200"
+      : overdueLevel === "warning"
+        ? "border-amber-300 ring-1 ring-amber-200"
+        : "border-gray-200";
+  const badgeClass =
+    overdueLevel === "danger"
+      ? "bg-red-500 text-white"
+      : "bg-amber-500 text-white";
+  const badgeTitle =
+    overdueLevel === "danger"
+      ? `Action urgente : sans activite depuis ${daysSince} jours`
+      : `Tiede : sans activite depuis ${daysSince} jours`;
+
   return (
     <div
       draggable
@@ -489,17 +509,13 @@ const PipelineCard = memo(function PipelineCard({
       className={`group bg-white rounded-lg border p-3 shadow-sm hover:shadow-md transition-all cursor-move relative ${
         dragging ? "opacity-40" : ""
       } ${
-        selected
-          ? "border-es-green ring-2 ring-es-green/30"
-          : overdue
-          ? "border-red-300 ring-1 ring-red-200"
-          : "border-gray-200"
+        selected ? "border-es-green ring-2 ring-es-green/30" : ringClass
       }`}
     >
-      {overdue && (
+      {overdueLevel !== "none" && (
         <span
-          className="absolute -top-2 -right-2 bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full shadow"
-          title={`Sans activité depuis ${daysSince} jours`}
+          className={`absolute -top-2 -right-2 text-[9px] font-bold px-1.5 py-0.5 rounded-full shadow ${badgeClass}`}
+          title={badgeTitle}
         >
           ⏰ {daysSince}j
         </span>
