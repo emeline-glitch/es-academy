@@ -3,7 +3,7 @@ import { SITE_URL } from "@/lib/utils/constants";
 const LOGO_URL = `${SITE_URL}/images/logo.svg`;
 const SOCIAL_PROFILES = [
   "https://www.instagram.com/emeline.siron/",
-  "https://www.linkedin.com/in/emeline-siron/",
+  "https://fr.linkedin.com/in/emeline-siron",
   "https://www.youtube.com/@emeline.siron",
   "https://fr.trustpilot.com/review/emelinesiron.com",
 ];

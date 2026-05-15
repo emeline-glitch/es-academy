@@ -61,7 +61,7 @@ const rows = [
     icon: <InstagramLogo />,
   },
   {
-    href: "https://www.linkedin.com/in/emeline-siron/",
+    href: "https://fr.linkedin.com/in/emeline-siron",
     external: true,
     value: "25 000",
     label: "abonnés LinkedIn",

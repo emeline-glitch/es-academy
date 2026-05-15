@@ -158,7 +158,7 @@ export function defaultNewsletterHtml(opts?: { editionNumber?: number; edition?:
     Si ce n'est pas déjà fait, tu peux :
   </p>
   <p style="margin:6px 0; color:${TEXT}; font-size:15px;">
-    • Me rejoindre sur <a href="https://www.instagram.com/emelinesiron/" style="color:${GREEN};">Instagram</a> et <a href="https://www.linkedin.com/in/emeline-siron/" style="color:${GREEN};">LinkedIn</a>
+    • Me rejoindre sur <a href="https://www.instagram.com/emelinesiron/" style="color:${GREEN};">Instagram</a> et <a href="https://fr.linkedin.com/in/emeline-siron" style="color:${GREEN};">LinkedIn</a>
   </p>
   <p style="margin:6px 0; color:${TEXT}; font-size:15px;">
     • T'abonner à ma chaîne <a href="https://www.youtube.com/@emelinesiron" style="color:${GREEN};">YouTube</a>
