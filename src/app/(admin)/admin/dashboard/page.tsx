@@ -40,7 +40,7 @@ export default async function AdminDashboard() {
     revenueBySourceRes, familyMrrRes,
     prevMonthRes, velocityRes, dunningRes, coachingUpsellRes,
     ctaAttribRes,
-    ltvRes, cohortsRes, lmFunnelRes, abandonRes,
+    ltvRes, cohortsRes, lmFunnelRes, abandonRes, hotLeadsRes,
   ] = await Promise.all([
     supabase.rpc("dashboard_stats", { month_start: monthStart, today_start: todayStart }),
     supabase
@@ -81,6 +81,7 @@ export default async function AdminDashboard() {
     supabase.rpc("conversion_cohorts", { months_back: 6 }),
     supabase.rpc("lead_magnet_funnel", { period_days: 90 }),
     supabase.rpc("checkout_abandonment_stats", { period_days: 30 }),
+    supabase.rpc("hot_leads", { min_distinct_ctas: 3, since_hours: 24 }),
   ]);
   const welcomeFailedCount = (welcomeFailedRes?.data as number | null) || 0;
 
@@ -216,6 +217,19 @@ export default async function AdminDashboard() {
     potential_revenue_cents: number;
   } | undefined) || { total_attempts: 0, completed_count: 0, abandoned_count: 0, pending_recent: 0, expired_count: 0, completion_rate: 0, potential_revenue_cents: 0 };
 
+  const hotLeads = (hotLeadsRes.data || []) as Array<{
+    email: string;
+    contact_id: string | null;
+    first_name: string | null;
+    last_name: string | null;
+    phone: string | null;
+    distinct_ctas: number;
+    total_clicks: number;
+    cta_ids: string[];
+    first_click_at: string;
+    last_click_at: string;
+  }>;
+
   function ltvLabel(seg: string): string {
     if (seg === "academy_only") return "Academy seul";
     if (seg === "family_only") return "Family seul";
@@ -320,6 +334,60 @@ export default async function AdminDashboard() {
                 <Link href="/admin/eleves" prefetch className="underline ml-1 font-semibold">Voir les élèves</Link>
               </p>
             </div>
+          </div>
+        </div>
+      )}
+
+      {hotLeads.length > 0 && (
+        <div className="mb-6 rounded-lg border border-amber-300 bg-amber-50 p-4">
+          <div className="flex items-start gap-3 mb-3">
+            <div className="text-amber-600 text-xl shrink-0">🔥</div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-bold text-amber-800">
+                {hotLeads.length} lead{hotLeads.length > 1 ? "s" : ""} chaud{hotLeads.length > 1 ? "s" : ""} à appeler
+                <span className="text-amber-700 font-normal"> · 3+ CTAs cliqués dans les 24h, pas encore client</span>
+              </p>
+              <p className="text-xs text-amber-700 mt-1">
+                Antony, c&apos;est ta priorité du jour. Ces contacts sont en mode découverte intense. Appelle-les avant qu&apos;ils refroidissent.
+              </p>
+            </div>
+          </div>
+          <div className="space-y-2">
+            {hotLeads.slice(0, 5).map((lead) => {
+              const name = [lead.first_name, lead.last_name].filter(Boolean).join(" ") || lead.email;
+              const minutesSinceLast = Math.floor((Date.now() - new Date(lead.last_click_at).getTime()) / 60000);
+              return (
+                <div key={lead.email} className="bg-white rounded-md p-3 flex items-center justify-between gap-3 flex-wrap">
+                  <div className="flex-1 min-w-0">
+                    {lead.contact_id ? (
+                      <Link href={`/admin/contacts/${lead.contact_id}`} prefetch className="font-semibold text-gray-900 hover:text-es-green truncate block">
+                        {name}
+                      </Link>
+                    ) : (
+                      <span className="font-semibold text-gray-900 truncate block">{name}</span>
+                    )}
+                    <p className="text-[11px] text-gray-500 truncate">{lead.email}</p>
+                    <p className="text-[10px] text-gray-400 mt-0.5 truncate" title={lead.cta_ids.join(", ")}>
+                      CTAs : {lead.cta_ids.slice(0, 3).join(" · ")}{lead.cta_ids.length > 3 ? ` (+${lead.cta_ids.length - 3})` : ""}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="text-xs font-bold text-amber-700">{lead.distinct_ctas} CTAs</span>
+                    <span className="text-[10px] text-gray-500">
+                      {minutesSinceLast < 60 ? `il y a ${minutesSinceLast} min` : `il y a ${Math.floor(minutesSinceLast / 60)}h`}
+                    </span>
+                    {lead.phone && (
+                      <a href={`tel:${lead.phone}`} className="text-xs font-semibold text-es-green hover:underline whitespace-nowrap">
+                        📞 {lead.phone}
+                      </a>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+            {hotLeads.length > 5 && (
+              <p className="text-[11px] text-amber-700 italic text-center">+ {hotLeads.length - 5} autres leads chauds dans la liste complète</p>
+            )}
           </div>
         </div>
       )}
