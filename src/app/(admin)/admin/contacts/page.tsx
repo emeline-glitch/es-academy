@@ -123,10 +123,16 @@ export default function AdminContacts() {
   }, []);
 
   // Auto-ouvrir la modale d'ajout si ?add=1 dans l'URL (raccourci depuis /admin/pipeline)
+  // + applique le filtre tag si ?tag=xxx dans l'URL (raccourci depuis /admin/lists)
   useEffect(() => {
     if (searchParams?.get("add") === "1") {
       setShowAddContact(true);
       setAddError("");
+    }
+    const tagFromUrl = searchParams?.get("tag");
+    if (tagFromUrl) {
+      setTagFilter(tagFromUrl);
+      setPage(1);
     }
   }, [searchParams]);
 
