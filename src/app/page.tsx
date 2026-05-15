@@ -185,14 +185,14 @@ export default function Home() {
               <h2 className="font-serif text-3xl font-bold text-es-text mt-3 mb-4">
                 Emeline Siron
               </h2>
-              <p className="text-es-text-muted leading-relaxed mb-4">
+              <p className="text-es-text leading-relaxed mb-4">
                 Diplômée en immobilier et ancienne Real Estate Asset Manager dans un fonds d&apos;investissements européen, j&apos;ai quitté le salariat pour investir à mon compte.
               </p>
-              <p className="text-es-text-muted leading-relaxed mb-4">
-                Aujourd&apos;hui, je gère <strong className="text-es-text">55 locataires</strong>, et j&apos;accompagne des centaines d&apos;investisseurs à bâtir leur patrimoine immobilier, même en partant de zéro.
+              <p className="text-es-text leading-relaxed mb-4">
+                Aujourd&apos;hui, je gère <strong className="text-es-text font-semibold">55 locataires</strong>, et j&apos;accompagne des centaines d&apos;investisseurs à bâtir leur patrimoine immobilier, même en partant de zéro.
               </p>
-              <p className="text-es-text-muted leading-relaxed mb-6">
-                J&apos;ai grandi dans un garage automobile. Pas de patrimoine familial, pas de réseau, pas de capital de départ. <strong className="text-es-text">Si j&apos;ai pu le faire, toi aussi.</strong>
+              <p className="text-es-text leading-relaxed mb-6">
+                J&apos;ai grandi dans un garage automobile. Pas de patrimoine familial, pas de réseau, pas de capital de départ. <strong className="text-es-text font-semibold">Si j&apos;ai pu le faire, toi aussi.</strong>
               </p>
               <div className="flex items-center gap-3">
                 <a href="https://www.instagram.com/emelinesiron/" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-es-green/10 flex items-center justify-center hover:bg-es-green/20 transition-colors">
@@ -242,8 +242,8 @@ export default function Home() {
               <h3 className="font-serif text-2xl font-bold mt-2 mb-2">
                 <span className="bg-es-gold/80 text-white px-2 py-0.5 rounded-sm">ES Academy</span>
               </h3>
-              <p className="text-white/60 text-sm font-medium mb-4">Forme-toi &amp; passe à l&apos;action</p>
-              <p className="text-white/80 mb-3 leading-relaxed">
+              <p className="text-white/80 text-sm font-medium mb-4">Forme-toi &amp; passe à l&apos;action</p>
+              <p className="text-white mb-3 leading-relaxed">
                 {STATS.videoHours}h de formation · {STATS.tools} outils · La méthode complète pour investir en immobilier locatif
               </p>
               <p className="text-es-gold text-sm font-semibold mb-6">
@@ -260,8 +260,8 @@ export default function Home() {
               <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
               <span className="text-xs uppercase tracking-widest text-white/50 font-medium">Communauté</span>
               <h3 className="font-serif text-2xl font-bold mt-2 mb-2">ES Family</h3>
-              <p className="text-white/60 text-sm font-medium mb-4">Rejoins une communauté inspirante</p>
-              <p className="text-white/80 mb-6 leading-relaxed">
+              <p className="text-white/80 text-sm font-medium mb-4">Rejoins une communauté inspirante</p>
+              <p className="text-white mb-6 leading-relaxed">
                 Analyses flash, lives exclusifs, opportunités rares · 19€/mois fondateurs
               </p>
               <span className="inline-flex items-center gap-2 bg-es-cream text-es-terracotta px-5 py-2.5 rounded-lg font-medium text-sm group-hover:bg-white transition-colors">
