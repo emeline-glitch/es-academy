@@ -171,7 +171,7 @@ export default function Home() {
       {/* Réseaux sociaux : preuve sociale */}
       <section className="py-16 bg-es-cream/40">
         <div className="max-w-6xl mx-auto px-6">
-          <p className="text-xs text-es-text-muted uppercase tracking-widest mb-10 text-center">Ils me suivent déjà</p>
+          <p className="text-xs text-es-terracotta uppercase tracking-widest font-medium mb-10 text-center">Ils me suivent déjà</p>
           <SocialStats />
         </div>
       </section>
