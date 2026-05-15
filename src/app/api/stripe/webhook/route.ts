@@ -79,6 +79,23 @@ export async function POST(request: Request) {
     const session = event.data.object as Stripe.Checkout.Session;
     const scope = session.metadata?.scope;
 
+    // Marque l'attempt comme completed pour les stats abandon de panier.
+    // Best-effort, ne bloque pas le handler principal.
+    try {
+      const supabase = await createServiceClient();
+      const email = session.customer_details?.email || session.customer_email || null;
+      await supabase
+        .from("checkout_attempts")
+        .update({
+          status: "completed",
+          completed_at: new Date().toISOString(),
+          email: email ? email.toLowerCase() : null,
+        })
+        .eq("stripe_session_id", session.id);
+    } catch (err) {
+      console.error("[webhook] checkout_attempts completed update failed:", err);
+    }
+
     if (scope === "academy") {
       try {
         await handleAcademyPurchase(session);
@@ -101,6 +118,22 @@ export async function POST(request: Request) {
           { status: 500 }
         );
       }
+    }
+  }
+
+  if (event.type === "checkout.session.expired") {
+    const session = event.data.object as Stripe.Checkout.Session;
+    try {
+      const supabase = await createServiceClient();
+      await supabase
+        .from("checkout_attempts")
+        .update({
+          status: "expired",
+          expired_at: new Date().toISOString(),
+        })
+        .eq("stripe_session_id", session.id);
+    } catch (err) {
+      console.error("[webhook] checkout_attempts expired update failed:", err);
     }
   }
 

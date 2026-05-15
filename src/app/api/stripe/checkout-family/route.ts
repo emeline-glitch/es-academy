@@ -6,8 +6,31 @@ import {
   FamilyCheckoutSchema,
   FamilyCheckoutQuerySchema,
 } from "@/lib/validators/stripe-checkout";
+import { createServiceClient } from "@/lib/supabase/server";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3001";
+
+// Plan -> montant TTC mensuel (ce qui sera prelevee la 1ere fois)
+const FAMILY_AMOUNT_CENTS: Record<string, number> = {
+  fondateur: 1900,
+  standard: 2900,
+};
+
+async function trackFamilyAttempt(sessionId: string, plan: string, email: string | null = null) {
+  try {
+    const supabase = await createServiceClient();
+    await supabase.from("checkout_attempts").insert({
+      stripe_session_id: sessionId,
+      product: "family",
+      plan,
+      email: email?.toLowerCase() || null,
+      amount_cents: FAMILY_AMOUNT_CENTS[plan] || null,
+      status: "pending",
+    });
+  } catch (err) {
+    console.error("[stripe/checkout-family] track attempt error:", err);
+  }
+}
 
 /**
  * GET /api/stripe/checkout-family?plan=fondateur
@@ -37,6 +60,7 @@ export async function GET(request: Request) {
     if (!session.url) {
       return NextResponse.redirect(`${SITE_URL}/family?error=session-url-missing`, { status: 303 });
     }
+    await trackFamilyAttempt(session.id, plan);
     return NextResponse.redirect(session.url, { status: 303 });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Erreur inconnue";
@@ -64,6 +88,7 @@ export async function POST(request: Request) {
       cancelUrl: `${SITE_URL}/family?checkout=cancelled`,
     });
 
+    await trackFamilyAttempt(session.id, plan, email ?? null);
     return NextResponse.json({ url: session.url });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Erreur inconnue";

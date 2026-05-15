@@ -40,7 +40,7 @@ export default async function AdminDashboard() {
     revenueBySourceRes, familyMrrRes,
     prevMonthRes, velocityRes, dunningRes, coachingUpsellRes,
     ctaAttribRes,
-    ltvRes, cohortsRes, lmFunnelRes,
+    ltvRes, cohortsRes, lmFunnelRes, abandonRes,
   ] = await Promise.all([
     supabase.rpc("dashboard_stats", { month_start: monthStart, today_start: todayStart }),
     supabase
@@ -80,6 +80,7 @@ export default async function AdminDashboard() {
     supabase.rpc("customer_ltv"),
     supabase.rpc("conversion_cohorts", { months_back: 6 }),
     supabase.rpc("lead_magnet_funnel", { period_days: 90 }),
+    supabase.rpc("checkout_abandonment_stats", { period_days: 30 }),
   ]);
   const welcomeFailedCount = (welcomeFailedRes?.data as number | null) || 0;
 
@@ -204,6 +205,16 @@ export default async function AdminDashboard() {
     conversion_rate: number;
     revenue_cents: number;
   }>;
+
+  const abandon = (abandonRes.data?.[0] as {
+    total_attempts: number;
+    completed_count: number;
+    abandoned_count: number;
+    pending_recent: number;
+    expired_count: number;
+    completion_rate: number;
+    potential_revenue_cents: number;
+  } | undefined) || { total_attempts: 0, completed_count: 0, abandoned_count: 0, pending_recent: 0, expired_count: 0, completion_rate: 0, potential_revenue_cents: 0 };
 
   function ltvLabel(seg: string): string {
     if (seg === "academy_only") return "Academy seul";
@@ -379,8 +390,8 @@ export default async function AdminDashboard() {
         </div>
       </Card>
 
-      {/* Quick wins Lot C : velocity pipeline + coaching upsell */}
-      <div className="grid lg:grid-cols-2 gap-6 mb-8">
+      {/* Quick wins Lot C : velocity pipeline + coaching upsell + abandon checkout */}
+      <div className="grid lg:grid-cols-3 gap-6 mb-8">
         {/* Velocity pipeline : temps moyen lead -> gagne */}
         <Card>
           <div className="flex items-center justify-between mb-4">
@@ -456,6 +467,44 @@ export default async function AdminDashboard() {
               <p className="text-[10px] text-gray-400">A consommer</p>
             </div>
           </div>
+        </Card>
+
+        {/* Abandon checkout Stripe : sessions creees mais non completes */}
+        <Card>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="font-serif text-lg font-bold text-gray-900">Abandon checkout (30j)</h2>
+              <p className="text-xs text-gray-500 mt-0.5">Sessions Stripe creees vs achats complets</p>
+            </div>
+          </div>
+          {abandon.total_attempts === 0 ? (
+            <p className="text-sm text-gray-400 italic py-4 text-center">Pas encore de session checkout enregistree.</p>
+          ) : (
+            <>
+              <div className="grid grid-cols-3 gap-3 mb-3">
+                <div className="bg-es-green/5 rounded-lg p-3">
+                  <p className="text-[10px] text-gray-500 uppercase tracking-wider">Completes</p>
+                  <p className="text-xl font-bold text-es-green">{abandon.completed_count}</p>
+                  <p className="text-[10px] text-gray-400">{abandon.completion_rate}% taux</p>
+                </div>
+                <div className="bg-red-50 rounded-lg p-3">
+                  <p className="text-[10px] text-gray-500 uppercase tracking-wider">Abandonnes</p>
+                  <p className={`text-xl font-bold ${abandon.abandoned_count > 0 ? "text-red-600" : "text-gray-400"}`}>{abandon.abandoned_count}</p>
+                  <p className="text-[10px] text-gray-400">≥ 24h sans finaliser</p>
+                </div>
+                <div className="bg-amber-50 rounded-lg p-3">
+                  <p className="text-[10px] text-gray-500 uppercase tracking-wider">En cours</p>
+                  <p className="text-xl font-bold text-amber-600">{abandon.pending_recent}</p>
+                  <p className="text-[10px] text-gray-400">&lt; 24h</p>
+                </div>
+              </div>
+              {abandon.potential_revenue_cents > 0 && (
+                <p className="text-xs text-gray-500 italic">
+                  Potentiel non encaisse : <span className="font-bold text-red-600 not-italic">{(abandon.potential_revenue_cents / 100).toLocaleString("fr-FR")}€</span>
+                </p>
+              )}
+            </>
+          )}
         </Card>
       </div>
 
