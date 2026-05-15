@@ -38,6 +38,7 @@ export default async function AdminDashboard() {
     statsRes, recentContactsRes, recentEnrollmentsRes, auditRes,
     lmPerfRes, alumniRes, chatelRes, quizRes, welcomeFailedRes,
     revenueBySourceRes, familyMrrRes,
+    prevMonthRes, velocityRes, dunningRes, coachingUpsellRes,
   ] = await Promise.all([
     supabase.rpc("dashboard_stats", { month_start: monthStart, today_start: todayStart }),
     supabase
@@ -69,6 +70,10 @@ export default async function AdminDashboard() {
     supabase.rpc("academy_welcome_email_failed_count"),
     supabase.rpc("revenue_by_source", { period_days: 30 }),
     supabase.rpc("family_mrr"),
+    supabase.rpc("dashboard_previous_month"),
+    supabase.rpc("pipeline_velocity"),
+    supabase.rpc("dunning_alert"),
+    supabase.rpc("coaching_upsell_candidates"),
   ]);
   const welcomeFailedCount = (welcomeFailedRes?.data as number | null) || 0;
 
@@ -131,6 +136,50 @@ export default async function AdminDashboard() {
     churn_rate_pct: number;
   } | undefined) || { active_count: 0, trial_count: 0, canceled_30d: 0, mrr_cents: 0, churn_rate_pct: 0 };
 
+  // Quick wins Lot C (migration 058)
+  const prevMonth = (prevMonthRes.data?.[0] as {
+    prev_month_revenue: number;
+    prev_month_sales_count: number;
+    prev_month_contacts: number;
+  } | undefined) || { prev_month_revenue: 0, prev_month_sales_count: 0, prev_month_contacts: 0 };
+
+  const velocity = (velocityRes.data || []) as Array<{
+    pipeline: string;
+    avg_days: number | null;
+    median_days: number | null;
+    total_won: number;
+  }>;
+  const velocityAcademy = velocity.find((v) => v.pipeline === "academy");
+  const velocityFamily = velocity.find((v) => v.pipeline === "family");
+  const velocityCustom = velocity.find((v) => v.pipeline === "custom");
+
+  const dunning = (dunningRes.data?.[0] as {
+    past_due_count: number;
+    unpaid_count: number;
+    total_alert: number;
+    affected_mrr_cents: number;
+  } | undefined) || { past_due_count: 0, unpaid_count: 0, total_alert: 0, affected_mrr_cents: 0 };
+
+  const coachingUpsell = (coachingUpsellRes.data?.[0] as {
+    exhausted_count: number;
+    near_exhausted_count: number;
+    total_active_credits: number;
+  } | undefined) || { exhausted_count: 0, near_exhausted_count: 0, total_active_credits: 0 };
+
+  // Helper delta % vs mois precedent. null si pas de base de comparaison.
+  function deltaPct(current: number, previous: number): number | null {
+    if (previous === 0) return current > 0 ? 100 : null;
+    return Math.round(((current - previous) / previous) * 100);
+  }
+  function formatDelta(d: number | null): { label: string; color: string } {
+    if (d === null) return { label: "—", color: "text-gray-400" };
+    if (d > 0) return { label: `+${d}%`, color: "text-es-green" };
+    if (d < 0) return { label: `${d}%`, color: "text-red-600" };
+    return { label: "0%", color: "text-gray-500" };
+  }
+  const deltaRevenue = formatDelta(deltaPct(monthRevenue, prevMonth.prev_month_revenue));
+  const deltaSales = formatDelta(deltaPct(monthSalesCount, prevMonth.prev_month_sales_count));
+
   // Taux TVA par defaut applique pour l'affichage HT (ES Academy SASU = 20%).
   // Pour les KPIs agreges (CA total, MRR), on calcule un HT estimatif a 20%
   // qui correspond au taux pratique sur 99% des enrollments. Pour les lignes
@@ -140,10 +189,20 @@ export default async function AdminDashboard() {
   const htTotal = Math.floor(totalRevenue / (1 + VAT));
   const htMrr = Math.floor(familyMrr.mrr_cents / (1 + VAT));
 
-  const statCards = [
-    { label: "CA ce mois-ci", value: `${(monthRevenue / 100).toLocaleString("fr-FR")}€`, sub: `${(htMonth / 100).toLocaleString("fr-FR")}€ HT · ${monthSalesCount} vente${monthSalesCount > 1 ? "s" : ""}`, icon: "💰", color: "text-green-600 bg-green-50", href: "/admin/eleves" },
+  interface StatCard {
+    label: string;
+    value: string | number;
+    sub?: string;
+    delta?: { label: string; color: string } | null;
+    icon: string;
+    color: string;
+    href: string;
+  }
+  const statCards: StatCard[] = [
+    { label: "CA ce mois-ci", value: `${(monthRevenue / 100).toLocaleString("fr-FR")}€`, sub: `${(htMonth / 100).toLocaleString("fr-FR")}€ HT · ${monthSalesCount} vente${monthSalesCount > 1 ? "s" : ""}`, delta: deltaRevenue, icon: "💰", color: "text-green-600 bg-green-50", href: "/admin/eleves" },
     { label: "MRR Family", value: `${(familyMrr.mrr_cents / 100).toLocaleString("fr-FR")}€`, sub: `${(htMrr / 100).toLocaleString("fr-FR")}€ HT · ${familyMrr.active_count} actif${familyMrr.active_count > 1 ? "s" : ""}${familyMrr.trial_count > 0 ? ` · ${familyMrr.trial_count} trial` : ""} · churn ${familyMrr.churn_rate_pct}%`, icon: "👑", color: "text-fuchsia-600 bg-fuchsia-50", href: "/admin/pipeline" },
     { label: "CA total", value: `${(totalRevenue / 100).toLocaleString("fr-FR")}€`, sub: `${(htTotal / 100).toLocaleString("fr-FR")}€ HT · ${totalEnrollments || 0} formations`, icon: "📦", color: "text-blue-600 bg-blue-50", href: "/admin/eleves" },
+    { label: "Ventes ce mois", value: monthSalesCount || 0, sub: `${prevMonth.prev_month_sales_count} en M-1`, delta: deltaSales, icon: "🛒", color: "text-orange-600 bg-orange-50", href: "/admin/eleves" },
     { label: "Contacts CRM", value: totalContacts || 0, sub: `${todayContacts || 0} aujourd'hui`, icon: "👥", color: "text-purple-600 bg-purple-50", href: "/admin/contacts" },
     { label: "Élèves inscrits", value: totalProfiles || 0, icon: "🎓", color: "text-amber-600 bg-amber-50", href: "/admin/eleves" },
     { label: "Pipeline : deals gagnés", value: stageCounts.gagne, icon: "🏆", color: "text-es-green bg-es-green/10", href: "/admin/pipeline" },
@@ -184,6 +243,26 @@ export default async function AdminDashboard() {
         </div>
       )}
 
+      {dunning.total_alert > 0 && (
+        <div className="mb-6 rounded-lg border border-red-300 bg-red-50 p-4">
+          <div className="flex items-start gap-3">
+            <div className="text-red-600 text-xl shrink-0">💳</div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-bold text-red-700">
+                {dunning.total_alert} abo{dunning.total_alert > 1 ? "s" : ""} Family en échec paiement
+                <span className="text-red-500 font-normal"> · {(dunning.affected_mrr_cents / 100).toLocaleString("fr-FR")}€ MRR menacé</span>
+              </p>
+              <p className="text-xs text-red-600 mt-1">
+                {dunning.past_due_count > 0 && <span>{dunning.past_due_count} en past_due (Stripe smart-retry actif).</span>}{" "}
+                {dunning.unpaid_count > 0 && <span>{dunning.unpaid_count} en unpaid (toutes tentatives épuisées). </span>}
+                Vérifie chaque sub côté Stripe et relance manuellement si besoin.
+                <Link href="/admin/eleves" prefetch className="underline ml-1 font-semibold">Voir les élèves</Link>
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Stats grid */}
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
         {statCards.map((stat, i) => (
@@ -194,7 +273,12 @@ export default async function AdminDashboard() {
                   {stat.icon}
                 </div>
                 <div className="min-w-0">
-                  <div className="text-2xl font-bold text-gray-900">{stat.value}</div>
+                  <div className="flex items-baseline gap-2 flex-wrap">
+                    <div className="text-2xl font-bold text-gray-900">{stat.value}</div>
+                    {stat.delta && (
+                      <span className={`text-xs font-semibold ${stat.delta.color}`}>{stat.delta.label}</span>
+                    )}
+                  </div>
                   <div className="text-xs text-gray-500">{stat.label}</div>
                   {stat.sub && <div className="text-[11px] text-gray-400 mt-0.5">{stat.sub}</div>}
                 </div>
@@ -244,6 +328,86 @@ export default async function AdminDashboard() {
           })}
         </div>
       </Card>
+
+      {/* Quick wins Lot C : velocity pipeline + coaching upsell */}
+      <div className="grid lg:grid-cols-2 gap-6 mb-8">
+        {/* Velocity pipeline : temps moyen lead -> gagne */}
+        <Card>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="font-serif text-lg font-bold text-gray-900">Vitesse de conversion</h2>
+              <p className="text-xs text-gray-500 mt-0.5">Délai moyen lead → gagné (en jours)</p>
+            </div>
+            <Link href="/admin/pipeline" prefetch className="text-xs text-es-green hover:underline">Pipeline →</Link>
+          </div>
+          <div className="grid grid-cols-3 gap-3">
+            <div className="bg-es-green/5 rounded-lg p-3">
+              <p className="text-[10px] text-gray-500 uppercase tracking-wider">Academy</p>
+              {velocityAcademy && velocityAcademy.total_won > 0 ? (
+                <>
+                  <p className="text-xl font-bold text-es-green">{velocityAcademy.avg_days || 0}j</p>
+                  <p className="text-[10px] text-gray-400">{velocityAcademy.total_won} gagne{velocityAcademy.total_won > 1 ? "s" : ""} · mediane {velocityAcademy.median_days || 0}j</p>
+                </>
+              ) : (
+                <p className="text-sm text-gray-400 italic mt-1">Aucun gagné</p>
+              )}
+            </div>
+            <div className="bg-fuchsia-50 rounded-lg p-3">
+              <p className="text-[10px] text-gray-500 uppercase tracking-wider">Family</p>
+              {velocityFamily && velocityFamily.total_won > 0 ? (
+                <>
+                  <p className="text-xl font-bold text-fuchsia-600">{velocityFamily.avg_days || 0}j</p>
+                  <p className="text-[10px] text-gray-400">{velocityFamily.total_won} membre{velocityFamily.total_won > 1 ? "s" : ""} · mediane {velocityFamily.median_days || 0}j</p>
+                </>
+              ) : (
+                <p className="text-sm text-gray-400 italic mt-1">Aucun actif</p>
+              )}
+            </div>
+            <div className="bg-blue-50 rounded-lg p-3">
+              <p className="text-[10px] text-gray-500 uppercase tracking-wider">Sur-mesure</p>
+              {velocityCustom && velocityCustom.total_won > 0 ? (
+                <>
+                  <p className="text-xl font-bold text-blue-600">{velocityCustom.avg_days || 0}j</p>
+                  <p className="text-[10px] text-gray-400">{velocityCustom.total_won} accept{velocityCustom.total_won > 1 ? "és" : "é"} · mediane {velocityCustom.median_days || 0}j</p>
+                </>
+              ) : (
+                <p className="text-sm text-gray-400 italic mt-1">Aucun gagné</p>
+              )}
+            </div>
+          </div>
+          <p className="text-[10px] text-gray-400 mt-3 italic">
+            Calcul : date d&apos;entree CRM jusqu&apos;a bascule pipeline. Approximation tant qu&apos;on n&apos;a pas d&apos;historique stage-par-stage.
+          </p>
+        </Card>
+
+        {/* Coaching upsell : eleves ayant consomme leurs credits */}
+        <Card>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="font-serif text-lg font-bold text-gray-900">Coaching · opportunites upsell</h2>
+              <p className="text-xs text-gray-500 mt-0.5">Eleves a relancer pour vendre du coaching seul</p>
+            </div>
+            <Link href="/admin/eleves" prefetch className="text-xs text-es-green hover:underline">Voir →</Link>
+          </div>
+          <div className="grid grid-cols-3 gap-3">
+            <div className="bg-amber-50 rounded-lg p-3">
+              <p className="text-[10px] text-gray-500 uppercase tracking-wider">Credits epuises</p>
+              <p className={`text-xl font-bold ${coachingUpsell.exhausted_count > 0 ? "text-amber-600" : "text-gray-400"}`}>{coachingUpsell.exhausted_count}</p>
+              <p className="text-[10px] text-gray-400">Pretes pour upsell</p>
+            </div>
+            <div className="bg-blue-50 rounded-lg p-3">
+              <p className="text-[10px] text-gray-500 uppercase tracking-wider">≥ 75% utilises</p>
+              <p className="text-xl font-bold text-blue-600">{coachingUpsell.near_exhausted_count}</p>
+              <p className="text-[10px] text-gray-400">A surveiller</p>
+            </div>
+            <div className="bg-gray-50 rounded-lg p-3">
+              <p className="text-[10px] text-gray-500 uppercase tracking-wider">Credits actifs</p>
+              <p className="text-xl font-bold text-gray-900">{coachingUpsell.total_active_credits}</p>
+              <p className="text-[10px] text-gray-400">A consommer</p>
+            </div>
+          </div>
+        </Card>
+      </div>
 
       {/* Sprint 4 : 4 nouvelles cards performance */}
       <div className="grid lg:grid-cols-2 gap-6 mb-8">
