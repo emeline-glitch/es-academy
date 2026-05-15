@@ -49,6 +49,7 @@ export function NewsletterForm() {
         <button
           type="submit"
           disabled={status === "loading" || !consent}
+          data-cta="newsletter-banner-subscribe"
           className="px-6 py-3 bg-es-green text-white rounded-lg font-medium text-sm hover:bg-es-green-light transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
         >
           {status === "loading" ? "..." : "S'inscrire gratuitement"}

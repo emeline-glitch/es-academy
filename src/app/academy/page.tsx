@@ -79,7 +79,7 @@ export default function AcademyPage() {
           <p className="text-xl text-white/70 max-w-2xl mx-auto mb-10 leading-relaxed">
             Apprends la meilleure stratégie pour te lancer dans l&apos;immobilier locatif, générer des revenus et bâtir ton patrimoine
           </p>
-          <Button variant="cta" size="lg" className="btn-gold-shimmer font-semibold" href="#offre">
+          <Button variant="cta" size="lg" className="btn-gold-shimmer font-semibold" href="#offre" data-cta="academy-hero-scroll">
             Rejoindre le programme : {PRICING.academy.priceDisplay}€
           </Button>
           {/* Stats */}
@@ -396,7 +396,7 @@ export default function AcademyPage() {
             <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
             <h3 className="font-serif text-2xl font-bold mb-2 relative">{PRICING.coaching.name}</h3>
             <p className="text-white/70 mb-6 relative">{PRICING.coaching.description}</p>
-            <Button variant="cta" className="btn-gold-shimmer relative">Demander un devis →</Button>
+            <Button variant="cta" className="btn-gold-shimmer relative" data-cta="academy-coaching-devis">Demander un devis →</Button>
           </div>
         </div>
       </section>
@@ -553,7 +553,7 @@ export default function AcademyPage() {
       <section className="py-16 bg-es-green-dark text-center">
         <div className="max-w-3xl mx-auto px-6">
           <h2 className="font-serif text-2xl font-bold text-white mb-4">Prêt(e) à transformer ton avenir ?</h2>
-          <Button variant="cta" size="lg" className="btn-gold-shimmer" href="#offre">
+          <Button variant="cta" size="lg" className="btn-gold-shimmer" href="#offre" data-cta="academy-end-scroll">
             Rejoindre la formation : {PRICING.academy.priceDisplay}€
           </Button>
         </div>

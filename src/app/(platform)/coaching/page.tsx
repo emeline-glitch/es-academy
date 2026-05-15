@@ -70,6 +70,7 @@ export default async function CoachingPage() {
                     href={CALENDLY_INCLUDED_URL}
                     target="_blank"
                     rel="noopener noreferrer"
+                    data-cta="coaching-included-book"
                     className="inline-flex items-center justify-center w-full bg-es-green text-white font-semibold py-3.5 rounded-xl hover:bg-es-green-light transition-colors"
                   >
                     Réserver ma session →
@@ -98,6 +99,7 @@ export default async function CoachingPage() {
                   href={CALENDLY_PACKAGE_SALES_URL}
                   target="_blank"
                   rel="noopener noreferrer"
+                  data-cta="coaching-packages-sales"
                   className="inline-flex items-center justify-center w-full bg-es-gold-dark text-white font-semibold py-3.5 rounded-xl hover:bg-es-gold transition-colors"
                 >
                   Découvrir les packages →
@@ -139,6 +141,7 @@ export default async function CoachingPage() {
                 href={CALENDLY_PAID_URL}
                 target="_blank"
                 rel="noopener noreferrer"
+                data-cta="coaching-paid-book"
                 className="inline-flex items-center justify-center w-full bg-es-gold-dark text-white font-semibold py-3.5 rounded-xl hover:bg-es-gold transition-colors"
               >
                 Réserver et payer →

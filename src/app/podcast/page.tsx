@@ -86,7 +86,7 @@ export default function PodcastPage() {
           <p className="text-es-text-muted mb-8">
             La Méthode Emeline Siron te donne tout : 14 modules, 30h de vidéo, 91 outils.
           </p>
-          <Button variant="primary" size="lg" href="/academy">
+          <Button variant="primary" size="lg" href="/academy" data-cta="pod-end-academy">
             Découvrir ES Academy →
           </Button>
         </div>

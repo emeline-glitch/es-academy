@@ -407,6 +407,7 @@ export default async function FamilyPage(props: {
               </p>
               <a
                 href="/academy"
+                data-cta="family-bridge-academy"
                 className="inline-flex items-center justify-center font-semibold rounded-lg px-8 py-4 text-base bg-white text-es-green hover:bg-es-cream transition-all shadow-md"
               >
                 Découvrir ES Academy

@@ -61,6 +61,7 @@ export default function Home() {
               <div className="flex flex-col sm:flex-row gap-4 mb-12">
                 <a
                   href="/academy"
+                  data-cta="home-hero-academy"
                   className="group inline-flex flex-col items-center sm:items-start justify-center rounded-lg px-6 py-3.5 bg-es-green text-white hover:bg-es-green-light transition-all shadow-lg"
                 >
                   <span className="font-semibold text-base">Découvrir ES Academy</span>
@@ -68,6 +69,7 @@ export default function Home() {
                 </a>
                 <a
                   href="/family"
+                  data-cta="home-hero-family"
                   className="group inline-flex flex-col items-center sm:items-start justify-center rounded-lg px-6 py-3.5 bg-es-terracotta text-white hover:bg-es-terracotta-light transition-all shadow-lg"
                 >
                   <span className="font-semibold text-base">Rejoindre ES Family</span>
@@ -231,7 +233,7 @@ export default function Home() {
 
           <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
             {/* ES Academy */}
-            <a href="/academy" className="bg-es-green rounded-2xl p-8 lg:p-10 text-white hover:shadow-2xl transition-all hover:-translate-y-1 group relative overflow-hidden">
+            <a href="/academy" data-cta="home-univers-academy" className="bg-es-green rounded-2xl p-8 lg:p-10 text-white hover:shadow-2xl transition-all hover:-translate-y-1 group relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
               <span className="text-xs uppercase tracking-widest text-white/50 font-medium">Formation</span>
               <h3 className="font-serif text-2xl font-bold mt-2 mb-2">
@@ -251,7 +253,7 @@ export default function Home() {
             </a>
 
             {/* ES Family */}
-            <a href="/family" className="bg-es-terracotta rounded-2xl p-8 lg:p-10 text-white hover:shadow-2xl transition-all hover:-translate-y-1 group relative overflow-hidden">
+            <a href="/family" data-cta="home-univers-family" className="bg-es-terracotta rounded-2xl p-8 lg:p-10 text-white hover:shadow-2xl transition-all hover:-translate-y-1 group relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
               <span className="text-xs uppercase tracking-widest text-white/50 font-medium">Communauté</span>
               <h3 className="font-serif text-2xl font-bold mt-2 mb-2">ES Family</h3>
@@ -475,7 +477,7 @@ export default function Home() {
             On y va ?
           </h2>
           <p className="text-white/70 mb-8 text-lg">Faisons avancer tes projets ensemble.</p>
-          <Button variant="cta" size="lg" className="btn-gold-shimmer" href="/academy">
+          <Button variant="cta" size="lg" className="btn-gold-shimmer" href="/academy" data-cta="home-cta-academy">
             Découvrir la méthode
           </Button>
         </div>

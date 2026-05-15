@@ -74,7 +74,7 @@ export default function AppelDecouverte() {
             <CalendlyEmbed />
           </Suspense>
           <p className="text-xs text-es-text-muted text-center mt-4 italic">
-            Si le calendrier ne s&apos;affiche pas, <a href={CALENDLY_BASE_URL} target="_blank" rel="noopener noreferrer" className="text-es-terracotta underline">clique ici</a>.
+            Si le calendrier ne s&apos;affiche pas, <a href={CALENDLY_BASE_URL} target="_blank" rel="noopener noreferrer" data-cta="sim-appel-decouverte-fallback" className="text-es-terracotta underline">clique ici</a>.
           </p>
         </div>
       </section>

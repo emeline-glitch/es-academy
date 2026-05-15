@@ -132,6 +132,7 @@ export default function QuizLanding() {
               <button
                 type="submit"
                 disabled={submitting}
+                data-cta="quiz-hero-optin"
                 className="w-full bg-es-terracotta text-white font-semibold py-3.5 rounded-lg hover:bg-es-terracotta-dark transition-colors disabled:opacity-50 mt-2"
               >
                 {submitting ? "Lancement…" : "Lancer le quiz"}

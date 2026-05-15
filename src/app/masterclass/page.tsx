@@ -135,6 +135,7 @@ export default function MasterclassLanding() {
               <button
                 type="submit"
                 disabled={submitting}
+                data-cta="mc-hero-optin"
                 className="w-full bg-es-green text-white font-semibold py-3.5 rounded-lg hover:bg-es-green-light transition-colors disabled:opacity-50 mt-2"
               >
                 {submitting ? "Envoi…" : "Regarder la masterclass"}
