@@ -40,6 +40,7 @@ export default async function AdminDashboard() {
     revenueBySourceRes, familyMrrRes,
     prevMonthRes, velocityRes, dunningRes, coachingUpsellRes,
     ctaAttribRes,
+    ltvRes, cohortsRes, lmFunnelRes,
   ] = await Promise.all([
     supabase.rpc("dashboard_stats", { month_start: monthStart, today_start: todayStart }),
     supabase
@@ -76,6 +77,9 @@ export default async function AdminDashboard() {
     supabase.rpc("dunning_alert"),
     supabase.rpc("coaching_upsell_candidates"),
     supabase.rpc("cta_attribution", { period_days: 30 }),
+    supabase.rpc("customer_ltv"),
+    supabase.rpc("conversion_cohorts", { months_back: 6 }),
+    supabase.rpc("lead_magnet_funnel", { period_days: 90 }),
   ]);
   const welcomeFailedCount = (welcomeFailedRes?.data as number | null) || 0;
 
@@ -176,6 +180,41 @@ export default async function AdminDashboard() {
     conversion_rate: number;
     attributed_revenue_cents: number;
   }>;
+
+  const ltv = (ltvRes.data || []) as Array<{
+    segment: string;
+    customers_count: number;
+    total_revenue_cents: number;
+    avg_ltv_cents: number;
+  }>;
+
+  const cohorts = (cohortsRes.data || []) as Array<{
+    cohort_month: string;
+    contacts_count: number;
+    converted_count: number;
+    conversion_rate: number;
+    avg_days_to_convert: number | null;
+  }>;
+
+  const lmFunnel = (lmFunnelRes.data || []) as Array<{
+    lead_magnet_slug: string;
+    lead_magnet_name: string;
+    opt_ins: number;
+    buyers: number;
+    conversion_rate: number;
+    revenue_cents: number;
+  }>;
+
+  function ltvLabel(seg: string): string {
+    if (seg === "academy_only") return "Academy seul";
+    if (seg === "family_only") return "Family seul";
+    if (seg === "both") return "Academy + Family";
+    return seg;
+  }
+  function cohortMonthLabel(iso: string): string {
+    const d = new Date(iso);
+    return d.toLocaleDateString("fr-FR", { month: "long", year: "numeric" });
+  }
 
   // Helper delta % vs mois precedent. null si pas de base de comparaison.
   function deltaPct(current: number, previous: number): number | null {
@@ -634,6 +673,110 @@ export default async function AdminDashboard() {
                       {row.conversion_rate}%
                     </td>
                     <td className="py-2 px-2 text-right font-bold text-gray-900">{(row.attributed_revenue_cents / 100).toLocaleString("fr-FR")}€</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </Card>
+
+      {/* LTV par segment + Cohortes de conversion */}
+      <div className="grid lg:grid-cols-2 gap-6 mb-8">
+        <Card>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="font-serif text-lg font-bold text-gray-900">LTV par segment client</h2>
+              <p className="text-xs text-gray-500 mt-0.5">Revenu cumule moyen par client selon ses achats</p>
+            </div>
+          </div>
+          {ltv.length === 0 ? (
+            <p className="text-sm text-gray-400 italic py-4 text-center">Pas encore de clients.</p>
+          ) : (
+            <div className="space-y-3">
+              {ltv.map((seg) => (
+                <div key={seg.segment} className="flex items-center justify-between bg-gray-50 rounded-lg p-3">
+                  <div>
+                    <p className="text-sm font-semibold text-gray-900">{ltvLabel(seg.segment)}</p>
+                    <p className="text-[10px] text-gray-500">{seg.customers_count} client{seg.customers_count > 1 ? "s" : ""} · CA total {(seg.total_revenue_cents / 100).toLocaleString("fr-FR")}€</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xl font-bold text-es-green">{(seg.avg_ltv_cents / 100).toLocaleString("fr-FR")}€</p>
+                    <p className="text-[10px] text-gray-400">LTV moyenne</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
+
+        <Card>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="font-serif text-lg font-bold text-gray-900">Cohortes de conversion</h2>
+              <p className="text-xs text-gray-500 mt-0.5">Par mois d&apos;arrivee CRM : % devenus clients + delai moyen</p>
+            </div>
+          </div>
+          {cohorts.length === 0 ? (
+            <p className="text-sm text-gray-400 italic py-4 text-center">Pas encore de cohorte exploitable.</p>
+          ) : (
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="text-[10px] uppercase text-gray-500 tracking-wider border-b border-gray-100">
+                  <th className="text-left py-2 px-2">Mois</th>
+                  <th className="text-right py-2 px-2">Contacts</th>
+                  <th className="text-right py-2 px-2">Convertis</th>
+                  <th className="text-right py-2 px-2">Taux</th>
+                  <th className="text-right py-2 px-2">Delai moy.</th>
+                </tr>
+              </thead>
+              <tbody>
+                {cohorts.map((c) => (
+                  <tr key={c.cohort_month} className="border-b border-gray-50 last:border-0">
+                    <td className="py-2 px-2 text-gray-700">{cohortMonthLabel(c.cohort_month)}</td>
+                    <td className="py-2 px-2 text-right text-gray-600">{c.contacts_count}</td>
+                    <td className="py-2 px-2 text-right font-semibold text-gray-900">{c.converted_count}</td>
+                    <td className={`py-2 px-2 text-right font-semibold ${c.conversion_rate >= 10 ? "text-es-green" : c.conversion_rate >= 5 ? "text-amber-600" : "text-gray-400"}`}>{c.conversion_rate}%</td>
+                    <td className="py-2 px-2 text-right text-gray-500">{c.avg_days_to_convert !== null ? `${c.avg_days_to_convert}j` : "—"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </Card>
+      </div>
+
+      {/* Funnel par lead magnet */}
+      <Card className="mb-8">
+        <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
+          <div>
+            <h2 className="font-serif text-lg font-bold text-gray-900">Funnel par lead magnet</h2>
+            <p className="text-xs text-gray-500 mt-0.5">90 derniers jours · opt-ins (tag lm:slug) -&gt; achats Academy/Family attribues par email</p>
+          </div>
+          <Link href="/admin/lead-magnets" prefetch className="text-xs text-es-green hover:underline">Gerer les LM →</Link>
+        </div>
+        {lmFunnel.length === 0 ? (
+          <p className="text-sm text-gray-400 italic py-4 text-center">Pas encore d&apos;opt-in lead magnet dans les 90 derniers jours.</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-[10px] uppercase text-gray-500 tracking-wider border-b border-gray-100">
+                  <th className="text-left py-2 px-2">Lead magnet</th>
+                  <th className="text-right py-2 px-2">Opt-ins</th>
+                  <th className="text-right py-2 px-2">Acheteurs</th>
+                  <th className="text-right py-2 px-2">Taux conv.</th>
+                  <th className="text-right py-2 px-2">CA</th>
+                </tr>
+              </thead>
+              <tbody>
+                {lmFunnel.map((lm) => (
+                  <tr key={lm.lead_magnet_slug} className="border-b border-gray-50 last:border-0">
+                    <td className="py-2 px-2 text-gray-700 font-medium">{lm.lead_magnet_name}</td>
+                    <td className="py-2 px-2 text-right text-gray-600">{lm.opt_ins}</td>
+                    <td className="py-2 px-2 text-right font-semibold text-gray-900">{lm.buyers}</td>
+                    <td className={`py-2 px-2 text-right font-semibold ${lm.conversion_rate >= 10 ? "text-es-green" : lm.conversion_rate >= 5 ? "text-amber-600" : "text-gray-400"}`}>{lm.conversion_rate}%</td>
+                    <td className="py-2 px-2 text-right font-bold text-gray-900">{(lm.revenue_cents / 100).toLocaleString("fr-FR")}€</td>
                   </tr>
                 ))}
               </tbody>
