@@ -153,9 +153,12 @@ export default function Home() {
               { n: "03", text: "Tu as déjà un bien mais tu ne sais pas comment structurer la suite." },
               { n: "04", text: "Tu gagnes bien ta vie et tes économies dorment sur un Livret A à 1,5%." },
             ].map((item) => (
-              <div key={item.n} className="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm">
-                <p className="font-serif text-3xl font-bold text-es-terracotta mb-3">{item.n}</p>
-                <p className="text-es-text leading-relaxed">{item.text}</p>
+              <div
+                key={item.n}
+                className="bg-es-green rounded-2xl p-8 border border-es-green-light/30 shadow-lg shadow-es-green/15"
+              >
+                <p className="font-serif text-4xl font-bold text-es-gold mb-3">{item.n}</p>
+                <p className="text-white/90 leading-relaxed">{item.text}</p>
               </div>
             ))}
           </div>
