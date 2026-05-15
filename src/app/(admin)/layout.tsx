@@ -73,10 +73,16 @@ export default async function AdminLayout({
     redirect("/dashboard");
   }
 
-  // Owner = Emeline (ADMIN_EMAIL premier email). Filtre les items ownerOnly
-  // pour cacher Finance aux admins secondaires (Antony, Tiffany).
-  const ownerEmail = (process.env.ADMIN_EMAIL || "").toLowerCase().split(",")[0].trim();
-  const isOwner = Boolean(ownerEmail && userEmail === ownerEmail);
+  // Owner = Emeline (ADMIN_EMAIL csv, accepte 1+ emails). Filtre les items
+  // ownerOnly pour cacher Finance aux admins secondaires (Antony, Tiffany).
+  // Emeline a 2 comptes (hotmail + emeline-siron.fr), les 2 doivent voir
+  // Finance dans la sidebar.
+  const ownerEmails = (process.env.ADMIN_EMAIL || "")
+    .toLowerCase()
+    .split(",")
+    .map((e) => e.trim())
+    .filter(Boolean);
+  const isOwner = ownerEmails.includes(userEmail);
   const visibleNav = adminNav.filter((item) => !item.ownerOnly || isOwner);
 
   return (

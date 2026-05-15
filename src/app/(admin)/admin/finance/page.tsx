@@ -52,9 +52,16 @@ export default async function FinancePage() {
   const user = await getCachedUser();
   if (!user) redirect("/connexion");
 
-  const ownerEmail = (process.env.ADMIN_EMAIL || "").toLowerCase().split(",")[0].trim();
+  // ADMIN_EMAIL peut etre un CSV de plusieurs emails (Emeline a 2 comptes :
+  // emeline@emeline-siron.fr + emeline.siron@hotmail.fr). On accepte n'importe
+  // lequel pour la page Finance.
+  const ownerEmails = (process.env.ADMIN_EMAIL || "")
+    .toLowerCase()
+    .split(",")
+    .map((e) => e.trim())
+    .filter(Boolean);
   const userEmail = (user.email || "").toLowerCase();
-  if (!ownerEmail || userEmail !== ownerEmail) {
+  if (ownerEmails.length === 0 || !ownerEmails.includes(userEmail)) {
     redirect("/admin/dashboard");
   }
 

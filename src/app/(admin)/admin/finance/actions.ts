@@ -12,9 +12,15 @@ export async function updateAnnualTarget(formData: FormData): Promise<void> {
   const user = await getCachedUser();
   if (!user) throw new Error("Non authentifie");
 
-  const ownerEmail = (process.env.ADMIN_EMAIL || "").toLowerCase().split(",")[0].trim();
+  // Accepte n'importe quel email present dans ADMIN_EMAIL (csv). Emeline a
+  // 2 comptes, les 2 doivent pouvoir editer les targets.
+  const ownerEmails = (process.env.ADMIN_EMAIL || "")
+    .toLowerCase()
+    .split(",")
+    .map((e) => e.trim())
+    .filter(Boolean);
   const userEmail = (user.email || "").toLowerCase();
-  if (!ownerEmail || userEmail !== ownerEmail) {
+  if (ownerEmails.length === 0 || !ownerEmails.includes(userEmail)) {
     throw new Error("Reserve a Emeline");
   }
 
