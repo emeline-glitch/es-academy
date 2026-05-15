@@ -45,6 +45,12 @@ export function EmailEditor({ value, onChange }: EmailEditorProps) {
   const [activeFontFamily, setActiveFontFamily] = useState(FONT_FAMILIES[0].value);
   const [selectedImg, setSelectedImg] = useState<HTMLImageElement | null>(null);
   const [imgMenuPos, setImgMenuPos] = useState<{ top: number; left: number } | null>(null);
+  // Edition de lien : selection memorisee au moment d'ouvrir le popup
+  // (sans ca, le focus de l'input fait perdre la position dans l'editeur).
+  const savedRangeRef = useRef<Range | null>(null);
+  const [selectedLink, setSelectedLink] = useState<HTMLAnchorElement | null>(null);
+  const [linkMenuPos, setLinkMenuPos] = useState<{ top: number; left: number } | null>(null);
+  const [linkMenuUrl, setLinkMenuUrl] = useState("");
 
   // Initialize DOM content on mount (and only re-sync when value changes externally,
   // i.e. not as a result of our own onChange cycle). This is the fix for the
@@ -71,11 +77,100 @@ export function EmailEditor({ value, onChange }: EmailEditorProps) {
     syncContent();
   }, [syncContent]);
 
+  // Normalise une URL : ajoute https:// si pas de protocole, garde
+  // mailto:/tel:/ancre/relatif tels quels.
+  function normalizeUrl(url: string): string {
+    const trimmed = url.trim();
+    if (!trimmed) return "";
+    if (/^(https?:|mailto:|tel:|\/|#)/i.test(trimmed)) return trimmed;
+    return `https://${trimmed}`;
+  }
+
   function handleInsertLink() {
-    if (!linkUrl.trim()) return;
-    exec("createLink", linkUrl);
+    const url = normalizeUrl(linkUrl);
+    if (!url) return;
+    if (!editorRef.current) return;
+    editorRef.current.focus();
+
+    // Restaure la selection sauvegardee au moment d'ouvrir le popup
+    // (sinon le focus de l'input l'a fait perdre).
+    const sel = window.getSelection();
+    if (sel && savedRangeRef.current) {
+      sel.removeAllRanges();
+      sel.addRange(savedRangeRef.current);
+    }
+
+    const range = sel?.rangeCount ? sel.getRangeAt(0) : null;
+    if (range && !range.collapsed) {
+      // Texte selectionne : wrap dans <a>. execCommand cree le lien mais
+      // sans target/rel, on enrichit ensuite.
+      document.execCommand("createLink", false, url);
+      const newLinks = editorRef.current.querySelectorAll(`a[href="${CSS.escape(url)}"]`);
+      newLinks.forEach((a) => {
+        a.setAttribute("target", "_blank");
+        a.setAttribute("rel", "noopener noreferrer");
+      });
+    } else if (range) {
+      // Pas de selection : on insere <a href="url">url</a> au curseur,
+      // le texte etant l'URL elle-meme. L'utilisateur peut editer le
+      // texte ensuite si besoin.
+      const link = document.createElement("a");
+      link.href = url;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = url;
+      range.insertNode(link);
+      // Place le curseur APRES le lien pour pouvoir continuer a taper.
+      range.setStartAfter(link);
+      range.setEndAfter(link);
+      sel?.removeAllRanges();
+      sel?.addRange(range);
+    }
+
     setShowLinkInput(false);
     setLinkUrl("");
+    savedRangeRef.current = null;
+    syncContent();
+  }
+
+  function openLinkInput() {
+    // Capture la selection courante AVANT que le focus passe a l'input.
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount > 0 && editorRef.current?.contains(sel.anchorNode)) {
+      savedRangeRef.current = sel.getRangeAt(0).cloneRange();
+      // Si la selection est sur un lien existant, pre-remplit l'URL
+      const anchor = (sel.anchorNode?.parentElement as HTMLElement | null)?.closest("a") as HTMLAnchorElement | null;
+      if (anchor) setLinkUrl(anchor.href);
+    } else {
+      savedRangeRef.current = null;
+    }
+    setShowLinkInput((v) => !v);
+    setShowImageInput(false);
+  }
+
+  function updateSelectedLink(newUrl: string) {
+    if (!selectedLink) return;
+    const url = normalizeUrl(newUrl);
+    if (!url) return;
+    selectedLink.href = url;
+    setSelectedLink(null);
+    setLinkMenuPos(null);
+    syncContent();
+  }
+
+  function removeSelectedLink() {
+    if (!selectedLink) return;
+    // Unwrap : remplace le <a> par son contenu pour garder le texte.
+    const parent = selectedLink.parentNode;
+    if (parent) {
+      while (selectedLink.firstChild) {
+        parent.insertBefore(selectedLink.firstChild, selectedLink);
+      }
+      parent.removeChild(selectedLink);
+    }
+    setSelectedLink(null);
+    setLinkMenuPos(null);
+    syncContent();
   }
 
   function handleInsertImageFromUrl() {
@@ -85,10 +180,14 @@ export function EmailEditor({ value, onChange }: EmailEditorProps) {
     setImageUrl("");
   }
 
-  // Image resize : gestion du click sur une image et du menu flottant
+  // Image resize OU edition de lien : gestion du click sur une image ou
+  // un lien existant. Affiche le menu flottant approprie.
   function handleEditorClick(e: React.MouseEvent<HTMLDivElement>) {
     const target = e.target as HTMLElement;
-    if (target.tagName === "IMG" && editorRef.current) {
+    if (!editorRef.current) return;
+
+    // Cas 1 : clic sur une image
+    if (target.tagName === "IMG") {
       const img = target as HTMLImageElement;
       const editorRect = editorRef.current.getBoundingClientRect();
       const imgRect = img.getBoundingClientRect();
@@ -97,10 +196,32 @@ export function EmailEditor({ value, onChange }: EmailEditorProps) {
         top: imgRect.bottom - editorRect.top + 4,
         left: imgRect.left - editorRect.left,
       });
-    } else {
+      setSelectedLink(null);
+      setLinkMenuPos(null);
+      return;
+    }
+
+    // Cas 2 : clic sur un lien (ou sur un descendant comme une span/em)
+    const anchor = target.closest("a") as HTMLAnchorElement | null;
+    if (anchor && editorRef.current.contains(anchor)) {
+      const editorRect = editorRef.current.getBoundingClientRect();
+      const anchorRect = anchor.getBoundingClientRect();
+      setSelectedLink(anchor);
+      setLinkMenuUrl(anchor.href);
+      setLinkMenuPos({
+        top: anchorRect.bottom - editorRect.top + 4,
+        left: anchorRect.left - editorRect.left,
+      });
       setSelectedImg(null);
       setImgMenuPos(null);
+      return;
     }
+
+    // Cas 3 : clic ailleurs -> ferme les 2 menus
+    setSelectedImg(null);
+    setImgMenuPos(null);
+    setSelectedLink(null);
+    setLinkMenuPos(null);
   }
 
   function resizeSelectedImg(size: "small" | "medium" | "large" | "full" | "original") {
@@ -340,7 +461,7 @@ export function EmailEditor({ value, onChange }: EmailEditorProps) {
 
         {/* Link */}
         <div className="relative">
-          <ToolbarButton onClick={() => { setShowLinkInput(!showLinkInput); setShowImageInput(false); }} title="Insérer un lien">
+          <ToolbarButton onClick={openLinkInput} title="Insérer un lien">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
           </ToolbarButton>
           {showLinkInput && (
@@ -458,6 +579,50 @@ export function EmailEditor({ value, onChange }: EmailEditorProps) {
           className="min-h-[400px] p-6 text-sm text-gray-800 leading-relaxed focus:outline-none [&_a]:text-es-green [&_a]:underline [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mb-3 [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:mb-2 [&_img]:max-w-full [&_img]:rounded-lg [&_img]:my-3 [&_img]:cursor-pointer [&_img.selected]:ring-2 [&_img.selected]:ring-es-green [&_hr]:my-4 [&_hr]:border-gray-200 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6 [&_li]:mb-1"
           style={{ fontFamily: "Arial, Helvetica, sans-serif" }}
         />
+
+        {/* Menu flottant d'edition de lien quand un <a> est clique */}
+        {selectedLink && linkMenuPos && (
+          <div
+            className="absolute z-20 bg-white border border-gray-300 rounded-lg shadow-lg p-2 flex items-center gap-2"
+            style={{ top: linkMenuPos.top, left: linkMenuPos.left }}
+            onMouseDown={(e) => e.preventDefault()}
+          >
+            <span className="text-[10px] text-gray-400 px-1 uppercase tracking-wider">Lien</span>
+            <input
+              type="url"
+              value={linkMenuUrl}
+              onChange={(e) => setLinkMenuUrl(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && updateSelectedLink(linkMenuUrl)}
+              className="px-2 py-1 text-xs border border-gray-200 rounded w-64"
+              placeholder="https://..."
+            />
+            <button
+              type="button"
+              onClick={() => updateSelectedLink(linkMenuUrl)}
+              className="px-2 py-1 text-xs bg-es-green text-white rounded hover:bg-es-green-light cursor-pointer"
+              title="Modifier l'URL du lien"
+            >
+              Modifier
+            </button>
+            <button
+              type="button"
+              onClick={removeSelectedLink}
+              className="px-2 py-1 text-xs text-red-600 hover:bg-red-50 rounded cursor-pointer"
+              title="Supprimer le lien (garde le texte)"
+            >
+              Supprimer
+            </button>
+            <a
+              href={selectedLink.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-gray-400 hover:text-es-green px-1"
+              title="Ouvrir le lien dans un nouvel onglet"
+            >
+              ↗
+            </a>
+          </div>
+        )}
 
         {/* Menu flottant de resize quand une image est sélectionnée */}
         {selectedImg && imgMenuPos && (
