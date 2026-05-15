@@ -15,6 +15,14 @@ interface FinanceSummary {
   family_year_cents: number;
   annual_target_cents: number;
   target_progress_pct: number;
+  q1_target_cents: number;
+  q1_realised_cents: number;
+  q2_target_cents: number;
+  q2_realised_cents: number;
+  q3_target_cents: number;
+  q3_realised_cents: number;
+  q4_target_cents: number;
+  q4_realised_cents: number;
   current_quarter: number;
   current_year: number;
 }
@@ -64,9 +72,24 @@ export default async function FinancePage() {
     family_year_cents: 0,
     annual_target_cents: 0,
     target_progress_pct: 0,
+    q1_target_cents: 0,
+    q1_realised_cents: 0,
+    q2_target_cents: 0,
+    q2_realised_cents: 0,
+    q3_target_cents: 0,
+    q3_realised_cents: 0,
+    q4_target_cents: 0,
+    q4_realised_cents: 0,
     current_quarter: 1,
     current_year: new Date().getFullYear(),
   };
+
+  const quarters = [
+    { num: 1, target: s.q1_target_cents, realised: s.q1_realised_cents },
+    { num: 2, target: s.q2_target_cents, realised: s.q2_realised_cents },
+    { num: 3, target: s.q3_target_cents, realised: s.q3_realised_cents },
+    { num: 4, target: s.q4_target_cents, realised: s.q4_realised_cents },
+  ];
 
   const yoy = deltaYoY(s.year_ttc_cents, s.prev_year_ttc_cents);
   const remainingToTarget = Math.max(0, s.annual_target_cents - s.year_ttc_cents);
@@ -139,29 +162,99 @@ export default async function FinancePage() {
             <p className="font-semibold text-gray-900">{formatEur(monthlyEffortNeeded)} TTC / mois</p>
           </div>
         </div>
-        <form action={updateAnnualTarget} className="pt-3 border-t border-gray-100 flex items-end gap-2 flex-wrap">
+        <form action={updateAnnualTarget} className="pt-4 border-t border-gray-100 space-y-3">
           <input type="hidden" name="year" value={s.current_year} />
-          <div className="flex-1 min-w-[160px]">
-            <label htmlFor="target_eur" className="block text-[10px] uppercase tracking-wider text-gray-500 mb-1">
-              Modifier l&apos;objectif {s.current_year} (€ TTC)
-            </label>
-            <input
-              id="target_eur"
-              name="target_eur"
-              type="text"
-              inputMode="decimal"
-              defaultValue={(s.annual_target_cents / 100).toString()}
-              placeholder="500000"
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-es-green/30"
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-5 gap-2">
+            <div className="sm:col-span-1">
+              <label htmlFor="target_eur" className="block text-[10px] uppercase tracking-wider text-gray-500 mb-1">
+                Objectif annuel
+              </label>
+              <input
+                id="target_eur"
+                name="target_eur"
+                type="text"
+                inputMode="decimal"
+                defaultValue={(s.annual_target_cents / 100).toString()}
+                placeholder="500000"
+                className="w-full px-2 py-1.5 border border-gray-200 rounded text-sm font-mono focus:outline-none focus:ring-2 focus:ring-es-green/30"
+              />
+            </div>
+            {quarters.map((q) => (
+              <div key={q.num}>
+                <label htmlFor={`q${q.num}_target_eur`} className="block text-[10px] uppercase tracking-wider text-gray-500 mb-1">
+                  Q{q.num}
+                </label>
+                <input
+                  id={`q${q.num}_target_eur`}
+                  name={`q${q.num}_target_eur`}
+                  type="text"
+                  inputMode="decimal"
+                  defaultValue={(q.target / 100).toString()}
+                  className="w-full px-2 py-1.5 border border-gray-200 rounded text-sm font-mono focus:outline-none focus:ring-2 focus:ring-es-green/30"
+                />
+              </div>
+            ))}
           </div>
-          <button
-            type="submit"
-            className="px-4 py-2 bg-es-green text-white rounded-lg text-sm font-semibold hover:bg-es-green-light transition-colors cursor-pointer"
-          >
-            Enregistrer
-          </button>
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <p className="text-[10px] text-gray-400 italic">
+              Vide ou non rempli → répartition automatique (objectif annuel / 4 par trimestre).
+            </p>
+            <button
+              type="submit"
+              className="px-4 py-1.5 bg-es-green text-white rounded text-sm font-semibold hover:bg-es-green-light transition-colors cursor-pointer"
+            >
+              Enregistrer
+            </button>
+          </div>
         </form>
+      </Card>
+
+      {/* Détail trimestriel : Q1 / Q2 / Q3 / Q4 */}
+      <Card className="mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="font-serif text-lg font-bold text-gray-900">Détail trimestriel {s.current_year}</h2>
+            <p className="text-xs text-gray-500 mt-0.5">Progression de chaque Q vs son objectif</p>
+          </div>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {quarters.map((q) => {
+            const pct = q.target > 0 ? Math.round((q.realised / q.target) * 100) : 0;
+            const isCurrent = q.num === s.current_quarter;
+            const isPast = q.num < s.current_quarter;
+            const isFuture = q.num > s.current_quarter;
+            const ringClass = isCurrent
+              ? "border-es-green ring-2 ring-es-green/20"
+              : isPast
+                ? pct >= 100
+                  ? "border-es-green/40"
+                  : "border-red-300"
+                : "border-gray-200";
+            const barClass = isCurrent
+              ? "bg-es-green"
+              : isPast
+                ? pct >= 100
+                  ? "bg-es-green/70"
+                  : "bg-amber-500"
+                : "bg-gray-300";
+            return (
+              <div key={q.num} className={`rounded-lg border-2 ${ringClass} p-3 ${isFuture ? "opacity-60" : ""}`}>
+                <div className="flex items-baseline justify-between mb-1">
+                  <p className="text-xs font-bold text-gray-700">Q{q.num}</p>
+                  {isCurrent && <span className="text-[9px] uppercase tracking-wider text-es-green font-semibold">En cours</span>}
+                  {isPast && pct >= 100 && <span className="text-[9px] uppercase tracking-wider text-es-green font-semibold">Atteint</span>}
+                  {isPast && pct < 100 && <span className="text-[9px] uppercase tracking-wider text-amber-600 font-semibold">Manqué</span>}
+                </div>
+                <p className="text-lg font-bold text-gray-900">{formatEur(q.realised)}</p>
+                <p className="text-[10px] text-gray-500">sur {formatEur(q.target)}</p>
+                <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden mt-2">
+                  <div className={`h-full transition-all ${barClass}`} style={{ width: `${Math.min(100, pct)}%` }} />
+                </div>
+                <p className={`text-[10px] font-semibold mt-1 ${pct >= 100 ? "text-es-green" : isPast ? "text-amber-600" : "text-gray-500"}`}>{pct}%</p>
+              </div>
+            );
+          })}
+        </div>
       </Card>
 
       {/* MRR Family + ARR */}
