@@ -35,7 +35,7 @@ export default async function BlogPage() {
 
   return (
     <div className="min-h-screen bg-es-cream">
-      <Header />
+      <Header activePage="blog" />
       <JsonLd data={breadcrumbSchema([
         { name: "Accueil", url: SITE_URL },
         { name: "Blog", url: `${SITE_URL}/blog` },

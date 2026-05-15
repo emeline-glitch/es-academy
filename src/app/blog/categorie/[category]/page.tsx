@@ -57,7 +57,7 @@ export default async function CategoryPage({
 
   return (
     <div className="min-h-screen bg-es-cream">
-      <Header />
+      <Header activePage="blog" />
 
       <section className="bg-es-green py-16">
         <div className="max-w-7xl mx-auto px-6">

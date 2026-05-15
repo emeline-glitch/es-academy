@@ -107,13 +107,6 @@ function getFileUrl(page: Record<string, unknown>, prop: string): string | null 
   return null;
 }
 
-function getCheckbox(page: Record<string, unknown>, prop: string): boolean {
-  const properties = page.properties as Record<string, Record<string, unknown>>;
-  const p = properties?.[prop];
-  if (p?.type === "checkbox") return p.checkbox as boolean;
-  return false;
-}
-
 function mapArticle(page: Record<string, unknown>): Article {
   return {
     id: page.id as string,

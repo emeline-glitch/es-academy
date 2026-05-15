@@ -42,7 +42,7 @@ const SocialIcons = ({ className = "" }: { className?: string }) => (
 );
 
 interface HeaderProps {
-  activePage?: "home" | "academy" | "family";
+  activePage?: "home" | "academy" | "family" | "blog";
 }
 
 export function Header({ activePage = "home" }: HeaderProps) {
@@ -94,7 +94,14 @@ export function Header({ activePage = "home" }: HeaderProps) {
           <Link href="/simulateurs" className="px-3 py-1.5 text-sm text-gray-500 hover:text-es-green transition-colors">
             Simulateurs
           </Link>
-          <Link href="/blog" className="px-3 py-1.5 text-sm text-gray-500 hover:text-es-green transition-colors">
+          <Link
+            href="/blog"
+            className={`px-3 py-1.5 text-sm transition-colors ${
+              activePage === "blog"
+                ? "text-es-green font-medium"
+                : "text-gray-500 hover:text-es-green"
+            }`}
+          >
             Blog
           </Link>
           <Link href="/a-propos" className="px-3 py-1.5 text-sm text-gray-500 hover:text-es-green transition-colors">
@@ -150,7 +157,15 @@ export function Header({ activePage = "home" }: HeaderProps) {
             <Link href="/simulateurs" className="text-sm text-gray-600 py-2.5 px-3 rounded-lg hover:bg-gray-50" onClick={() => setMobileOpen(false)}>
               Simulateurs
             </Link>
-            <Link href="/blog" className="text-sm text-gray-600 py-2.5 px-3 rounded-lg hover:bg-gray-50" onClick={() => setMobileOpen(false)}>
+            <Link
+              href="/blog"
+              className={`text-sm py-2.5 px-3 rounded-lg ${
+                activePage === "blog"
+                  ? "text-es-green font-medium bg-es-green/5"
+                  : "text-gray-600 hover:bg-gray-50"
+              }`}
+              onClick={() => setMobileOpen(false)}
+            >
               Blog
             </Link>
             <Link href="/a-propos" className="text-sm text-gray-600 py-2.5 px-3 rounded-lg hover:bg-gray-50" onClick={() => setMobileOpen(false)}>

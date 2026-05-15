@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { getArticleBySlug, getArticleBlocks, getPublishedArticles } from "@/lib/notion/blog";
-import { getBlogImage, getBlogImageMap } from "@/lib/notion/blog-images";
+import { getBlogImageMap } from "@/lib/notion/blog-images";
 import { renderBlocks } from "@/lib/notion/renderer";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { ArticleContent } from "@/components/blog/ArticleContent";
@@ -76,7 +76,7 @@ export default async function ArticlePage({
 
   return (
     <div className="min-h-screen bg-white">
-      <Header />
+      <Header activePage="blog" />
       <JsonLd data={[
         articleSchema(article),
         breadcrumbSchema([

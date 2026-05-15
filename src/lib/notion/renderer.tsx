@@ -182,7 +182,12 @@ export function renderBlocks(blocks: Block[]) {
             : image?.external?.url;
         if (imgUrl) {
           elements.push(
+            // Notion S3 URLs sont signees et expirent en 1h ;
+            // next/Image les optimiserait inutilement avant expiration.
+            // La revalidation horaire de la page (revalidate=3600) garantit
+            // un refresh des URLs en parallele.
             <figure key={block.id} className="my-6">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={imgUrl}
                 alt={image.caption?.[0]?.plain_text || ""}
