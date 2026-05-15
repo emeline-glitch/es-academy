@@ -154,6 +154,7 @@ export default async function FamilyPage(props: {
                 href={FAMILY_CTA_HREF}
                 event="cta_family_click"
                 eventParams={{ plan: "fondateur", value: 19, currency: "EUR" }}
+                data-cta="family-hero-fondateur"
                 className="inline-flex items-center justify-center font-semibold rounded-lg px-10 py-5 text-lg bg-es-mint-dark text-white hover:bg-es-mint-deep transition-all shadow-lg hover:shadow-xl"
               >
                 Rejoindre ES Family à 19€/mois
@@ -322,6 +323,7 @@ export default async function FamilyPage(props: {
                 href={FAMILY_CTA_HREF}
                 event="cta_family_click"
                 eventParams={{ plan: "fondateur", value: 19, currency: "EUR", placement: "pricing_card" }}
+                data-cta="family-pricing-fondateur"
                 className="relative block w-full text-center font-semibold rounded-lg px-8 py-4 bg-es-mint-dark text-white hover:bg-es-mint-deep transition-all mb-8 shadow-md"
               >
                 Rejoindre à 19€/mois

@@ -85,6 +85,7 @@ export function AcademyCheckoutButtons() {
         type="button"
         onClick={handleCheckout}
         disabled={loading}
+        data-cta={`academy-checkout-${selected}`}
         className="w-full sm:w-auto sm:px-12 btn-gold-shimmer rounded-lg bg-es-gold px-8 py-4 text-lg font-semibold text-white shadow-lg transition hover:bg-es-gold-dark disabled:cursor-not-allowed disabled:opacity-70"
       >
         {loading ? "Redirection..." : "Je rejoins la formation →"}

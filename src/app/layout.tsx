@@ -9,6 +9,7 @@ import { GoogleTagManagerHead, GoogleTagManagerNoScript } from "@/components/seo
 import { GoogleAnalytics } from "@/components/seo/GoogleAnalytics";
 import { GtmPageViewTracker } from "@/components/seo/GtmPageViewTracker";
 import { EngagementTracker } from "@/components/seo/EngagementTracker";
+import { CtaTrackerProvider } from "@/components/CtaTrackerProvider";
 import { organizationSchema, websiteSchema, personSchema } from "@/lib/seo/schemas";
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from "@/lib/utils/constants";
 import "./globals.css";
@@ -105,6 +106,7 @@ export default function RootLayout({
         <PageViewTracker />
         {gtmId && <GtmPageViewTracker />}
         <EngagementTracker />
+        <CtaTrackerProvider />
         <CookieConsent />
         <SocialProof />
         <SearchModal />

@@ -39,6 +39,7 @@ export default async function AdminDashboard() {
     lmPerfRes, alumniRes, chatelRes, quizRes, welcomeFailedRes,
     revenueBySourceRes, familyMrrRes,
     prevMonthRes, velocityRes, dunningRes, coachingUpsellRes,
+    ctaAttribRes,
   ] = await Promise.all([
     supabase.rpc("dashboard_stats", { month_start: monthStart, today_start: todayStart }),
     supabase
@@ -74,6 +75,7 @@ export default async function AdminDashboard() {
     supabase.rpc("pipeline_velocity"),
     supabase.rpc("dunning_alert"),
     supabase.rpc("coaching_upsell_candidates"),
+    supabase.rpc("cta_attribution", { period_days: 30 }),
   ]);
   const welcomeFailedCount = (welcomeFailedRes?.data as number | null) || 0;
 
@@ -165,6 +167,15 @@ export default async function AdminDashboard() {
     near_exhausted_count: number;
     total_active_credits: number;
   } | undefined) || { exhausted_count: 0, near_exhausted_count: 0, total_active_credits: 0 };
+
+  const ctaAttrib = (ctaAttribRes.data || []) as Array<{
+    cta_id: string;
+    clicks_count: number;
+    unique_emails: number;
+    conversions_count: number;
+    conversion_rate: number;
+    attributed_revenue_cents: number;
+  }>;
 
   // Helper delta % vs mois precedent. null si pas de base de comparaison.
   function deltaPct(current: number, previous: number): number | null {
@@ -577,6 +588,54 @@ export default async function AdminDashboard() {
                     </tr>
                   );
                 })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </Card>
+
+      {/* Top CTA convertisseurs (Lot D) */}
+      <Card className="mb-8">
+        <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
+          <div>
+            <h2 className="font-serif text-lg font-bold text-gray-900">Top CTA convertisseurs</h2>
+            <p className="text-xs text-gray-500 mt-0.5">30 derniers jours · CTA tagges avec data-cta="xxx", attribution par email dans les 30j post-clic</p>
+          </div>
+        </div>
+        {ctaAttrib.length === 0 ? (
+          <div className="text-sm text-gray-500 py-6 text-center">
+            <p className="mb-2">Aucun clic CTA enregistre pour le moment.</p>
+            <p className="text-xs text-gray-400">
+              Les CTA tagges (Academy checkout 1x/3x/4x, Family hero/pricing fondateur) commencent a tracker
+              les que la prod re-deploie. Tagger un nouveau CTA = ajouter data-cta="mon-id" sur le bouton.
+            </p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-[10px] uppercase text-gray-500 tracking-wider border-b border-gray-100">
+                  <th className="text-left py-2 px-2">CTA</th>
+                  <th className="text-right py-2 px-2">Clicks</th>
+                  <th className="text-right py-2 px-2">Emails</th>
+                  <th className="text-right py-2 px-2">Conversions</th>
+                  <th className="text-right py-2 px-2">Taux conv.</th>
+                  <th className="text-right py-2 px-2">CA attribue</th>
+                </tr>
+              </thead>
+              <tbody>
+                {ctaAttrib.slice(0, 15).map((row) => (
+                  <tr key={row.cta_id} className="border-b border-gray-50 last:border-0">
+                    <td className="py-2 px-2 font-mono text-gray-700">{row.cta_id}</td>
+                    <td className="py-2 px-2 text-right text-gray-600">{row.clicks_count}</td>
+                    <td className="py-2 px-2 text-right text-gray-600">{row.unique_emails}</td>
+                    <td className="py-2 px-2 text-right font-semibold text-gray-900">{row.conversions_count}</td>
+                    <td className={`py-2 px-2 text-right font-semibold ${row.conversion_rate >= 10 ? "text-es-green" : row.conversion_rate >= 5 ? "text-amber-600" : "text-gray-400"}`}>
+                      {row.conversion_rate}%
+                    </td>
+                    <td className="py-2 px-2 text-right font-bold text-gray-900">{(row.attributed_revenue_cents / 100).toLocaleString("fr-FR")}€</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
