@@ -97,10 +97,12 @@ export default function AcademyPage() {
             ))}
           </div>
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-white to-transparent" />
+        {/* Transition vers la section suivante en es-green-dark plein (pas du
+            blanc cassant). Fondu plus progressif : 3 stops, hauteur doublée. */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-es-green-dark via-es-green-dark/70 to-transparent pointer-events-none" />
       </section>
 
-      {/* En coulisses (placeholder en attendant la vidéo de présentation) */}
+      {/* En coulisses (3 photos chantier sans plus de mention 'vidéo bientôt') */}
       <section className="py-24 bg-es-green-dark relative overflow-hidden">
         {/* Watermark décoratif "Emeline" */}
         <div
@@ -160,13 +162,6 @@ export default function AcademyPage() {
               ))}
             </div>
 
-            <div className="text-center mt-14">
-              <p className="text-white/60 text-sm">La vidéo de présentation arrive bientôt.</p>
-              <p className="text-es-gold text-xs uppercase tracking-widest mt-2">
-                <span className="inline-block w-1.5 h-1.5 rounded-full bg-es-gold mr-2 align-middle" />
-                emeline-siron.fr
-              </p>
-            </div>
           </ScrollReveal>
         </div>
       </section>
@@ -187,12 +182,12 @@ export default function AcademyPage() {
               "Tu cherches une méthode éprouvée, pas des théories",
               "Tu veux être accompagné(e) par quelqu'un qui l'a fait",
             ].map((item, i) => (
-              <div key={i} className="group bg-es-cream rounded-2xl p-6 hover:bg-es-green transition-all duration-300 cursor-default border border-transparent hover:border-es-green-dark">
+              <div key={i} className="bg-es-cream rounded-2xl p-6 border border-es-cream-dark/40 cursor-default">
                 <div className="flex items-start gap-3">
-                  <svg className="w-5 h-5 text-es-green group-hover:text-es-gold mt-0.5 shrink-0 transition-colors" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-5 h-5 text-es-green mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
                   </svg>
-                  <p className="text-sm text-es-text group-hover:text-white font-medium transition-colors">{item}</p>
+                  <p className="text-sm text-es-text font-medium">{item}</p>
                 </div>
               </div>
             ))}
@@ -200,73 +195,47 @@ export default function AcademyPage() {
         </div>
       </section>
 
-      {/* 3. Avant / Après */}
-      <section className="relative py-20 bg-es-green-dark overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.03]" style={{
-          backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
-          backgroundSize: "40px 40px",
-        }} />
-        <div className="relative max-w-5xl mx-auto px-6">
+      {/* 3. Avis vidéo (deplace plus haut : plus parlant qu'un avant/apres abstrait) */}
+      <section className="py-20 bg-es-cream">
+        <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-12">
-            <h2 className="font-serif text-3xl font-bold text-white">Ta transformation commence ici</h2>
+            <span className="text-xs text-es-terracotta uppercase tracking-widest font-medium">Témoignages vidéo</span>
+            <h2 className="font-serif text-3xl font-bold text-es-text mt-3">Ils témoignent en vidéo</h2>
+            <p className="text-es-text-muted mt-3 text-sm">Quatre élèves racontent ce que la méthode a changé pour eux.</p>
           </div>
-          <div className="grid md:grid-cols-2 gap-6">
-            {/* Avant */}
-            <div className="bg-es-cream rounded-2xl p-8 border border-es-cream-dark">
-              <div className="mb-6">
-                <span className="text-xs uppercase tracking-widest text-es-green-dark/60 font-medium">Avant</span>
-                <h3 className="font-serif text-xl font-bold text-es-green-dark mt-2">Les fausses croyances</h3>
-              </div>
-              <ul className="space-y-4">
-                {[
-                  "\"Il n'existe aucune ville rentable\"",
-                  "\"Les banques ne financent pas sans apport\"",
-                  "\"Faire des travaux, c'est trop risqué\"",
-                  "\"Le cash-flow immobilier, c'est un mythe\"",
-                  "\"Investir seul, c'est impossible\"",
-                ].map((item, i) => (
-                  <li key={i} className="flex items-start gap-3 text-es-green-dark text-base line-through decoration-red-500 decoration-2">
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            {/* Après */}
-            <div className="bg-es-cream rounded-2xl p-8 border border-es-cream-dark">
-              <div className="mb-6">
-                <span className="text-xs uppercase tracking-widest text-es-gold-dark font-medium">Après la formation</span>
-                <h3 className="font-serif text-xl font-bold text-es-green-dark mt-2">Ta nouvelle réalité</h3>
-              </div>
-              <ul className="space-y-4">
-                {[
-                  "Tu maîtrises ton marché et tu sais repérer les bonnes affaires",
-                  "Tu gères un patrimoine solide qui travaille pour toi",
-                  "Tu enchaînes les opérations avec confiance",
-                  "Tu vis de tes revenus locatifs",
-                  "Tu es un investisseur autonome et rentable",
-                ].map((item, i) => (
-                  <li key={i} className="flex items-start gap-3 text-es-green-dark font-medium text-base">
-                    <svg className="w-5 h-5 text-es-green mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
-                    </svg>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {videoTestimonials.map((t, i) => (
+              <ScrollReveal key={t.bunnyId} delay={i * 120}>
+                <figure className="group">
+                  <div className="aspect-[9/16] rounded-2xl overflow-hidden relative bg-es-green-dark shadow-lg ring-1 ring-es-green-dark/10 group-hover:shadow-xl group-hover:ring-es-gold/30 transition-all duration-300">
+                    <iframe
+                      src={`${generateSignedVideoUrl({ videoId: t.bunnyId, expiresInHours: 24 })}&autoplay=false&preload=false&responsive=true`}
+                      title={`Témoignage vidéo de ${t.name}`}
+                      loading="lazy"
+                      className="absolute inset-0 w-full h-full"
+                      allow="accelerometer; gyroscope; encrypted-media; picture-in-picture"
+                      allowFullScreen
+                    />
+                  </div>
+                  <figcaption className="mt-4 text-center">
+                    <p className="font-serif text-base text-es-text font-semibold">{t.name}</p>
+                  </figcaption>
+                </figure>
+              </ScrollReveal>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* 4. Programme */}
+      {/* 4. Programme : grille 2 colonnes pour eviter la page trop longue */}
       <section id="programme" className="py-20 bg-white">
-        <div className="max-w-3xl mx-auto px-6">
+        <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-12">
             <span className="text-xs text-es-terracotta uppercase tracking-widest font-medium">Programme</span>
             <h2 className="font-serif text-3xl font-bold text-es-text mt-3 mb-3">{STATS.modules} modules complets</h2>
             <p className="text-es-text-muted">De débutant à investisseur confirmé</p>
           </div>
-          <div className="space-y-3">
+          <div className="grid md:grid-cols-2 gap-3">
             {MODULES_PROGRAMME.map((mod) => (
               <Accordion
                 key={mod.number}
@@ -297,7 +266,8 @@ export default function AcademyPage() {
               <p className="font-serif text-xl sm:text-2xl text-es-gold mt-3">+ 3 mois ES Family offerts</p>
             </div>
 
-            {/* 2. Bloc prix */}
+            {/* 2. Bloc prix : détail explicite des 3 facilités de paiement
+                 pour lever toute ambiguïté avant le redirect Stripe Checkout. */}
             <div className="text-center mb-12 lg:mb-16">
               <p className="text-sm text-es-cream/40 mb-2">
                 Valeur totale <span className="line-through">3 450€</span>
@@ -307,6 +277,13 @@ export default function AcademyPage() {
                 <span className="text-lg font-normal text-es-cream/50">TTC</span>
               </div>
               <p className="text-base text-es-cream/70 mt-3">Paiement en 1, 3 ou 4 fois sans frais</p>
+              <div className="mt-5 inline-flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-es-cream/80 bg-white/5 border border-white/10 rounded-full px-5 py-2.5">
+                <span><span className="font-semibold text-es-cream">1×</span> 998&nbsp;€</span>
+                <span className="text-es-cream/30">·</span>
+                <span><span className="font-semibold text-es-cream">3×</span> 332,67&nbsp;€</span>
+                <span className="text-es-cream/30">·</span>
+                <span><span className="font-semibold text-es-cream">4×</span> 249,50&nbsp;€</span>
+              </div>
               <p className="text-sm text-es-terracotta-light mt-4 font-medium">Déjà plus de 1 900 investisseurs formés</p>
             </div>
           </ScrollReveal>
@@ -322,7 +299,7 @@ export default function AcademyPage() {
                 </div>
                 <ul className="space-y-5">
                   {[
-                    { strong: "30h de formation vidéo structurée", rest: ", du zéro aux stratégies avancées (LMNP, colocation, immeuble de rapport, SCI, fiscalité)" },
+                    { strong: "30h de formation vidéo structurée", rest: ", de zéro aux stratégies avancées (LMNP, colocation, immeuble de rapport, SCI, fiscalité)" },
                     { strong: "91 outils prêts à l'emploi", rest: " : calculateurs, modèles de négociation, checklists visites, trames de baux, grilles d'analyse" },
                     { strong: "Quiz final de validation", rest: " : mesure tes acquis à la fin du parcours et identifie les points à renforcer" },
                     { strong: "Accès à vie + mises à jour incluses", rest: " : le marché bouge, ta formation aussi" },
@@ -396,7 +373,16 @@ export default function AcademyPage() {
             <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
             <h3 className="font-serif text-2xl font-bold mb-2 relative">{PRICING.coaching.name}</h3>
             <p className="text-white/70 mb-6 relative">{PRICING.coaching.description}</p>
-            <Button variant="cta" className="btn-gold-shimmer relative" data-cta="academy-coaching-devis">Demander un devis →</Button>
+            <Button
+              variant="cta"
+              className="btn-gold-shimmer relative"
+              data-cta="academy-coaching-devis"
+              href="https://calendly.com/antony-emeline-siron/on-parle-de-ton-projet-immo-site-internet"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Demander un devis →
+            </Button>
           </div>
         </div>
       </section>
@@ -425,34 +411,60 @@ export default function AcademyPage() {
         </div>
       </section>
 
-      {/* Avis vidéo */}
-      <section className="py-20 bg-es-cream">
-        <div className="max-w-6xl mx-auto px-6">
+      {/* Avant / Après (deplace plus bas : transition vers les avis ecrits) */}
+      <section className="relative py-20 bg-es-green-dark overflow-hidden">
+        <div className="absolute inset-0 opacity-[0.03]" style={{
+          backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
+          backgroundSize: "40px 40px",
+        }} />
+        <div className="relative max-w-5xl mx-auto px-6">
           <div className="text-center mb-12">
-            <span className="text-xs text-es-terracotta uppercase tracking-widest font-medium">Témoignages vidéo</span>
-            <h2 className="font-serif text-3xl font-bold text-es-text mt-3">Ils témoignent en vidéo</h2>
-            <p className="text-es-text-muted mt-3 text-sm">Quatre élèves racontent ce que la méthode a changé pour eux.</p>
+            <h2 className="font-serif text-3xl font-bold text-white">Ta transformation commence ici</h2>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {videoTestimonials.map((t, i) => (
-              <ScrollReveal key={t.bunnyId} delay={i * 120}>
-                <figure className="group">
-                  <div className="aspect-[9/16] rounded-2xl overflow-hidden relative bg-es-green-dark shadow-lg ring-1 ring-es-green-dark/10 group-hover:shadow-xl group-hover:ring-es-gold/30 transition-all duration-300">
-                    <iframe
-                      src={`${generateSignedVideoUrl({ videoId: t.bunnyId, expiresInHours: 24 })}&autoplay=false&preload=false&responsive=true`}
-                      title={`Témoignage vidéo de ${t.name}`}
-                      loading="lazy"
-                      className="absolute inset-0 w-full h-full"
-                      allow="accelerometer; gyroscope; encrypted-media; picture-in-picture"
-                      allowFullScreen
-                    />
-                  </div>
-                  <figcaption className="mt-4 text-center">
-                    <p className="font-serif text-base text-es-text font-semibold">{t.name}</p>
-                  </figcaption>
-                </figure>
-              </ScrollReveal>
-            ))}
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Avant */}
+            <div className="bg-es-cream rounded-2xl p-8 border border-es-cream-dark">
+              <div className="mb-6">
+                <span className="text-xs uppercase tracking-widest text-es-green-dark/60 font-medium">Avant</span>
+                <h3 className="font-serif text-xl font-bold text-es-green-dark mt-2">Les fausses croyances</h3>
+              </div>
+              <ul className="space-y-4">
+                {[
+                  "\"Il n'existe aucune ville rentable\"",
+                  "\"Les banques ne financent pas sans apport\"",
+                  "\"Faire des travaux, c'est trop risqué\"",
+                  "\"Le cash-flow immobilier, c'est un mythe\"",
+                  "\"Investir seul, c'est impossible\"",
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-3 text-es-green-dark/70 text-base line-through decoration-es-green-dark/40 decoration-2">
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            {/* Après */}
+            <div className="bg-es-cream rounded-2xl p-8 border border-es-cream-dark">
+              <div className="mb-6">
+                <span className="text-xs uppercase tracking-widest text-es-gold-dark font-medium">Après la formation</span>
+                <h3 className="font-serif text-xl font-bold text-es-green-dark mt-2">Ta nouvelle réalité</h3>
+              </div>
+              <ul className="space-y-4">
+                {[
+                  "Tu maîtrises ton marché et tu sais repérer les bonnes affaires",
+                  "Tu gères un patrimoine solide qui travaille pour toi",
+                  "Tu enchaînes les opérations avec confiance",
+                  "Tu vis de tes revenus locatifs",
+                  "Tu es un investisseur autonome et rentable",
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-3 text-es-green-dark font-medium text-base">
+                    <svg className="w-5 h-5 text-es-green mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
+                    </svg>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
       </section>
