@@ -165,6 +165,21 @@ export async function POST(request: Request) {
           .from("checkout_attempts")
           .update({ [stage.sentColumn]: new Date().toISOString() })
           .eq("id", att.id);
+
+        // Au J+1, on tag le contact "cart-abandoned:product" pour qu'il
+        // apparaisse dans la liste CRM. Les J+3/J+7 ne touchent pas au tag
+        // (deja pose). Le tag est retire par le webhook Stripe completed.
+        if (stage.level === "j1") {
+          const cartTag = `cart-abandoned:${att.product}`;
+          await supabase.rpc("upsert_contact_with_tags", {
+            p_email: email,
+            p_first_name: prenom,
+            p_last_name: "",
+            p_add_tags: [cartTag],
+            p_source: null,
+          });
+        }
+
         stats.sent++;
       } catch (err) {
         stats.errors++;

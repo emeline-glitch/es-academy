@@ -92,6 +92,26 @@ export async function POST(request: Request) {
           email: email ? email.toLowerCase() : null,
         })
         .eq("stripe_session_id", session.id);
+
+      // Retire le tag cart-abandoned:* du contact qui finalise (sort de
+      // la liste CRM "Panier abandonne"). On retire les 2 tags en aveugle
+      // sans savoir lequel etait pose, array_remove est no-op si absent.
+      if (email) {
+        const emailLc = email.toLowerCase();
+        const { data: contact } = await supabase
+          .from("contacts")
+          .select("tags")
+          .eq("email", emailLc)
+          .maybeSingle();
+        if (contact?.tags && Array.isArray(contact.tags)) {
+          const cleaned = (contact.tags as string[]).filter(
+            (t) => t !== "cart-abandoned:academy" && t !== "cart-abandoned:family"
+          );
+          if (cleaned.length !== contact.tags.length) {
+            await supabase.from("contacts").update({ tags: cleaned }).eq("email", emailLc);
+          }
+        }
+      }
     } catch (err) {
       console.error("[webhook] checkout_attempts completed update failed:", err);
     }
