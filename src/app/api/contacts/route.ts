@@ -39,21 +39,47 @@ export async function POST(request: Request) {
 
     const supabase = await createServiceClient();
 
-    const upsertData: Record<string, unknown> = {
-      email: email.toLowerCase().trim(),
-      first_name: first_name || "",
-      last_name: last_name || "",
-      source: source || "website",
-      tags: tags || ["newsletter"],
-      status: "active",
-    };
-    if (phone !== undefined) upsertData.phone = phone ? String(phone).trim() : null;
+    // Pour les soumissions publiques (newsletter, leads externes), on passe
+    // par la RPC upsert_contact_with_tags qui MERGE les tags existants au
+    // lieu d'écraser. Sans ca, un client existant qui s'inscrit a la
+    // newsletter perdrait son tag 'client' et serait re-traite comme un
+    // prospect frais. La RPC preserve aussi le status 'unsubscribed' (opt-out
+    // RGPD prime sur toute resoumission).
+    const tagsToApply = (Array.isArray(tags) && tags.length > 0 ? tags : ["newsletter"]) as string[];
+    if (!isAdmin) {
+      const { error: rpcErr } = await supabase.rpc("upsert_contact_with_tags", {
+        p_email: email.toLowerCase().trim(),
+        p_first_name: first_name || "",
+        p_last_name: last_name || "",
+        p_add_tags: tagsToApply,
+        p_source: source || "website",
+      });
+      if (rpcErr) {
+        console.error("Contact upsert RPC error:", rpcErr);
+        return NextResponse.json({ error: rpcErr.message }, { status: 500 });
+      }
+      // Phone fourni : update separe (la RPC ne gere pas ce champ)
+      if (phone !== undefined) {
+        const phoneVal = phone ? String(phone).trim() : null;
+        await supabase.from("contacts").update({ phone: phoneVal }).eq("email", email.toLowerCase().trim());
+      }
+    } else {
+      // Admin : upsert direct (admin force les valeurs, ex : import CSV).
+      const upsertData: Record<string, unknown> = {
+        email: email.toLowerCase().trim(),
+        first_name: first_name || "",
+        last_name: last_name || "",
+        source: source || "website",
+        tags: tagsToApply,
+        status: "active",
+      };
+      if (phone !== undefined) upsertData.phone = phone ? String(phone).trim() : null;
 
-    const { error } = await supabase.from("contacts").upsert(upsertData, { onConflict: "email" });
-
-    if (error) {
-      console.error("Contact insert error:", error);
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      const { error } = await supabase.from("contacts").upsert(upsertData, { onConflict: "email" });
+      if (error) {
+        console.error("Contact insert error:", error);
+        return NextResponse.json({ error: error.message }, { status: 500 });
+      }
     }
 
     if (metadata) {
