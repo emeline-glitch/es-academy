@@ -5,12 +5,22 @@ import { AdminNav } from "@/components/admin/AdminNav";
 import { CommandPalette } from "@/components/admin/CommandPalette";
 import Link from "next/link";
 
-const adminNav = [
+type AdminNavItem = {
+  label: string;
+  href?: string;
+  icon?: string;
+  sub?: boolean;
+  section?: boolean;
+  ownerOnly?: boolean;
+};
+
+const adminNav: AdminNavItem[] = [
   { label: "Dashboard", href: "/admin/dashboard", icon: "📊" },
 
   { section: true, label: "Commercial" },
   { label: "Pipeline", href: "/admin/pipeline", icon: "🎯" },
   { label: "Élèves", href: "/admin/eleves", icon: "🎓" },
+  { label: "Finance", href: "/admin/finance", icon: "💼", ownerOnly: true },
 
   { section: true, label: "Marketing" },
   { label: "Formulaires", href: "/admin/forms", icon: "📝" },
@@ -63,6 +73,12 @@ export default async function AdminLayout({
     redirect("/dashboard");
   }
 
+  // Owner = Emeline (ADMIN_EMAIL premier email). Filtre les items ownerOnly
+  // pour cacher Finance aux admins secondaires (Antony, Tiffany).
+  const ownerEmail = (process.env.ADMIN_EMAIL || "").toLowerCase().split(",")[0].trim();
+  const isOwner = Boolean(ownerEmail && userEmail === ownerEmail);
+  const visibleNav = adminNav.filter((item) => !item.ownerOnly || isOwner);
+
   return (
     <ToastProvider>
       <CommandPalette />
@@ -78,7 +94,7 @@ export default async function AdminLayout({
               Astuce : <kbd className="bg-white/10 px-1 rounded">⌘K</kbd> pour la recherche
             </p>
           </div>
-          <AdminNav items={adminNav} />
+          <AdminNav items={visibleNav} />
           <div className="p-6 border-t border-white/10">
             <Link href="/dashboard" className="text-xs text-white/40 hover:text-white/70 transition-colors">
               ← Espace élève
