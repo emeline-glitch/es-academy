@@ -1,7 +1,7 @@
-import { getCachedUser, createClient } from "@/lib/supabase/server";
+import { getCachedUser, createClient, createServiceClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { Card } from "@/components/ui/Card";
-import { updateAnnualTarget } from "./actions";
+import { updateAnnualTarget, addExpense, deleteExpense } from "./actions";
 
 interface FinanceSummary {
   month_ttc_cents: number;
@@ -23,8 +23,21 @@ interface FinanceSummary {
   q3_realised_cents: number;
   q4_target_cents: number;
   q4_realised_cents: number;
+  monthly_expenses_cents: number;
+  annual_expenses_cents: number;
+  net_margin_year_cents: number;
   current_quarter: number;
   current_year: number;
+}
+
+interface Expense {
+  id: string;
+  label: string;
+  category: string;
+  amount_cents: number;
+  is_recurring_monthly: boolean;
+  notes: string | null;
+  created_at: string;
 }
 
 function formatEur(cents: number): string {
@@ -87,9 +100,26 @@ export default async function FinancePage() {
     q3_realised_cents: 0,
     q4_target_cents: 0,
     q4_realised_cents: 0,
+    monthly_expenses_cents: 0,
+    annual_expenses_cents: 0,
+    net_margin_year_cents: 0,
     current_quarter: 1,
     current_year: new Date().getFullYear(),
   };
+
+  // finance_expenses a une RLS service_role-only, on lit via le service client.
+  const adminClient = await createServiceClient();
+  const { data: expensesRaw } = await adminClient
+    .from("finance_expenses")
+    .select("*")
+    .order("is_recurring_monthly", { ascending: false })
+    .order("amount_cents", { ascending: false });
+  const expenses: Expense[] = expensesRaw || [];
+  const totalExpensesByCategory = expenses.reduce<Record<string, number>>((acc, e) => {
+    const amount = e.is_recurring_monthly ? e.amount_cents * 12 : e.amount_cents;
+    acc[e.category] = (acc[e.category] || 0) + amount;
+    return acc;
+  }, {});
 
   const quarters = [
     { num: 1, target: s.q1_target_cents, realised: s.q1_realised_cents },
@@ -118,7 +148,7 @@ export default async function FinancePage() {
       </header>
 
       {/* Top KPIs */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
         <Card>
           <p className="text-[10px] uppercase tracking-wider text-gray-500">CA ce mois</p>
           <p className="text-3xl font-bold text-gray-900 mt-1">{formatEur(s.month_ttc_cents)}</p>
@@ -138,6 +168,27 @@ export default async function FinancePage() {
           <p className="text-xs text-gray-400 mt-1">
             TTC · {formatEur(s.year_ht_cents)} HT · vs {formatEur(s.prev_year_ttc_cents)} en {s.current_year - 1}
           </p>
+        </Card>
+      </div>
+
+      {/* Marge nette annuelle : CA HT - charges fixes annualisées */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <Card>
+          <p className="text-[10px] uppercase tracking-wider text-gray-500">Charges mensuelles</p>
+          <p className="text-3xl font-bold text-amber-600 mt-1">{formatEur(s.monthly_expenses_cents)}</p>
+          <p className="text-xs text-gray-400 mt-1">Récurrentes (SaaS, prestataires…)</p>
+        </Card>
+        <Card>
+          <p className="text-[10px] uppercase tracking-wider text-gray-500">Charges annuelles</p>
+          <p className="text-3xl font-bold text-amber-600 mt-1">{formatEur(s.annual_expenses_cents)}</p>
+          <p className="text-xs text-gray-400 mt-1">Mensuel × 12 + one-shots</p>
+        </Card>
+        <Card>
+          <p className="text-[10px] uppercase tracking-wider text-gray-500">Marge nette {s.current_year}</p>
+          <p className={`text-3xl font-bold mt-1 ${s.net_margin_year_cents >= 0 ? "text-es-green" : "text-red-600"}`}>
+            {formatEur(s.net_margin_year_cents)}
+          </p>
+          <p className="text-xs text-gray-400 mt-1">CA HT − charges annuelles</p>
         </Card>
       </div>
 
@@ -321,8 +372,176 @@ export default async function FinancePage() {
         })()}
       </Card>
 
+      {/* Charges fixes : table + ajout */}
+      <Card className="mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="font-serif text-lg font-bold text-gray-900">Charges fixes</h2>
+            <p className="text-xs text-gray-500 mt-0.5">
+              SaaS, prestataires, marketing, abonnements… La marge nette s&apos;ajuste automatiquement.
+            </p>
+          </div>
+          <div className="text-right">
+            <p className="text-xs text-gray-500">Total annualisé</p>
+            <p className="text-lg font-bold text-amber-600">{formatEur(s.annual_expenses_cents)}</p>
+          </div>
+        </div>
+
+        {Object.keys(totalExpensesByCategory).length > 0 && (
+          <div className="mb-4 flex flex-wrap gap-2">
+            {Object.entries(totalExpensesByCategory)
+              .sort((a, b) => b[1] - a[1])
+              .map(([cat, total]) => (
+                <span
+                  key={cat}
+                  className="text-[11px] bg-amber-50 text-amber-700 px-2 py-1 rounded-full border border-amber-100"
+                >
+                  {cat} · {formatEur(total)}/an
+                </span>
+              ))}
+          </div>
+        )}
+
+        {expenses.length > 0 ? (
+          <div className="border border-gray-100 rounded-lg overflow-hidden mb-4">
+            <table className="w-full text-sm">
+              <thead className="bg-gray-50 text-[10px] uppercase tracking-wider text-gray-500">
+                <tr>
+                  <th className="px-3 py-2 text-left font-semibold">Poste</th>
+                  <th className="px-3 py-2 text-left font-semibold">Catégorie</th>
+                  <th className="px-3 py-2 text-right font-semibold">Montant</th>
+                  <th className="px-3 py-2 text-left font-semibold">Fréquence</th>
+                  <th className="px-3 py-2 text-right font-semibold">Annualisé</th>
+                  <th className="px-3 py-2 w-10"></th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {expenses.map((e) => {
+                  const annualized = e.is_recurring_monthly ? e.amount_cents * 12 : e.amount_cents;
+                  return (
+                    <tr key={e.id} className="hover:bg-gray-50">
+                      <td className="px-3 py-2">
+                        <p className="font-semibold text-gray-900">{e.label}</p>
+                        {e.notes && <p className="text-[11px] text-gray-400 mt-0.5">{e.notes}</p>}
+                      </td>
+                      <td className="px-3 py-2 text-gray-600">{e.category}</td>
+                      <td className="px-3 py-2 text-right font-mono text-gray-900">{formatEur(e.amount_cents)}</td>
+                      <td className="px-3 py-2">
+                        {e.is_recurring_monthly ? (
+                          <span className="text-[11px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded">Mensuel</span>
+                        ) : (
+                          <span className="text-[11px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded">One-shot</span>
+                        )}
+                      </td>
+                      <td className="px-3 py-2 text-right font-mono text-gray-700">{formatEur(annualized)}</td>
+                      <td className="px-3 py-2 text-right">
+                        <form action={deleteExpense}>
+                          <input type="hidden" name="id" value={e.id} />
+                          <button
+                            type="submit"
+                            className="text-gray-300 hover:text-red-500 transition-colors cursor-pointer text-lg leading-none"
+                            title="Supprimer cette charge"
+                            aria-label={`Supprimer ${e.label}`}
+                          >
+                            ×
+                          </button>
+                        </form>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p className="text-sm text-gray-400 italic mb-4">
+            Aucune charge enregistrée. Ajoute tes premières dépenses ci-dessous pour voir la marge nette.
+          </p>
+        )}
+
+        {/* Formulaire ajout charge */}
+        <form action={addExpense} className="pt-4 border-t border-gray-100">
+          <div className="grid grid-cols-1 sm:grid-cols-12 gap-2 items-end">
+            <div className="sm:col-span-4">
+              <label htmlFor="exp_label" className="block text-[10px] uppercase tracking-wider text-gray-500 mb-1">
+                Poste
+              </label>
+              <input
+                id="exp_label"
+                name="label"
+                type="text"
+                required
+                maxLength={200}
+                placeholder="Ex : Supabase Pro"
+                className="w-full px-2 py-1.5 border border-gray-200 rounded text-sm focus:outline-none focus:ring-2 focus:ring-es-green/30"
+              />
+            </div>
+            <div className="sm:col-span-2">
+              <label htmlFor="exp_category" className="block text-[10px] uppercase tracking-wider text-gray-500 mb-1">
+                Catégorie
+              </label>
+              <input
+                id="exp_category"
+                name="category"
+                type="text"
+                maxLength={60}
+                defaultValue="SaaS"
+                placeholder="SaaS"
+                className="w-full px-2 py-1.5 border border-gray-200 rounded text-sm focus:outline-none focus:ring-2 focus:ring-es-green/30"
+              />
+            </div>
+            <div className="sm:col-span-2">
+              <label htmlFor="exp_amount" className="block text-[10px] uppercase tracking-wider text-gray-500 mb-1">
+                Montant €
+              </label>
+              <input
+                id="exp_amount"
+                name="amount_eur"
+                type="text"
+                inputMode="decimal"
+                required
+                placeholder="29"
+                className="w-full px-2 py-1.5 border border-gray-200 rounded text-sm font-mono focus:outline-none focus:ring-2 focus:ring-es-green/30"
+              />
+            </div>
+            <div className="sm:col-span-2 flex items-center gap-2 pb-1.5">
+              <input
+                id="exp_recurring"
+                name="is_recurring"
+                type="checkbox"
+                defaultChecked
+                className="rounded border-gray-300"
+              />
+              <label htmlFor="exp_recurring" className="text-xs text-gray-700 cursor-pointer">
+                Mensuel récurrent
+              </label>
+            </div>
+            <div className="sm:col-span-2">
+              <button
+                type="submit"
+                className="w-full px-3 py-1.5 bg-es-green text-white rounded text-sm font-semibold hover:bg-es-green-light transition-colors cursor-pointer"
+              >
+                Ajouter
+              </button>
+            </div>
+          </div>
+          <div className="mt-2">
+            <label htmlFor="exp_notes" className="block text-[10px] uppercase tracking-wider text-gray-500 mb-1">
+              Notes (optionnel)
+            </label>
+            <input
+              id="exp_notes"
+              name="notes"
+              type="text"
+              placeholder="Contrat jusqu'à décembre 2026, renouvellement annuel…"
+              className="w-full px-2 py-1.5 border border-gray-200 rounded text-sm focus:outline-none focus:ring-2 focus:ring-es-green/30"
+            />
+          </div>
+        </form>
+      </Card>
+
       <p className="text-xs text-gray-400 italic mt-8">
-        Tous les montants sont en EUR. CA Family estimé en multipliant le MRR par les mois actifs depuis le début d&apos;année (approximation). HT calculé à 20% TVA standard.
+        Tous les montants sont en EUR. CA Family estimé en multipliant le MRR par les mois actifs depuis le début d&apos;année (approximation). HT calculé à 20% TVA standard. Charges annualisées = mensuel × 12 + one-shots.
       </p>
     </div>
   );

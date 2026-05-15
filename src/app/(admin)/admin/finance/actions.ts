@@ -3,17 +3,9 @@
 import { getCachedUser, createServiceClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 
-/**
- * Server Action : update de l'objectif annuel. Reservee a Emeline
- * (ADMIN_EMAIL premier email) via verification stricte. Si quelqu'un
- * d'autre essaie d'appeler cette action, on throw.
- */
-export async function updateAnnualTarget(formData: FormData): Promise<void> {
+async function assertOwner() {
   const user = await getCachedUser();
   if (!user) throw new Error("Non authentifie");
-
-  // Accepte n'importe quel email present dans ADMIN_EMAIL (csv). Emeline a
-  // 2 comptes, les 2 doivent pouvoir editer les targets.
   const ownerEmails = (process.env.ADMIN_EMAIL || "")
     .toLowerCase()
     .split(",")
@@ -23,19 +15,25 @@ export async function updateAnnualTarget(formData: FormData): Promise<void> {
   if (ownerEmails.length === 0 || !ownerEmails.includes(userEmail)) {
     throw new Error("Reserve a Emeline");
   }
+}
 
-  // Parse helper : accepte "500000", "500 000", "500000.50", "500 000,50" (FR)
-  // Retourne null si input vide (= laisser fallback annual/4 cote RPC).
-  function parseEur(v: FormDataEntryValue | null): number | null {
-    if (typeof v !== "string") return null;
-    const cleaned = v.replace(/\s/g, "").replace(",", ".").trim();
-    if (cleaned === "") return null;
-    const n = parseFloat(cleaned);
-    if (!Number.isFinite(n) || n < 0 || n > 100_000_000) {
-      throw new Error("Montant invalide");
-    }
-    return n;
+function parseEur(v: FormDataEntryValue | null): number | null {
+  if (typeof v !== "string") return null;
+  const cleaned = v.replace(/\s/g, "").replace(",", ".").trim();
+  if (cleaned === "") return null;
+  const n = parseFloat(cleaned);
+  if (!Number.isFinite(n) || n < 0 || n > 100_000_000) {
+    throw new Error("Montant invalide");
   }
+  return n;
+}
+
+/**
+ * Server Action : update de l'objectif annuel + trimestriels.
+ * Reservee a Emeline (n'importe quel email du csv ADMIN_EMAIL).
+ */
+export async function updateAnnualTarget(formData: FormData): Promise<void> {
+  await assertOwner();
 
   const targetEur = parseEur(formData.get("target_eur"));
   const q1Eur = parseEur(formData.get("q1_target_eur"));
@@ -45,9 +43,7 @@ export async function updateAnnualTarget(formData: FormData): Promise<void> {
   const yearRaw = formData.get("year");
   const year = parseInt(typeof yearRaw === "string" ? yearRaw : "", 10);
 
-  if (targetEur === null) {
-    throw new Error("L'objectif annuel est obligatoire");
-  }
+  if (targetEur === null) throw new Error("L'objectif annuel est obligatoire");
   if (!Number.isInteger(year) || year < 2024 || year > 2099) {
     throw new Error("Annee invalide");
   }
@@ -69,9 +65,49 @@ export async function updateAnnualTarget(formData: FormData): Promise<void> {
       { onConflict: "year" },
     );
 
-  if (error) {
-    throw new Error(`Erreur DB : ${error.message}`);
-  }
+  if (error) throw new Error(`Erreur DB : ${error.message}`);
+  revalidatePath("/admin/finance");
+}
 
+/**
+ * Server Action : ajout d'une charge fixe (recurring monthly par defaut).
+ */
+export async function addExpense(formData: FormData): Promise<void> {
+  await assertOwner();
+
+  const label = (formData.get("label") as string | null)?.trim() || "";
+  const category = (formData.get("category") as string | null)?.trim() || "Autres";
+  const amountEur = parseEur(formData.get("amount_eur"));
+  const isRecurring = formData.get("is_recurring") === "on";
+  const notes = (formData.get("notes") as string | null)?.trim() || null;
+
+  if (!label || label.length > 200) throw new Error("Label requis (max 200 chars)");
+  if (amountEur === null || amountEur === 0) throw new Error("Montant requis");
+  if (category.length > 60) throw new Error("Categorie trop longue");
+
+  const supabase = await createServiceClient();
+  const { error } = await supabase.from("finance_expenses").insert({
+    label,
+    category,
+    amount_cents: Math.round(amountEur * 100),
+    is_recurring_monthly: isRecurring,
+    notes,
+  });
+
+  if (error) throw new Error(`Erreur DB : ${error.message}`);
+  revalidatePath("/admin/finance");
+}
+
+/**
+ * Server Action : suppression d'une charge fixe par id.
+ */
+export async function deleteExpense(formData: FormData): Promise<void> {
+  await assertOwner();
+  const id = (formData.get("id") as string | null)?.trim();
+  if (!id || !/^[0-9a-f-]{36}$/i.test(id)) throw new Error("ID invalide");
+
+  const supabase = await createServiceClient();
+  const { error } = await supabase.from("finance_expenses").delete().eq("id", id);
+  if (error) throw new Error(`Erreur DB : ${error.message}`);
   revalidatePath("/admin/finance");
 }
