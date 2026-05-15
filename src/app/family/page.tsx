@@ -20,7 +20,7 @@ type FeatureIcon = keyof typeof iconMap;
 
 const FAMILY_FEATURES: Array<{ number: string; icon: FeatureIcon; title: string; description: string }> = [
   { number: "01", icon: "Users", title: "Le feed de la communauté", description: "Trois piliers : Immo, Patrimoine, Transversal. Tu poses tes questions, tu trouves des réponses précises." },
-  { number: "02", icon: "Play", title: "Vidéos formations à la demande", description: "Immo, patrimoine, fiscalité, placements, entrepreneuriat. Tu regardes quand tu veux." },
+  { number: "02", icon: "Play", title: "Courtes vidéos pédagogiques", description: "Immo, patrimoine, fiscalité, placements, entrepreneuriat. Tu regardes quand tu veux." },
   { number: "03", icon: "Sparkles", title: "Le rituel quotidien", description: "Daily quiz, stats du marché, top articles de la semaine. 5 minutes pour te tenir au courant." },
   { number: "04", icon: "Calculator", title: "5 simulateurs pour décider vite", description: "Capacité d'emprunt, cashflow, frais de notaire, prix au m², rendement." },
   { number: "05", icon: "Radio", title: "Lives mensuels + replays à vie", description: "Emeline et ses experts invités : fiscaliste, expert-comptable, artisans, décoratrice." },
@@ -131,9 +131,6 @@ export default async function FamilyPage(props: {
         <div className="relative max-w-6xl mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
             <div className="text-center lg:text-left">
-              <p className="font-serif italic text-es-mint-dark/80 text-sm sm:text-base mb-6 tracking-wide">
-                Patrimoine, fiscalité, investissement : tout ce qu&apos;on ne t&apos;a jamais appris à l&apos;école
-              </p>
               <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-es-text leading-[1.1] mb-6">
                 L&apos;école t&apos;a appris à travailler.{" "}
                 <span className="block mt-2 text-es-mint-dark">
@@ -143,7 +140,7 @@ export default async function FamilyPage(props: {
               <p className="text-lg text-es-text mb-4 leading-relaxed font-medium">
                 Pas juste un groupe immo. Un écosystème patrimoine complet : immo, bourse, fiscalité, entrepreneuriat, mindset : dans ta poche, 7j/7.
               </p>
-              <p className="text-base text-es-text-light mb-4 leading-relaxed">
+              <p className="text-lg text-es-text mb-4 leading-relaxed font-medium">
                 ES Family, c&apos;est la communauté qui prend le relais là où l&apos;école s&apos;est arrêtée. <strong className="text-es-mint-dark">1 800 membres déjà actifs. Encore 500 places au tarif fondateur.</strong>
               </p>
               <p className="text-sm text-es-text-muted mb-10 leading-relaxed italic">
@@ -183,7 +180,7 @@ export default async function FamilyPage(props: {
       <section className="py-20 bg-gray-50">
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-14">
-            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-es-text">
+            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-es-green">
               Les 4 raisons pour lesquelles tu stagnes
             </h2>
           </div>
@@ -202,7 +199,7 @@ export default async function FamilyPage(props: {
               {
                 num: "03",
                 title: "Tu perds des milliers d'euros en fiscalité.",
-                body: "Parce que tu ne sais pas quel statut optimiser. Parce que tu n'as pas de fiscaliste à disposition. Parce que tu crois que « ça va aller » et qu'en avril tu pleures.",
+                body: "Parce que tu ne sais pas quel statut optimiser. Parce que tu n'as pas de fiscaliste à disposition. Parce que tu crois que « ça va aller » et en avril tu pleures.",
               },
               {
                 num: "04",
@@ -252,7 +249,7 @@ export default async function FamilyPage(props: {
                     {feature.number}
                   </p>
                   <Icon className="w-7 h-7 text-es-green mb-5" strokeWidth={1.5} />
-                  <h3 className="font-serif text-xl text-es-green mb-3 leading-snug">
+                  <h3 className="font-serif text-xl font-bold text-es-green mb-3 leading-snug">
                     {feature.title}
                   </h3>
                   <p className="text-[15px] leading-relaxed text-stone-700">
@@ -267,6 +264,24 @@ export default async function FamilyPage(props: {
           <div className="mt-24 max-w-3xl border-l-2 border-es-terracotta pl-6">
             <p className="text-base text-stone-700 leading-relaxed">
               Pas juste de l&apos;immo. <span className="text-es-green font-medium">Tout ce qui fait une vraie indépendance financière</span> : bourse, fiscalité, actifs alternatifs, transmission, entrepreneuriat, mindset.
+            </p>
+          </div>
+
+          {/* CTA milieu de page : repete le CTA hero (couleur strictement identique :
+              bg-es-mint-dark hover:bg-es-mint-deep) pour multiplier les points d'entree
+              vers le checkout. Cf. PDF p.7 - "ca manque d'appels a l'action". */}
+          <div className="mt-16 text-center">
+            <TrackedLink
+              href={FAMILY_CTA_HREF}
+              event="cta_family_click"
+              eventParams={{ plan: "fondateur", value: 19, currency: "EUR", placement: "features_grid" }}
+              data-cta="family-features-fondateur"
+              className="inline-flex items-center justify-center font-semibold rounded-lg px-10 py-5 text-lg bg-es-mint-dark text-white hover:bg-es-mint-deep transition-all shadow-lg hover:shadow-xl"
+            >
+              Rejoindre ES Family à 19€/mois
+            </TrackedLink>
+            <p className="text-xs text-es-text-muted mt-4">
+              Pour le prix d&apos;un forfait téléphonique · Sans engagement
             </p>
           </div>
         </div>
@@ -376,8 +391,10 @@ export default async function FamilyPage(props: {
         </div>
       </section>
 
-      {/* Bridge Academy : Tu veux les deux ? (split image/texte) */}
-      <section className="py-20 relative overflow-hidden" style={{ backgroundColor: "#2D6A4F" }}>
+      {/* Bridge Academy : Tu veux les deux ? (split image/texte)
+          Fond #006B58 (es-mint-dark) = raccord avec les CTAs Family.
+          Avant : #2D6A4F (es-green-light) etait un vert Academy hors charte Family. */}
+      <section className="py-20 relative overflow-hidden" style={{ backgroundColor: "#006B58" }}>
         <div className="absolute inset-0 opacity-[0.03]" style={{
           backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
           backgroundSize: "40px 40px",
