@@ -32,11 +32,18 @@ export default async function ConfirmActivePage({ searchParams }: PageProps) {
 
       if (contact?.tags && Array.isArray(contact.tags)) {
         recognized = true;
+        // Retire 2 tags d'inactivite : behavior:inactive-90 (SEQ_REACT) ET
+        // rgpd:cohorte-2-pending (SEQ_BRV cohorte 2 Brevo).
         const tags = (contact.tags as string[]).filter(
-          (t) => t !== "behavior:inactive-90"
+          (t) => t !== "behavior:inactive-90" && t !== "rgpd:cohorte-2-pending"
         );
+        // Ajoute les tags de reactivation et de consentement RGPD.
+        const wasBrvCohorte = (contact.tags as string[]).includes("rgpd:cohorte-2-pending");
         if (!tags.includes("behavior:reactivated")) {
           tags.push("behavior:reactivated");
+        }
+        if (wasBrvCohorte && !tags.includes("rgpd:consent-explicit")) {
+          tags.push("rgpd:consent-explicit");
         }
         await supabase
           .from("contacts")
@@ -45,6 +52,26 @@ export default async function ConfirmActivePage({ searchParams }: PageProps) {
             last_activity_at: new Date().toISOString(),
           })
           .eq("email", emailLc);
+
+        // Log consent_log pour la cohorte 2 Brevo (preuve RGPD du
+        // re-consentement explicite, obligation CNIL).
+        if (wasBrvCohorte) {
+          try {
+            await supabase.from("consent_log").insert({
+              email: emailLc,
+              consent_type: "newsletter_marketing",
+              action: "accepted",
+              basis: "explicit_reoptin_brevo_cohorte_2",
+              proof: {
+                page: "/confirm-active",
+                source: "seq_brv_email_link",
+                confirmed_at: new Date().toISOString(),
+              },
+            });
+          } catch {
+            // best-effort, ne bloque pas la page
+          }
+        }
       }
     } catch (err) {
       console.error("[confirm-active]", err);
