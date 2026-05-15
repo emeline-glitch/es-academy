@@ -131,7 +131,7 @@ async function fetchStripeEnrichment(
       ]);
       const periodEnd = (sub.items?.data?.[0] as Stripe.SubscriptionItem | undefined)
         ?.current_period_end ?? null;
-      const paidInvoices = invoices.data.filter((i) => i.status === "paid" || i.paid);
+      const paidInvoices = invoices.data.filter((i) => i.status === "paid");
       return {
         enrollment_id: enrollmentId,
         status: sub.status,
@@ -142,7 +142,7 @@ async function fetchStripeEnrichment(
           id: i.id ?? "",
           number: i.number || null,
           status: i.status || null,
-          paid: Boolean(i.paid),
+          paid: i.status === "paid",
           amount_paid_cents: i.amount_paid || 0,
           amount_due_cents: i.amount_due || 0,
           created_at: new Date(i.created * 1000).toISOString(),

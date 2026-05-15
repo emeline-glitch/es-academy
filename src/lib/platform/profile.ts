@@ -172,7 +172,7 @@ export async function getPaymentSummaries(
         ]);
         const periodEnd = (sub.items?.data?.[0] as Stripe.SubscriptionItem | undefined)
           ?.current_period_end ?? null;
-        const paidInvoices = invoices.data.filter((i) => i.status === "paid" || i.paid);
+        const paidInvoices = invoices.data.filter((i) => i.status === "paid");
         item.stripeStatus = sub.status;
         item.cancelAtPeriodEnd = Boolean(sub.cancel_at_period_end);
         item.currentPeriodEnd = periodEnd ? new Date(periodEnd * 1000).toISOString() : null;
@@ -181,7 +181,7 @@ export async function getPaymentSummaries(
           id: i.id ?? "",
           number: i.number || null,
           status: i.status || null,
-          paid: Boolean(i.paid),
+          paid: i.status === "paid",
           amountCents: i.amount_paid || i.amount_due || 0,
           createdAt: new Date(i.created * 1000).toISOString(),
           invoicePdf: i.invoice_pdf || null,
