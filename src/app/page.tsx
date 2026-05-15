@@ -410,13 +410,14 @@ export default function Home() {
             Solstice Patrimoine t&apos;accompagne dans la gestion, l&apos;optimisation et la transmission de ton patrimoine existant. Conseil en investissement financier agréé CIF, IAS, IOBSP.
           </p>
           <a
-            href="https://solstice-patrimoine.fr"
-            target="_blank"
-            rel="noopener"
+            href="/solstice-bientot"
             className="inline-flex items-center justify-center font-semibold rounded-lg px-6 py-4 text-base bg-white text-es-green-dark hover:bg-es-cream transition-all"
           >
-            Découvrir Solstice Patrimoine →
+            Être prévenu·e de l&apos;ouverture →
           </a>
+          <p className="text-xs text-white/50 mt-4">
+            Ouverture prochaine · Antony te contactera au lancement
+          </p>
         </div>
       </section>
 
