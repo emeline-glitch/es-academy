@@ -1,6 +1,7 @@
 import { getCachedUser, createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { Card } from "@/components/ui/Card";
+import { updateAnnualTarget } from "./actions";
 
 interface FinanceSummary {
   month_ttc_cents: number;
@@ -110,7 +111,7 @@ export default async function FinancePage() {
         </Card>
       </div>
 
-      {/* Objectif annuel */}
+      {/* Objectif annuel + edition inline */}
       <Card className="mb-6">
         <div className="flex items-center justify-between mb-3">
           <div>
@@ -128,7 +129,7 @@ export default async function FinancePage() {
             style={{ width: `${Math.min(100, s.target_progress_pct)}%` }}
           />
         </div>
-        <div className="grid grid-cols-2 gap-4 text-sm">
+        <div className="grid grid-cols-2 gap-4 text-sm mb-4">
           <div>
             <p className="text-xs text-gray-500">Reste à faire</p>
             <p className="font-semibold text-gray-900">{formatEur(remainingToTarget)} TTC</p>
@@ -138,6 +139,29 @@ export default async function FinancePage() {
             <p className="font-semibold text-gray-900">{formatEur(monthlyEffortNeeded)} TTC / mois</p>
           </div>
         </div>
+        <form action={updateAnnualTarget} className="pt-3 border-t border-gray-100 flex items-end gap-2 flex-wrap">
+          <input type="hidden" name="year" value={s.current_year} />
+          <div className="flex-1 min-w-[160px]">
+            <label htmlFor="target_eur" className="block text-[10px] uppercase tracking-wider text-gray-500 mb-1">
+              Modifier l&apos;objectif {s.current_year} (€ TTC)
+            </label>
+            <input
+              id="target_eur"
+              name="target_eur"
+              type="text"
+              inputMode="decimal"
+              defaultValue={(s.annual_target_cents / 100).toString()}
+              placeholder="500000"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-es-green/30"
+            />
+          </div>
+          <button
+            type="submit"
+            className="px-4 py-2 bg-es-green text-white rounded-lg text-sm font-semibold hover:bg-es-green-light transition-colors cursor-pointer"
+          >
+            Enregistrer
+          </button>
+        </form>
       </Card>
 
       {/* MRR Family + ARR */}
