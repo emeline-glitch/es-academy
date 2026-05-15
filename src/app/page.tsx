@@ -70,7 +70,7 @@ export default function Home() {
                 <a
                   href="/family"
                   data-cta="home-hero-family"
-                  className="group inline-flex flex-col items-center sm:items-start justify-center rounded-lg px-6 py-3.5 bg-es-terracotta text-white hover:bg-es-terracotta-light transition-all shadow-lg"
+                  className="group inline-flex flex-col items-center sm:items-start justify-center rounded-lg px-6 py-3.5 bg-es-mint-dark text-white hover:bg-es-mint-deep transition-all shadow-lg"
                 >
                   <span className="font-semibold text-base">Rejoindre ES Family</span>
                   <span className="text-xs text-white/70 mt-0.5">Plateforme communautaire</span>
