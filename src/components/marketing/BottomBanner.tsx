@@ -40,9 +40,12 @@ export function BottomBanner({ accent = "terracotta" }: BottomBannerProps) {
 
         {/* Newsletter */}
         <div className="bg-white rounded-2xl p-6 border border-es-cream-dark">
-          <h3 className="font-serif text-lg font-bold text-es-text mb-4">
+          <h3 className="font-serif text-lg font-bold text-es-text mb-1">
             Reçois mes conseils immobiliers chaque semaine
           </h3>
+          <p className="text-xs text-es-text-muted mb-4">
+            Rejoins 26 000+ lecteurs. Analyses, astuces et opportunités.
+          </p>
           <NewsletterForm />
         </div>
       </div>
