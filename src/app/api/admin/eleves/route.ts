@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase/server";
-import { requireAdmin } from "@/lib/utils/admin-auth";
+import { requireAdmin, isOwnerEmail } from "@/lib/utils/admin-auth";
 
 export async function GET(request: Request) {
   const auth = await requireAdmin();
   if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: auth.status });
+  const isOwner = isOwnerEmail(auth.user.email);
 
   const { searchParams } = new URL(request.url);
   const q = (searchParams.get("q") || "").trim();
@@ -78,13 +79,14 @@ export async function GET(request: Request) {
     }
   }
 
-  // 4. Assembler + filtrer search côté app
+  // 4. Assembler + filtrer search côté app. Pour les non-owners on supprime
+  //    les montants paye/CA pour eviter le leak aux admins secondaires.
   let items = (enrollRaw || []).map((e) => {
     const profile = profilesById[e.user_id] || null;
     return {
       id: e.id,
       product_name: e.product_name,
-      amount_paid: e.amount_paid,
+      amount_paid: isOwner ? e.amount_paid : null,
       purchased_at: e.purchased_at,
       status: e.status,
       course_id: e.course_id,
@@ -119,6 +121,7 @@ export async function GET(request: Request) {
   const monthRevenue = (monthEnrollments.data || []).reduce((s, e) => s + (e.amount_paid || 0), 0);
 
   return NextResponse.json({
+    is_owner: isOwner,
     enrollments: items,
     total: count || 0,
     page,
@@ -126,7 +129,9 @@ export async function GET(request: Request) {
     kpis: {
       total_eleves: totalEleves || 0,
       month_count: monthCount,
-      month_revenue: monthRevenue,
+      // month_revenue masque aux admins secondaires : ils voient juste le
+      // nombre de ventes, pas le CA.
+      month_revenue: isOwner ? monthRevenue : null,
     },
   });
 }

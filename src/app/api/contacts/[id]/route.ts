@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
-import { requireAdmin } from "@/lib/utils/admin-auth";
+import { requireAdmin, isOwnerEmail } from "@/lib/utils/admin-auth";
 import { writeAuditLog, extractRequestContext } from "@/lib/utils/audit";
 import { autoEnrollByTags, tagsAdded } from "@/lib/sequences/auto-enroll";
 
@@ -26,6 +26,7 @@ export async function GET(
 ) {
   const auth = await requireAdmin();
   if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: auth.status });
+  const isOwner = isOwnerEmail(auth.user.email);
 
   const { id } = await params;
   const supabase = await createServiceClient();
@@ -72,7 +73,11 @@ export async function GET(
         .select("id, product_name, amount_paid, purchased_at, status")
         .eq("user_id", profileId)
         .order("purchased_at", { ascending: false });
-      enrollments = enr || [];
+      // Strip amount_paid pour les admins secondaires.
+      enrollments = (enr || []).map((e) => ({
+        ...e,
+        amount_paid: isOwner ? e.amount_paid : null,
+      }));
     }
   }
 
@@ -83,7 +88,7 @@ export async function GET(
     .eq("contact_id", id)
     .order("created_at", { ascending: false });
 
-  return NextResponse.json({ contact: data, profile, enrollments, notes: notes || [] });
+  return NextResponse.json({ is_owner: isOwner, contact: data, profile, enrollments, notes: notes || [] });
 }
 
 export async function PATCH(

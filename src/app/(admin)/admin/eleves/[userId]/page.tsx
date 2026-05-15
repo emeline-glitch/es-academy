@@ -35,6 +35,7 @@ interface StripeEnrichment {
 }
 
 interface StudentData {
+  is_owner: boolean;
   profile: {
     id: string;
     full_name: string | null;
@@ -62,7 +63,7 @@ interface StudentData {
     id: string;
     course_id: string;
     product_name: string;
-    amount_paid: number;
+    amount_paid: number | null;
     purchased_at: string;
     status: string;
     installments: number | null;
@@ -367,13 +368,17 @@ export default function StudentDetailPage() {
                           {e.course_id && <span className="text-xs text-gray-600 font-mono">{e.course_id}</span>}
                         </div>
                         <div className="text-right">
-                          <span className="font-bold text-gray-900">{formatMoney(e.amount_paid)}</span>
-                          {(() => {
-                            const ht = Math.floor(e.amount_paid / 1.2);
-                            return ht !== e.amount_paid ? (
-                              <p className="text-[10px] text-gray-500">{formatMoney(ht)} HT</p>
-                            ) : null;
-                          })()}
+                          {data.is_owner && e.amount_paid !== null ? (
+                            <>
+                              <span className="font-bold text-gray-900">{formatMoney(e.amount_paid)}</span>
+                              {(() => {
+                                const ht = Math.floor((e.amount_paid as number) / 1.2);
+                                return ht !== e.amount_paid ? (
+                                  <p className="text-[10px] text-gray-500">{formatMoney(ht)} HT</p>
+                                ) : null;
+                              })()}
+                            </>
+                          ) : null}
                           <p className="text-[10px] text-gray-400">{formatRelative(e.purchased_at)}</p>
                         </div>
                       </div>

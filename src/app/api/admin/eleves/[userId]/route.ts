@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase/server";
-import { requireAdmin } from "@/lib/utils/admin-auth";
+import { requireAdmin, isOwnerEmail } from "@/lib/utils/admin-auth";
 import { getStripe } from "@/lib/stripe/client";
 import type Stripe from "stripe";
 
@@ -10,6 +10,7 @@ export async function GET(
 ) {
   const auth = await requireAdmin();
   if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: auth.status });
+  const isOwner = isOwnerEmail(auth.user.email);
 
   const { userId } = await params;
   const supabase = await createServiceClient();
@@ -74,18 +75,26 @@ export async function GET(
     progressByCourse[cid] = (progressByCourse[cid] || 0) + 1;
   }
 
-  // Enrichissement Stripe live : pour chaque enrollment avec subscription,
-  // recupere statut + prochaine echeance + invoices. Best-effort, ne bloque
-  // pas la fiche si Stripe est lent (timeout 5s par sub).
-  const enrichments = await Promise.all(
-    (enrollRes.data || []).map((e) => fetchStripeEnrichment(e.id, e.stripe_subscription_id))
-  );
+  // Enrichissement Stripe live (factures + statut sub) : reserve aux owners.
+  // Pour les admins secondaires, on saute Stripe + on strip amount_paid des
+  // enrollments pour ne pas afficher les chiffres financiers.
   const stripeByEnrollment: Record<string, StripeEnrichment | null> = {};
-  for (const en of enrichments) {
-    if (en) stripeByEnrollment[en.enrollment_id] = en;
+  if (isOwner) {
+    const enrichments = await Promise.all(
+      (enrollRes.data || []).map((e) => fetchStripeEnrichment(e.id, e.stripe_subscription_id))
+    );
+    for (const en of enrichments) {
+      if (en) stripeByEnrollment[en.enrollment_id] = en;
+    }
   }
 
+  const enrollments = (enrollRes.data || []).map((e) => ({
+    ...e,
+    amount_paid: isOwner ? e.amount_paid : null,
+  }));
+
   return NextResponse.json({
+    is_owner: isOwner,
     profile: profileRes.data,
     auth: {
       email: authUser?.email || profileRes.data?.email || null,
@@ -94,7 +103,7 @@ export async function GET(
       email_confirmed_at: authUser?.email_confirmed_at || null,
     },
     crm_contact: crmContact || null,
-    enrollments: enrollRes.data || [],
+    enrollments,
     stripe_by_enrollment: stripeByEnrollment,
     progress: progressRes.data || [],
     progress_by_course: progressByCourse,

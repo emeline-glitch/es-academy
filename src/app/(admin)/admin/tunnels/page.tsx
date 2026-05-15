@@ -1,4 +1,5 @@
-import { createClient } from "@/lib/supabase/server";
+import { getCachedUser, createClient } from "@/lib/supabase/server";
+import { isOwnerEmail } from "@/lib/utils/admin-auth";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { formatMoney } from "@/lib/utils/format";
@@ -61,6 +62,8 @@ interface TunnelsStats {
 }
 
 export default async function AdminTunnels() {
+  const user = await getCachedUser();
+  const isOwner = isOwnerEmail(user?.email);
   const supabase = await createClient();
 
   // 1 seul RPC qui agrège captures par tag + ventes/revenu par produit (migration 017)
@@ -107,10 +110,12 @@ export default async function AdminTunnels() {
                         <p className="text-[10px] uppercase text-green-700 font-semibold tracking-wider">Ventes</p>
                         <p className="text-xl font-bold text-green-700 mt-1">{sales}</p>
                       </div>
-                      <div className="bg-amber-50 rounded-lg p-3">
-                        <p className="text-[10px] uppercase text-amber-700 font-semibold tracking-wider">Revenu</p>
-                        <p className="text-xl font-bold text-amber-700 mt-1">{formatMoney(revenue)}</p>
-                      </div>
+                      {isOwner && (
+                        <div className="bg-amber-50 rounded-lg p-3">
+                          <p className="text-[10px] uppercase text-amber-700 font-semibold tracking-wider">Revenu</p>
+                          <p className="text-xl font-bold text-amber-700 mt-1">{formatMoney(revenue)}</p>
+                        </div>
+                      )}
                       {tunnel.captureTag && (
                         <div className="bg-es-green/10 rounded-lg p-3">
                           <p className="text-[10px] uppercase text-es-green font-semibold tracking-wider">Conversion</p>

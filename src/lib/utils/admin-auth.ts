@@ -1,6 +1,22 @@
 import { createClient } from "@/lib/supabase/server";
 
 /**
+ * Owner = Emeline (un des emails du csv ADMIN_EMAIL). Reserve aux KPIs
+ * financiers (CA, MRR, marge, montants enrollments) qu'on ne veut pas
+ * exposer aux admins secondaires (Antony closer, Tiffany copywriter,
+ * Fita ops).
+ */
+export function isOwnerEmail(email: string | null | undefined): boolean {
+  if (!email) return false;
+  const ownerEmails = (process.env.ADMIN_EMAIL || "")
+    .toLowerCase()
+    .split(",")
+    .map((e) => e.trim())
+    .filter(Boolean);
+  return ownerEmails.includes(email.toLowerCase());
+}
+
+/**
  * Vérifie que l'utilisateur courant est admin.
  * Accepte 2 mécanismes (OR) :
  *  1. user.email présent dans process.env.ADMIN_EMAIL (csv supporté)

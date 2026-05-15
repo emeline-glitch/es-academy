@@ -21,7 +21,7 @@ interface Profile {
 interface Enrollment {
   id: string;
   product_name: string;
-  amount_paid: number;
+  amount_paid: number | null;
   purchased_at: string;
   status: string;
   profiles: Profile | null;
@@ -31,11 +31,12 @@ interface Enrollment {
 }
 
 interface Response {
+  is_owner: boolean;
   enrollments: Enrollment[];
   total: number;
   page: number;
   pageSize: number;
-  kpis: { total_eleves: number; month_count: number; month_revenue: number };
+  kpis: { total_eleves: number; month_count: number; month_revenue: number | null };
 }
 
 const PRODUCTS = [
@@ -79,6 +80,7 @@ export default function AdminEleves() {
   const kpis = data?.kpis;
   const enrollments = data?.enrollments || [];
   const totalPages = data ? Math.ceil(data.total / data.pageSize) : 1;
+  const isOwner = data?.is_owner ?? false;
 
   return (
     <div>
@@ -91,8 +93,8 @@ export default function AdminEleves() {
         </div>
       </div>
 
-      {/* KPIs */}
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+      {/* KPIs : CA ce mois reservee aux owners (cf. /admin/finance). */}
+      <div className={`grid grid-cols-2 ${isOwner ? "lg:grid-cols-3" : "lg:grid-cols-2"} gap-4 mb-6`}>
         <Card>
           <p className="text-xs text-gray-500 uppercase tracking-wider">Total élèves</p>
           <p className="text-2xl font-bold text-gray-900 mt-1">{kpis?.total_eleves || 0}</p>
@@ -101,10 +103,12 @@ export default function AdminEleves() {
           <p className="text-xs text-gray-500 uppercase tracking-wider">Ce mois-ci</p>
           <p className="text-2xl font-bold text-es-green mt-1">{kpis?.month_count || 0} ventes</p>
         </Card>
-        <Card>
-          <p className="text-xs text-gray-500 uppercase tracking-wider">CA ce mois-ci</p>
-          <p className="text-2xl font-bold text-amber-600 mt-1">{formatMoney(kpis?.month_revenue || 0)}</p>
-        </Card>
+        {isOwner && (
+          <Card>
+            <p className="text-xs text-gray-500 uppercase tracking-wider">CA ce mois-ci</p>
+            <p className="text-2xl font-bold text-amber-600 mt-1">{formatMoney(kpis?.month_revenue || 0)}</p>
+          </Card>
+        )}
       </div>
 
       {/* Filtres */}
@@ -203,12 +207,16 @@ export default function AdminEleves() {
                         {e.last_sign_in_at ? (
                           <div>
                             <p className="text-xs text-gray-700">{formatRelative(e.last_sign_in_at)}</p>
-                            <p className="text-[10px] text-gray-400 mt-0.5">{formatMoney(e.amount_paid)}</p>
+                            {isOwner && e.amount_paid !== null && (
+                              <p className="text-[10px] text-gray-400 mt-0.5">{formatMoney(e.amount_paid)}</p>
+                            )}
                           </div>
                         ) : (
                           <div>
                             <p className="text-xs text-gray-400 italic">Jamais connecté</p>
-                            <p className="text-[10px] text-gray-400 mt-0.5">{formatMoney(e.amount_paid)}</p>
+                            {isOwner && e.amount_paid !== null && (
+                              <p className="text-[10px] text-gray-400 mt-0.5">{formatMoney(e.amount_paid)}</p>
+                            )}
                           </div>
                         )}
                       </td>

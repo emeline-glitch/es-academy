@@ -37,7 +37,7 @@ interface LinkedProfile {
 interface Enrollment {
   id: string;
   product_name: string;
-  amount_paid: number;
+  amount_paid: number | null;
   purchased_at: string;
   status: string;
 }
@@ -82,6 +82,7 @@ export default function ContactDetailPage() {
   const [profile, setProfile] = useState<LinkedProfile | null>(null);
   const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
   const [notes, setNotes] = useState<Note[]>([]);
+  const [isOwner, setIsOwner] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [noteContent, setNoteContent] = useState("");
@@ -111,6 +112,7 @@ export default function ContactDetailPage() {
       setProfile(data.profile || null);
       setEnrollments(data.enrollments || []);
       setNotes(data.notes || []);
+      setIsOwner(!!data.is_owner);
       setEditName({
         first: data.contact?.first_name || "",
         last: data.contact?.last_name || "",
@@ -549,7 +551,9 @@ export default function ContactDetailPage() {
                   {enrollments.map((e) => (
                     <div key={e.id} className="text-xs bg-es-green/5 rounded px-2 py-1.5 flex items-center justify-between">
                       <span className="font-medium text-es-green">{e.product_name}</span>
-                      <span className="text-gray-500">{(e.amount_paid / 100).toLocaleString("fr-FR")}€</span>
+                      {isOwner && e.amount_paid !== null && (
+                        <span className="text-gray-500">{(e.amount_paid / 100).toLocaleString("fr-FR")}€</span>
+                      )}
                     </div>
                   ))}
                 </div>
