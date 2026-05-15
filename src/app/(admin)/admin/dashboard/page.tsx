@@ -40,7 +40,7 @@ export default async function AdminDashboard() {
     revenueBySourceRes, familyMrrRes,
     prevMonthRes, velocityRes, dunningRes, coachingUpsellRes,
     ctaAttribRes,
-    ltvRes, cohortsRes, lmFunnelRes, abandonRes, hotLeadsRes,
+    ltvRes, cohortsRes, lmFunnelRes, abandonRes, hotLeadsRes, monthlyTrendRes,
   ] = await Promise.all([
     supabase.rpc("dashboard_stats", { month_start: monthStart, today_start: todayStart }),
     supabase
@@ -82,6 +82,7 @@ export default async function AdminDashboard() {
     supabase.rpc("lead_magnet_funnel", { period_days: 90 }),
     supabase.rpc("checkout_abandonment_stats", { period_days: 30 }),
     supabase.rpc("hot_leads", { min_distinct_ctas: 3, since_hours: 24 }),
+    supabase.rpc("monthly_trend", { months_back: 12 }),
   ]);
   const welcomeFailedCount = (welcomeFailedRes?.data as number | null) || 0;
 
@@ -229,6 +230,20 @@ export default async function AdminDashboard() {
     first_click_at: string;
     last_click_at: string;
   }>;
+
+  const monthlyTrend = (monthlyTrendRes.data || []) as Array<{
+    month: string;
+    revenue_cents: number;
+    sales_count: number;
+    contacts_count: number;
+  }>;
+  const trendMaxRevenue = Math.max(1, ...monthlyTrend.map((m) => m.revenue_cents));
+  const trendMaxSales = Math.max(1, ...monthlyTrend.map((m) => m.sales_count));
+  const trendMaxContacts = Math.max(1, ...monthlyTrend.map((m) => m.contacts_count));
+  function monthShort(iso: string): string {
+    const d = new Date(iso);
+    return d.toLocaleDateString("fr-FR", { month: "short" }).replace(".", "");
+  }
 
   function ltvLabel(seg: string): string {
     if (seg === "academy_only") return "Academy seul";
@@ -748,6 +763,95 @@ export default async function AdminDashboard() {
             </table>
           </div>
         )}
+      </Card>
+
+      {/* Tendance 12 derniers mois */}
+      <Card className="mb-8">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="font-serif text-lg font-bold text-gray-900">Tendance 12 derniers mois</h2>
+            <p className="text-xs text-gray-500 mt-0.5">CA / ventes / contacts par mois pour reperer saisonnalite et momentum</p>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* CA */}
+          <div>
+            <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-2">Chiffre d&apos;affaires</p>
+            <div className="flex items-end gap-1 h-24">
+              {monthlyTrend.map((m) => {
+                const h = (m.revenue_cents / trendMaxRevenue) * 100;
+                return (
+                  <div key={m.month} className="flex-1 flex flex-col items-center justify-end" title={`${monthShort(m.month)} : ${(m.revenue_cents / 100).toLocaleString("fr-FR")}€`}>
+                    <div
+                      className="w-full bg-es-green rounded-t transition-all hover:bg-es-green-light"
+                      style={{ height: `${Math.max(h, m.revenue_cents > 0 ? 2 : 0)}%` }}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+            <div className="flex gap-1 mt-1.5">
+              {monthlyTrend.map((m) => (
+                <span key={m.month} className="flex-1 text-center text-[9px] text-gray-400 uppercase">
+                  {monthShort(m.month).slice(0, 3)}
+                </span>
+              ))}
+            </div>
+            <p className="text-[10px] text-gray-400 mt-2">Max : {(trendMaxRevenue / 100).toLocaleString("fr-FR")}€</p>
+          </div>
+
+          {/* Ventes */}
+          <div>
+            <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-2">Nombre de ventes</p>
+            <div className="flex items-end gap-1 h-24">
+              {monthlyTrend.map((m) => {
+                const h = (m.sales_count / trendMaxSales) * 100;
+                return (
+                  <div key={m.month} className="flex-1 flex flex-col items-center justify-end" title={`${monthShort(m.month)} : ${m.sales_count} vente${m.sales_count > 1 ? "s" : ""}`}>
+                    <div
+                      className="w-full bg-amber-500 rounded-t transition-all hover:bg-amber-400"
+                      style={{ height: `${Math.max(h, m.sales_count > 0 ? 2 : 0)}%` }}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+            <div className="flex gap-1 mt-1.5">
+              {monthlyTrend.map((m) => (
+                <span key={m.month} className="flex-1 text-center text-[9px] text-gray-400 uppercase">
+                  {monthShort(m.month).slice(0, 3)}
+                </span>
+              ))}
+            </div>
+            <p className="text-[10px] text-gray-400 mt-2">Max : {trendMaxSales} vente{trendMaxSales > 1 ? "s" : ""}</p>
+          </div>
+
+          {/* Contacts */}
+          <div>
+            <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-2">Nouveaux contacts</p>
+            <div className="flex items-end gap-1 h-24">
+              {monthlyTrend.map((m) => {
+                const h = (m.contacts_count / trendMaxContacts) * 100;
+                return (
+                  <div key={m.month} className="flex-1 flex flex-col items-center justify-end" title={`${monthShort(m.month)} : ${m.contacts_count} contact${m.contacts_count > 1 ? "s" : ""}`}>
+                    <div
+                      className="w-full bg-purple-500 rounded-t transition-all hover:bg-purple-400"
+                      style={{ height: `${Math.max(h, m.contacts_count > 0 ? 2 : 0)}%` }}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+            <div className="flex gap-1 mt-1.5">
+              {monthlyTrend.map((m) => (
+                <span key={m.month} className="flex-1 text-center text-[9px] text-gray-400 uppercase">
+                  {monthShort(m.month).slice(0, 3)}
+                </span>
+              ))}
+            </div>
+            <p className="text-[10px] text-gray-400 mt-2">Max : {trendMaxContacts} contact{trendMaxContacts > 1 ? "s" : ""}</p>
+          </div>
+        </div>
       </Card>
 
       {/* Top CTA convertisseurs (Lot D) */}
