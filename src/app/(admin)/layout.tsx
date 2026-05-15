@@ -7,21 +7,21 @@ import Link from "next/link";
 
 const adminNav = [
   { label: "Dashboard", href: "/admin/dashboard", icon: "📊" },
+
+  { section: true, label: "Commercial" },
   { label: "Pipeline", href: "/admin/pipeline", icon: "🎯" },
+  { label: "Élèves", href: "/admin/eleves", icon: "🎓" },
 
-  { section: true, label: "Audience" },
-  { label: "Contacts CRM", href: "/admin/contacts", icon: "👥" },
-  { label: "Importer CSV", href: "/admin/import-contacts", icon: "📥", sub: true },
-  { label: "Listes", href: "/admin/lists", icon: "📋" },
-
-  { section: true, label: "Acquisition" },
+  { section: true, label: "Marketing" },
   { label: "Formulaires", href: "/admin/forms", icon: "📝" },
   { label: "Lead Magnets", href: "/admin/lead-magnets", icon: "🧲" },
-
-  { section: true, label: "Élèves & communication" },
-  { label: "Élèves", href: "/admin/eleves", icon: "🎓" },
   { label: "Emails", href: "/admin/emails", icon: "📧" },
   { label: "Séquences", href: "/admin/sequences", icon: "⚡" },
+
+  { section: true, label: "CRM" },
+  { label: "Contacts", href: "/admin/contacts", icon: "👥" },
+  { label: "Importer CSV", href: "/admin/import-contacts", icon: "📥", sub: true },
+  { label: "Listes", href: "/admin/lists", icon: "📋" },
 
   { section: true, label: "Analyse" },
   { label: "Tunnels", href: "/admin/tunnels", icon: "🔄" },
