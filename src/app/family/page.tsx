@@ -34,6 +34,7 @@ export const metadata: Metadata = buildMetadata({
   title: "ES Family : la communauté patrimoniale d'Emeline Siron",
   description: "Immobilier, bourse, fiscalité, actifs alternatifs : la communauté des investisseurs qui construisent leur patrimoine. Tarif fondateur 19€/mois.",
   path: "/family",
+  image: "/og/og-family.jpg",
 });
 
 // Skool abandonne avril 2026 (cf. memory feedback_no_skool).

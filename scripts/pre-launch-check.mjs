@@ -334,8 +334,8 @@ function checkOgImages() {
   header("OG images (previews LinkedIn/X)");
 
   const paths = [
-    { path: "public/og-default.jpg", label: "OG Academy" },
-    { path: "public/og-family.jpg", label: "OG Family" },
+    { path: "public/og/og-default.jpg", label: "OG Academy" },
+    { path: "public/og/og-family.jpg", label: "OG Family" },
   ];
 
   for (const p of paths) {
