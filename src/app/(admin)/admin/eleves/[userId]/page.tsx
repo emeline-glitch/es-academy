@@ -50,6 +50,14 @@ interface StudentData {
     created_at: string | null;
     email_confirmed_at: string | null;
   };
+  crm_contact: {
+    id: string;
+    source: string | null;
+    primary_source: string | null;
+    primary_source_detail: string | null;
+    tags: string[] | null;
+    subscribed_at: string | null;
+  } | null;
   enrollments: Array<{
     id: string;
     course_id: string;
@@ -257,6 +265,86 @@ export default function StudentDetailPage() {
 
       <div className="grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
+          {/* Parcours d'acquisition : d'ou vient l'eleve, quels LM il a opt-in */}
+          {data.crm_contact ? (
+            <Card>
+              <h2 className="font-serif text-lg font-bold text-gray-900 mb-4">Parcours d&apos;acquisition</h2>
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                  <p className="text-[10px] uppercase tracking-wider text-gray-500">Source d&apos;origine</p>
+                  {data.crm_contact.source ? (
+                    <p className="text-sm font-semibold text-gray-900 mt-1">{data.crm_contact.source}</p>
+                  ) : (
+                    <p className="text-sm text-gray-400 italic mt-1">non renseignée</p>
+                  )}
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase tracking-wider text-gray-500">Arrivée CRM</p>
+                  <p className="text-sm font-semibold text-gray-900 mt-1">
+                    {data.crm_contact.subscribed_at ? formatRelative(data.crm_contact.subscribed_at) : "—"}
+                  </p>
+                </div>
+              </div>
+
+              {(() => {
+                const lmTags = (data.crm_contact?.tags || []).filter((t) => t.startsWith("lm:"));
+                const behaviorTags = (data.crm_contact?.tags || []).filter((t) => t.startsWith("behavior:"));
+                const otherTags = (data.crm_contact?.tags || []).filter((t) =>
+                  !t.startsWith("lm:") && !t.startsWith("behavior:") && !t.startsWith("rgpd:") && !t.startsWith("source:") && !t.startsWith("cart-abandoned:")
+                );
+                return (
+                  <>
+                    <div className="mb-3">
+                      <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-2">Lead magnets opt-in</p>
+                      {lmTags.length > 0 ? (
+                        <div className="flex flex-wrap gap-1.5">
+                          {lmTags.map((t) => (
+                            <Badge key={t} variant="default">{t.replace("lm:", "")}</Badge>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-gray-400 italic">Aucun LM opt-in (achat direct ou import legacy)</p>
+                      )}
+                    </div>
+
+                    {behaviorTags.length > 0 && (
+                      <div className="mb-3">
+                        <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-2">Comportements</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {behaviorTags.map((t) => (
+                            <Badge key={t} variant="warning">{t.replace("behavior:", "")}</Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {otherTags.length > 0 && (
+                      <div>
+                        <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-2">Autres tags</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {otherTags.map((t) => (
+                            <span key={t} className="text-[11px] px-2 py-0.5 bg-gray-100 rounded text-gray-700">{t}</span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
+
+              <div className="mt-4 pt-3 border-t border-gray-100">
+                <Link href={`/admin/contacts/${data.crm_contact.id}`} prefetch className="text-xs text-es-green hover:underline font-semibold">
+                  Voir la fiche CRM complète →
+                </Link>
+              </div>
+            </Card>
+          ) : (
+            <Card>
+              <h2 className="font-serif text-lg font-bold text-gray-900 mb-2">Parcours d&apos;acquisition</h2>
+              <p className="text-sm text-gray-400 italic">Aucun contact CRM associé à cet élève. Probablement un import legacy ou un achat direct sans opt-in préalable.</p>
+            </Card>
+          )}
+
           <Card>
             <h2 className="font-serif text-lg font-bold text-gray-900 mb-4">Formations achetées</h2>
             {data.enrollments.length > 0 ? (

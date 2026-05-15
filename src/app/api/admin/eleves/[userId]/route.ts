@@ -50,6 +50,18 @@ export async function GET(
 
   const authUser = authRes.data?.user;
 
+  // Recupere le contact CRM associe (par email) pour avoir la source
+  // d'acquisition + les tags lm:xxx (parcours lead magnets). Eleve sans
+  // contact CRM peut arriver si import legacy, on degrade gracieusement.
+  const eleveEmail = authUser?.email || profileRes.data?.email;
+  const { data: crmContact } = eleveEmail
+    ? await supabase
+        .from("contacts")
+        .select("id, source, primary_source, primary_source_detail, tags, subscribed_at")
+        .eq("email", eleveEmail.toLowerCase())
+        .maybeSingle()
+    : { data: null };
+
   // Dernière activité = max(derniere leçon complétée, dernière connexion)
   const lastProgressAt = progressRes.data?.[0]?.completed_at || null;
   const lastSignInAt = authUser?.last_sign_in_at || null;
@@ -81,6 +93,7 @@ export async function GET(
       created_at: createdAt,
       email_confirmed_at: authUser?.email_confirmed_at || null,
     },
+    crm_contact: crmContact || null,
     enrollments: enrollRes.data || [],
     stripe_by_enrollment: stripeByEnrollment,
     progress: progressRes.data || [],
