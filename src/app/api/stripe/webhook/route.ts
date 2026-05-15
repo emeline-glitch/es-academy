@@ -3,6 +3,7 @@ import { getStripe } from "@/lib/stripe/client";
 import { createServiceClient } from "@/lib/supabase/server";
 import { createFamilyGiftPromotionCode } from "@/lib/stripe/family-gift-code";
 import { sendAcademyWelcomeEmail } from "@/lib/email/welcome-academy";
+import { sendAdminSaleNotification } from "@/lib/email/admin-sale-notification";
 import { sendFamilyWelcomeEmail } from "@/lib/email/welcome-family";
 import { renderEmailTemplate } from "@/lib/email/render-template";
 import { sendEmail } from "@/lib/ses/client";
@@ -533,6 +534,19 @@ async function handleAcademyPurchase(session: Stripe.Checkout.Session) {
     magicLink,
   });
 
+  // Notification admin (Emeline) : mail recap de la vente, idempotent via
+  // le check alreadySentAt au-dessus (on n'arrive ici qu'une fois par
+  // enrollment). Best-effort, ne bloque pas le handler.
+  await sendAdminSaleNotification({
+    supabase,
+    product: "academy",
+    plan: installments > 1 ? `${installments}x` : "1x",
+    amountTtcCents: amountPaid,
+    clientEmail: email,
+    clientName: session.customer_details?.name || "",
+    enrollmentId,
+  });
+
   // 8. Server-side GA4 conversion (fiable meme si client a un adblocker).
   //    Le client_id est genere stable a partir de l'email pour deduplique avec
   //    le purchase event cote client (PurchaseTracker sur /merci) si dispo.
@@ -814,6 +828,18 @@ async function handleFamilyPurchase(session: Stripe.Checkout.Session) {
     to: email,
     firstName,
     plan,
+  });
+
+  // Notification admin Emeline (idempotent via welcome_email_sent_at).
+  // Pour Family : montant TTC = premiere mensualite (19 ou 29 EUR).
+  await sendAdminSaleNotification({
+    supabase,
+    product: "family",
+    plan,
+    amountTtcCents: plan === "fondateur" ? 1900 : 2900,
+    clientEmail: email,
+    clientName: session.customer_details?.name || "",
+    enrollmentId: subscriptionId,
   });
 
   // Server-side GA4 conversion (idempotent : Stripe replay webhook protege par
