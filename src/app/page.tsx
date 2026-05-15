@@ -239,14 +239,14 @@ export default function Home() {
             <a href="/academy" data-cta="home-univers-academy" className="bg-es-green rounded-2xl p-8 lg:p-10 text-white hover:shadow-2xl transition-all hover:-translate-y-1 group relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
               <span className="text-xs uppercase tracking-widest text-white/50 font-medium">Formation</span>
-              <h3 className="font-serif text-2xl font-bold mt-2 mb-2">
-                <span className="bg-es-gold/80 text-white px-2 py-0.5 rounded-sm">ES Academy</span>
+              <h3 className="font-serif text-2xl font-bold mt-2 mb-2 text-es-gold">
+                ES Academy
               </h3>
               <p className="text-white/80 text-sm font-medium mb-4">Forme-toi &amp; passe à l&apos;action</p>
               <p className="text-white mb-3 leading-relaxed">
                 {STATS.videoHours}h de formation · {STATS.tools} outils · La méthode complète pour investir en immobilier locatif
               </p>
-              <p className="text-es-gold text-sm font-semibold mb-6">
+              <p className="text-es-gold text-base font-bold mb-6">
                 À partir de {PRICING.academy.priceDisplay}€ · Paiement en 1, 3 ou 4 fois
               </p>
               <span className="inline-flex items-center gap-2 bg-es-cream text-es-green px-5 py-2.5 rounded-lg font-medium text-sm group-hover:bg-white transition-colors">
@@ -256,15 +256,18 @@ export default function Home() {
             </a>
 
             {/* ES Family */}
-            <a href="/family" data-cta="home-univers-family" className="bg-es-terracotta rounded-2xl p-8 lg:p-10 text-white hover:shadow-2xl transition-all hover:-translate-y-1 group relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
-              <span className="text-xs uppercase tracking-widest text-white/50 font-medium">Communauté</span>
+            <a href="/family" data-cta="home-univers-family" className="bg-es-mint rounded-2xl p-8 lg:p-10 text-white hover:shadow-2xl transition-all hover:-translate-y-1 group relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+              <span className="text-xs uppercase tracking-widest text-white/70 font-medium">Communauté</span>
               <h3 className="font-serif text-2xl font-bold mt-2 mb-2">ES Family</h3>
-              <p className="text-white/80 text-sm font-medium mb-4">Rejoins une communauté inspirante</p>
-              <p className="text-white mb-6 leading-relaxed">
-                Analyses flash, lives exclusifs, opportunités rares · 19€/mois fondateurs
+              <p className="text-white/90 text-sm font-medium mb-4">Rejoins une communauté inspirante</p>
+              <p className="text-white mb-3 leading-relaxed">
+                Analyses flash, lives exclusifs, opportunités rares
               </p>
-              <span className="inline-flex items-center gap-2 bg-es-cream text-es-terracotta px-5 py-2.5 rounded-lg font-medium text-sm group-hover:bg-white transition-colors">
+              <p className="text-white text-base font-bold mb-6">
+                19€/mois fondateurs
+              </p>
+              <span className="inline-flex items-center gap-2 bg-white text-es-mint-deep px-5 py-2.5 rounded-lg font-semibold text-sm group-hover:bg-es-cream transition-colors">
                 Rejoindre
                 <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/></svg>
               </span>
