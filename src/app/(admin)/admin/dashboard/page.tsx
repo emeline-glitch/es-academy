@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { getCachedUser, createClient } from "@/lib/supabase/server";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -27,6 +27,18 @@ interface DashboardStats {
 }
 
 export default async function AdminDashboard() {
+  // Owner = Emeline (ADMIN_EMAIL csv). Toutes les metriques financieres
+  // (CA, MRR, LTV, CA par source, CA par CTA, montants ventes…) sont gatees
+  // derriere ce flag. Les admins secondaires (Antony, Tiffany, Fita) voient
+  // les KPIs operationnels (pipeline, contacts, conversion) mais pas les €.
+  const user = await getCachedUser();
+  const ownerEmails = (process.env.ADMIN_EMAIL || "")
+    .toLowerCase()
+    .split(",")
+    .map((e) => e.trim())
+    .filter(Boolean);
+  const isOwner = user ? ownerEmails.includes((user.email || "").toLowerCase()) : false;
+
   const supabase = await createClient();
   const monthStart = startOfMonth();
   const todayStart = startOfToday();
@@ -288,15 +300,21 @@ export default async function AdminDashboard() {
     color: string;
     href: string;
   }
-  const statCards: StatCard[] = [
-    { label: "CA ce mois-ci", value: `${(monthRevenue / 100).toLocaleString("fr-FR")}€`, sub: `${(htMonth / 100).toLocaleString("fr-FR")}€ HT · ${monthSalesCount} vente${monthSalesCount > 1 ? "s" : ""}`, delta: deltaRevenue, icon: "💰", color: "text-green-600 bg-green-50", href: "/admin/eleves" },
-    { label: "MRR Family", value: `${(familyMrr.mrr_cents / 100).toLocaleString("fr-FR")}€`, sub: `${(htMrr / 100).toLocaleString("fr-FR")}€ HT · ${familyMrr.active_count} actif${familyMrr.active_count > 1 ? "s" : ""}${familyMrr.trial_count > 0 ? ` · ${familyMrr.trial_count} trial` : ""} · churn ${familyMrr.churn_rate_pct}%`, icon: "👑", color: "text-fuchsia-600 bg-fuchsia-50", href: "/admin/pipeline" },
-    { label: "CA total", value: `${(totalRevenue / 100).toLocaleString("fr-FR")}€`, sub: `${(htTotal / 100).toLocaleString("fr-FR")}€ HT · ${totalEnrollments || 0} formations`, icon: "📦", color: "text-blue-600 bg-blue-50", href: "/admin/eleves" },
+  // KPIs financiers reserves a Emeline (CA, MRR, CA total).
+  const ownerOnlyCards: StatCard[] = [
+    { label: "CA ce mois-ci", value: `${(monthRevenue / 100).toLocaleString("fr-FR")}€`, sub: `${(htMonth / 100).toLocaleString("fr-FR")}€ HT · ${monthSalesCount} vente${monthSalesCount > 1 ? "s" : ""}`, delta: deltaRevenue, icon: "💰", color: "text-green-600 bg-green-50", href: "/admin/finance" },
+    { label: "MRR Family", value: `${(familyMrr.mrr_cents / 100).toLocaleString("fr-FR")}€`, sub: `${(htMrr / 100).toLocaleString("fr-FR")}€ HT · ${familyMrr.active_count} actif${familyMrr.active_count > 1 ? "s" : ""}${familyMrr.trial_count > 0 ? ` · ${familyMrr.trial_count} trial` : ""} · churn ${familyMrr.churn_rate_pct}%`, icon: "👑", color: "text-fuchsia-600 bg-fuchsia-50", href: "/admin/finance" },
+    { label: "CA total", value: `${(totalRevenue / 100).toLocaleString("fr-FR")}€`, sub: `${(htTotal / 100).toLocaleString("fr-FR")}€ HT · ${totalEnrollments || 0} formations`, icon: "📦", color: "text-blue-600 bg-blue-50", href: "/admin/finance" },
+  ];
+  // KPIs operationnels visibles par tous les admins.
+  const sharedCards: StatCard[] = [
     { label: "Ventes ce mois", value: monthSalesCount || 0, sub: `${prevMonth.prev_month_sales_count} en M-1`, delta: deltaSales, icon: "🛒", color: "text-orange-600 bg-orange-50", href: "/admin/eleves" },
+    { label: "Family : membres actifs", value: familyMrr.active_count || 0, sub: `${familyMrr.trial_count} trial${familyMrr.trial_count > 1 ? "s" : ""} · churn ${familyMrr.churn_rate_pct}%`, icon: "👑", color: "text-fuchsia-600 bg-fuchsia-50", href: "/admin/pipeline" },
     { label: "Contacts CRM", value: totalContacts || 0, sub: `${todayContacts || 0} aujourd'hui`, icon: "👥", color: "text-purple-600 bg-purple-50", href: "/admin/contacts" },
     { label: "Élèves inscrits", value: totalProfiles || 0, icon: "🎓", color: "text-amber-600 bg-amber-50", href: "/admin/eleves" },
     { label: "Pipeline : deals gagnés", value: stageCounts.gagne, icon: "🏆", color: "text-es-green bg-es-green/10", href: "/admin/pipeline" },
   ];
+  const statCards: StatCard[] = isOwner ? [...ownerOnlyCards, ...sharedCards] : sharedCards;
 
   return (
     <div>
@@ -340,7 +358,9 @@ export default async function AdminDashboard() {
             <div className="flex-1 min-w-0">
               <p className="text-sm font-bold text-red-700">
                 {dunning.total_alert} abo{dunning.total_alert > 1 ? "s" : ""} Family en échec paiement
-                <span className="text-red-500 font-normal"> · {(dunning.affected_mrr_cents / 100).toLocaleString("fr-FR")}€ MRR menacé</span>
+                {isOwner && (
+                  <span className="text-red-500 font-normal"> · {(dunning.affected_mrr_cents / 100).toLocaleString("fr-FR")}€ MRR menacé</span>
+                )}
               </p>
               <p className="text-xs text-red-600 mt-1">
                 {dunning.past_due_count > 0 && <span>{dunning.past_due_count} en past_due (Stripe smart-retry actif).</span>}{" "}
@@ -581,7 +601,7 @@ export default async function AdminDashboard() {
                   <p className="text-[10px] text-gray-400">&lt; 24h</p>
                 </div>
               </div>
-              {abandon.potential_revenue_cents > 0 && (
+              {isOwner && abandon.potential_revenue_cents > 0 && (
                 <p className="text-xs text-gray-500 italic">
                   Potentiel non encaisse : <span className="font-bold text-red-600 not-italic">{(abandon.potential_revenue_cents / 100).toLocaleString("fr-FR")}€</span>
                 </p>
@@ -719,11 +739,16 @@ export default async function AdminDashboard() {
         </Card>
       </div>
 
-      {/* CA par source d'acquisition (30j) : repond a "quelle campagne me rapporte le plus" */}
+      {/* Performance par source d'acquisition (30j). Pour les non-owners on
+          masque les colonnes CA et on garde uniquement contacts + taux de
+          conversion : c'est utile pour Tiffany (qui optimise les LM) et
+          Antony (qui appelle les leads) sans exposer les chiffres €. */}
       <Card className="mb-8">
         <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
           <div>
-            <h2 className="font-serif text-lg font-bold text-gray-900">CA par source d&apos;acquisition</h2>
+            <h2 className="font-serif text-lg font-bold text-gray-900">
+              {isOwner ? "CA par source d'acquisition" : "Performance par source d'acquisition"}
+            </h2>
             <p className="text-xs text-gray-500 mt-0.5">30 derniers jours · groupes par source d&apos;origine du contact (immuable)</p>
           </div>
           <Link href="/admin/contacts" prefetch className="text-xs text-es-green hover:underline">Voir contacts →</Link>
@@ -739,8 +764,8 @@ export default async function AdminDashboard() {
                   <th className="text-right py-2 px-2">Contacts</th>
                   <th className="text-right py-2 px-2">Acheteurs</th>
                   <th className="text-right py-2 px-2">Taux conv.</th>
-                  <th className="text-right py-2 px-2">CA TTC</th>
-                  <th className="text-right py-2 px-2">CA HT</th>
+                  {isOwner && <th className="text-right py-2 px-2">CA TTC</th>}
+                  {isOwner && <th className="text-right py-2 px-2">CA HT</th>}
                 </tr>
               </thead>
               <tbody>
@@ -754,8 +779,8 @@ export default async function AdminDashboard() {
                       <td className="py-2 px-2 text-right text-gray-600">{row.contacts_count}</td>
                       <td className="py-2 px-2 text-right font-semibold text-gray-900">{row.buyers_count}</td>
                       <td className={`py-2 px-2 text-right font-semibold ${conv >= 10 ? "text-es-green" : conv >= 5 ? "text-amber-600" : "text-gray-400"}`}>{conv}%</td>
-                      <td className="py-2 px-2 text-right font-bold text-gray-900">{(row.revenue_cents / 100).toLocaleString("fr-FR")}€</td>
-                      <td className="py-2 px-2 text-right text-gray-500">{(htRow / 100).toLocaleString("fr-FR")}€</td>
+                      {isOwner && <td className="py-2 px-2 text-right font-bold text-gray-900">{(row.revenue_cents / 100).toLocaleString("fr-FR")}€</td>}
+                      {isOwner && <td className="py-2 px-2 text-right text-gray-500">{(htRow / 100).toLocaleString("fr-FR")}€</td>}
                     </tr>
                   );
                 })}
@@ -770,35 +795,39 @@ export default async function AdminDashboard() {
         <div className="flex items-center justify-between mb-4">
           <div>
             <h2 className="font-serif text-lg font-bold text-gray-900">Tendance 12 derniers mois</h2>
-            <p className="text-xs text-gray-500 mt-0.5">CA / ventes / contacts par mois pour reperer saisonnalite et momentum</p>
+            <p className="text-xs text-gray-500 mt-0.5">
+              {isOwner ? "CA / ventes / contacts par mois pour reperer saisonnalite et momentum" : "Ventes / contacts par mois pour reperer saisonnalite et momentum"}
+            </p>
           </div>
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* CA */}
-          <div>
-            <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-2">Chiffre d&apos;affaires</p>
-            <div className="flex items-end gap-1 h-24">
-              {monthlyTrend.map((m) => {
-                const h = (m.revenue_cents / trendMaxRevenue) * 100;
-                return (
-                  <div key={m.month} className="flex-1 flex flex-col items-center justify-end" title={`${monthShort(m.month)} : ${(m.revenue_cents / 100).toLocaleString("fr-FR")}€`}>
-                    <div
-                      className="w-full bg-es-green rounded-t transition-all hover:bg-es-green-light"
-                      style={{ height: `${Math.max(h, m.revenue_cents > 0 ? 2 : 0)}%` }}
-                    />
-                  </div>
-                );
-              })}
+        <div className={`grid grid-cols-1 ${isOwner ? "lg:grid-cols-3" : "lg:grid-cols-2"} gap-6`}>
+          {/* CA — owner uniquement */}
+          {isOwner && (
+            <div>
+              <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-2">Chiffre d&apos;affaires</p>
+              <div className="flex items-end gap-1 h-24">
+                {monthlyTrend.map((m) => {
+                  const h = (m.revenue_cents / trendMaxRevenue) * 100;
+                  return (
+                    <div key={m.month} className="flex-1 flex flex-col items-center justify-end" title={`${monthShort(m.month)} : ${(m.revenue_cents / 100).toLocaleString("fr-FR")}€`}>
+                      <div
+                        className="w-full bg-es-green rounded-t transition-all hover:bg-es-green-light"
+                        style={{ height: `${Math.max(h, m.revenue_cents > 0 ? 2 : 0)}%` }}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="flex gap-1 mt-1.5">
+                {monthlyTrend.map((m) => (
+                  <span key={m.month} className="flex-1 text-center text-[9px] text-gray-400 uppercase">
+                    {monthShort(m.month).slice(0, 3)}
+                  </span>
+                ))}
+              </div>
+              <p className="text-[10px] text-gray-400 mt-2">Max : {(trendMaxRevenue / 100).toLocaleString("fr-FR")}€</p>
             </div>
-            <div className="flex gap-1 mt-1.5">
-              {monthlyTrend.map((m) => (
-                <span key={m.month} className="flex-1 text-center text-[9px] text-gray-400 uppercase">
-                  {monthShort(m.month).slice(0, 3)}
-                </span>
-              ))}
-            </div>
-            <p className="text-[10px] text-gray-400 mt-2">Max : {(trendMaxRevenue / 100).toLocaleString("fr-FR")}€</p>
-          </div>
+          )}
 
           {/* Ventes */}
           <div>
@@ -880,7 +909,7 @@ export default async function AdminDashboard() {
                   <th className="text-right py-2 px-2">Emails</th>
                   <th className="text-right py-2 px-2">Conversions</th>
                   <th className="text-right py-2 px-2">Taux conv.</th>
-                  <th className="text-right py-2 px-2">CA attribue</th>
+                  {isOwner && <th className="text-right py-2 px-2">CA attribue</th>}
                 </tr>
               </thead>
               <tbody>
@@ -893,7 +922,7 @@ export default async function AdminDashboard() {
                     <td className={`py-2 px-2 text-right font-semibold ${row.conversion_rate >= 10 ? "text-es-green" : row.conversion_rate >= 5 ? "text-amber-600" : "text-gray-400"}`}>
                       {row.conversion_rate}%
                     </td>
-                    <td className="py-2 px-2 text-right font-bold text-gray-900">{(row.attributed_revenue_cents / 100).toLocaleString("fr-FR")}€</td>
+                    {isOwner && <td className="py-2 px-2 text-right font-bold text-gray-900">{(row.attributed_revenue_cents / 100).toLocaleString("fr-FR")}€</td>}
                   </tr>
                 ))}
               </tbody>
@@ -902,34 +931,36 @@ export default async function AdminDashboard() {
         )}
       </Card>
 
-      {/* LTV par segment + Cohortes de conversion */}
-      <div className="grid lg:grid-cols-2 gap-6 mb-8">
-        <Card>
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h2 className="font-serif text-lg font-bold text-gray-900">LTV par segment client</h2>
-              <p className="text-xs text-gray-500 mt-0.5">Revenu cumule moyen par client selon ses achats</p>
+      {/* LTV par segment (owner only) + Cohortes de conversion (tous) */}
+      <div className={`grid ${isOwner ? "lg:grid-cols-2" : "lg:grid-cols-1"} gap-6 mb-8`}>
+        {isOwner && (
+          <Card>
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h2 className="font-serif text-lg font-bold text-gray-900">LTV par segment client</h2>
+                <p className="text-xs text-gray-500 mt-0.5">Revenu cumule moyen par client selon ses achats</p>
+              </div>
             </div>
-          </div>
-          {ltv.length === 0 ? (
-            <p className="text-sm text-gray-400 italic py-4 text-center">Pas encore de clients.</p>
-          ) : (
-            <div className="space-y-3">
-              {ltv.map((seg) => (
-                <div key={seg.segment} className="flex items-center justify-between bg-gray-50 rounded-lg p-3">
-                  <div>
-                    <p className="text-sm font-semibold text-gray-900">{ltvLabel(seg.segment)}</p>
-                    <p className="text-[10px] text-gray-500">{seg.customers_count} client{seg.customers_count > 1 ? "s" : ""} · CA total {(seg.total_revenue_cents / 100).toLocaleString("fr-FR")}€</p>
+            {ltv.length === 0 ? (
+              <p className="text-sm text-gray-400 italic py-4 text-center">Pas encore de clients.</p>
+            ) : (
+              <div className="space-y-3">
+                {ltv.map((seg) => (
+                  <div key={seg.segment} className="flex items-center justify-between bg-gray-50 rounded-lg p-3">
+                    <div>
+                      <p className="text-sm font-semibold text-gray-900">{ltvLabel(seg.segment)}</p>
+                      <p className="text-[10px] text-gray-500">{seg.customers_count} client{seg.customers_count > 1 ? "s" : ""} · CA total {(seg.total_revenue_cents / 100).toLocaleString("fr-FR")}€</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xl font-bold text-es-green">{(seg.avg_ltv_cents / 100).toLocaleString("fr-FR")}€</p>
+                      <p className="text-[10px] text-gray-400">LTV moyenne</p>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-xl font-bold text-es-green">{(seg.avg_ltv_cents / 100).toLocaleString("fr-FR")}€</p>
-                    <p className="text-[10px] text-gray-400">LTV moyenne</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </Card>
+                ))}
+              </div>
+            )}
+          </Card>
+        )}
 
         <Card>
           <div className="flex items-center justify-between mb-4">
@@ -987,7 +1018,7 @@ export default async function AdminDashboard() {
                   <th className="text-right py-2 px-2">Opt-ins</th>
                   <th className="text-right py-2 px-2">Acheteurs</th>
                   <th className="text-right py-2 px-2">Taux conv.</th>
-                  <th className="text-right py-2 px-2">CA</th>
+                  {isOwner && <th className="text-right py-2 px-2">CA</th>}
                 </tr>
               </thead>
               <tbody>
@@ -997,7 +1028,7 @@ export default async function AdminDashboard() {
                     <td className="py-2 px-2 text-right text-gray-600">{lm.opt_ins}</td>
                     <td className="py-2 px-2 text-right font-semibold text-gray-900">{lm.buyers}</td>
                     <td className={`py-2 px-2 text-right font-semibold ${lm.conversion_rate >= 10 ? "text-es-green" : lm.conversion_rate >= 5 ? "text-amber-600" : "text-gray-400"}`}>{lm.conversion_rate}%</td>
-                    <td className="py-2 px-2 text-right font-bold text-gray-900">{(lm.revenue_cents / 100).toLocaleString("fr-FR")}€</td>
+                    {isOwner && <td className="py-2 px-2 text-right font-bold text-gray-900">{(lm.revenue_cents / 100).toLocaleString("fr-FR")}€</td>}
                   </tr>
                 ))}
               </tbody>
@@ -1025,9 +1056,11 @@ export default async function AdminDashboard() {
                       {e.purchased_at ? new Date(e.purchased_at).toLocaleDateString("fr-FR") : "-"}
                     </span>
                   </div>
-                  <span className="font-bold text-gray-900 text-sm">
-                    {(e.amount_paid / 100).toLocaleString("fr-FR")}€
-                  </span>
+                  {isOwner && (
+                    <span className="font-bold text-gray-900 text-sm">
+                      {(e.amount_paid / 100).toLocaleString("fr-FR")}€
+                    </span>
+                  )}
                 </div>
               ))}
             </div>
