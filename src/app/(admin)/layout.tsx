@@ -19,6 +19,7 @@ const adminNav = [
   { label: "Tunnels", href: "/admin/tunnels", icon: "🔄" },
   { label: "SEO & Analytics", href: "/admin/seo", icon: "📈" },
   { label: "Activité", href: "/admin/activity", icon: "🕓" },
+  { label: "Aide", href: "/admin/aide", icon: "💡" },
   { label: "Paramètres", href: "/admin/settings", icon: "⚙️" },
 ];
 
