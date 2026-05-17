@@ -129,9 +129,16 @@ export const TEST_TAG = "__e2e_scenario";
  * qu'on a tape trop vite (verifier que dev server est isole, pas en prod).
  */
 export async function submitForm(slug, body) {
+  // X-Forwarded-For random pour eviter le rate-limit IP (3/min) quand on
+  // enchaine les scenarios en local. En prod le proxy Vercel ecrase ce
+  // header avec l'IP reelle du client, donc pas de risque d'usage abusif.
+  const fakeIp = `127.0.${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}`;
   const res = await fetch(`${BASE_URL}/api/forms/${slug}/submit`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      "X-Forwarded-For": fakeIp,
+    },
     body: JSON.stringify(body),
   });
   let json = null;

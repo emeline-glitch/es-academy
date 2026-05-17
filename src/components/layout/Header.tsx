@@ -118,6 +118,7 @@ export function Header({ activePage = "home" }: HeaderProps) {
           </Link>
           <a
             href={ctaHref}
+            data-cta={activePage === "family" ? "header-family-fondateur" : "header-academy"}
             className={`inline-flex items-center justify-center font-medium rounded-full px-5 py-2 text-sm text-white transition-all shadow-sm hover:shadow-md ${ctaClass}`}
           >
             {ctaText}
@@ -179,6 +180,7 @@ export function Header({ activePage = "home" }: HeaderProps) {
             </Link>
             <a
               href={ctaHref}
+              data-cta={activePage === "family" ? "header-mobile-family-fondateur" : "header-mobile-academy"}
               className={`text-center font-medium rounded-full px-4 py-3 text-sm text-white ${ctaClass}`}
             >
               {ctaText}
