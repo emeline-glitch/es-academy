@@ -1,46 +1,86 @@
 # Brancher Waalaxy au CRM
 
-Tu as **Waalaxy Business annuel**. Tu as 3 chemins possibles, du plus simple au plus flexible :
+Tu as **Waalaxy Business annuel** + une clé API `zpka_…`.
 
-| Chemin | Temps de mise en place | Coût additionnel | Fiabilité |
-|--------|------------------------|-------------------|-----------|
-| **1. Webhook natif** | 5 min | 0 € | ⭐⭐⭐⭐⭐ |
-| **2. Zapier** (clé `zpka_…`) | 15 min | 0 € (jusqu'à 100 tasks/mois) puis ~20 €/mois | ⭐⭐⭐⭐ |
-| **3. Import CSV** | manuel hebdomadaire | 0 € | ⭐⭐⭐ |
+⚠️ **Important** : Waalaxy n'a **pas d'API REST publique** à ce jour (cf. [leur doc officielle](https://intercom.help/waalaxy/fr/articles/13743138-integration-api-tout-ce-que-tu-dois-savoir-tutoriels)). La clé `zpka_` ne s'utilise qu'avec **Zapier, Make ou n8n** comme middleman. Pas de chemin direct Waalaxy → notre CRM possible.
 
-Commence par le **1**. Si Waalaxy n'expose pas l'option, retombe sur le **2** (tu as déjà la clé Zapier).
+## Comparatif des chemins
 
----
+| Chemin | Setup | Coût | Volume max |
+|--------|-------|------|------------|
+| **1. Make.com** (recommandé) | 15 min | 0 € | 1000 prospects/mois gratuit |
+| **2. Zapier** | 15 min | 0 € jusqu'à 100/mois, puis ~20 €/mois | illimité (payant) |
+| **3. n8n self-hosted** | 1 h | 0 € | illimité |
+| **4. Import CSV manuel** | 5 min/batch | 0 € | illimité (manuel) |
 
-## Chemin 1 — Webhook natif Waalaxy (recommandé)
-
-Va dans **app.waalaxy.com → Paramètres → Intégrations**. Si tu vois une section **"Webhooks"** (différent de "Zapier"), suis ces étapes :
-
-1. **Ajouter un webhook**
-2. Renseigne :
-   - **URL** : `https://emeline-siron.fr/api/webhooks/waalaxy`
-   - **Méthode** : `POST`
-   - **Header personnalisé** :
-     - Nom : `X-Waalaxy-Secret`
-     - Valeur : la valeur de `WAALAXY_WEBHOOK_SECRET` dans ton `.env.local` (et déjà sur Vercel)
-   - **Événements à écouter** :
-     - ✅ `prospect_email_found` (le principal — déclenché quand Waalaxy trouve l'email pro)
-     - ✅ `prospect_replied` (optionnel — si tu veux taguer les hot leads qui répondent)
-3. Sauvegarde, puis clique **"Tester"**. Tu dois recevoir un `200 success`.
-
-### Tu ne vois pas "Webhooks" dans tes intégrations ?
-
-Passe au **Chemin 2 (Zapier)** — tu as déjà la clé qu'il faut.
+**Recommandation** : Make.com. Gratuit, suffit pour ton volume de prospection LinkedIn typique. Tu changeras si tu fais > 1000 prospects/mois.
 
 ---
 
-## Chemin 2 — Zapier (ta clé `zpka_…`)
+## Chemin 1 — Make.com (recommandé)
 
-Le préfixe `zpka_` est un **Zapier Personal Key** : la clé que Waalaxy te génère pour autoriser Zapier à lire ton compte. Zapier devient le middleman entre Waalaxy et nous.
+### Étape 1 — Crée un compte Make gratuit
 
-### Étape 1 — Crée un compte Zapier (gratuit jusqu'à 100 tasks/mois)
+[make.com/en/register](https://www.make.com/en/register) → plan **Free** (1000 ops/mois).
 
-[zapier.com/sign-up](https://zapier.com/sign-up). Plan gratuit suffit pour démarrer.
+### Étape 2 — Crée le scenario
+
+1. **Create a new scenario** → cherche **"Waalaxy"** dans les apps
+
+2. **Trigger** :
+   - Module : **Waalaxy → Watch Email Found** (ou "New Prospect" selon ce que Make propose)
+   - Connection → **Create new connection** → colle ta clé API (`zpka_…`, valeur dans `.env.local` → `WAALAXY_ZAPIER_KEY`)
+   - Campaign : **All campaigns** (par défaut) ou cible une campagne spécifique
+
+3. **Action** :
+   - Ajoute un module **HTTP → Make a request**
+   - Configure :
+     - **URL** : `https://emeline-siron.fr/api/webhooks/waalaxy`
+     - **Method** : `POST`
+     - **Body type** : `Raw`
+     - **Content type** : `application/json`
+     - **Headers** :
+       - `Content-Type` : `application/json`
+       - `X-Waalaxy-Secret` : valeur de `WAALAXY_WEBHOOK_SECRET` dans `.env.local`
+     - **Request content** (utilise les variables du trigger Waalaxy) :
+       ```json
+       {
+         "type": "prospect_email_found",
+         "data": {
+           "prospect": {
+             "email": "{{1.email}}",
+             "first_name": "{{1.first_name}}",
+             "last_name": "{{1.last_name}}",
+             "linkedin_url": "{{1.linkedin_url}}",
+             "company": "{{1.company}}",
+             "headline": "{{1.headline}}"
+           },
+           "campaign": { "name": "{{1.campaign_name}}" }
+         }
+       }
+       ```
+       (Les noms exacts des variables Waalaxy `{{1.xxx}}` peuvent varier selon la version du connecteur Make. Drag-drop depuis le panneau de droite.)
+
+4. **Run once** pour tester → tu dois voir un `200 success`.
+5. **Activate the scenario** (toggle en bas) + **schedule** : "Immediately" pour temps réel ou toutes les 15 min.
+
+### Quotas
+
+- **Free** : 1000 operations/mois (suffit jusqu'à 1000 prospects récupérés)
+- **Core** (~9 €/mois) : 10 000 operations/mois
+- **Pro** (~16 €/mois) : 10 000 operations + features avancées
+
+1 prospect Waalaxy = 1 op trigger + 1 op HTTP action = **2 ops**. Donc 500 prospects/mois max en plan Free.
+
+---
+
+## Chemin 2 — Zapier
+
+Même principe que Make. Plus connu, parfois plus stable, mais plan gratuit limité à **100 tasks/mois** (= 50 prospects max). Setup détaillé :
+
+### Étape 1 — Crée un compte Zapier
+
+[zapier.com/sign-up](https://zapier.com/sign-up) → plan Free.
 
 ### Étape 2 — Crée le Zap
 
@@ -48,12 +88,12 @@ Le préfixe `zpka_` est un **Zapier Personal Key** : la clé que Waalaxy te gén
 
 2. **Trigger** :
    - App : **Waalaxy**
-   - Event : **New Prospect with Email Found** (le nom exact peut varier : choisir celui qui correspond à "prospect_email_found")
+   - Event : **New Prospect with Email Found** (le nom exact peut varier)
    - Connect Account → colle ta clé Zapier `WAALAXY_ZAPIER_KEY` (valeur dans `.env.local`, format `zpka_<64-hex>`)
-   - Choose Campaign : tu peux laisser **"All campaigns"** pour tout récupérer (recommandé) ou en cibler une
+   - Choose Campaign : tu peux laisser **"All campaigns"** pour tout récupérer
 
 3. **Action** :
-   - App : **Webhooks by Zapier** (intégré gratuit)
+   - App : **Webhooks by Zapier**
    - Event : **POST**
    - Configure :
      - **URL** : `https://emeline-siron.fr/api/webhooks/waalaxy`
@@ -82,21 +122,31 @@ Le préfixe `zpka_` est un **Zapier Personal Key** : la clé que Waalaxy te gén
 4. **Test action** → tu dois voir une réponse `200 {"success":true, …}`.
 5. **Publish** le Zap.
 
-### Quota Zapier
+---
 
-- **Free** : 100 tasks/mois = environ 100 prospects par mois
-- **Starter** (~20 €/mois) : 750 tasks/mois
-- **Pro** (~50 €/mois) : 2000 tasks/mois
+## Chemin 3 — n8n self-hosted (geek mode, gratuit illimité)
 
-Si tu collectes plus de 100 leads/mois via Waalaxy, le Starter Zapier est obligatoire. Re-évaluer dans 1 mois.
+Si tu veux 0 coût + volume illimité, n8n est open source et tu peux le faire tourner sur un VPS (5 €/mois ailleurs OU sur ton Mac via Docker).
+
+```bash
+docker run -it --rm \
+  --name n8n \
+  -p 5678:5678 \
+  -v ~/.n8n:/home/node/.n8n \
+  n8nio/n8n
+```
+
+Puis `http://localhost:5678` → workflow avec node Waalaxy + node HTTP Request vers notre webhook.
+
+Pas recommandé sauf si tu veux apprendre n8n. Make.com couvre 99% des cas.
 
 ---
 
-## Chemin 3 — Import CSV manuel (backup ou rattrapage)
+## Chemin 4 — Import CSV manuel (toujours dispo)
 
-Toujours disponible quel que soit le chemin choisi. Utile :
-- Pour rattraper les prospects pré-existants avant d'activer le webhook/Zapier
-- Si Waalaxy a un incident et que tu veux importer manuellement
+Backup ou rattrapage. Utile pour :
+- Importer les prospects pré-existants une fois avant d'activer Make
+- Si Waalaxy a un incident
 
 ### Workflow
 
@@ -112,7 +162,7 @@ Toujours disponible quel que soit le chemin choisi. Utile :
 
 ---
 
-## Vérifier que ça marche
+## Vérifier que le webhook répond
 
 ### Test manuel (curl)
 
