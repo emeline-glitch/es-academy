@@ -20,6 +20,7 @@ const adminNav: AdminNavItem[] = [
   { section: true, label: "Commercial" },
   { label: "Pipeline", href: "/admin/pipeline", icon: "🎯" },
   { label: "Élèves", href: "/admin/eleves", icon: "🎓" },
+  { label: "Ma performance", href: "/admin/ma-perf", icon: "🏆" },
   { label: "Finance", href: "/admin/finance", icon: "💼", ownerOnly: true },
 
   { section: true, label: "Marketing" },

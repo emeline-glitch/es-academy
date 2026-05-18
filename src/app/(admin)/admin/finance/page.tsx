@@ -128,6 +128,39 @@ export default async function FinancePage() {
     { num: 4, target: s.q4_target_cents, realised: s.q4_realised_cents },
   ];
 
+  // Remuneration equipe (Tiffany + Antony) pour le mois courant. Calcul
+  // base sur les contrats freelance (juin -> nov 2026). Charges variables
+  // qui s'ajoutent au total des charges fixes pour donner la vraie marge nette.
+  const today = new Date();
+  const monthStart = new Date(today.getFullYear(), today.getMonth(), 1)
+    .toISOString().slice(0, 10);
+  const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0)
+    .toISOString().slice(0, 10);
+  const [tiffanyRes, antonyRes] = await Promise.all([
+    adminClient.rpc("team_compensation_for_member", {
+      p_member: "tiffany", p_period_start: monthStart, p_period_end: monthEnd,
+    }),
+    adminClient.rpc("team_compensation_for_member", {
+      p_member: "antony", p_period_start: monthStart, p_period_end: monthEnd,
+    }),
+  ]);
+  const tiffanyComp = (tiffanyRes.data?.[0] || {
+    fixed_cents: 0, variable_academy_cents: 0, variable_coaching_cents: 0,
+    variable_family_cents: 0, total_cents: 0,
+    academy_sales_count: 0, coaching_sales_count: 0, family_new_members_count: 0,
+  }) as {
+    fixed_cents: number; variable_academy_cents: number; variable_coaching_cents: number;
+    variable_family_cents: number; total_cents: number;
+    academy_sales_count: number; coaching_sales_count: number; family_new_members_count: number;
+  };
+  const antonyComp = (antonyRes.data?.[0] || {
+    fixed_cents: 0, variable_academy_cents: 0, variable_coaching_cents: 0,
+    variable_family_cents: 0, total_cents: 0,
+    academy_sales_count: 0, coaching_sales_count: 0, family_new_members_count: 0,
+  }) as typeof tiffanyComp;
+  const teamMonthlyCents = tiffanyComp.total_cents + antonyComp.total_cents;
+  const monthLabel = today.toLocaleDateString("fr-FR", { month: "long", year: "numeric" });
+
   const yoy = deltaYoY(s.year_ttc_cents, s.prev_year_ttc_cents);
   const remainingToTarget = Math.max(0, s.annual_target_cents - s.year_ttc_cents);
   const monthsLeftInYear = 12 - new Date().getMonth();
@@ -540,8 +573,82 @@ export default async function FinancePage() {
         </form>
       </Card>
 
+      {/* Remuneration equipe : Tiffany + Antony pour le mois en cours.
+          Calculee en temps reel via RPC team_compensation_for_member.
+          S'ajoute aux charges fixes pour donner la vraie marge nette. */}
+      <Card className="mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="font-serif text-lg font-bold text-gray-900">Rémunération équipe</h2>
+            <p className="text-xs text-gray-500 mt-0.5 capitalize">
+              {monthLabel} · calcul auto basé sur les contrats freelance (juin → nov 2026)
+            </p>
+          </div>
+          <div className="text-right">
+            <p className="text-xs text-gray-500">À payer ce mois</p>
+            <p className="text-2xl font-bold text-fuchsia-600">{formatEur(teamMonthlyCents)} <span className="text-xs text-gray-400 font-normal">HT</span></p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Tiffany */}
+          <div className="bg-fuchsia-50/40 border border-fuchsia-100 rounded-lg p-4">
+            <div className="flex items-baseline justify-between mb-3">
+              <div>
+                <p className="font-bold text-fuchsia-700">Tiffany Grass</p>
+                <p className="text-[10px] text-gray-500 uppercase tracking-wider">Marketing</p>
+              </div>
+              <p className="text-xl font-bold text-fuchsia-700">{formatEur(tiffanyComp.total_cents)}</p>
+            </div>
+            <div className="space-y-1 text-xs">
+              <div className="flex justify-between">
+                <span className="text-gray-600">Fixe (juin-nov 2026)</span>
+                <span className="font-mono text-gray-900">{formatEur(tiffanyComp.fixed_cents)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">3% Academy ({tiffanyComp.academy_sales_count} vente{tiffanyComp.academy_sales_count > 1 ? "s" : ""})</span>
+                <span className="font-mono text-gray-900">{formatEur(tiffanyComp.variable_academy_cents)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">7€/membre Family ({tiffanyComp.family_new_members_count})</span>
+                <span className="font-mono text-gray-900">{formatEur(tiffanyComp.variable_family_cents)}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Antony */}
+          <div className="bg-blue-50/40 border border-blue-100 rounded-lg p-4">
+            <div className="flex items-baseline justify-between mb-3">
+              <div>
+                <p className="font-bold text-blue-700">Antony d&apos;Anna</p>
+                <p className="text-[10px] text-gray-500 uppercase tracking-wider">Closer · 100% variable</p>
+              </div>
+              <p className="text-xl font-bold text-blue-700">{formatEur(antonyComp.total_cents)}</p>
+            </div>
+            <div className="space-y-1 text-xs">
+              <div className="flex justify-between">
+                <span className="text-gray-600">15% Academy ({antonyComp.academy_sales_count} vente{antonyComp.academy_sales_count > 1 ? "s" : ""})</span>
+                <span className="font-mono text-gray-900">{formatEur(antonyComp.variable_academy_cents)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">15% Coaching ({antonyComp.coaching_sales_count} package{antonyComp.coaching_sales_count > 1 ? "s" : ""})</span>
+                <span className="font-mono text-gray-900">{formatEur(antonyComp.variable_coaching_cents)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">10% MRR Family ({antonyComp.family_new_members_count} new)</span>
+                <span className="font-mono text-gray-900">{formatEur(antonyComp.variable_family_cents)}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p className="text-[11px] text-gray-400 italic mt-3">
+          Attribution : Antony = contacts taggués <code className="text-[10px]">closer:antony</code> (auto via Calendly). Tiffany = contacts taggués <code className="text-[10px]">lm:*</code> (lead magnets). Tiffany peut consulter sa vue dans <a href="/admin/ma-perf" className="underline text-es-green">Ma performance</a>.
+        </p>
+      </Card>
+
       <p className="text-xs text-gray-400 italic mt-8">
-        Tous les montants sont en EUR. CA Family estimé en multipliant le MRR par les mois actifs depuis le début d&apos;année (approximation). HT calculé à 20% TVA standard. Charges annualisées = mensuel × 12 + one-shots.
+        Tous les montants sont en EUR. CA Family estimé en multipliant le MRR par les mois actifs depuis le début d&apos;année (approximation). HT calculé à 20% TVA standard. Charges annualisées = mensuel × 12 + one-shots. Rémunération équipe non incluse dans charges fixes (variable mensuelle).
       </p>
     </div>
   );
