@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { getArticleBySlug, getArticleBlocks, getPublishedArticles } from "@/lib/notion/blog";
-import { getBlogImageMap } from "@/lib/notion/blog-images";
+import { getBlogImageMap, isNotionImageUrl } from "@/lib/notion/blog-images";
 import { renderBlocks } from "@/lib/notion/renderer";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { ArticleContent } from "@/components/blog/ArticleContent";
@@ -123,6 +123,7 @@ export default async function ArticlePage({
               sizes="(max-width: 1024px) 100vw, 1024px"
               className="object-cover"
               priority
+              unoptimized={isNotionImageUrl(articleImage)}
             />
           </div>
         </div>
@@ -175,16 +176,21 @@ export default async function ArticlePage({
                   className="bg-white rounded-xl overflow-hidden border border-es-cream-dark card-hover group"
                 >
                   <div className="aspect-[16/9] bg-es-cream-dark relative overflow-hidden">
-                    {(imageMap.get(a.slug) || a.featuredImage) && (
-                      <Image
-                        src={imageMap.get(a.slug) || a.featuredImage || ""}
-                        alt={a.title}
-                        fill
-                        sizes="(max-width: 768px) 100vw, 33vw"
-                        className="object-cover"
-                        loading="lazy"
-                      />
-                    )}
+                    {(() => {
+                      const src = imageMap.get(a.slug) || a.featuredImage || "";
+                      if (!src) return null;
+                      return (
+                        <Image
+                          src={src}
+                          alt={a.title}
+                          fill
+                          sizes="(max-width: 768px) 100vw, 33vw"
+                          className="object-cover"
+                          loading="lazy"
+                          unoptimized={isNotionImageUrl(src)}
+                        />
+                      );
+                    })()}
                   </div>
                   <div className="p-4">
                     <h3 className="font-serif font-bold text-es-text group-hover:text-es-green transition-colors leading-snug">

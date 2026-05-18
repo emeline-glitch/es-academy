@@ -4,7 +4,7 @@ import Image from "next/image";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { getPublishedArticles } from "@/lib/notion/blog";
-import { getBlogImageMap } from "@/lib/notion/blog-images";
+import { getBlogImageMap, isNotionImageUrl } from "@/lib/notion/blog-images";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbSchema } from "@/lib/seo/schemas";
@@ -81,16 +81,21 @@ export default async function BlogPage() {
                 >
                   {/* Image (Notion FeaturedImage si dispo, sinon photo Unsplash thématique selon la catégorie) */}
                   <div className="aspect-[16/9] bg-es-cream-dark relative overflow-hidden">
-                    {(imageMap.get(article.slug) || article.featuredImage) && (
-                      <Image
-                        src={imageMap.get(article.slug) || article.featuredImage || ""}
-                        alt={article.title}
-                        fill
-                        sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
-                        className="object-cover group-hover:scale-105 transition-transform duration-500"
-                        loading="lazy"
-                      />
-                    )}
+                    {(() => {
+                      const src = imageMap.get(article.slug) || article.featuredImage || "";
+                      if (!src) return null;
+                      return (
+                        <Image
+                          src={src}
+                          alt={article.title}
+                          fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                          className="object-cover group-hover:scale-105 transition-transform duration-500"
+                          loading="lazy"
+                          unoptimized={isNotionImageUrl(src)}
+                        />
+                      );
+                    })()}
                     {article.category && (
                       <span className="absolute top-3 left-3 bg-es-green text-white text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-full">
                         {article.category}

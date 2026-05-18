@@ -115,6 +115,21 @@ const CATEGORY_POOL: Record<string, string[]> = {
 const FALLBACK_IMAGE = UNSPLASH("1486406146926-c627a92ad1ab");
 
 /**
+ * Detecte si une URL d'image est une URL S3 signee Notion. Ces URLs ont
+ * 2 problemes pour Next.js Image :
+ *   1. Tres longues (>8KB avec le X-Amz-Security-Token AWS STS), Vercel
+ *      rejette en 400/414 quand on les passe dans /_next/image?url=...
+ *   2. Expirent en 1h (X-Amz-Expires=3600), donc inutile de les cacher.
+ *
+ * Pour ces URLs, on doit passer unoptimized={true} au composant <Image>
+ * (bypass le proxy Next.js, l'image charge directement depuis S3).
+ */
+export function isNotionImageUrl(url: string | null | undefined): boolean {
+  if (!url) return false;
+  return url.includes("prod-files-secure.s3") || url.includes(".notion.so");
+}
+
+/**
  * Construit le mapping slug → image pour TOUS les articles publies.
  * Pour chaque categorie, trie les articles par slug et assigne pool[i].
  * Garantit unicite au sein d'une meme categorie (et donc globalement, car les

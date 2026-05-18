@@ -4,7 +4,7 @@ import Image from "next/image";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { getArticlesByCategory } from "@/lib/notion/blog";
-import { getBlogImageMap } from "@/lib/notion/blog-images";
+import { getBlogImageMap, isNotionImageUrl } from "@/lib/notion/blog-images";
 import { buildMetadata } from "@/lib/seo/metadata";
 
 const CATEGORIES: Record<string, { label: string; description: string }> = {
@@ -111,16 +111,21 @@ export default async function CategoryPage({
                   className="bg-white rounded-xl overflow-hidden border border-es-cream-dark card-hover group"
                 >
                   <div className="aspect-[16/9] bg-es-cream-dark relative overflow-hidden">
-                    {(imageMap.get(article.slug) || article.featuredImage) && (
-                      <Image
-                        src={imageMap.get(article.slug) || article.featuredImage || ""}
-                        alt={article.title}
-                        fill
-                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        className="object-cover group-hover:scale-105 transition-transform duration-500"
-                        loading="lazy"
-                      />
-                    )}
+                    {(() => {
+                      const src = imageMap.get(article.slug) || article.featuredImage || "";
+                      if (!src) return null;
+                      return (
+                        <Image
+                          src={src}
+                          alt={article.title}
+                          fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                          className="object-cover group-hover:scale-105 transition-transform duration-500"
+                          loading="lazy"
+                          unoptimized={isNotionImageUrl(src)}
+                        />
+                      );
+                    })()}
                   </div>
                   <div className="p-5">
                     <h2 className="font-serif text-lg font-bold text-es-text group-hover:text-es-green transition-colors leading-snug mb-2">
