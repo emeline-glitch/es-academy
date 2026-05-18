@@ -62,16 +62,20 @@ function parseCsv(text: string): CsvRow[] {
     email: "email",
     "e-mail": "email",
     mail: "email",
+    "email address": "email",
     prenom: "first_name",
     prénom: "first_name",
     first_name: "first_name",
     firstname: "first_name",
+    "first name": "first_name", // export Waalaxy
     nom: "last_name",
     last_name: "last_name",
     lastname: "last_name",
+    "last name": "last_name", // export Waalaxy
     telephone: "phone",
     téléphone: "phone",
     phone: "phone",
+    "phone number": "phone",
     portable: "phone",
     mobile: "phone",
   };
@@ -194,7 +198,7 @@ export async function POST(request: Request) {
 
   // Boucle d'import via RPC atomique import_contact_with_consent (migration 034).
   // 1 round-trip par contact, mais merge tags + préservation primary_source +
-  // log consent_log dans la même transaction. Pour 1900 alumni : ~20s, OK pour
+  // log consent_log dans la même transaction. Pour 1900 anciens élèves : ~20s, OK pour
   // un import admin one-shot. Si volume plus large à l'avenir, batch via UNNEST.
   const now = new Date().toISOString();
   const consentProof = {

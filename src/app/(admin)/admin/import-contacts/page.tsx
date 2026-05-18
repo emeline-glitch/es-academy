@@ -38,7 +38,7 @@ interface ImportResult {
 const CONSENT_OPTIONS = [
   {
     value: "legitimate_interest",
-    label: "Intérêt légitime (alumni, clients existants)",
+    label: "Intérêt légitime (anciens élèves, clients existants)",
     description: "Article 6.1.f RGPD. Pour des contacts avec qui il y a eu une relation commerciale. Pas besoin de re-opt-in.",
   },
   {
@@ -174,6 +174,46 @@ export default function ImportContactsPage() {
         </p>
       </div>
 
+      {/* Presets : 1 clic pour pré-remplir le formulaire selon la source */}
+      <div className="mb-5 flex flex-wrap items-center gap-2">
+        <span className="text-xs text-gray-500 font-semibold uppercase tracking-wider">Presets</span>
+        <button
+          type="button"
+          onClick={() => {
+            // Trouve la liste "Prospection LinkedIn" via son tag_key
+            const list = lists.find((l) => l.tag_key === "source:linkedin-waalaxy");
+            if (list) setListId(list.id);
+            setSource("linkedin-waalaxy");
+            setSourceDetail(`Waalaxy export ${new Date().toLocaleDateString("fr-FR")}`);
+            setTagsRaw("linkedin");
+            setConsentType("legitimate_interest");
+            setConsentBasis("Prospection B2B LinkedIn ciblée via Waalaxy (art. 6.1.f RGPD)");
+            toast.success("Preset Waalaxy appliqué — colle ton CSV ci-dessous");
+          }}
+          className="text-xs px-3 py-1.5 rounded-md border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors font-medium cursor-pointer"
+        >
+          🔗 Waalaxy (LinkedIn)
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            setSource("ancien-eleve-evermind");
+            setSourceDetail(`Brevo export ${new Date().toLocaleDateString("fr-FR")}`);
+            setTagsRaw("rgpd:legitimate-interest");
+            setSetAlumni(true);
+            setConsentType("legitimate_interest");
+            setConsentBasis("Ancien client Evermind, relation commerciale préexistante");
+            toast.success("Preset Alumni Evermind appliqué");
+          }}
+          className="text-xs px-3 py-1.5 rounded-md border border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100 transition-colors font-medium cursor-pointer"
+        >
+          🎓 Alumni Evermind
+        </button>
+        <span className="text-[11px] text-gray-400 italic">
+          Pré-remplit liste, source, tags et base RGPD. Tu n&apos;as plus qu&apos;à coller le CSV.
+        </span>
+      </div>
+
       <div className="grid lg:grid-cols-[1fr_400px] gap-6">
         {/* Colonne principale */}
         <div className="space-y-4">
@@ -216,7 +256,7 @@ export default function ImportContactsPage() {
                 <Input
                   value={tagsRaw}
                   onChange={(e) => setTagsRaw(e.target.value)}
-                  placeholder="Ex : source:alumni-evermind, rgpd:legitimate-interest"
+                  placeholder="Ex : source:ancien-eleve-evermind, rgpd:legitimate-interest"
                 />
                 <p className="text-[11px] text-gray-400 mt-1">
                   Conseil : utilise le préfixe <code className="font-mono">source:</code> pour la provenance et{" "}
@@ -247,7 +287,7 @@ export default function ImportContactsPage() {
                   <Input
                     value={source}
                     onChange={(e) => setSource(e.target.value)}
-                    placeholder="Ex : alumni-evermind"
+                    placeholder="Ex : ancien-eleve-evermind"
                   />
                 </div>
                 <div>
@@ -300,12 +340,12 @@ export default function ImportContactsPage() {
               <Input
                 value={consentBasis}
                 onChange={(e) => setConsentBasis(e.target.value)}
-                placeholder="Ex : alumni_evermind_2026_04 ou brevo_reoptin_2026_05"
+                placeholder="Ex : ancien_eleve_evermind_2026_04 ou brevo_reoptin_2026_05"
               />
             </div>
           </Card>
 
-          {/* Options spécifiques alumni / cohortes Brevo */}
+          {/* Options spécifiques anciens élèves / cohortes Brevo */}
           <Card>
             <h2 className="font-serif text-lg font-bold text-gray-900 mb-3">4. Options spéciales</h2>
             <div className="space-y-3">
@@ -317,7 +357,7 @@ export default function ImportContactsPage() {
                   className="mt-1 accent-es-green"
                 />
                 <div>
-                  <p className="text-sm font-medium text-gray-900">Marquer comme alumni Evermind</p>
+                  <p className="text-sm font-medium text-gray-900">Marquer comme ancien élève Evermind</p>
                   <p className="text-xs text-gray-500">
                     Active le flag <code>is_alumni_evermind</code> et la date <code>alumni_migrated_at</code>. Permet l&apos;auto-enroll dans SEQ_AL si la séquence a un trigger correspondant.
                   </p>
@@ -331,7 +371,7 @@ export default function ImportContactsPage() {
                   className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm bg-white"
                 >
                   <option value="">Aucune</option>
-                  <option value="1">Cohorte 1 : alumni intérêt légitime</option>
+                  <option value="1">Cohorte 1 : anciens élèves (intérêt légitime)</option>
                   <option value="2">Cohorte 2 : actifs 6 mois, re-consentement demandé</option>
                   <option value="3">Cohorte 3 : inactifs 6 mois+ (ne PAS importer normalement)</option>
                 </select>
