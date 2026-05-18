@@ -31,6 +31,50 @@ export default function PolitiqueConfidentialite() {
           <li>Donnees de paiement (traitees par Stripe, non stockees par nous)</li>
           <li>Donnees de progression (lecons completees, quiz)</li>
           <li>Donnees de navigation (cookies analytiques, avec consentement)</li>
+          <li>
+            <strong>Donnees professionnelles publiques LinkedIn</strong> (prospection B2B) :
+            nom, prenom, fonction, entreprise, URL LinkedIn, email professionnel.
+            Voir section dediee ci-dessous.
+          </li>
+        </ul>
+
+        <h2>Prospection B2B via LinkedIn et Waalaxy</h2>
+        <p>
+          Si tu recois un email de prospection de notre part sans inscription prealable,
+          cela signifie que ton profil LinkedIn correspond a notre cible
+          (investisseurs immobiliers, dirigeants, entrepreneurs). Voici en transparence
+          comment nous procedons :
+        </p>
+        <ul>
+          <li>
+            <strong>Source des donnees</strong> : profils publics LinkedIn, enrichis
+            via l&apos;outil <a href="https://waalaxy.com" target="_blank" rel="noopener">Waalaxy</a>
+            qui retrouve l&apos;email professionnel a partir des donnees publiques.
+          </li>
+          <li>
+            <strong>Donnees collectees</strong> : nom, prenom, fonction, entreprise,
+            URL LinkedIn, email professionnel uniquement (pas d&apos;email personnel).
+          </li>
+          <li>
+            <strong>Base juridique</strong> : interet legitime (RGPD art. 6.1.f).
+            La prospection B2B ciblee est admise par la CNIL des lors que le sujet
+            (formation a l&apos;investissement immobilier) est en rapport avec
+            l&apos;activite professionnelle du destinataire.
+          </li>
+          <li>
+            <strong>Information prealable</strong> : chaque email de prospection
+            contient en tete une mention claire indiquant pourquoi tu le recois,
+            la source des donnees, et un lien de desinscription en 1 clic.
+          </li>
+          <li>
+            <strong>Duree de conservation</strong> : 3 ans maximum sans interaction
+            (ouverture, clic, reponse). Au-dela, ton contact est automatiquement
+            supprime de nos bases.
+          </li>
+          <li>
+            <strong>Droit d&apos;opposition</strong> : tu peux te desinscrire en 1 clic
+            via le lien dans tout email recu, ou nous ecrire a contact@emeline-siron.fr.
+          </li>
         </ul>
 
         <h2>Finalites du traitement</h2>
@@ -75,6 +119,7 @@ export default function PolitiqueConfidentialite() {
           <li>Stripe (paiement, certifie PCI-DSS)</li>
           <li>Bunny.net (hebergement video, UE)</li>
           <li>Amazon SES (envoi emails, UE)</li>
+          <li>Waalaxy (outil de prospection LinkedIn B2B, France)</li>
         </ul>
 
         <h2>Contact</h2>

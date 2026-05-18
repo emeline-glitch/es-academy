@@ -43,13 +43,39 @@ function renderMergeTags(text: string, vars: Record<string, string>): string {
   return text.replace(/\{\{\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*\}\}/g, (_m, name) => vars[name] ?? "");
 }
 
-// Détecte si une séquence est une "welcome" (son trigger_value commence par 'lm:' ou est 'source:alumni-evermind'…)
+/**
+ * Bandeau RGPD article 13 (collecte indirecte) pour les contacts
+ * prospectes via Waalaxy. Doit apparaitre dans CHAQUE mail de la sequence,
+ * pas seulement le 1er, parce que la CNIL juge sur le mail recu pas sur
+ * la sequence d'envoi.
+ *
+ * Style discret pour ne pas casser le mail mais visible (background, lien
+ * couleur, ligne separatrice du contenu principal).
+ */
+function buildWaalaxyRgpdBanner(unsubscribeUrl: string): string {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://emeline-siron.fr";
+  return `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin:0 0 24px;background:#f5f5f4;border:1px solid #e7e5e4;border-radius:8px;">
+  <tr>
+    <td style="padding:14px 18px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:12px;line-height:1.5;color:#525252;">
+      <strong style="color:#262626;">Pourquoi tu reçois ce mail ?</strong><br/>
+      Ton profil LinkedIn correspond à mes prospects (investissement immobilier). Je l'ai trouvé via Waalaxy (LinkedIn + outil d'enrichissement).
+      Base juridique : intérêt légitime (RGPD art. 6.1.f).
+      <a href="${unsubscribeUrl}" style="color:#16a34a;text-decoration:underline;">Me désinscrire en 1 clic</a> ·
+      <a href="${siteUrl}/politique-confidentialite" style="color:#525252;text-decoration:underline;">Politique de confidentialité</a>
+    </td>
+  </tr>
+</table>`;
+}
+
+// Détecte si une séquence est une "welcome" (son trigger_value commence par 'lm:' ou est 'source:ancien-eleve-evermind'…)
 // Quand elle se termine, on ajoute le tag 'completed_welcome' au contact pour enrôler dans SEQ_NM
 function isWelcomeSequence(seqName: string): boolean {
   const lower = seqName.toLowerCase();
   return (
     lower.includes("welcome") ||
-    lower.includes("alumni evermind") ||
+    lower.includes("anciens élèves evermind") ||
+    lower.includes("anciens eleves evermind") ||
+    lower.includes("alumni evermind") || // retro-compat
     lower.includes("seq_mc") ||
     lower.includes("seq_sim") ||
     lower.includes("seq_qz") ||
@@ -80,6 +106,22 @@ export async function POST(request: Request) {
   }
 
   const items = (pending || []) as PendingSend[];
+
+  // RGPD : pour les contacts prospectes via Waalaxy (source=linkedin-waalaxy),
+  // chaque mail DOIT contenir une mention d'information conformement a
+  // l'article 13 RGPD (collecte indirecte via outil tiers). On charge en 1
+  // requete groupee les sources de tous les contacts du batch.
+  const contactIds = Array.from(new Set(items.map((i) => i.contact_id)));
+  const sourceByContactId = new Map<string, string>();
+  if (contactIds.length > 0) {
+    const { data: contactsData } = await supabase
+      .from("contacts")
+      .select("id, source")
+      .in("id", contactIds);
+    for (const c of contactsData || []) {
+      if (c.source) sourceByContactId.set(c.id, c.source);
+    }
+  }
   if (items.length === 0) {
     return NextResponse.json({ processed: 0, sent: 0, failed: 0, completed: 0 });
   }
@@ -129,10 +171,14 @@ export async function POST(request: Request) {
           return;
         }
 
-        // 2. Render + tracking
+        // 2. Render + tracking + bandeau RGPD si prospection B2B Waalaxy
         const subject = renderMergeTags(item.next_step_subject, vars);
         const htmlBase = renderMergeTags(item.next_step_html, vars);
-        const html = applyTracking(htmlBase, sendRecord.id);
+        const source = sourceByContactId.get(item.contact_id) || "";
+        const htmlWithBanner = source === "linkedin-waalaxy"
+          ? buildWaalaxyRgpdBanner(vars.unsubscribe_url) + htmlBase
+          : htmlBase;
+        const html = applyTracking(htmlWithBanner, sendRecord.id);
 
         // 3. Send via SES
         const result = await sendEmail({

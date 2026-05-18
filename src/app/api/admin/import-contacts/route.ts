@@ -172,6 +172,24 @@ export async function POST(request: Request) {
     ])
   );
 
+  // Pour la prospection B2B Waalaxy (source linkedin-waalaxy), la base
+  // juridique d'interet legitime CNIL ne couvre QUE les emails
+  // professionnels. On rejette donc les domaines persos (gmail, hotmail…)
+  // a l'import pour proteger contre une plainte CNIL.
+  const isWaalaxyB2B = source === "linkedin-waalaxy";
+  const PERSONAL_EMAIL_DOMAINS = new Set([
+    "gmail.com", "googlemail.com",
+    "hotmail.com", "hotmail.fr", "hotmail.be",
+    "outlook.com", "outlook.fr",
+    "live.com", "live.fr",
+    "yahoo.com", "yahoo.fr",
+    "icloud.com", "me.com", "mac.com",
+    "wanadoo.fr", "orange.fr", "free.fr", "sfr.fr", "laposte.net",
+    "neuf.fr", "aliceadsl.fr", "club-internet.fr", "voila.fr",
+    "msn.com", "aol.com", "protonmail.com", "proton.me",
+    "gmx.fr", "gmx.com", "yandex.com", "yandex.ru",
+  ]);
+
   const invalid: Array<{ row: number; email: string; reason: string }> = [];
   const validated: Array<{ email: string; first_name: string; last_name: string; phone: string | null }> = [];
   rows.forEach((r, i) => {
@@ -183,6 +201,18 @@ export async function POST(request: Request) {
     if (!EMAIL_RE.test(email)) {
       invalid.push({ row: i + 2, email, reason: "email invalide" });
       return;
+    }
+    // Filtre RGPD : prospection B2B = email pro obligatoire
+    if (isWaalaxyB2B) {
+      const domain = email.split("@")[1] || "";
+      if (PERSONAL_EMAIL_DOMAINS.has(domain)) {
+        invalid.push({
+          row: i + 2,
+          email,
+          reason: "email personnel non autorise pour prospection B2B (RGPD)",
+        });
+        return;
+      }
     }
     validated.push({
       email,
