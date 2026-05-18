@@ -12,7 +12,13 @@ import { BottomBanner } from "@/components/marketing/BottomBanner";
 import { TrackedLink } from "@/components/analytics/TrackedLink";
 import { ViewItemTracker } from "@/components/analytics/ViewItemTracker";
 import { SITE_URL } from "@/lib/utils/constants";
+import { createServiceClient } from "@/lib/supabase/server";
 import { Users, Play, Sparkles, Calculator, Radio, FileText, Tag, HeartHandshake, Trophy } from "lucide-react";
+
+// Revalide toutes les 60s pour rafraichir le compteur places fondateur
+// sans surcharger la DB. Suffisant pour l'urgence FOMO (le visiteur ne
+// remarquera pas un decalage de 60s sur 497 places restantes).
+export const revalidate = 60;
 
 const iconMap = { Users, Play, Sparkles, Calculator, Radio, FileText, Tag, HeartHandshake, Trophy } as const;
 
@@ -42,7 +48,8 @@ export const metadata: Metadata = buildMetadata({
 // sur la card Fondateur via STRIPE_PRICE_FAMILY_FONDATEUR.
 // Pointe vers la route GET checkout-family qui cree une session Stripe puis
 // redirige (303) vers la page Stripe Checkout. Utilise STRIPE_PRICE_FAMILY_FONDATEUR.
-const FAMILY_CTA_HREF = "/api/stripe/checkout-family?plan=fondateur";
+const FAMILY_CTA_HREF_FONDATEUR = "/api/stripe/checkout-family?plan=fondateur";
+const FAMILY_CTA_HREF_STANDARD = "/api/stripe/checkout-family?plan=standard";
 
 const faqItems = [
   { question: "Qu'est-ce qu'ES Family exactement ?", answer: "ES Family est une communauté patrimoniale pour investisseurs ambitieux. Tu accèdes à des analyses flash, des lives mensuels, des opportunités exclusives et un réseau de membres qui partagent les mêmes objectifs." },
@@ -61,6 +68,22 @@ export default async function FamilyPage(props: {
   const { from, status } = await props.searchParams;
   const isAcademyBlocked = from === "academy-blocked";
   const isLaunchPending = status === "launch-pending";
+
+  // Fetch live le nb de places fondateur restantes (revalide 60s).
+  // En cas d'erreur DB, on degrade gracieusement : on assume qu'il reste
+  // des places (sold_out=false) pour ne pas casser le tunnel d'achat.
+  const supabase = await createServiceClient();
+  const { data: seatsData } = await supabase.rpc("family_fondateur_seats_left");
+  const seats = (seatsData?.[0] as {
+    cap: number; taken: number; seats_left: number; sold_out: boolean;
+  } | undefined) || { cap: 500, taken: 0, seats_left: 500, sold_out: false };
+
+  // CTA dynamique : fondateur si places dispo, sinon standard
+  const FAMILY_CTA_HREF = seats.sold_out ? FAMILY_CTA_HREF_STANDARD : FAMILY_CTA_HREF_FONDATEUR;
+  const currentPlan = seats.sold_out ? "standard" : "fondateur";
+  const currentPrice = seats.sold_out ? 29 : 19;
+  // Urgence si moins de 100 places restantes (visuel rouge + count-down)
+  const urgency = !seats.sold_out && seats.seats_left <= 100;
 
   return (
     <div className="min-h-screen">
@@ -142,7 +165,16 @@ export default async function FamilyPage(props: {
                 Pas juste un groupe immo. Un écosystème patrimoine complet : immo, bourse, fiscalité, entrepreneuriat, mindset : dans ta poche, 7j/7.
               </p>
               <p className="text-lg text-es-text mb-4 leading-relaxed font-medium">
-                ES Family, c&apos;est la communauté qui prend le relais là où l&apos;école s&apos;est arrêtée. <strong className="text-es-mint-dark">1 800 membres déjà actifs. Encore 500 places au tarif fondateur.</strong>
+                ES Family, c&apos;est la communauté qui prend le relais là où l&apos;école s&apos;est arrêtée.{" "}
+                {seats.sold_out ? (
+                  <strong className="text-es-mint-dark">
+                    Les 500 places fondateur sont prises. Tarif standard à 29€/mois disponible.
+                  </strong>
+                ) : (
+                  <strong className={urgency ? "text-red-600" : "text-es-mint-dark"}>
+                    1 800 membres déjà actifs. Encore <span className="tabular-nums">{seats.seats_left}</span> place{seats.seats_left > 1 ? "s" : ""} au tarif fondateur 19€/mois.
+                  </strong>
+                )}
               </p>
               <p className="text-sm text-es-text-muted mb-10 leading-relaxed italic">
                 Plateforme mobile conçue et développée en interne par Emeline.
@@ -151,12 +183,28 @@ export default async function FamilyPage(props: {
               <TrackedLink
                 href={FAMILY_CTA_HREF}
                 event="cta_family_click"
-                eventParams={{ plan: "fondateur", value: 19, currency: "EUR" }}
-                data-cta="family-hero-fondateur"
+                eventParams={{ plan: currentPlan, value: currentPrice, currency: "EUR" }}
+                data-cta={`family-hero-${currentPlan}`}
                 className="inline-flex items-center justify-center font-semibold rounded-lg px-10 py-5 text-lg bg-es-mint-dark text-white hover:bg-es-mint-deep transition-all shadow-lg hover:shadow-xl"
               >
-                Rejoindre ES Family à 19€/mois
+                Rejoindre ES Family à {currentPrice}€/mois
               </TrackedLink>
+
+              {/* Compteur places fondateur : barre de progression + badge urgence */}
+              {!seats.sold_out && (
+                <div className={`mt-5 inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-medium ${
+                  urgency
+                    ? "bg-red-50 text-red-700 border border-red-200"
+                    : "bg-es-mint-pale text-es-mint-deep border border-es-mint/30"
+                }`}>
+                  <span className={`relative flex h-2 w-2`}>
+                    <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${urgency ? "bg-red-500" : "bg-es-mint-dark"}`}></span>
+                    <span className={`relative inline-flex rounded-full h-2 w-2 ${urgency ? "bg-red-600" : "bg-es-mint-dark"}`}></span>
+                  </span>
+                  <span className="tabular-nums">{seats.seats_left}</span> place{seats.seats_left > 1 ? "s" : ""} fondateur restante{seats.seats_left > 1 ? "s" : ""} sur {seats.cap}
+                </div>
+              )}
+
               <p className="text-xs text-es-text-muted mt-4">
                 Pour le prix d&apos;un forfait téléphonique · Sans engagement
               </p>
@@ -275,11 +323,11 @@ export default async function FamilyPage(props: {
             <TrackedLink
               href={FAMILY_CTA_HREF}
               event="cta_family_click"
-              eventParams={{ plan: "fondateur", value: 19, currency: "EUR", placement: "features_grid" }}
-              data-cta="family-features-fondateur"
+              eventParams={{ plan: currentPlan, value: currentPrice, currency: "EUR", placement: "features_grid" }}
+              data-cta={`family-features-${currentPlan}`}
               className="inline-flex items-center justify-center font-semibold rounded-lg px-10 py-5 text-lg bg-es-mint-dark text-white hover:bg-es-mint-deep transition-all shadow-lg hover:shadow-xl"
             >
-              Rejoindre ES Family à 19€/mois
+              Rejoindre ES Family à {currentPrice}€/mois
             </TrackedLink>
             <p className="text-xs text-es-text-muted mt-4">
               Pour le prix d&apos;un forfait téléphonique · Sans engagement
@@ -313,33 +361,49 @@ export default async function FamilyPage(props: {
       <section className="py-20 bg-es-cream">
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-12">
-            <span className="text-xs text-es-mint-dark uppercase tracking-widest font-medium">Tarif fondateur</span>
+            <span className="text-xs text-es-mint-dark uppercase tracking-widest font-medium">
+              {seats.sold_out ? "Places fondateur épuisées" : "Tarif fondateur"}
+            </span>
             <h2 className="font-serif text-3xl sm:text-4xl font-bold text-es-text mt-3 mb-3">
-              Réservé aux 500 premiers membres
+              {seats.sold_out ? (
+                <>Les 500 places fondateur sont prises</>
+              ) : (
+                <>Plus que <span className={`tabular-nums ${urgency ? "text-red-600" : "text-es-mint-dark"}`}>{seats.seats_left}</span> place{seats.seats_left > 1 ? "s" : ""} sur {seats.cap}</>
+              )}
             </h2>
             <p className="text-es-text-muted max-w-xl mx-auto">
-              Choisis ta formule. Le tarif fondateur reste bloqué tant que ton abonnement est actif.
+              {seats.sold_out
+                ? "Abonnement standard 29€/mois toujours disponible, mêmes contenus, sans le tarif bloqué."
+                : "Choisis ta formule. Le tarif fondateur reste bloqué tant que ton abonnement est actif."}
             </p>
           </div>
           <div className="grid md:grid-cols-5 gap-6">
-            {/* Carte Fondateur : 60% */}
-            <div className="md:col-span-3 bg-es-mint-pastel rounded-2xl p-8 text-es-text relative overflow-hidden shadow-xl">
+            {/* Carte Fondateur : 60%. Visuel grise si sold_out. */}
+            <div className={`md:col-span-3 rounded-2xl p-8 text-es-text relative overflow-hidden shadow-xl ${
+              seats.sold_out ? "bg-gray-100 opacity-70" : "bg-es-mint-pastel"
+            }`}>
               <div className="absolute top-0 right-0 w-48 h-48 bg-white/30 rounded-full -translate-y-1/2 translate-x-1/2" />
               <div className="absolute bottom-0 left-0 w-32 h-32 bg-es-mint-dark/5 rounded-full translate-y-1/2 -translate-x-1/4" />
-              <span className="relative inline-flex items-center bg-red-800 text-white text-xs font-bold px-3 py-1 rounded-full mb-4 uppercase tracking-wider">
-                Offre lancement
+              <span className={`relative inline-flex items-center text-white text-xs font-bold px-3 py-1 rounded-full mb-4 uppercase tracking-wider ${
+                seats.sold_out ? "bg-gray-500" : urgency ? "bg-red-600 animate-pulse" : "bg-red-800"
+              }`}>
+                {seats.sold_out ? "Complet" : urgency ? `Plus que ${seats.seats_left} places` : "Offre lancement"}
               </span>
               <h3 className="font-serif text-3xl font-bold mb-1 relative text-es-text">FONDATEUR</h3>
-              <p className="text-es-text-muted text-sm mb-6 relative">Les 500 premiers membres</p>
+              <p className="text-es-text-muted text-sm mb-6 relative">
+                {seats.sold_out
+                  ? `Les ${seats.cap} places fondateur sont prises`
+                  : `${seats.seats_left} place${seats.seats_left > 1 ? "s" : ""} sur ${seats.cap}`}
+              </p>
               <div className="text-5xl font-bold my-5 relative text-es-text">
                 19€<span className="text-lg font-normal text-es-text-muted">/mois TTC</span>
               </div>
               <p className="text-es-text-muted text-sm mb-6 relative">Tarif bloqué tant que l&apos;abonnement reste actif*</p>
               <TrackedLink
-                href={FAMILY_CTA_HREF}
+                href={seats.sold_out ? FAMILY_CTA_HREF_STANDARD : FAMILY_CTA_HREF_FONDATEUR}
                 event="cta_family_click"
-                eventParams={{ plan: "fondateur", value: 19, currency: "EUR", placement: "pricing_card" }}
-                data-cta="family-pricing-fondateur"
+                eventParams={{ plan: currentPlan, value: currentPrice, currency: "EUR", placement: "pricing_card" }}
+                data-cta={`family-pricing-${currentPlan}`}
                 className="relative block w-full text-center font-semibold rounded-lg px-8 py-4 bg-es-mint-dark text-white hover:bg-es-mint-deep transition-all mb-8 shadow-md"
               >
                 Rejoindre à 19€/mois
