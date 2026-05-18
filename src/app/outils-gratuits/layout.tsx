@@ -5,7 +5,7 @@ import { buildMetadata } from "@/lib/seo/metadata";
 import { SITE_URL } from "@/lib/utils/constants";
 
 export const metadata: Metadata = buildMetadata({
-  title: "10 outils gratuits pour ton premier investissement immobilier",
+  title: "10 outils gratuits investissement immobilier",
   description: "Checklist, tracker bancaire, modèles de bail, fichier de négociation : les outils gratuits d'Emeline Siron pour démarrer l'immobilier locatif.",
   path: "/outils-gratuits",
 });

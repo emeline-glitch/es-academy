@@ -5,7 +5,7 @@ import { isSeasonalLeadMagnetActive } from "@/lib/seo/seasonal";
 export async function generateMetadata(): Promise<Metadata> {
   const isActive = await isSeasonalLeadMagnetActive("calendrier-avent");
   return buildMetadata({
-    title: "Calendrier de l'avent immobilier : 24 jours, 24 conseils",
+    title: "Calendrier de l'avent investisseur immo",
     description: "Du 1er au 24 decembre : un conseil immobilier par jour pour preparer une annee d'investissement reussie. Inscris-toi pour le recevoir.",
     path: "/calendrier-avent",
     noIndex: !isActive,
