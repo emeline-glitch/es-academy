@@ -9,6 +9,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { faqSchema, breadcrumbSchema } from "@/lib/seo/schemas";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { BottomBanner } from "@/components/marketing/BottomBanner";
+import { ExitIntentPopup } from "@/components/marketing/ExitIntentPopup";
 import { TrackedLink } from "@/components/analytics/TrackedLink";
 import { ViewItemTracker } from "@/components/analytics/ViewItemTracker";
 import { SITE_URL } from "@/lib/utils/constants";
@@ -516,6 +517,10 @@ export default async function FamilyPage(props: {
       <BottomBanner accent="mint" />
       <Footer />
       <MobileCta text="Rejoindre ES Family" href={FAMILY_CTA_HREF} variant="mint" />
+      <ExitIntentPopup
+        bait="Avant de partir, garde ce qui pourrait te servir"
+        subBait="Reçois mon guide gratuit pour cadrer ton premier investissement immobilier. 10 outils, instantané."
+      />
     </div>
   );
 }

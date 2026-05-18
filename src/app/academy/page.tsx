@@ -5,6 +5,7 @@ import { Footer } from "@/components/layout/Footer";
 import { BottomBanner } from "@/components/marketing/BottomBanner";
 import { TestimonialsGrid } from "@/components/marketing/TestimonialsGrid";
 import { AcademyCheckoutButtons } from "@/components/marketing/AcademyCheckoutButtons";
+import { ExitIntentPopup } from "@/components/marketing/ExitIntentPopup";
 import { Button } from "@/components/ui/Button";
 import { Accordion } from "@/components/ui/Accordion";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
@@ -574,6 +575,10 @@ export default function AcademyPage() {
       <BottomBanner />
       <Footer />
       <MobileCta text="Rejoindre : 998€" href="#offre" />
+      <ExitIntentPopup
+        bait="Avant de partir, prends mon guide gratuit"
+        subBait="10 outils pour cadrer ton premier investissement immobilier. Gratuit, instantané, sans engagement."
+      />
     </div>
   );
 }
