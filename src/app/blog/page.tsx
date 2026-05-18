@@ -16,7 +16,11 @@ export const metadata: Metadata = buildMetadata({
   path: "/blog",
 });
 
-export const revalidate = 3600;
+// Re-fetch Notion toutes les 30 min. Critique car les URLs S3 signees
+// d'images Notion expirent en 1h. Avec 30 min on garantit qu'une page
+// servie cache contient toujours des URLs valides au moment du fetch
+// par le browser, avec une marge de 30 min minimum.
+export const revalidate = 1800;
 
 function formatDate(dateStr: string) {
   if (!dateStr) return "";

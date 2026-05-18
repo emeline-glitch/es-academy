@@ -15,6 +15,10 @@ const CATEGORIES: Record<string, { label: string; description: string }> = {
   strategie: { label: "Stratégie", description: "Stratégies avancées d'investissement : immeuble de rapport, colocation, division." },
 };
 
+// Re-fetch Notion toutes les 30 min : marge avant l'expiration des URLs
+// S3 signees (1h). Coherent avec /blog et /blog/[slug].
+export const revalidate = 1800;
+
 export async function generateStaticParams() {
   return Object.keys(CATEGORIES).map((category) => ({ category }));
 }

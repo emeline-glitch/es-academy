@@ -14,7 +14,9 @@ import { articleSchema, breadcrumbSchema } from "@/lib/seo/schemas";
 import { SITE_URL } from "@/lib/utils/constants";
 import { Button } from "@/components/ui/Button";
 
-export const revalidate = 3600;
+// Re-fetch Notion toutes les 30 min : marge avant l'expiration des URLs
+// S3 signees (1h). Sans cette marge, race condition possible.
+export const revalidate = 1800;
 
 export async function generateStaticParams() {
   const articles = await getPublishedArticles(100);
