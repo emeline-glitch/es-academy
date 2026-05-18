@@ -121,6 +121,11 @@ export default async function MaPerfPage() {
       {membersToShow.map((m) => {
         const profile = MEMBER_LABELS[m];
         const current = results[m][currentMonth.start];
+        // Le fixe Tiffany est une donnee sensible (montant figure dans le
+        // contrat). On le breakdownise UNIQUEMENT si Tiffany regarde sa
+        // propre vue. Pour Emeline (owner vue equipe), on le masque dans
+        // l'affichage mais on garde le total (qui l'inclut).
+        const showFixedBreakdown = m === "tiffany" && memberKey === "tiffany";
 
         return (
           <section key={m} className="mb-10">
@@ -139,7 +144,7 @@ export default async function MaPerfPage() {
 
             {/* KPI cards : breakdown commissions */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
-              {m === "tiffany" && (
+              {showFixedBreakdown && (
                 <Card>
                   <p className="text-[10px] uppercase tracking-wider text-gray-500">Fixe mensuel</p>
                   <p className="text-2xl font-bold text-gray-900 mt-1">{formatEur(current.fixed_cents)}</p>
@@ -175,7 +180,9 @@ export default async function MaPerfPage() {
                 <Card>
                   <p className="text-[10px] uppercase tracking-wider text-gray-500">Total à facturer</p>
                   <p className="text-2xl font-bold text-es-green mt-1">{formatEur(current.total_cents)}</p>
-                  <p className="text-[10px] text-gray-400 mt-0.5">HT (fixe + variables)</p>
+                  <p className="text-[10px] text-gray-400 mt-0.5">
+                    HT {showFixedBreakdown ? "(fixe + variables)" : "(toutes composantes)"}
+                  </p>
                 </Card>
               )}
             </div>
@@ -188,7 +195,7 @@ export default async function MaPerfPage() {
                   <thead>
                     <tr className="text-[10px] uppercase text-gray-500 tracking-wider border-b border-gray-100">
                       <th className="text-left py-2 px-2">Mois</th>
-                      {m === "tiffany" && <th className="text-right py-2 px-2">Fixe</th>}
+                      {showFixedBreakdown && <th className="text-right py-2 px-2">Fixe</th>}
                       <th className="text-right py-2 px-2">Academy</th>
                       {m === "antony" && <th className="text-right py-2 px-2">Coaching</th>}
                       <th className="text-right py-2 px-2">Family</th>
@@ -201,7 +208,7 @@ export default async function MaPerfPage() {
                       return (
                         <tr key={mo.start} className={`border-b border-gray-50 last:border-0 ${i === 0 ? "font-semibold bg-gray-50/50" : ""}`}>
                           <td className="py-2 px-2 text-gray-700 capitalize">{mo.label}</td>
-                          {m === "tiffany" && <td className="py-2 px-2 text-right text-gray-600">{formatEur(r.fixed_cents)}</td>}
+                          {showFixedBreakdown && <td className="py-2 px-2 text-right text-gray-600">{formatEur(r.fixed_cents)}</td>}
                           <td className="py-2 px-2 text-right text-gray-600">
                             {formatEur(r.variable_academy_cents)}
                             <span className="text-[10px] text-gray-400 ml-1">({r.academy_sales_count})</span>
