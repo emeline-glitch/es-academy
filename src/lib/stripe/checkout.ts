@@ -4,6 +4,8 @@ interface AcademyCheckoutParams {
   plan: "1x" | "3x" | "4x";
   successUrl: string;
   cancelUrl: string;
+  /** Pre-remplit le formulaire Stripe + permet de relancer en cas d'abandon. */
+  customerEmail?: string;
 }
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://emeline-siron.fr";
@@ -62,6 +64,7 @@ export async function createAcademyCheckoutSession({
   plan,
   successUrl,
   cancelUrl,
+  customerEmail,
 }: AcademyCheckoutParams) {
   const cfg = ACADEMY_PRICES[plan];
   const priceId = process.env[cfg.env];
@@ -93,6 +96,7 @@ export async function createAcademyCheckoutSession({
       payment_method_types: ["card"],
       line_items: [{ price: priceId, quantity: 1 }],
       metadata,
+      ...(customerEmail ? { customer_email: customerEmail } : {}),
       success_url: successUrl,
       cancel_url: cancelUrl,
       allow_promotion_codes: false,
@@ -108,6 +112,7 @@ export async function createAcademyCheckoutSession({
     payment_method_types: ["card"],
     line_items: [{ price: priceId, quantity: 1 }],
     metadata,
+    ...(customerEmail ? { customer_email: customerEmail } : {}),
     subscription_data: {
       metadata,
       description: `Academy - paiement en ${cfg.installments} fois`,
@@ -136,7 +141,7 @@ const FAMILY_PRICES = {
 /**
  * Crée une session Stripe Checkout pour un abonnement ES Family.
  * Mode subscription (mensuel récurrent), accepte les codes promo (parrainage,
- * coupon alumni Evermind via STRIPE_COUPON_ALUMNI_GIFT).
+ * coupon anciens élèves Evermind via STRIPE_COUPON_ALUMNI_GIFT).
  *
  * Le tarif fondateur est plafonné à 500 places via STRIPE_FAMILY_FONDATEUR_CAP.
  * Le webhook stripe peut décompter et basculer en standard une fois le cap atteint.
@@ -173,7 +178,7 @@ export async function createFamilyCheckoutSession({
     customer_email: customerEmail,
     success_url: successUrl,
     cancel_url: cancelUrl,
-    // Accepte EVERMIND (alumni) + autres promo codes parrainage
+    // Accepte EVERMIND (anciens élèves) + autres promo codes parrainage
     allow_promotion_codes: true,
     consent_collection: { terms_of_service: "required" },
     custom_text: {

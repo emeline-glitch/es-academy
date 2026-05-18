@@ -122,10 +122,22 @@ export async function POST(
       }
     );
 
-    return NextResponse.json({
+    // Pose le cookie es-lead-email pour pre-remplir Stripe Checkout +
+    // tracker les futurs abandons de panier. 90 jours = fenetre courante
+    // d'un parcours d'achat. HttpOnly false car lu cote JS pour le checkout
+    // Academy (les boutons CTA AcademyCheckoutButtons).
+    const response = NextResponse.json({
       success: true,
       redirect_url: form.redirect_url || null,
     });
+    response.cookies.set("es-lead-email", emailLower, {
+      maxAge: 90 * 24 * 60 * 60,
+      path: "/",
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      httpOnly: false,
+    });
+    return response;
   } catch (e) {
     console.error("[form submit] unexpected:", e);
     return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });

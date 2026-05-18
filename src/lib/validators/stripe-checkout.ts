@@ -6,6 +6,9 @@ export const AcademyCheckoutSchema = z
     plan: z.enum(["1x", "3x", "4x"], {
       message: "Plan invalide (attendu : 1x, 3x ou 4x)",
     }),
+    // Email optionnel : si le visiteur a deja opt-in (cookie es-lead-email),
+    // le frontend l'envoie pour pre-remplir Stripe + tracker l'abandon.
+    email: EmailSchema.optional(),
   })
   .strict();
 export type AcademyCheckoutRequest = z.infer<typeof AcademyCheckoutSchema>;

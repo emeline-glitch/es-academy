@@ -17,16 +17,19 @@ export async function POST(request: Request) {
   try {
     const v = await validateBody(request, AcademyCheckoutSchema);
     if (!v.ok) return v.response;
-    const { plan } = v.data;
+    const { plan, email } = v.data;
 
     const session = await createAcademyCheckoutSession({
       plan,
       successUrl: `${SITE_URL}/connexion?checkout=success&plan=${plan}`,
       cancelUrl: `${SITE_URL}/academy?checkout=cancelled`,
+      ...(email ? { customerEmail: email } : {}),
     });
 
     // Track l'attempt pour mesurer l'abandon de panier. Best-effort :
     // si la DB est lente ou indisponible, on ne bloque pas le checkout.
+    // Email enregistre si connu (visiteur deja opt-in via cookie) : permet
+    // au cron abandon-reminders de tagger le contact + envoyer une relance.
     try {
       const supabase = await createServiceClient();
       await supabase.from("checkout_attempts").insert({
@@ -35,6 +38,7 @@ export async function POST(request: Request) {
         plan,
         amount_cents: ACADEMY_AMOUNT_CENTS[plan] || null,
         status: "pending",
+        ...(email ? { email: email.toLowerCase() } : {}),
       });
     } catch (trackErr) {
       console.error("[stripe/checkout] track attempt error:", trackErr);

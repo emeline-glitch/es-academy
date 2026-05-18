@@ -3,6 +3,17 @@
 import { useState } from "react";
 import { trackEvent, ConversionEvents } from "@/lib/analytics/gtm";
 
+/**
+ * Lit le cookie `es-lead-email` pose par les formulaires d'opt-in
+ * (newsletter, lead magnets…). Si present, on le passe a l'API pour
+ * pre-remplir Stripe + tracker l'abandon de panier.
+ */
+function getLeadEmailFromCookie(): string | null {
+  if (typeof document === "undefined") return null;
+  const match = document.cookie.match(/(?:^|;\s*)es-lead-email=([^;]+)/);
+  return match ? decodeURIComponent(match[1]) : null;
+}
+
 type Plan = "1x" | "3x" | "4x";
 
 const PLANS: Array<{ id: Plan; label: string; sublabel: string }> = [
@@ -27,10 +38,14 @@ export function AcademyCheckoutButtons() {
       currency: "EUR",
     });
     try {
+      const knownEmail = getLeadEmailFromCookie();
       const res = await fetch("/api/stripe/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan: selected }),
+        body: JSON.stringify({
+          plan: selected,
+          ...(knownEmail ? { email: knownEmail } : {}),
+        }),
       });
       const data = (await res.json()) as { url?: string; error?: string };
       if (!res.ok || !data.url) {

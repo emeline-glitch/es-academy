@@ -51,8 +51,19 @@ export async function GET(request: Request) {
     }
     const { plan } = q.data;
 
+    // Lit le cookie `es-lead-email` pose par les formulaires d'opt-in.
+    // Si present, on pre-remplit Stripe + on tracke l'email dans
+    // checkout_attempts -> permet de relancer en cas d'abandon panier.
+    const cookieEmail = request.headers
+      .get("cookie")
+      ?.split(/;\s*/)
+      .find((c) => c.startsWith("es-lead-email="))
+      ?.slice("es-lead-email=".length);
+    const customerEmail = cookieEmail ? decodeURIComponent(cookieEmail) : undefined;
+
     const session = await createFamilyCheckoutSession({
       plan,
+      customerEmail,
       successUrl: `${SITE_URL}/family/bienvenue?plan=${plan}`,
       cancelUrl: `${SITE_URL}/family?checkout=cancelled`,
     });
@@ -60,7 +71,7 @@ export async function GET(request: Request) {
     if (!session.url) {
       return NextResponse.redirect(`${SITE_URL}/family?error=session-url-missing`, { status: 303 });
     }
-    await trackFamilyAttempt(session.id, plan);
+    await trackFamilyAttempt(session.id, plan, customerEmail ?? null);
     return NextResponse.redirect(session.url, { status: 303 });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Erreur inconnue";
