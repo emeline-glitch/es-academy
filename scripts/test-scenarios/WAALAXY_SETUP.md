@@ -1,67 +1,114 @@
 # Brancher Waalaxy au CRM
 
-Deux chemins selon ton plan Waalaxy. Tu peux vérifier ton plan dans **app.waalaxy.com > Paramètres > Mon abonnement**.
+Tu as **Waalaxy Business annuel**. Tu as 3 chemins possibles, du plus simple au plus flexible :
+
+| Chemin | Temps de mise en place | Coût additionnel | Fiabilité |
+|--------|------------------------|-------------------|-----------|
+| **1. Webhook natif** | 5 min | 0 € | ⭐⭐⭐⭐⭐ |
+| **2. Zapier** (clé `zpka_…`) | 15 min | 0 € (jusqu'à 100 tasks/mois) puis ~20 €/mois | ⭐⭐⭐⭐ |
+| **3. Import CSV** | manuel hebdomadaire | 0 € | ⭐⭐⭐ |
+
+Commence par le **1**. Si Waalaxy n'expose pas l'option, retombe sur le **2** (tu as déjà la clé Zapier).
 
 ---
 
-## Chemin 1 — Webhook temps réel (plan Business)
+## Chemin 1 — Webhook natif Waalaxy (recommandé)
 
-Si tu as le plan **Business**, chaque email collecté arrive automatiquement dans le CRM en quelques secondes, sans toi.
+Va dans **app.waalaxy.com → Paramètres → Intégrations**. Si tu vois une section **"Webhooks"** (différent de "Zapier"), suis ces étapes :
 
-### Configuration Waalaxy
-
-1. Va dans **Paramètres → Intégrations → Webhooks → Ajouter un webhook**
+1. **Ajouter un webhook**
 2. Renseigne :
    - **URL** : `https://emeline-siron.fr/api/webhooks/waalaxy`
    - **Méthode** : `POST`
    - **Header personnalisé** :
      - Nom : `X-Waalaxy-Secret`
-     - Valeur : la valeur de `WAALAXY_WEBHOOK_SECRET` dans ton `.env.local` (et sur Vercel)
+     - Valeur : la valeur de `WAALAXY_WEBHOOK_SECRET` dans ton `.env.local` (et déjà sur Vercel)
    - **Événements à écouter** :
      - ✅ `prospect_email_found` (le principal — déclenché quand Waalaxy trouve l'email pro)
      - ✅ `prospect_replied` (optionnel — si tu veux taguer les hot leads qui répondent)
-3. Sauvegarde, puis **"Tester"** dans Waalaxy. Tu dois recevoir un `200 success`.
+3. Sauvegarde, puis clique **"Tester"**. Tu dois recevoir un `200 success`.
 
-### Ce que ça fait automatiquement
+### Tu ne vois pas "Webhooks" dans tes intégrations ?
 
-Chaque prospect avec email collecté :
-- Atterrit dans la table `contacts` (CRM)
-- Source = `linkedin-waalaxy` (visible dans le dashboard CA par source)
-- Tags appliqués :
-  - `source:linkedin-waalaxy` (générique)
-  - `linkedin` (raccourci segmentation)
-  - `waalaxy:<nom-de-campagne-slugifié>` (1 tag par campagne pour la perf)
-- Apparait dans la liste CRM **"Prospection LinkedIn"**
-- Metadata enrichies : `linkedin_url`, `linkedin_company`, `linkedin_headline`, `waalaxy_campaign`
-
-Les events sans email (ex: `prospect_visited`) sont ignorés (200) pour ne pas faire retry Waalaxy inutilement.
-
-### Sécurité
-
-L'endpoint refuse toute requête sans le header `X-Waalaxy-Secret`. Le secret est rotation-safe : tu peux le régénérer (`openssl rand -hex 32`) et le re-pousser sur Vercel + Waalaxy. Reload des webhooks en cours après ça.
+Passe au **Chemin 2 (Zapier)** — tu as déjà la clé qu'il faut.
 
 ---
 
-## Chemin 2 — Import CSV (tous les plans)
+## Chemin 2 — Zapier (ta clé `zpka_…`)
 
-Si tu n'as pas le plan Business, Waalaxy te laisse exporter les contacts collectés en CSV.
+Le préfixe `zpka_` est un **Zapier Personal Key** : la clé que Waalaxy te génère pour autoriser Zapier à lire ton compte. Zapier devient le middleman entre Waalaxy et nous.
 
-### Workflow manuel (5 min par batch)
+### Étape 1 — Crée un compte Zapier (gratuit jusqu'à 100 tasks/mois)
 
-1. Dans Waalaxy, va sur ta campagne → **"Exporter les prospects"** → CSV
-2. Ouvre le CSV pour vérifier les colonnes : `email`, `first_name`, `last_name`, `linkedin_url`, `company`
-3. Va sur `/admin/import-contacts` sur ton CRM
-4. Configure :
+[zapier.com/sign-up](https://zapier.com/sign-up). Plan gratuit suffit pour démarrer.
+
+### Étape 2 — Crée le Zap
+
+1. **Make a Zap → "+ Create"**
+
+2. **Trigger** :
+   - App : **Waalaxy**
+   - Event : **New Prospect with Email Found** (le nom exact peut varier : choisir celui qui correspond à "prospect_email_found")
+   - Connect Account → colle ta clé Zapier `WAALAXY_ZAPIER_KEY` (valeur dans `.env.local`, format `zpka_<64-hex>`)
+   - Choose Campaign : tu peux laisser **"All campaigns"** pour tout récupérer (recommandé) ou en cibler une
+
+3. **Action** :
+   - App : **Webhooks by Zapier** (intégré gratuit)
+   - Event : **POST**
+   - Configure :
+     - **URL** : `https://emeline-siron.fr/api/webhooks/waalaxy`
+     - **Payload Type** : `JSON`
+     - **Data** :
+       ```json
+       {
+         "type": "prospect_email_found",
+         "data": {
+           "prospect": {
+             "email": "{{prospect_email}}",
+             "first_name": "{{prospect_first_name}}",
+             "last_name": "{{prospect_last_name}}",
+             "linkedin_url": "{{prospect_linkedin_url}}",
+             "company": "{{prospect_company}}",
+             "headline": "{{prospect_headline}}"
+           },
+           "campaign": { "name": "{{campaign_name}}" }
+         }
+       }
+       ```
+     - **Headers** :
+       - `Content-Type` : `application/json`
+       - `X-Waalaxy-Secret` : (la valeur de `WAALAXY_WEBHOOK_SECRET`)
+
+4. **Test action** → tu dois voir une réponse `200 {"success":true, …}`.
+5. **Publish** le Zap.
+
+### Quota Zapier
+
+- **Free** : 100 tasks/mois = environ 100 prospects par mois
+- **Starter** (~20 €/mois) : 750 tasks/mois
+- **Pro** (~50 €/mois) : 2000 tasks/mois
+
+Si tu collectes plus de 100 leads/mois via Waalaxy, le Starter Zapier est obligatoire. Re-évaluer dans 1 mois.
+
+---
+
+## Chemin 3 — Import CSV manuel (backup ou rattrapage)
+
+Toujours disponible quel que soit le chemin choisi. Utile :
+- Pour rattraper les prospects pré-existants avant d'activer le webhook/Zapier
+- Si Waalaxy a un incident et que tu veux importer manuellement
+
+### Workflow
+
+1. Dans Waalaxy : campagne → **"Exporter les prospects"** → CSV
+2. Va sur `/admin/import-contacts` du CRM
+3. Configure :
    - **Liste de destination** : `Prospection LinkedIn`
-   - **Tags supplémentaires** : `waalaxy:<nom-de-ta-campagne>` (à adapter)
-   - **Consent type** : `legitimate_interest` (RGPD : prospection B2B basée sur intérêt légitime, cf article 6.1.f)
+   - **Tags supplémentaires** : `waalaxy:<nom-campagne>` (à adapter)
+   - **Consent type** : `legitimate_interest` (RGPD : prospection B2B basée sur intérêt légitime, art. 6.1.f)
    - **Source** : `linkedin-waalaxy`
    - **Source detail** : nom de la campagne Waalaxy
-5. Colle le CSV, **"Dry run"** pour vérifier, puis **"Importer"**.
-
-### Cadence recommandée
-
-Une fois par semaine. Si tu fais plus de 1 batch / semaine, le plan Business devient rentable (~50€/mois) pour gagner ce temps.
+4. Colle le CSV, **"Dry run"** pour vérifier, puis **"Importer"**.
 
 ---
 
@@ -88,7 +135,7 @@ curl -X POST https://emeline-siron.fr/api/webhooks/waalaxy \
   }'
 ```
 
-Réponse attendue : `{"success":true,"contact_id":"...","tags_added":[...]}`.
+Réponse attendue : `{"success":true,"contact_id":"…","tags_added":[…]}`.
 
 ### Test automatisé
 
@@ -100,19 +147,13 @@ Vérifie : contact créé, tags posés, metadata, liste, sécu 401, idempotence.
 
 ---
 
-## Tableau de bord
-
-Une fois actif, retrouve les leads LinkedIn dans :
+## Où retrouver les leads une fois branché
 
 - **CRM → Listes → "Prospection LinkedIn"** : liste tag-based
-- **Dashboard → CA par source** : ligne `linkedin-waalaxy` (acheteurs + conversion)
-- **Dashboard → Top CTA convertisseurs** : si tu mets en place une séquence email qui débouche sur un CTA Stripe avec `data-cta="linkedin-academy"`
+- **Dashboard → CA par source** : ligne `linkedin-waalaxy` (acheteurs + taux de conversion)
+- **Dashboard → Top CTA convertisseurs** : si tu fais une séquence email qui débouche sur un CTA Stripe avec `data-cta="linkedin-academy"`
 
----
-
-## Faire évoluer
-
-Pour déclencher une séquence email automatique sur un sous-segment Waalaxy :
+Pour déclencher une séquence email sur un sous-segment Waalaxy :
 
 ```sql
 INSERT INTO email_sequences (name, trigger_type, trigger_value, status, steps)
@@ -120,9 +161,9 @@ VALUES (
   'Welcome LinkedIn Investisseurs',
   'tag_added',
   'waalaxy:investisseurs-bordeaux-2026',
-  'draft',     -- passe en 'active' une fois les steps écrits
+  'draft',     -- passe en 'active' une fois les steps écrits par Tiffany
   '[]'::jsonb
 );
 ```
 
-Tu peux aussi router toutes les prospections LinkedIn vers une séquence générique en utilisant `trigger_value = 'linkedin'`.
+Ou cible toute la prospection LinkedIn d'un coup avec `trigger_value = 'linkedin'`.
