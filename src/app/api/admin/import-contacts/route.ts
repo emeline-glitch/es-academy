@@ -58,26 +58,40 @@ function parseCsv(text: string): CsvRow[] {
 
   const headers = parseLine(lines[0]).map((h) => h.toLowerCase().replace(/^[\ufeff]/, ""));
 
+  // Mapping headers -> champs standardises. Waalaxy utilise du camelCase
+  // (firstName) et a 2 colonnes email (proEmail = email pro trouve par
+  // l'enrichisseur, prioritaire ; linkedinEmail = email LinkedIn public,
+  // fallback). On garde le 1er non-vide en priorite via mergeKeep ci-dessous.
   const normalize: Record<string, string> = {
     email: "email",
     "e-mail": "email",
     mail: "email",
     "email address": "email",
+    proemail: "email", // Waalaxy : email pro trouve
+    linkedinemail: "email", // Waalaxy : email LinkedIn (fallback)
     prenom: "first_name",
     prénom: "first_name",
     first_name: "first_name",
-    firstname: "first_name",
-    "first name": "first_name", // export Waalaxy
+    firstname: "first_name", // Waalaxy
+    "first name": "first_name",
     nom: "last_name",
     last_name: "last_name",
-    lastname: "last_name",
-    "last name": "last_name", // export Waalaxy
+    lastname: "last_name", // Waalaxy
+    "last name": "last_name",
     telephone: "phone",
     téléphone: "phone",
     phone: "phone",
     "phone number": "phone",
+    phonenumbers: "phone", // Waalaxy
     portable: "phone",
     mobile: "phone",
+    linkedinurl: "linkedin_url", // Waalaxy
+    linkedin_url: "linkedin_url",
+    company_name: "company", // Waalaxy
+    company: "company",
+    prospectlist: "campaign", // Waalaxy : nom de la campagne
+    campaign: "campaign",
+    campaign_name: "campaign",
   };
 
   return lines.slice(1).map((line) => {
@@ -85,7 +99,10 @@ function parseCsv(text: string): CsvRow[] {
     const row: CsvRow = { email: "" };
     headers.forEach((h, i) => {
       const key = normalize[h] || h;
-      row[key] = values[i] || "";
+      const val = (values[i] || "").trim();
+      // Priorite au 1er non-vide : ne pas ecraser un champ deja rempli
+      // avec une valeur vide (cas proEmail/linkedinEmail Waalaxy).
+      if (val || !row[key]) row[key] = val;
     });
     return row;
   });
