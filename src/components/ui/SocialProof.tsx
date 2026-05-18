@@ -77,8 +77,11 @@ export function SocialProof() {
   useEffect(() => {
     if (isPrivateRoute) return;
     setMsg(pickMessage());
-    const timer = setTimeout(() => setVisible(true), 8000);
-    const hideTimer = setTimeout(() => setVisible(false), 18000);
+    // Affiche apres 10s (laisse le visiteur lire la hero), puis cache apres 7s
+    // d'affichage (17s total). Sur mobile la card overlap moins le contenu
+    // critique avec bottom-28 (place pour MobileCta sticky qui fait ~80px).
+    const timer = setTimeout(() => setVisible(true), 10000);
+    const hideTimer = setTimeout(() => setVisible(false), 17000);
     return () => {
       clearTimeout(timer);
       clearTimeout(hideTimer);
@@ -88,7 +91,7 @@ export function SocialProof() {
   if (isPrivateRoute || !visible || dismissed || !msg) return null;
 
   return (
-    <div className="fixed bottom-20 md:bottom-6 left-4 md:left-6 z-40 bg-white rounded-xl shadow-lg border border-es-cream-dark p-4 max-w-xs animate-[fadeInUp_0.4s_ease-out]">
+    <div className="fixed bottom-28 md:bottom-6 left-4 md:left-6 z-40 bg-white rounded-xl shadow-lg border border-es-cream-dark p-4 max-w-xs animate-[fadeInUp_0.4s_ease-out]">
       <button
         onClick={() => setDismissed(true)}
         className="absolute top-2 right-2 text-es-text-muted/40 hover:text-es-text-muted cursor-pointer"
