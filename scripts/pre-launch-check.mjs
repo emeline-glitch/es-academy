@@ -114,6 +114,7 @@ function checkEnvVars() {
     REVALIDATION_SECRET: "Cache revalidation",
     CRON_SECRET: "Cron auth (sinon attaques DDoS possibles)",
     UNSUBSCRIBE_SECRET: "Token unsubscribe RGPD",
+    WAALAXY_WEBHOOK_SECRET: "Webhook Waalaxy (prospection LinkedIn temps reel)",
   };
 
   for (const [k, label] of Object.entries(blockerVars)) {
