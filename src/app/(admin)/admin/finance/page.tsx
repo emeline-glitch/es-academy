@@ -602,19 +602,16 @@ export default async function FinancePage() {
             </div>
             <div className="space-y-1 text-xs">
               <div className="flex justify-between">
+                <span className="text-gray-600">Fixe (juin-nov 2026)</span>
+                <span className="font-mono text-gray-900">{formatEur(tiffanyComp.fixed_cents)}</span>
+              </div>
+              <div className="flex justify-between">
                 <span className="text-gray-600">3% Academy ({tiffanyComp.academy_sales_count} vente{tiffanyComp.academy_sales_count > 1 ? "s" : ""})</span>
                 <span className="font-mono text-gray-900">{formatEur(tiffanyComp.variable_academy_cents)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">7€/membre Family ({tiffanyComp.family_new_members_count})</span>
                 <span className="font-mono text-gray-900">{formatEur(tiffanyComp.variable_family_cents)}</span>
-              </div>
-              {/* Fixe Tiffany non breakdown ici (donnee sensible). Inclus
-                  dans le total ci-dessus. Detail visible par Tiffany
-                  uniquement sur sa propre page /admin/ma-perf. */}
-              <div className="flex justify-between pt-1 border-t border-fuchsia-100 mt-1 italic text-gray-400">
-                <span>+ rémunération fixe (juin-nov 2026)</span>
-                <span>incluse dans total</span>
               </div>
             </div>
           </div>
