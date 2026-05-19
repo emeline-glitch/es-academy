@@ -191,18 +191,52 @@ export default async function FamilyPage(props: {
                 Rejoindre ES Family à {currentPrice}€/mois
               </TrackedLink>
 
-              {/* Compteur places fondateur : barre de progression + badge urgence */}
+              {/* Compteur places fondateur : carte visuelle avec barre de progression.
+                  Bien plus impactant que le badge fin. Couleur dynamique
+                  selon le palier (mint normal, rouge si urgence <= 100). */}
               {!seats.sold_out && (
-                <div className={`mt-5 inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-medium ${
+                <div className={`mt-6 rounded-xl p-4 sm:p-5 border-2 max-w-md mx-auto lg:mx-0 shadow-sm ${
                   urgency
-                    ? "bg-red-50 text-red-700 border border-red-200"
-                    : "bg-es-mint-pale text-es-mint-deep border border-es-mint/30"
+                    ? "bg-red-50 border-red-200"
+                    : "bg-white border-es-mint/40"
                 }`}>
-                  <span className={`relative flex h-2 w-2`}>
-                    <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${urgency ? "bg-red-500" : "bg-es-mint-dark"}`}></span>
-                    <span className={`relative inline-flex rounded-full h-2 w-2 ${urgency ? "bg-red-600" : "bg-es-mint-dark"}`}></span>
-                  </span>
-                  <span className="tabular-nums">{seats.seats_left}</span> place{seats.seats_left > 1 ? "s" : ""} fondateur restante{seats.seats_left > 1 ? "s" : ""} sur {seats.cap}
+                  <div className="flex items-baseline justify-between mb-2">
+                    <span className={`text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5 ${
+                      urgency ? "text-red-700" : "text-es-mint-deep"
+                    }`}>
+                      <span className="relative flex h-2 w-2">
+                        <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${urgency ? "bg-red-500" : "bg-es-mint-dark"}`}></span>
+                        <span className={`relative inline-flex rounded-full h-2 w-2 ${urgency ? "bg-red-600" : "bg-es-mint-dark"}`}></span>
+                      </span>
+                      {urgency ? "Plus que" : "Places fondateur"}
+                    </span>
+                    <span className="text-xs text-es-text-muted tabular-nums">
+                      {seats.taken} / {seats.cap}
+                    </span>
+                  </div>
+
+                  <div className="flex items-baseline gap-2 mb-3">
+                    <span className={`text-4xl sm:text-5xl font-bold tabular-nums ${
+                      urgency ? "text-red-600" : "text-es-mint-deep"
+                    }`}>
+                      {seats.seats_left}
+                    </span>
+                    <span className="text-sm text-es-text">
+                      place{seats.seats_left > 1 ? "s" : ""} restante{seats.seats_left > 1 ? "s" : ""} à 19€/mois
+                    </span>
+                  </div>
+
+                  {/* Barre de progression : visualise le remplissage */}
+                  <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full transition-all duration-500 ${urgency ? "bg-red-500" : "bg-es-mint-dark"}`}
+                      style={{ width: `${Math.min(100, Math.max(2, (seats.taken / seats.cap) * 100))}%` }}
+                    />
+                  </div>
+
+                  <p className="text-[11px] text-es-text-muted mt-2 leading-relaxed">
+                    Tarif fondateur <strong>bloqué à vie</strong> tant que ton abonnement reste actif. Passé les 500 places, le tarif standard est de 29€/mois.
+                  </p>
                 </div>
               )}
 
@@ -372,11 +406,27 @@ export default async function FamilyPage(props: {
                 <>Plus que <span className={`tabular-nums ${urgency ? "text-red-600" : "text-es-mint-dark"}`}>{seats.seats_left}</span> place{seats.seats_left > 1 ? "s" : ""} sur {seats.cap}</>
               )}
             </h2>
-            <p className="text-es-text-muted max-w-xl mx-auto">
+            <p className="text-es-text-muted max-w-xl mx-auto mb-6">
               {seats.sold_out
                 ? "Abonnement standard 29€/mois toujours disponible, mêmes contenus, sans le tarif bloqué."
                 : "Choisis ta formule. Le tarif fondateur reste bloqué tant que ton abonnement est actif."}
             </p>
+
+            {/* Barre de progression visuelle 500 places fondateur */}
+            {!seats.sold_out && (
+              <div className="max-w-md mx-auto">
+                <div className="flex items-center justify-between text-xs text-es-text-muted mb-1.5">
+                  <span><strong className="text-es-text">{seats.taken}</strong> prises</span>
+                  <span><strong className={urgency ? "text-red-600" : "text-es-mint-deep"}>{seats.seats_left}</strong> restantes</span>
+                </div>
+                <div className="w-full h-3 bg-white border border-es-mint/20 rounded-full overflow-hidden shadow-inner">
+                  <div
+                    className={`h-full transition-all duration-700 ${urgency ? "bg-red-500" : "bg-gradient-to-r from-es-mint-dark to-es-mint-deep"}`}
+                    style={{ width: `${Math.min(100, Math.max(2, (seats.taken / seats.cap) * 100))}%` }}
+                  />
+                </div>
+              </div>
+            )}
           </div>
           <div className="grid md:grid-cols-5 gap-6">
             {/* Carte Fondateur : 60%. Visuel grise si sold_out. */}
